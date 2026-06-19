@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>دليل استخدام منصة إيدونِست — EduNest User Manual</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap');
+    
+    :root {
+      --primary: #0d9488;
+      --primary-dark: #0f766e;
+      --primary-light: #ccfbf1;
+      --secondary: #0284c7;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Cairo', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      font-size: 16px;
+      padding-bottom: 60px;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: white;
+      padding: 50px 20px;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      border-bottom: 5px solid var(--secondary);
+    }
+
+    .header-logo {
+      font-size: 42px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .header-subtitle {
+      font-size: 18px;
+      font-weight: 400;
+      opacity: 0.9;
+    }
+
+    .container {
+      max-w: 900px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .nav-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 25px;
+      margin-bottom: 40px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+
+    .nav-box h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 15px;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 8px;
+      color: var(--primary-dark);
+    }
+
+    .nav-links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px;
+      background: var(--bg);
+      border-radius: 8px;
+      display: block;
+      transition: all 0.2s;
+      border-right: 4px solid var(--text-muted);
+    }
+
+    .nav-links a:hover {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      border-right-color: var(--primary);
+      transform: translateX(-5px);
+    }
+
+    .section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.01);
+    }
+
+    .section-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 12px;
+    }
+
+    .section-title span.number {
+      background: var(--primary);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 25px 0 12px 0;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    p {
+      margin-bottom: 15px;
+      color: #334155;
+      font-size: 15px;
+    }
+
+    ul, ol {
+      margin-bottom: 20px;
+      padding-right: 25px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: #334155;
+    }
+
+    .highlight-box {
+      background-color: var(--bg);
+      border-right: 5px solid var(--primary);
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .highlight-box.danger {
+      border-right-color: var(--danger);
+      background-color: #fef2f2;
+    }
+
+    .highlight-box.warning {
+      border-right-color: var(--warning);
+      background-color: #fffbeb;
+    }
+
+    .highlight-box.success {
+      border-right-color: var(--success);
+      background-color: #f0fdf4;
+    }
+
+    .highlight-box h4 {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 6px;
+      color: inherit;
+    }
+
+    .step-list {
+      list-style: none;
+      padding-right: 0;
+      margin: 20px 0;
+    }
+
+    .step-item {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 20px;
+      align-items: flex-start;
+    }
+
+    .step-number {
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 800;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 14px;
+      margin-top: 3px;
+    }
+
+    .step-content h4 {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .step-content p {
+      font-size: 14px;
+      margin-bottom: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 25px 0;
+      font-size: 14px;
+      text-align: right;
+    }
+
+    th {
+      background: var(--primary);
+      color: white;
+      padding: 12px 15px;
+      font-weight: 700;
+      border: 1px solid var(--primary);
+    }
+
+    td {
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--bg);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .badge-primary { background: var(--primary-light); color: var(--primary-dark); }
+    .badge-success { background: #d1fae5; color: #065f46; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger { background: #fee2e2; color: #991b1b; }
+
+    .no-print-btn {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: var(--primary-dark);
+      color: white;
+      border: none;
+      padding: 14px 24px;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      border-radius: 50px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+      z-index: 100;
+    }
+
+    .no-print-btn:hover {
+      background: var(--primary);
+      transform: translateY(-2px);
+    }
+
+    @media print {
+      body {
+        background: white;
+        color: black;
+        font-size: 12pt;
+        padding-bottom: 0;
+      }
+      .container {
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      .section {
+        border: none;
+        box-shadow: none;
+        padding: 20px 0;
+        margin-bottom: 30px;
+        page-break-inside: avoid;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .nav-box {
+        display: none !important;
+      }
+      header {
+        background: white;
+        color: black;
+        border-bottom: 3px solid black;
+        padding: 20px 0;
+      }
+      .header-logo {
+        color: black;
+      }
+      .highlight-box {
+        border-left: 3px solid black !important;
+        border-right: 0 !important;
+        background: #f1f5f9 !important;
+      }
+      .step-number {
+        border: 1px solid black;
+        background: transparent;
+        color: black;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Print Button (Floating) -->
+  <button onclick="window.print()" class="no-print-btn no-print">
+    🖨️ طباعة الدليل كـ PDF
+  </button>
+
+  <header>
+    <div class="header-logo">إيدونِست — EduNest</div>
+    <div class="header-subtitle">دليل الاستخدام الشامل للمنصة التعليمية (النسخة 1.0)</div>
+  </header>
+
+  <div class="container">
+    
+    <!-- 📄 جدول المحتويات السريع -->
+    <div class="nav-box no-print">
+      <h3>📑 فهرس المحتويات السريع</h3>
+      <ul class="nav-links">
+        <li><a href="#intro">1. نظرة عامة وقواعد المنصة</a></li>
+        <li><a href="#parent">2. دليل استخدام ولي الأمر</a></li>
+        <li><a href="#teacher">3. دليل استخدام المعلم</a></li>
+        <li><a href="#admin">4. دليل استخدام إدارة المنصة</a></li>
+        <li><a href="#jitsi">5. دليل الفصل الافتراضي (فيديو)</a></li>
+        <li><a href="#faq">6. الأسئلة الشائعة والدعم</a></li>
+      </ul>
+    </div>
+
+    <!-- 💡 القسم 1: نظرة عامة والقواعد -->
+    <div id="intro" class="section">
+      <h2 class="section-title"><span class="number">1</span>نظرة عامة وقواعد المنصة الأساسية</h2>
+      <p>منصة <strong>إيدونِست (EduNest)</strong> هي سوق تعليمي ثنائي الاتجاه يربط أولياء الأمور الفلسطينيين بالمعلمين الأكفاء لتسهيل وتنسيق وحجز الحصص والدروس الخصوصية في الضفة الغربية (رام الله، نابلس، الخليل).</p>
+      
+      <h3>📌 المحددات التشغيلية والقواعد الحاكمة (Rules & Settings):</h3>
+      <p>يعمل النظام بالكامل بناءً على إعدادات ديناميكية يتم التحكم بها من لوحة الإدارة لضمان أتمتة كاملة للقرارات والماليات:</p>
+      
+      <table>
+        <thead>
+          <tr>
+            <th>القاعدة التشغيلية</th>
+            <th>القيمة الافتراضية</th>
+            <th>الوصف البرمجي والتشغيلي</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>نسبة العمولة الافتراضية</td>
+            <td><strong>%15</strong></td>
+            <td>النسبة التي يخصمها النظام من أرباح المعلم عند حجز درس خصوصي عادي.</td>
+          </tr>
+          <tr>
+            <td>مهلة الإلغاء المجاني</td>
+            <td><strong>24 ساعة</strong></td>
+            <td>الساعات المتاحة لولي الأمر لإلغاء الحصة واسترداد الرسوم بالكامل. إذا تم الإلغاء بعد هذه المهلة، يُحسب الحجز كاملاً للمعلم.</td>
+          </tr>
+          <tr>
+            <td>مهلة الحجز المسبق</td>
+            <td><strong>ساعتان (2h)</strong></td>
+            <td>الحد الأدنى للوقت المطلوب بين إجراء الحجز من ولي الأمر وموعد بدء الدرس.</td>
+          </tr>
+          <tr>
+            <td>الحصة التجريبية المجانية</td>
+            <td><strong>مفعلة (مرة واحدة)</strong></td>
+            <td>يحق لكل ولي أمر حجز حصة تجريبية واحدة مجاناً (30 دقيقة) مع أي معلم يتيح ذلك. يتحمل النظام تكلفتها أو تكون مجانية بالكامل.</td>
+          </tr>
+          <tr>
+            <td>الحد الأقصى لطلبات الاسترداد</td>
+            <td><strong>طلبين (2) لكل مستخدم</strong></td>
+            <td>الحد الأقصى للإلغاء التلقائي والاسترداد الفوري لولي الأمر دون مراجعة الإدارة.</td>
+          </tr>
+          <tr>
+            <td>الحد الأدنى لسعر الحصة</td>
+            <td><strong>5 شواكل</strong></td>
+            <td>أقل قيمة مالية يُسمح للمعلم بوضعها لسعر الحصة الدراسي.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="highlight-box warning">
+        <h4>⚠️ هام جداً بشأن توقيت الحصص:</h4>
+        <p>جميع تواقيت الحصص والجدولة تسجل وتخزن في قاعدة البيانات بتوقيت غرينتش (UTC) وتظهر للمستخدمين حسب التوقيت المحلي الفلسطيني تلقائياً لتجنب الاختلافات في التوقيت الصيفي والشتوي.</p>
+      </div>
+    </div>
+
+    <!-- 👨‍👩‍👧‍👦 القسم 2: دليل ولي الأمر -->
+    <div id="parent" class="section">
+      <h2 class="section-title"><span class="number">2</span>دليل استخدام ولي الأمر (Parent Manual)</h2>
+      <p>بصفتك ولي أمر، فإن هدفك الأساسي هو البحث عن المعلمين الأنسب لأبنائك، وجدولة الحصص، ومتابعة أدائهم الدراسي.</p>
+      
+      <h3>🚀 خطوات دورة حياة الدرس لولي الأمر:</h3>
+      <ol class="step-list">
+        <li class="step-item">
+          <span class="step-number">1</span>
+          <div class="step-content">
+            <h4>إضافة الأبناء (الطلاب) أولاً</h4>
+            <p>قبل الحجز، يجب الانتقال إلى <strong>لوحة التحكم ⬅️ الطلاب</strong> وإضافة الأبناء مع تحديد أسمائهم وصفوفهم الدراسية (من الصف 1 إلى 12)، حيث يعتمد النظام عليها لملاءمة المناهج.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-number">2</span>
+          <div class="step-content">
+            <h4>البحث عن معلم وحجز موعد</h4>
+            <p>تصفح صفحة <strong>البحث عن معلمين</strong>، واستخدم الفلاتر (التخصص، المدينة). اضغط على الملف الشخصي للمعلم لتشاهد تقييماته، ثم اختر الخدمة والوقت المتاح باللون الأخضر من جدول المعلم.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-number">3</span>
+          <div class="step-content">
+            <h4>دفع الرسوم ورفع الإيصال (يدوياً)</h4>
+            <p>بعد الحجز، ستكون حالة الحصة <span class="badge badge-warning">بانتظار الدفع</span>. قم بتحويل المبلغ عبر البنك أو الدفع نقداً، ثم قم برفع صورة الإيصال أو إثبات التحويل مباشرة عبر النظام ليقوم الأدمن بتأكيده.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-number">4</span>
+          <div class="step-content">
+            <h4>حضور الحصة بالفيديو</h4>
+            <p>قبل 5 دقائق من بداية الحصة، انتقل إلى <strong>لوحة التحكم ⬅️ حصصي</strong>، ستجد زر <strong>"انضم للجلسة الآن"</strong> قد أصبح مفتاحاً باللون الأخضر. اضغط عليه لتفتح مكالمة الفيديو مباشرة.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-number">5</span>
+          <div class="step-content">
+            <h4>قراءة التقرير التعليمي والتقييم</h4>
+            <p>بعد انتهاء الحصة، سيقوم المعلم برفع تقرير يوضح أداء ابنك. يمكنك قراءة التقرير وتقييم المعلم بنجوم تعليق مخصص لتحسين جودة المنصة.</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="highlight-box danger">
+        <h4>🚨 سياسة الإلغاء لولي الأمر:</h4>
+        <p>يمكنك إلغاء الحصة واسترداد الرسوم تلقائياً قبل 24 ساعة من موعدها. في حال الإلغاء بعد ذلك، يُخصم كامل مبلغ الحصة ويذهب للمعلم تعويضاً عن حجز وقته وتفرغه.</p>
+      </div>
+    </div>
+
+    <!-- 🎓 القسم 3: دليل المعلم -->
+    <div id="teacher" class="section">
+      <h2 class="section-title"><span class="number">3</span>دليل استخدام المعلم (Teacher Manual)</h2>
+      <p>أنت شريك التعليم في إيدونِست. نجاحك يعتمد على تنظيم أوقاتك وتقديم تقارير متميزة ومستمرة للأهالي.</p>
+
+      <h3>🚀 الخطوات اليومية للمعلم لإدارة الحساب:</h3>
+      <ol class="step-list">
+        <li class="step-item">
+          <span class="step-number">1</span>
+          <div class="step-content">
+            <h4>توثيق الحساب (مستويات التوثيق)</h4>
+            <p>يجب رفع الهوية الشخصية والشهادة العلمية للإدارة. يصنف المعلم لثلاثة مستويات: <span class="badge badge-primary">برونزي</span>، <span class="badge badge-success">فضي</span>، <span class="badge badge-warning">ذهبي</span> لتعزيز ظهوره وجلب الحجوزات.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-number">2</span>
+          <div class="step-content">
+            <h4>إدخال جدول التفرغ الأسبوعي (Availability)</h4>
+            <p>انتقل إلى <strong>جدول التوفر</strong> وحدد أيام وساعات عملك المتكررة أسبوعياً. <strong>قاعدة هامة:</strong> لن يتمكن أي ولي أمر من حجز موعد معك خارج هذه الأوقات المسجلة مطلقاً.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-number">3</span>
+          <div class="step-content">
+            <h4>قبول أو رفض طلبات الحجز</h4>
+            <p>عند حجز ولي أمر لأحد أوقاتك، ستتلقى إشعاراً فوريّاً. يجب عليك مراجعة الطلب والضغط على <strong>"قبول"</strong> أو <strong>"رفض"</strong> فورياً ليتمكن ولي الأمر من إتمام الدفع.</p>
+          </div>
+        </li>
+        <li class="step-item">
+          <span class="step-number">4</span>
+          <div class="step-content">
+            <h4>حضور الجلسة وتقديم التقرير الإلزامي</h4>
+            <p>احضر الجلسة عبر الفيديو. بعد انتهائها، <strong>يجب عليك فوراً رفع تقرير الجلسة</strong> (ملاحظاتك، المواضيع المغطاة، وتقييم الطالب). <strong>ملاحظة برمجية:</strong> لن يتم احتساب الحصة في تسوية أرباحك المالية دون رفع هذا التقرير أولاً.</p>
+          </div>
+        </li>
+      </ol>
+
+      <div class="highlight-box success">
+        <h4>💰 تسوية الأرباح والمستحقات (Teacher Payouts):</h4>
+        <p>يتم احتساب أرباحك دورياً ويخصم النظام العمولة المحددة (%15 افتراضياً). الحصص التجريبية يتم تعويضك عنها بناءً على قيمة "تعويض الحصص المجانية" المحددة من الإدارة في إعدادات النظام.</p>
+      </div>
+    </div>
+
+    <!-- 🛡️ القسم 4: دليل المدير العام -->
+    <div id="admin" class="section">
+      <h2 class="section-title"><span class="number">4</span>دليل استخدام الإدارة والأدمن (Admin Manual)</h2>
+      <p>بصفتك مديراً للنظام، فإنك تدير العمليات المالية وتراقب جودة التعليم وتتحكم بإعدادات النظام الحيوية.</p>
+
+      <h3>📋 مهام الأدمن اليومية والأسبوعية:</h3>
+      <ul>
+        <li><strong>تأكيد المدفوعات يدويّاً (Payment Queue):</strong> مراجعة إيصالات الدفع المرفوعة من الأهالي وتأكيدها لتتحول حالة الحجز إلى <span class="badge badge-success">مؤكد</span> ويُفتح رابط الفيديو.</li>
+        <li><strong>توثيق المعلمين الجدد (Verifications):</strong> مراجعة الشهادات العلمية ومقابلات الفيديو للمعلمين وتحديد مستوى توثيقهم (برونزي / فضي / ذهبي).</li>
+        <li><strong>تسوية مستحقات المعلمين (Payouts Engine):</strong> 
+          <p>تتم التسوية دورياً وبشكل مؤتمت. يربط النظام الحصص المكتملة بالتسوية لمنع <strong>الدفع المزدوج (Double Payout Prevention)</strong>. لا يمكن إضافة الحصة لتسويتين ماليتين مطلقاً.</p>
+        </li>
+        <li><strong>تعديل إعدادات النظام الحيوية (SystemSettings):</strong> لوحة تحكم لتعديل العمولات، أسعار الجلسات الافتراضية، التكاليف، والمدد الزمنية دون الحاجة لتغيير الكود.</li>
+      </ul>
+    </div>
+
+    <!-- 📹 القسم 5: دليل الفصل الافتراضي -->
+    <div id="jitsi" class="section">
+      <h2 class="section-title"><span class="number">5</span>دليل استخدام الفصل الافتراضي (Jitsi Meet)</h2>
+      <p>تعتمد المنصة على نظام مكالمات الفيديو المجاني <strong>Jitsi Meet</strong> المدمج بالكامل بداخل الموقع دون الحاجة لأي حساب خارجي.</p>
+      
+      <div class="highlight-box warning">
+        <h4>🔑 ضوابط وأمن غرف مكالمات الفيديو:</h4>
+        <ul>
+          <li>رابط الغرفة فريد وعشوائي ومقترن برقم تعريف الحصة لمنع دخول الغرباء.</li>
+          <li>يفتح رابط الانضمام تلقائياً <strong>قبل 5 دقائق</strong> فقط من موعد الجلسة المجدول لولي الأمر والمعلم.</li>
+          <li>يغلق الرابط ويلغى تفعيله بمجرد انتهاء مدة الجلسة (مثال: بعد مرور 60 دقيقة).</li>
+          <li>يفضل استخدام متصفح Chrome أو Firefox لضمان أعلى جودة للصوت والكاميرا وميزة مشاركة الشاشة.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- ❓ القسم 6: الأسئلة الشائعة والدعم -->
+    <div id="faq" class="section">
+      <h2 class="section-title"><span class="number">6</span>الأسئلة الشائعة وحل المشكلات (FAQ)</h2>
+      
+      <h3>س: ماذا يحدث إذا لم يحضر الطالب الجلسة؟</h3>
+      <p>ج: يقوم المعلم برفع تقرير الجلسة ويحدد خيار <strong>"لم يحضر الطالب"</strong>. في هذه الحالة، يحتفظ المعلم بحقه في أجر الحصة وتُخصم من ولي الأمر لعدم الإلغاء المسبق.</p>
+
+      <h3>س: كيف يتم استرداد الأموال للأهالي؟</h3>
+      <p>ج: إذا تم إلغاء الحصة قبل 24 ساعة، يتم زيادة قيمة "طلب استرداد الرسوم" في ملف ولي الأمر ويقوم الأدمن بإرجاع القيمة المادية يدوياً أو تضاف كرصيد مستقبلي.</p>
+
+      <h3>س: ظهرت رسالة EPERM عند بدء السيرفر، ما العمل؟</h3>
+      <p>ج: قم بإغلاق خادم التطوير تماماً، واكتب الأمر <code>Remove-Item -Recurse -Force .next</code> في التيرمنال لمسح كاش التطوير، ثم أعد تشغيله.</p>
+    </div>
+
+  </div>
+
+</body>
+</html>

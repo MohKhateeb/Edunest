@@ -1,0 +1,145 @@
+'use server';
+
+import { prisma } from '@/lib/prisma';
+import { ActionResponse } from '@/lib/types';
+import { registerSchema, studentSchema } from '@/lib/validations/user';
+import bcrypt from 'bcryptjs';
+import { generateUniqueSlug } from '@/lib/utils/slug';
+import { UserType } from '@prisma/client';
+import { z } from 'zod';
+import { requireAuth } from '@/lib/require-auth';
+import { revalidatePath } from 'next/cache';
+
+export async function registerUser(
+  data: z.infer<typeof registerSchema> & { specialization?: string }
+): Promise<ActionResponse> {
+  try {
+    const validated = registerSchema.safeParse(data);
+    if (!validated.success) {
+      return { success: false, error: validated.error.issues[0].message };
+    }
+
+    const { name, email, password, phone, userType } = validated.data;
+
+    // Check if email already exists
+    const existing = await prisma.user.findUnique({
+      where: { email: email.toLowerCase().trim() },
+    });
+
+    if (existing) {
+      return { success: false, error: 'البريد الإلكتروني مسجل بالفعل' };
+    }
+
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    await prisma.$transaction(async (tx) => {
+      const user = await tx.user.create({
+        data: {
+          name,
+          email: email.toLowerCase().trim(),
+          passwordHash,
+          phone: phone || null,
+          userType,
+        },
+      });
+
+      if (userType === UserType.TEACHER) {
+        const spec = data.specialization || 'عام';
+        const slug = await generateUniqueSlug(name, spec);
+        await tx.teacher.create({
+          data: {
+            userId: user.id,
+            specialization: spec,
+            slug,
+          },
+        });
+      }
+    });
+
+    return { success: true };
+  } catch (err: unknown) {
+    console.error(err);
+    return { success: false, error: 'حدث خطأ أثناء إنشاء الحساب' };
+  }
+}
+
+export async function addStudent(
+  data: z.infer<typeof studentSchema>
+): Promise<ActionResponse> {
+  try {
+    const { userId } = await requireAuth([UserType.PARENT]);
+
+    const validated = studentSchema.safeParse(data);
+    if (!validated.success) {
+      return { success: false, error: validated.error.issues[0].message };
+    }
+
+    await prisma.student.create({
+      data: {
+        parentUserId: userId,
+        name: validated.data.name,
+        grade: validated.data.grade,
+        school: validated.data.school || null,
+      },
+    });
+
+    revalidatePath('/dashboard/parent/students');
+
+    return { success: true };
+  } catch (err: unknown) {
+    console.error(err);
+    return { success: false, error: 'حدث خطأ أثناء إضافة الطالب' };
+  }
+}
+
+export async function updateStudent(
+  studentId: string,
+  data: z.infer<typeof studentSchema>
+): Promise<ActionResponse> {
+  try {
+    const { userId } = await requireAuth([UserType.PARENT]);
+
+    const validated = studentSchema.safeParse(data);
+    if (!validated.success) {
+      return { success: false, error: validated.error.issues[0].message };
+    }
+
+    // Check student ownership and bookings count
+    const student = await prisma.student.findUnique({
+      where: { id: studentId },
+      include: {
+        _count: {
+          select: { bookings: true },
+        },
+      },
+    });
+
+    if (!student) {
+      return { success: false, error: 'الطالب غير موجود' };
+    }
+
+    if (student.parentUserId !== userId) {
+      return { success: false, error: 'غير مصرح لك بتعديل بيانات هذا الطالب' };
+    }
+
+    if (student._count.bookings > 0) {
+      return { success: false, error: 'لا يمكن تعديل بيانات الطالب لوجود جلسات مجدولة له' };
+    }
+
+    await prisma.student.update({
+      where: { id: studentId },
+      data: {
+        name: validated.data.name,
+        grade: validated.data.grade,
+        school: validated.data.school || null,
+      },
+    });
+
+    revalidatePath('/dashboard/parent/students');
+
+    return { success: true };
+  } catch (err: unknown) {
+    console.error(err);
+    return { success: false, error: 'حدث خطأ أثناء تعديل بيانات الطالب' };
+  }
+}
