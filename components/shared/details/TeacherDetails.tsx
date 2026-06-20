@@ -54,7 +54,7 @@ export default function TeacherDetails({ teacher, activeTab, setActiveTab }: Tea
       {/* Grid Stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         <div className="p-4 border border-border bg-accent/10 rounded-xl text-center">
-          <Star className="h-5 w-5 text-yellow-500 fill-currentColor mx-auto mb-1" />
+          <Star className="h-5 w-5 text-violet-500 fill-currentColor mx-auto mb-1" />
           <span className="text-[10px] text-muted-foreground block font-bold">التقييم</span>
           <span className="text-sm font-extrabold text-foreground">{Number(teacher.averageRating).toFixed(1)} / 5.0</span>
         </div>
@@ -273,7 +273,7 @@ export default function TeacherDetails({ teacher, activeTab, setActiveTab }: Tea
                         key={s} 
                         size={12} 
                         fill={s <= rev.rating ? 'currentColor' : 'none'} 
-                        className={s <= rev.rating ? 'text-yellow-500' : 'text-muted-foreground/35'}
+                        className={s <= rev.rating ? 'text-violet-500' : 'text-muted-foreground/35'}
                       />
                     ))}
                   </div>

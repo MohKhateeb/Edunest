@@ -30,6 +30,7 @@ import NotificationBell from '@/components/shared/NotificationBell';
 export default function Header() {
   const { data: session } = useSession();
   const [isOpen, setIsOpen] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
   const pathname = usePathname();
 
   const handleLogout = () => {
@@ -80,7 +81,7 @@ export default function Header() {
             <Link href="/" className="flex items-center gap-2 text-2xl font-extrabold text-primary tracking-tight">
               <GraduationCap className="h-8 w-8 text-primary" />
               <span>إيدونِست</span>
-              <span className="text-xs text-muted-foreground bg-primary/10 px-2 py-0.5 rounded-full font-normal">EduNest</span>
+              <span className="text-xs text-muted-foreground bg-primary/10 px-2 py-0.5 rounded-full font-normal font-sans">EduNest</span>
             </Link>
           </div>
 
@@ -104,29 +105,85 @@ export default function Header() {
           {/* User Actions */}
           <div className="hidden md:flex items-center gap-4">
             {session ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-4 relative">
                 <NotificationBell />
-                <div className="h-6 w-px bg-border mx-1" />
-                <Link
-                  href={
-                    session.user.userType === 'ADMIN'
-                      ? '/dashboard/admin'
-                      : session.user.userType === 'TEACHER'
-                      ? '/dashboard/teacher'
-                      : '/dashboard/parent'
-                  }
-                  className="flex items-center gap-1.5 text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg transition-all shadow-sm"
-                >
-                  <LayoutDashboard className="h-4 w-4" />
-                  لوحة التحكم
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="flex items-center gap-1.5 text-sm font-medium border border-border hover:bg-accent text-destructive hover:text-destructive px-3 py-2 rounded-lg transition-colors"
-                >
-                  <LogOut className="h-4 w-4" />
-                  تسجيل الخروج
-                </button>
+                <div className="h-6 w-px bg-border" />
+                
+                <div className="relative">
+                  <button
+                    onClick={() => setShowDropdown(!showDropdown)}
+                    className="flex items-center gap-1.5 p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none cursor-pointer"
+                  >
+                    <div className="relative h-9 w-9 rounded-full overflow-hidden border border-border bg-slate-100 flex-shrink-0 flex items-center justify-center">
+                      {session.user.image ? (
+                        <img
+                          src={session.user.image}
+                          alt={session.user.name || ''}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="h-full w-full bg-gradient-to-tr from-primary to-primary-foreground/30 text-white font-extrabold flex items-center justify-center text-sm">
+                          {(session.user.name || 'أ').charAt(0)}
+                        </div>
+                      )}
+                    </div>
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  {showDropdown && (
+                    <>
+                      {/* Invisible backdrop to close dropdown */}
+                      <div className="fixed inset-0 z-30" onClick={() => setShowDropdown(false)} />
+                      
+                      <div className="absolute end-0 mt-2 w-56 rounded-2xl bg-white dark:bg-slate-900 border border-border/85 p-2 shadow-premium z-45 animate-in fade-in slide-in-from-top-2 duration-200">
+                        {/* Profile Summary */}
+                        <div className="px-3 py-2.5 border-b border-border/50 text-right">
+                          <span className="text-xs font-black text-foreground block truncate">{session.user.name}</span>
+                          <span className="text-[10px] text-muted-foreground block truncate mt-0.5" dir="ltr">{session.user.email}</span>
+                        </div>
+                        
+                        <div className="py-1">
+                          <Link
+                            href={
+                              session.user.userType === 'ADMIN'
+                                ? '/dashboard/admin'
+                                : session.user.userType === 'TEACHER'
+                                ? '/dashboard/teacher'
+                                : '/dashboard/parent'
+                            }
+                            onClick={() => setShowDropdown(false)}
+                            className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground/80 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-primary transition-colors text-right"
+                          >
+                            <LayoutDashboard className="h-4 w-4 text-muted-foreground" />
+                            <span>لوحة التحكم</span>
+                          </Link>
+                          
+                          <Link
+                            href="/dashboard/profile"
+                            onClick={() => setShowDropdown(false)}
+                            className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground/80 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-primary transition-colors text-right"
+                          >
+                            <User className="h-4 w-4 text-muted-foreground" />
+                            <span>تعديل الملف الشخصي</span>
+                          </Link>
+                        </div>
+                        
+                        <div className="border-t border-border/50 pt-1 mt-1">
+                          <button
+                            onClick={() => {
+                              setShowDropdown(false);
+                              handleLogout();
+                            }}
+                            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors text-right cursor-pointer"
+                          >
+                            <LogOut className="h-4 w-4 text-rose-500" />
+                            <span>تسجيل الخروج</span>
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
             ) : (
               <div className="flex items-center gap-3">
@@ -217,6 +274,14 @@ export default function Header() {
                   >
                     <LayoutDashboard className="h-5 w-5" />
                     لوحة التحكم
+                  </Link>
+                  <Link
+                    href="/dashboard/profile"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-foreground/80 hover:bg-accent hover:text-primary transition-colors"
+                  >
+                    <User className="h-5 w-5 text-muted-foreground" />
+                    الملف الشخصي
                   </Link>
 
                   {/* Mobile Dashboard Sub-links */}

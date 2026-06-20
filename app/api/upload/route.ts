@@ -36,11 +36,21 @@ export async function POST(req: NextRequest) {
     }
 
     // 4. تحديد الـ Bucket والـ filename المناسبين
-    const ALLOWED_BUCKETS = ['verifications', 'payment-proofs', 'profiles'];
-    const bucket = bucketParam && ALLOWED_BUCKETS.includes(bucketParam) ? bucketParam : 'uploads';
+    const ALLOWED_BUCKETS = ['verifications', 'payment-proofs', 'profiles', 'uploads'];
+    if (bucketParam && !ALLOWED_BUCKETS.includes(bucketParam)) {
+      return NextResponse.json({ error: 'مجلد الرفع غير صالح' }, { status: 400 });
+    }
+    const bucket = bucketParam || 'uploads';
 
     const fileExt = file.name.split('.').pop() || '';
-    const safeExt = fileExt.replace(/[^a-zA-Z0-9]/g, '');
+    const safeExt = fileExt.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+    
+    // التحقق من امتداد الملف لأسباب أمنية
+    const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'pdf', 'mp4', 'webm', 'ogg', 'mov', '3gp'];
+    if (!ALLOWED_EXTENSIONS.includes(safeExt)) {
+      return NextResponse.json({ error: 'امتداد الملف غير مسموح به' }, { status: 400 });
+    }
+
     const fileName = `${session.user.id}/${Date.now()}.${safeExt}`;
 
     const bytes = await file.arrayBuffer();

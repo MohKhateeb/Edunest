@@ -61,37 +61,37 @@ export default function DetailsModal({ isOpen, onClose, entityType, entityId }: 
 
   return (
     <Portal>
-      <div className="fixed inset-0 z-50 flex items-start justify-center p-4 bg-black/75 overflow-y-auto animate-in fade-in duration-200">
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
         <div 
-          className="relative w-full max-w-3xl my-8 flex flex-col bg-card/85 dark:bg-slate-900/90 text-foreground border border-white/20 dark:border-slate-800/80 shadow-2xl rounded-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-300"
+          className="relative w-full max-w-lg max-h-[85vh] flex flex-col bg-white dark:bg-slate-900 text-foreground border border-border/50 shadow-premium rounded-3xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-300"
           dir="rtl"
         >
           {/* Top Header */}
-          <div className="flex justify-between items-center px-6 py-4 border-b border-border bg-muted/30">
-            <h2 className="text-base font-extrabold flex items-center gap-2">
-              <span className="p-1.5 bg-primary/10 rounded-lg text-primary">
+          <div className="flex justify-between items-center px-5 py-4 border-b border-border/50 bg-slate-50/50 dark:bg-slate-800/20">
+            <h2 className="text-base font-black flex items-center gap-2.5">
+              <span className="p-2 bg-primary/10 rounded-xl text-primary">
                 {entityType === 'student' && <GraduationCap className="h-5 w-5" />}
                 {entityType === 'teacher' && <Briefcase className="h-5 w-5" />}
                 {entityType === 'booking' && <Calendar className="h-5 w-5" />}
                 {entityType === 'payout' && <DollarSign className="h-5 w-5" />}
               </span>
               <span>
-                {entityType === 'student' && 'تفاصيل الطالب'}
+                {entityType === 'student' && 'تفاصيل البطل'}
                 {entityType === 'teacher' && 'الملف التعريفي للمعلم'}
-                {entityType === 'booking' && 'تفاصيل حجز الجلسة'}
+                {entityType === 'booking' && 'التفاصيل الكاملة للجلسة'}
                 {entityType === 'payout' && 'تفاصيل التسوية المالية'}
               </span>
             </h2>
             <button 
               onClick={onClose}
-              className="p-1 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+              className="p-1.5 rounded-xl text-muted-foreground hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors"
             >
-              <X className="h-5 w-5" />
+              <X className="h-4.5 w-4.5" />
             </button>
           </div>
 
           {/* Body Content */}
-          <div className="p-6 space-y-6">
+          <div className="p-5 space-y-5 flex-1 overflow-y-auto min-h-0">
             {loading && (
               <div className="space-y-4 py-8">
                 <div className="h-8 bg-muted animate-pulse rounded-md w-1/3"></div>
@@ -156,10 +156,10 @@ export default function DetailsModal({ isOpen, onClose, entityType, entityId }: 
           </div>
 
           {/* Footer */}
-          <div className="px-6 py-4 border-t border-border bg-muted/20 flex justify-end gap-3">
+          <div className="px-5 py-4 border-t border-border/50 bg-slate-50/50 dark:bg-slate-800/20 flex justify-end gap-3">
             <button
               onClick={onClose}
-              className="text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2.5 rounded-lg transition-colors cursor-pointer"
+              className="text-xs font-bold bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 px-5 py-2 rounded-xl transition-colors cursor-pointer"
             >
               إغلاق
             </button>

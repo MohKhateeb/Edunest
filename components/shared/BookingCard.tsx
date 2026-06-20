@@ -6,7 +6,7 @@ import { BOOKING_STATUS_AR, PAYMENT_STATUS_AR, PAYMENT_METHOD_AR } from '@/lib/t
 import { formatLocalTime, formatPrice } from '@/lib/utils';
 import { acceptBooking, rejectBooking, cancelBooking, submitSessionReport } from '@/lib/actions/booking';
 import { submitReview } from '@/lib/actions/review';
-import { Calendar, Clock, Video, User as UserIcon, BookOpen, FileText, Star, Lock, TimerOff, Eye } from 'lucide-react';
+import { Calendar, Clock, Video, User as UserIcon, BookOpen, FileText, Star, Lock, TimerOff, Eye, GraduationCap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import DetailsModal from '@/components/shared/DetailsModal';
@@ -58,7 +58,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 
   // Style helpers
   const statusStyles: Record<string, string> = {
-    PENDING: 'bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/30 dark:text-yellow-400 dark:border-yellow-900',
+    PENDING: 'bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/30 dark:text-indigo-400 dark:border-indigo-900',
     CONFIRMED: 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900',
     COMPLETED: 'bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900',
     REJECTED: 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/30 dark:text-rose-400 dark:border-rose-900',
@@ -67,7 +67,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 
   const paymentStyles: Record<string, string> = {
     UNPAID: 'text-rose-600 dark:text-rose-400',
-    PENDING_VERIFICATION: 'text-yellow-600 dark:text-yellow-400',
+    PENDING_VERIFICATION: 'text-indigo-600 dark:text-indigo-400',
     PAID: 'text-emerald-600 dark:text-emerald-400 font-bold',
     REFUNDED: 'text-slate-500 dark:text-slate-400 line-through',
   };
@@ -193,208 +193,134 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
   }, [booking.status, getSessionTimeState]);
 
   return (
-    <div className="bg-card border border-border rounded-xl p-6 hover-card relative flex flex-col gap-4 shadow-sm">
-      {/* Top row */}
-      <div className="flex justify-between items-start gap-3 flex-wrap">
+    <div className="bg-white dark:bg-slate-900 border border-border/60 rounded-3xl p-5 hover:shadow-lg transition-all duration-300 flex flex-col justify-between group">
+      
+      {/* 🔹 Top Row: Status & Price */}
+      <div className="flex justify-between items-start mb-4">
         <div>
-          <span className={cn('text-xs font-semibold px-2.5 py-1 rounded-full border', statusStyles[booking.status])}>
+          <span className={cn('text-[11px] font-bold px-3 py-1.5 rounded-full border', statusStyles[booking.status])}>
             {BOOKING_STATUS_AR[booking.status]}
           </span>
           {isTrial && (
-            <span className="me-2 text-xs font-semibold px-2.5 py-1 rounded-full border border-purple-200 bg-purple-50 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400 dark:border-purple-900">
+            <span className="me-2 text-[10px] font-bold px-2 py-1 rounded-full border border-purple-200 bg-purple-50 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400 dark:border-purple-900 mt-2 inline-block">
               جلسة تجريبية
             </span>
           )}
         </div>
-        <div className="text-right">
-          <span className="text-xs text-muted-foreground block">التكلفة</span>
-          <span className="font-extrabold text-foreground">{priceDisplay}</span>
+        
+        {/* السعر وحالة الدفع (مدمجة وبدون عناوين مزعجة) */}
+        <div className="text-left flex flex-col items-end">
+          <span className="text-xl font-black text-primary leading-none">{priceDisplay}</span>
+          {!isTrial && (
+            <span className={cn("text-[10px] mt-1.5 font-bold", paymentStyles[booking.paymentStatus])}>
+              {PAYMENT_STATUS_AR[booking.paymentStatus]}
+            </span>
+          )}
         </div>
       </div>
 
-      {/* Main Details List */}
-      <div className="space-y-3 border-y border-border py-4 my-1 text-right">
-        {/* Item 1: Service Type & Duration */}
-        <div className="flex items-center justify-between text-sm flex-wrap gap-2">
-          <div className="flex items-center gap-2 text-foreground/80 font-medium">
-            <BookOpen className="h-4 w-4 text-primary" />
-            <span>{booking.teacherService.serviceType.name}</span>
-          </div>
-          <div className="flex items-center gap-1 text-[11px] text-muted-foreground bg-muted dark:bg-accent/20 px-2 py-0.5 rounded-md">
-            <Clock className="h-3.5 w-3.5 text-primary" />
-            <span>مدة الجلسة: {booking.duration} دقيقة</span>
+      {/* 🔹 Middle: Core Info (Subject, Date, People) */}
+      <div className="space-y-4 mb-5">
+        
+        {/* Subject & Duration */}
+        <div>
+          <h3 className="font-extrabold text-foreground text-base mb-1 line-clamp-1">
+            {booking.teacherService.serviceType.name}
+          </h3>
+          <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-semibold">
+            <Clock className="h-3.5 w-3.5" />
+            <span>{booking.duration} دقيقة</span>
           </div>
         </div>
 
-        {/* Item 2: Date & Time */}
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <Calendar className="h-4 w-4 text-primary/75" />
-          <span className="font-semibold text-foreground/80">{formatLocalTime(booking.startTime)}</span>
+        {/* Date / Time */}
+        <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl border border-border/50">
+          <div className="bg-white dark:bg-slate-700 p-2 rounded-xl shadow-sm border border-border/40">
+            <Calendar className="h-5 w-5 text-primary" />
+          </div>
+          <span className="font-black text-foreground text-sm">{formatLocalTime(booking.startTime)}</span>
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-dashed border-border/80 my-1"></div>
-
-        {/* Item 3: Student Details */}
-        <div className="flex items-center justify-between text-sm flex-wrap gap-2">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <UserIcon className="h-4 w-4 text-primary/75" />
-            <span>الطالب: <strong className="text-foreground">{booking.student.name}</strong></span>
+        {/* People (Teacher / Student) */}
+        <div className="flex items-center gap-3 text-xs text-muted-foreground font-semibold">
+          <div className="flex items-center gap-1.5">
+            <UserIcon className="h-3.5 w-3.5 text-secondary" />
+            <span>{role === 'TEACHER' ? booking.parent.name : booking.teacherService.teacher.user.name}</span>
           </div>
-          <span className="text-[10px] text-primary bg-primary/10 px-2.5 py-0.5 rounded-full font-bold">
-            الصف {booking.student.grade}
-          </span>
+          <span className="w-1 h-1 bg-border rounded-full"></span>
+          <div className="flex items-center gap-1.5">
+            <GraduationCap className="h-3.5 w-3.5 text-primary" />
+            <span className="line-clamp-1">{booking.student.name}</span>
+          </div>
         </div>
-
-        {/* Item 4: Parent / Teacher Details */}
-        {role === 'TEACHER' ? (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <UserIcon className="h-4 w-4 text-primary/75" />
-            <span>ولي الأمر: <strong className="text-foreground">{booking.parent.name}</strong></span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2.5 text-sm text-muted-foreground">
-            <div className="relative h-8 w-8 rounded-full overflow-hidden bg-accent border border-border flex-shrink-0">
-              {booking.teacherService.teacher.profileImageUrl ? (
-                <img
-                  src={booking.teacherService.teacher.profileImageUrl}
-                  alt={booking.teacherService.teacher.user.name}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="h-full w-full flex items-center justify-center text-primary font-bold text-xs bg-primary/10">
-                  {booking.teacherService.teacher.user.name.charAt(0)}
-                </div>
-              )}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-[9px] text-muted-foreground leading-none">المعلم</span>
-              <strong className="text-foreground text-xs font-bold mt-0.5">{booking.teacherService.teacher.user.name}</strong>
-            </div>
-          </div>
-        )}
-
-        {/* Item 5: Payment Info */}
-        {!isTrial && (
-          <div className="flex items-center justify-between text-xs text-muted-foreground bg-accent/20 px-3 py-2 rounded-lg border border-border/40 mt-1">
-            <span>حالة الدفع:</span>
-            <div className="flex items-center gap-1 font-semibold">
-              <span className={paymentStyles[booking.paymentStatus]}>
-                {PAYMENT_STATUS_AR[booking.paymentStatus]}
-              </span>
-              {booking.payment?.method && (
-                <span className="text-[10px] text-muted-foreground">({PAYMENT_METHOD_AR[booking.payment.method]})</span>
-              )}
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* User Notes */}
-      {booking.parentNotes && (
-        <div className="text-xs text-muted-foreground bg-accent/40 px-3 py-2 rounded-lg border border-border">
-          <span className="font-semibold block mb-0.5 text-foreground/80">ملاحظات ولي الأمر:</span>
-          {booking.parentNotes}
-        </div>
-      )}
-
-      {/* Bottom Row Actions */}
-      <div className="flex justify-end gap-3 items-center flex-wrap pt-2">
-        <button
-          onClick={() => setShowDetailsModal(true)}
-          className="text-xs font-semibold border border-primary/20 hover:bg-primary hover:text-primary-foreground px-4 py-2 rounded-lg transition-colors cursor-pointer flex items-center gap-1.5 ml-auto"
-        >
-          <Eye className="h-3.5 w-3.5" />
-          التفاصيل الكاملة
-        </button>
-        {/* Tutor Accept/Reject for PENDING status */}
-        {role === 'TEACHER' && booking.status === 'PENDING' && (
-          <>
-            <button
-              onClick={handleReject}
-              disabled={loading}
-              className="text-xs font-semibold border border-border hover:bg-rose-50 hover:text-rose-600 px-4 py-2 rounded-lg transition-colors cursor-pointer"
-            >
-              رفض الطلب
-            </button>
-            <button
-              onClick={handleAccept}
-              disabled={loading}
-              className="text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg transition-colors shadow-sm cursor-pointer"
-            >
-              قبول الحجز
-            </button>
-          </>
-        )}
-
-        {/* Meet Link for CONFIRMED status — يُفعّل فقط عند دخول وقت الجلسة */}
+      {/* 🔹 Bottom Row: Actions */}
+      <div className="flex flex-wrap gap-2 mt-auto border-t border-border/40 pt-4">
+        {/* The Meet link is the most prominent if active */}
         {booking.status === 'CONFIRMED' && sessionTimeState.status === 'active' && (
           <a
             href={meetLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs font-semibold bg-emerald-600 text-white hover:bg-emerald-700 px-4 py-2 rounded-lg transition-colors shadow-sm cursor-pointer animate-pulse"
+            className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold bg-emerald-500 text-white hover:bg-emerald-600 py-2.5 rounded-xl shadow-sm transition-transform hover:scale-105 animate-pulse"
           >
             <Video className="h-4 w-4" />
-            انضم للجلسة الآن
+            انضم الآن
           </a>
         )}
-        {booking.status === 'CONFIRMED' && sessionTimeState.status === 'waiting' && (
-          <span className="flex items-center gap-1.5 text-xs font-semibold bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 cursor-not-allowed">
-            <Lock className="h-3.5 w-3.5" />
-            {sessionTimeState.minutesLeft > 60
-              ? `يُفتح قبل الجلسة بـ ${Math.floor(sessionTimeState.minutesLeft / 60)} ساعة`
-              : `يُفتح خلال ${sessionTimeState.minutesLeft} دقيقة`}
-          </span>
-        )}
-        {booking.status === 'CONFIRMED' && sessionTimeState.status === 'expired' && (
-          <span className="flex items-center gap-1.5 text-xs font-semibold bg-slate-50 text-slate-400 dark:bg-slate-900 dark:text-slate-500 px-4 py-2 rounded-lg border border-slate-200 dark:border-slate-800 cursor-not-allowed line-through">
-            <TimerOff className="h-3.5 w-3.5" />
-            انتهى وقت الجلسة
-          </span>
+
+        {/* View Details is secondary but always available */}
+        <button
+          onClick={() => setShowDetailsModal(true)}
+          className={cn(
+            "text-xs font-bold py-2.5 px-3 rounded-xl transition-colors flex items-center justify-center gap-1.5",
+            (booking.status === 'CONFIRMED' && sessionTimeState.status === 'active') 
+              ? "bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+              : "flex-1 bg-primary/5 text-primary hover:bg-primary hover:text-white border border-primary/20 hover:border-primary"
+          )}
+        >
+          <Eye className="h-3.5 w-3.5" />
+          التفاصيل
+        </button>
+
+        {/* Action icons based on role and status */}
+        {role === 'TEACHER' && booking.status === 'PENDING' && (
+          <div className="flex w-full gap-2 mt-2">
+            <button
+              onClick={handleReject}
+              disabled={loading}
+              className="flex-1 text-xs font-bold border border-rose-200 text-rose-600 hover:bg-rose-50 py-2.5 rounded-xl transition-colors"
+            >
+              رفض
+            </button>
+            <button
+              onClick={handleAccept}
+              disabled={loading}
+              className="flex-1 text-xs font-bold bg-primary text-white hover:bg-primary/90 py-2.5 rounded-xl shadow-sm transition-colors"
+            >
+              قبول
+            </button>
+          </div>
         )}
 
-        {/* Submit Report (TEACHER only, CONFIRMED status) */}
         {role === 'TEACHER' && booking.status === 'CONFIRMED' && (
           <button
             onClick={() => setShowReportModal(true)}
-            className="flex items-center gap-1.5 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg transition-colors shadow-sm cursor-pointer"
+            className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 py-2.5 rounded-xl transition-colors"
           >
-            <FileText className="h-4 w-4" />
-            رفع تقرير الحصة وإنهاء الجلسة
+            <FileText className="h-3.5 w-3.5" />
+            إنهاء ورفع التقرير
           </button>
         )}
 
-        {/* View Session Report (COMPLETED status, report exists) */}
-        {booking.status === 'COMPLETED' && booking.report && (
-          <button
-            onClick={() => setShowViewReportModal(true)}
-            className="flex items-center gap-1.5 text-xs font-semibold bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors shadow-sm cursor-pointer"
-          >
-            <FileText className="h-4 w-4" />
-            عرض تقرير الحصة
-          </button>
-        )}
-
-        {/* Submit Review (PARENT only, COMPLETED status, no review yet) */}
-        {role === 'PARENT' && booking.status === 'COMPLETED' && (
+        {role === 'PARENT' && booking.status === 'COMPLETED' && !booking.report && (
           <button
             onClick={() => setShowReviewModal(true)}
-            className="flex items-center gap-1.5 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg transition-colors shadow-sm cursor-pointer"
+            className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 py-2.5 rounded-xl transition-colors"
           >
-            <Star className="h-4 w-4" />
+            <Star className="h-3.5 w-3.5" />
             تقييم المعلم
-          </button>
-        )}
-
-        {/* Cancel actions */}
-        {(booking.status === 'PENDING' || booking.status === 'CONFIRMED') && (
-          <button
-            onClick={() => setShowCancelModal(true)}
-            disabled={loading}
-            className="text-xs font-medium text-destructive hover:bg-destructive/10 px-3 py-2 rounded-lg transition-colors cursor-pointer"
-          >
-            إلغاء الجلسة
           </button>
         )}
       </div>
@@ -544,12 +470,12 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
                         key={star}
                         type="button"
                         onClick={() => setReviewForm({ ...reviewForm, rating: star })}
-                        className="text-yellow-500 hover:scale-110 transition-transform cursor-pointer"
+                        className="text-violet-500 hover:scale-110 transition-transform cursor-pointer"
                       >
                         <Star
                           size={32}
                           fill={star <= reviewForm.rating ? 'currentColor' : 'none'}
-                          className="text-yellow-500"
+                          className="text-violet-500"
                         />
                       </button>
                     ))}
@@ -638,8 +564,8 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
                           <Star
                             key={star}
                             size={16}
-                            fill={star <= (report.studentPerformance ?? 0) ? '#eab308' : 'none'}
-                            className={star <= (report.studentPerformance ?? 0) ? 'text-yellow-500' : 'text-muted-foreground/30'}
+                            fill={star <= (report.studentPerformance ?? 0) ? 'currentColor' : 'none'}
+                            className={star <= (report.studentPerformance ?? 0) ? 'text-violet-500' : 'text-muted-foreground/30'}
                           />
                         ))}
                       </div>

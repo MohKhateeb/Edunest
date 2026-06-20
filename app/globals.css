@@ -14,25 +14,25 @@
   --popover: 0 0% 100%;
   --popover-foreground: 222 47% 11%;
   
-  --primary: 201 96% 39%; /* Al-Quds Sky Blue */
-  --primary-foreground: 210 40% 98%;
+  --primary: 200 90% 50%; /* Vibrant Sky Blue */
+  --primary-foreground: 0 0% 100%;
   
-  --secondary: 24 95% 53%; /* Jaffa Orange */
-  --secondary-foreground: 222 47% 11.2%;
+  --secondary: 30 95% 55%; /* Playful Peach/Orange */
+  --secondary-foreground: 0 0% 100%;
   
   --muted: 210 40% 96.1%;
   --muted-foreground: 215.4 16.3% 46.9%;
   
-  --accent: 48 96% 53%; /* Sunlight Yellow */
+  --accent: 45 95% 55%; /* Joyful Warm Yellow */
   --accent-foreground: 221.2 83.2% 53.3%;
-  --accent-2: 160 84% 39%; /* Olive Leaf Green */
+  --accent-2: 150 70% 45%; /* Mint Green for Success */
   
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 210 40% 98%;
   
   --border: 214.3 31.8% 91.4%;
   --input: 214.3 31.8% 91.4%;
-  --ring: 201 96% 39%;
+  --ring: 200 90% 50%;
   
   --radius: 1.25rem; /* Larger, premium border radius */
 }
@@ -47,25 +47,25 @@
   --popover: 222.2 84% 6.5%;
   --popover-foreground: 210 40% 98%;
   
-  --primary: 199 95% 60%; /* Electric Blue / Al-Quds Sky Blue Dark */
+  --primary: 200 90% 60%; /* Bright Sky Blue */
   --primary-foreground: 222.2 84% 4.9%;
   
-  --secondary: 25 95% 61%; /* Sunset Orange / Jaffa Orange Dark */
-  --secondary-foreground: 210 40% 98%;
+  --secondary: 30 95% 60%; /* Bright Peach/Orange */
+  --secondary-foreground: 222.2 84% 4.9%;
   
   --muted: 217.2 32.6% 17.5%;
   --muted-foreground: 215 20.2% 65.1%;
   
-  --accent: 49 96% 60%; /* Amber Yellow / Sunlight Yellow Dark */
+  --accent: 45 95% 60%; /* Bright Yellow */
   --accent-foreground: 210 40% 98%;
-  --accent-2: 161 84% 60%; /* Olive Leaf Green Dark */
+  --accent-2: 150 70% 50%; /* Mint Green */
   
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 210 40% 98%;
   
   --border: 217.2 32.6% 17.5%;
   --input: 217.2 32.6% 17.5%;
-  --ring: 199 95% 60%;
+  --ring: 200 90% 60%;
 }
 
 @theme {
@@ -107,6 +107,18 @@
   --animate-fade-in-up: fade-in-up 0.6s ease-out forwards;
   --animate-fade-in-down: fade-in-down 0.6s ease-out forwards;
   --animate-float: float 4.5s ease-in-out infinite;
+  --animate-bounce-slight: bounce-slight 2s infinite;
+  --animate-pulse-soft: pulse-soft 3s infinite;
+}
+
+@keyframes bounce-slight {
+  0%, 100% { transform: translateY(-5%); }
+  50% { transform: translateY(0); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.02); opacity: 0.9; }
 }
 
 @keyframes fade-in {

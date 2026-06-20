@@ -21,6 +21,11 @@ export const authOptions: NextAuthOptions = {
         if (!credentials?.email || !credentials?.password) return null;
         const user = await prisma.user.findUnique({
           where: { email: credentials.email.toLowerCase().trim() },
+          include: {
+            teacher: {
+              select: { profileImageUrl: true },
+            },
+          },
         });
         if (!user) return null;
         if (!user.isActive) {
@@ -33,6 +38,7 @@ export const authOptions: NextAuthOptions = {
           name: user.name,
           email: user.email,
           userType: user.userType,
+          image: user.teacher?.profileImageUrl || null,
         };
       },
     }),
@@ -40,8 +46,9 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.userType = user.userType;
+        token.userType = (user as any).userType;
         token.sub = user.id;
+        token.picture = (user as any).image;
       }
       return token;
     },
@@ -49,6 +56,7 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.sub as string;
         session.user.userType = token.userType as UserType;
+        session.user.image = token.picture as string | null;
       }
       return session;
     },
