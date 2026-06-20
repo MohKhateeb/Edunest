@@ -2,7 +2,7 @@
 
 import { prisma } from '@/lib/prisma';
 import { ActionResponse } from '@/lib/types';
-import { registerSchema, studentSchema } from '@/lib/validations/user';
+import { registerSchema, studentSchema, updateProfileSchema, changePasswordSchema } from '@/lib/validations/user';
 import bcrypt from 'bcryptjs';
 import { generateUniqueSlug } from '@/lib/utils/slug';
 import { UserType } from '@prisma/client';
@@ -141,5 +141,90 @@ export async function updateStudent(
   } catch (err: unknown) {
     console.error(err);
     return { success: false, error: 'حدث خطأ أثناء تعديل بيانات الطالب' };
+  }
+}
+
+export async function updateUserProfile(
+  data: z.infer<typeof updateProfileSchema>
+): Promise<ActionResponse> {
+  try {
+    const { userId } = await requireAuth([UserType.PARENT, UserType.TEACHER, UserType.ADMIN]);
+
+    const validated = updateProfileSchema.safeParse(data);
+    if (!validated.success) {
+      return { success: false, error: validated.error.issues[0].message };
+    }
+
+    const { name, email, phone } = validated.data;
+    const cleanEmail = email.toLowerCase().trim();
+
+    // Check if email already exists for another user
+    const existing = await prisma.user.findFirst({
+      where: {
+        email: cleanEmail,
+        id: { not: userId },
+      },
+    });
+
+    if (existing) {
+      return { success: false, error: 'البريد الإلكتروني مستخدم بالفعل من قبل حساب آخر' };
+    }
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: {
+        name,
+        email: cleanEmail,
+        phone: phone || null,
+      },
+    });
+
+    revalidatePath('/dashboard');
+
+    return { success: true };
+  } catch (err: unknown) {
+    console.error(err);
+    return { success: false, error: 'حدث خطأ أثناء تحديث بيانات الملف الشخصي' };
+  }
+}
+
+export async function changeUserPassword(
+  data: z.infer<typeof changePasswordSchema>
+): Promise<ActionResponse> {
+  try {
+    const { userId } = await requireAuth([UserType.PARENT, UserType.TEACHER, UserType.ADMIN]);
+
+    const validated = changePasswordSchema.safeParse(data);
+    if (!validated.success) {
+      return { success: false, error: validated.error.issues[0].message };
+    }
+
+    const { currentPassword, newPassword } = validated.data;
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return { success: false, error: 'المستخدم غير موجود' };
+    }
+
+    // Verify current password
+    const isValid = await bcrypt.compare(currentPassword, user.passwordHash);
+    if (!isValid) {
+      return { success: false, error: 'كلمة المرور الحالية غير صحيحة' };
+    }
+
+    // Hash and update
+    const passwordHash = await bcrypt.hash(newPassword, 12);
+    await prisma.user.update({
+      where: { id: userId },
+      data: { passwordHash },
+    });
+
+    return { success: true };
+  } catch (err: unknown) {
+    console.error(err);
+    return { success: false, error: 'حدث خطأ أثناء تغيير كلمة المرور' };
   }
 }

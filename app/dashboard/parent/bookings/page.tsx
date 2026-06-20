@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation';
 import { Calendar } from 'lucide-react';
 import { sanitizePrismaData } from '@/lib/utils';
 import ParentBookingsList from '@/components/shared/ParentBookingsList';
+import InteractiveMessage from '@/components/shared/InteractiveMessage';
 
 export default async function ParentBookingsPage() {
   const session = await auth();
@@ -15,23 +16,29 @@ export default async function ParentBookingsPage() {
   const bookings: DetailedBooking[] = await prisma.booking.findMany({
     where: { parentUserId: userId },
     include: bookingDetailsInclude,
-    orderBy: { createdAt: 'desc' },
+    orderBy: { startTime: 'asc' },
   });
 
   const sanitizedBookings = sanitizePrismaData(bookings);
+  
+  const confirmedCount = bookings.filter(b => b.status === 'CONFIRMED').length;
+  const hakeemMsg = confirmedCount > 0
+    ? `ممتاز، لديك ${confirmedCount} جلسة قادمة مؤكدة. المتابعة المستمرة لجدول الجلسات وحضورها في الوقت المحدد هو مفتاح التفوق والتميز لأبنائك.`
+    : "ليس لديك أي جلسات قادمة مؤكدة حالياً. متابعة التقارير للجلسات السابقة يساعدك في تحديد ما يحتاجه أبناؤك في الجلسات القادمة.";
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8" dir="rtl">
       <div>
-        <h1 className="text-2xl font-extrabold mb-1">حجوزاتي وجلساتي</h1>
-        <p className="text-xs text-muted-foreground">
-          تابع مواعيد الحصص المجدولة للطلاب، التقاير التعليمية المرفوعة من المعلمين بعد الدروس، وتقييم الجلسات.
-        </p>
+        <h1 className="text-2xl font-black mb-4 text-primary">حجوزاتي وجلساتي</h1>
+        <InteractiveMessage 
+          character="hakeem"
+          message={hakeemMsg}
+        />
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-4">
-        <h2 className="font-extrabold text-base border-b border-border pb-2.5 flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-primary" />
+      <div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
+        <h2 className="font-black text-lg border-b border-border/50 pb-3 flex items-center gap-2">
+          <Calendar className="h-6 w-6 text-secondary" />
           سجل الحصص والطلبات
         </h2>
 

@@ -47,11 +47,11 @@ export default function StudentDetails({ student, activeTab, setActiveTab }: Stu
         </div>
         
         {avgPerformance && (
-          <div className="text-left sm:text-right bg-yellow-500/10 border border-yellow-500/20 px-4 py-2.5 rounded-xl">
+          <div className="text-left sm:text-right bg-violet-500/10 border border-violet-500/20 px-4 py-2.5 rounded-xl">
             <span className="text-[10px] text-muted-foreground block font-bold">مستوى الأداء الدراسي</span>
             <div className="flex items-center gap-1 mt-0.5 justify-end">
-              <Star className="h-4 w-4 text-yellow-500 fill-currentColor" />
-              <span className="font-extrabold text-yellow-600 dark:text-yellow-400 text-sm">{avgPerformance} / 5.0</span>
+              <Star className="h-4 w-4 text-violet-500 fill-currentColor" />
+              <span className="font-extrabold text-violet-600 dark:text-violet-400 text-sm">{avgPerformance} / 5.0</span>
               <span className="text-[10px] text-muted-foreground">({completedReports.length} تقارير)</span>
             </div>
           </div>
@@ -152,7 +152,7 @@ export default function StudentDetails({ student, activeTab, setActiveTab }: Stu
                       <span className={cn(
                         "px-2 py-0.5 rounded-full text-[10px] font-bold border",
                         booking.status === 'CONFIRMED' && "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800",
-                        booking.status === 'PENDING' && "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/20 dark:text-yellow-400 dark:border-yellow-800",
+                        booking.status === 'PENDING' && "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-800",
                         booking.status === 'COMPLETED' && "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800",
                         booking.status === 'CANCELLED' && "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800",
                         booking.status === 'REJECTED' && "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-800"

@@ -114,12 +114,20 @@ export default async function NewBookingPageRoute() {
   });
   const uniqueSpecializations = uniqueSpecsResult.map((t) => t.specialization);
 
+  // 5. جلب أنواع الخدمات المتاحة للطلبات العامة
+  const serviceTypes = await prisma.serviceType.findMany({
+    where: { isActive: true },
+    select: { id: true, name: true, nameEnglish: true, defaultDuration: true },
+    orderBy: { displayOrder: 'asc' },
+  });
+
   return (
     <NewBookingPage
       students={students}
       teachers={teachersWithBookings}
       hasUsedTrial={parentUser?.hasUsedFreeTrial ?? false}
       specializations={uniqueSpecializations}
+      serviceTypes={serviceTypes}
     />
   );
 }

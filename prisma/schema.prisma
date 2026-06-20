@@ -46,6 +46,7 @@ model User {
   notifications         Notification[]
   cancelledBookings     Booking[]             @relation("CancelledByUser")
   reviewedVerifications TeacherVerification[] @relation("ReviewedByUser")
+  tutoringRequests      TutoringRequest[]     @relation("ParentRequests")
 
   @@index([userType])
 }
@@ -77,6 +78,7 @@ model Teacher {
   yearsOfExperience Int                   @default(0)
   defaultHourlyRate Decimal?              @db.Decimal(10, 2)
   isVerified        Boolean               @default(false)
+  isAvailableNow    Boolean               @default(false)
   verificationLevel VerificationLevel     @default(NONE)
   averageRating     Decimal               @default(0) @db.Decimal(3, 2)
   totalReviews      Int                   @default(0)
@@ -86,6 +88,7 @@ model Teacher {
   verification      TeacherVerification?
   availability      TeacherAvailability[]
   reviews           Review[]
+  tutoringOffers    TutoringOffer[]       @relation("TeacherOffers")
 
   @@index([city])
   @@index([specialization])
@@ -134,9 +137,10 @@ model Student {
   name         String
   grade        Int
   school       String?
-  isActive     Boolean   @default(true)
-  createdAt    DateTime  @default(now())
-  bookings     Booking[]
+  isActive         Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  bookings         Booking[]
+  tutoringRequests TutoringRequest[] @relation("StudentRequests")
 
   @@index([parentUserId])
 }
@@ -154,8 +158,9 @@ model ServiceType {
   isRecurring     Boolean          @default(false)
   displayOrder    Int              @default(0)
   isActive        Boolean          @default(true)
-  createdAt       DateTime         @default(now())
-  teacherServices TeacherService[]
+  createdAt        DateTime          @default(now())
+  teacherServices  TeacherService[]
+  tutoringRequests TutoringRequest[] @relation("ServiceTypeRequests")
 
   @@index([isActive])
 }
@@ -346,4 +351,63 @@ model FAQ {
   updatedAt DateTime    @updatedAt
 
   @@index([category])
+}
+
+// ════════════════════════════════════════════════════
+// طلبات المعلمين العامة (Uber-like Requests)
+// ════════════════════════════════════════════════════
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  EXPIRED
+  CANCELLED
+}
+
+enum OfferStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model TutoringRequest {
+  id             String          @id @default(cuid())
+  parentId       String
+  parent         User            @relation("ParentRequests", fields: [parentId], references: [id], onDelete: Cascade)
+  studentId      String
+  student        Student         @relation("StudentRequests", fields: [studentId], references: [id], onDelete: Cascade)
+  specialization String          // التخصص المطلوب (مثل: رياضيات)
+  serviceTypeId  String          // نوع الخدمة المطلوبة (مثل: شرح مسألة سريعة)
+  serviceType    ServiceType     @relation("ServiceTypeRequests", fields: [serviceTypeId], references: [id])
+  title          String          // عنوان الطلب
+  details        String?         @db.Text
+  imageUrl       String?         // رابط صورة السؤال المرفوعة
+  startTime      DateTime        // الوقت المطلوب لبدء الجلسة (UTC)
+  duration       Int             // مدة الجلسة بالدقائق
+  price          Decimal         @db.Decimal(10, 2) // السعر/الميزانية المقترحة من ولي الأمر
+  status         RequestStatus   @default(PENDING)
+  offers         TutoringOffer[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([parentId])
+  @@index([studentId])
+  @@index([specialization])
+  @@index([status])
+}
+
+model TutoringOffer {
+  id        String          @id @default(cuid())
+  requestId String
+  request   TutoringRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  teacherId String
+  teacher   Teacher         @relation("TeacherOffers", fields: [teacherId], references: [id], onDelete: Cascade)
+  price     Decimal         @db.Decimal(10, 2) // السعر المعروض من المعلم
+  notes     String?         @db.Text
+  status    OfferStatus     @default(PENDING)
+  createdAt DateTime        @default(now())
+
+  @@unique([requestId, teacherId])
+  @@index([requestId])
+  @@index([teacherId])
 }

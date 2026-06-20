@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import BookingCard from '@/components/shared/BookingCard';
 import type { DetailedBooking } from '@/lib/types';
-import { Calendar, FileText, HelpCircle, Plus } from 'lucide-react';
-import Link from 'next/link';
+import { HelpCircle, Search } from 'lucide-react';
+import InteractiveMessage from '@/components/shared/InteractiveMessage';
 
 interface ParentBookingsListProps {
   bookings: DetailedBooking[];
@@ -50,98 +50,47 @@ export default function ParentBookingsList({ bookings }: ParentBookingsListProps
   return (
     <div className="space-y-6 text-right" dir="rtl">
       
-      {/* 📊 بطاقات الإحصائيات العلوية المميزة */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="glass-card bg-emerald-500/5 border border-emerald-500/10 p-5 rounded-2xl flex items-center justify-between">
-          <div className="space-y-1">
-            <span className="text-xs text-muted-foreground block font-semibold">الحصص المؤكدة القادمة</span>
-            <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400">{upcomingCount}</span>
-          </div>
-          <div className="p-3 bg-emerald-500/10 text-emerald-600 rounded-xl">
-            <Calendar className="h-6 w-6" />
-          </div>
-        </div>
+      {/* 📊 ملخص ذكي بدلاً من البطاقات المزدحمة */}
+      <InteractiveMessage 
+        character="najeeb"
+        najeebMode={upcomingCount > 0 ? "study" : "welcome"}
+        message={`لدينا ${upcomingCount} حصص قادمة، و ${reportsCount} تقارير تعليمية للاطلاع عليها. يمكنك التبديل بين التبويبات بالأسفل لرؤية التفاصيل بسهولة!`}
+      />
 
-        <div className="glass-card bg-blue-500/5 border border-blue-500/10 p-5 rounded-2xl flex items-center justify-between">
-          <div className="space-y-1">
-            <span className="text-xs text-muted-foreground block font-semibold">التقارير التعليمية المستلمة</span>
-            <span className="text-2xl font-extrabold text-blue-600 dark:text-blue-400">{reportsCount}</span>
-          </div>
-          <div className="p-3 bg-blue-500/10 text-blue-600 rounded-xl">
-            <FileText className="h-6 w-6" />
-          </div>
-        </div>
-
-        <Link 
-          href="/teachers"
-          className="glass-card bg-primary/5 hover:bg-primary/10 border border-primary/20 p-5 rounded-2xl flex items-center justify-between transition-all group cursor-pointer"
-        >
-          <div className="space-y-1">
-            <span className="text-xs text-muted-foreground block font-semibold">هل تريد جدولة درس جديد؟</span>
-            <span className="text-sm font-extrabold text-primary flex items-center gap-1">
-              ابحث عن معلم الآن 
-              <span className="group-hover:translate-x-[-4px] transition-transform">←</span>
-            </span>
-          </div>
-          <div className="p-3 bg-primary/15 text-primary rounded-xl group-hover:scale-105 transition-transform">
-            <Plus className="h-6 w-6" />
-          </div>
-        </Link>
-      </div>
-
-      {/* 🔍 أدوات التحكم والبحث */}
-      <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-card p-2.5 rounded-2xl border border-border shadow-xs">
+      {/* 🔍 أدوات التحكم والبحث - تصميم هادئ ومريح */}
+      <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-slate-900 p-2 rounded-2xl border border-border/50 shadow-sm">
         
         {/* أزرار التبويبات الفعالة */}
-        <div className="flex bg-muted/40 p-1 rounded-xl w-full md:w-auto overflow-x-auto scrollbar-none gap-1">
-          <button
-            onClick={() => setActiveTab('UPCOMING')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'UPCOMING'
-                ? 'bg-card text-foreground shadow-xs border border-border/60'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            📅 الحصص القادمة ({upcomingCount})
-          </button>
-          <button
-            onClick={() => setActiveTab('PENDING')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'PENDING'
-                ? 'bg-card text-foreground shadow-xs border border-border/60'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            ⏳ الطلبات المعلقة ({pendingCount})
-          </button>
-          <button
-            onClick={() => setActiveTab('COMPLETED')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'COMPLETED'
-                ? 'bg-card text-foreground shadow-xs border border-border/60'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            ✅ الحصص المنتهية
-          </button>
-          <button
-            onClick={() => setActiveTab('ARCHIVED')}
-            className={`px-4 py-2 text-xs font-bold rounded-lg transition-all whitespace-nowrap cursor-pointer ${
-              activeTab === 'ARCHIVED'
-                ? 'bg-card text-foreground shadow-xs border border-border/60'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            📁 الأرشيف
-          </button>
+        <div className="flex w-full md:w-auto overflow-x-auto scrollbar-none gap-2">
+          {[
+            { id: 'UPCOMING', label: `القادمة (${upcomingCount})` },
+            { id: 'PENDING', label: `المعلقة (${pendingCount})` },
+            { id: 'COMPLETED', label: 'المنتهية' },
+            { id: 'ARCHIVED', label: 'الأرشيف' }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              className={`px-5 py-2.5 text-sm font-bold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
+                activeTab === tab.id
+                  ? 'bg-primary text-white shadow-md'
+                  : 'bg-slate-50 dark:bg-slate-800 text-muted-foreground hover:bg-slate-100 dark:hover:bg-slate-700'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
         {/* شريط البحث المدمج */}
-        <div className="relative w-full md:w-80">
+        <div className="relative w-full md:w-72">
+          <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+            <Search className="h-4 w-4 text-muted-foreground" />
+          </div>
           <input
             type="text"
-            placeholder="ابحث باسم الطالب، المعلم، أو المادة..."
-            className="premium-input w-full text-xs"
+            placeholder="ابحث هنا..."
+            className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-border/50 rounded-xl pr-9 pl-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -150,7 +99,7 @@ export default function ParentBookingsList({ bookings }: ParentBookingsListProps
 
       {/* 📭 عرض النتائج والبطاقات */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-card border border-border border-dashed rounded-2xl text-center">
+        <div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-900 border border-border/50 border-dashed rounded-3xl text-center shadow-sm">
           <HelpCircle className="h-10 w-10 text-muted-foreground/40 mb-3 animate-pulse" />
           <p className="text-sm font-bold text-foreground/80">لا توجد حصص في هذا القسم</p>
           <p className="text-xs text-muted-foreground mt-1">
@@ -158,7 +107,7 @@ export default function ParentBookingsList({ bookings }: ParentBookingsListProps
           </p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-4 animate-in fade-in duration-200">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in duration-200">
           {filtered.map((booking) => (
             <BookingCard
               key={booking.id}

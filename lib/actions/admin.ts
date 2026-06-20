@@ -1,5 +1,6 @@
 'use server';
 
+import crypto from 'crypto';
 import { requireAuth } from '@/lib/require-auth';
 import { UserType, VerificationLevel, BookingStatus, PaymentStatus } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
@@ -136,7 +137,7 @@ export async function confirmPayment(bookingId: string): Promise<ActionResponse>
     await prisma.$transaction(async (tx) => {
       const booking = await tx.booking.findUnique({
         where: { id: bookingId },
-        select: { status: true, parentUserId: true, teacherService: { select: { teacher: { select: { userId: true } } } } },
+        select: { status: true, meetingUrl: true, parentUserId: true, teacherService: { select: { teacher: { select: { userId: true } } } } },
       });
 
       if (!booking) {
@@ -149,6 +150,8 @@ export async function confirmPayment(bookingId: string): Promise<ActionResponse>
 
       const isPending = booking.status === BookingStatus.PENDING;
 
+      const meetingUrl = booking.meetingUrl || (isPending ? `https://meet.jit.si/edunest-${crypto.randomBytes(8).toString('hex')}` : booking.meetingUrl);
+
       // Update Booking
       await tx.booking.update({
         where: { id: bookingId },
@@ -156,6 +159,7 @@ export async function confirmPayment(bookingId: string): Promise<ActionResponse>
           paymentStatus: PaymentStatus.PAID,
           status: isPending ? BookingStatus.CONFIRMED : booking.status,
           confirmedAt: isPending ? new Date() : undefined,
+          meetingUrl: meetingUrl,
         },
       });
 

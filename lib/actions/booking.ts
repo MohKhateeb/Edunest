@@ -213,7 +213,7 @@ export async function createBooking(
           status: BookingStatus.PENDING,
           paymentStatus,
           bookingSource: BookingSource.WEB,
-          meetingUrl: `https://meet.jit.si/edunest-${crypto.randomUUID()}`,
+          meetingUrl: isTrial ? `https://meet.jit.si/edunest-${crypto.randomUUID()}` : null,
         },
       });
 
@@ -262,6 +262,7 @@ export async function acceptBooking(bookingId: string): Promise<ActionResponse> 
         teacherService: {
           include: { teacher: true },
         },
+        payment: true,
       },
     });
 
@@ -273,12 +274,23 @@ export async function acceptBooking(bookingId: string): Promise<ActionResponse> 
       return { success: false, error: getTransitionError(booking.status, BookingStatus.CONFIRMED) };
     }
 
+    if (
+      booking.paymentStatus === PaymentStatus.UNPAID &&
+      booking.payment?.method !== PaymentMethod.CASH &&
+      !booking.isTrial
+    ) {
+      return { success: false, error: 'لا يمكن تأكيد الجلسة قبل قيام ولي الأمر بالدفع أو رفع إيصال التحويل' };
+    }
+
     await prisma.$transaction(async (tx) => {
+      const meetingUrl = booking.meetingUrl || `https://meet.jit.si/edunest-${crypto.randomUUID()}`;
+
       await tx.booking.update({
         where: { id: bookingId },
         data: {
           status: BookingStatus.CONFIRMED,
           confirmedAt: new Date(),
+          meetingUrl,
         },
       });
 

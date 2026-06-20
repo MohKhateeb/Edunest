@@ -20,7 +20,7 @@ export default function BookingDetails({ booking, setPreviewImage }: BookingDeta
   return (
     <div className="space-y-6 text-xs text-muted-foreground">
       {/* Booking Header Overview */}
-      <div className="p-5 bg-gradient-to-br from-primary/10 to-accent/20 border border-primary/15 rounded-2xl flex justify-between items-center flex-wrap gap-4">
+      <div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl flex justify-between items-center flex-wrap gap-4 border border-border/50 shadow-sm">
         <div>
           <span className="text-[10px] text-muted-foreground block font-mono">رقم الحجز: #{booking.id.toUpperCase()}</span>
           <h3 className="text-base font-extrabold text-foreground mt-0.5">
@@ -31,7 +31,7 @@ export default function BookingDetails({ booking, setPreviewImage }: BookingDeta
           <span className={cn(
             "px-3 py-1 rounded-full text-xs font-bold border",
             booking.status === 'CONFIRMED' && "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800",
-            booking.status === 'PENDING' && "bg-yellow-50 text-yellow-700 border-yellow-200 dark:bg-yellow-950/20 dark:text-yellow-400 dark:border-yellow-800",
+            booking.status === 'PENDING' && "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-800",
             booking.status === 'COMPLETED' && "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800",
             booking.status === 'CANCELLED' && "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800",
             booking.status === 'REJECTED' && "bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-800"
@@ -44,15 +44,15 @@ export default function BookingDetails({ booking, setPreviewImage }: BookingDeta
       {/* Main Details Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Scheduled Info */}
-        <div className="p-4 border border-border bg-card rounded-xl space-y-3">
-          <h4 className="font-extrabold text-sm border-b border-border/50 pb-1.5 flex items-center gap-1 text-primary">
-            <Calendar className="h-4 w-4" />
+        <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl space-y-4 shadow-sm border border-border/50">
+          <h4 className="font-black text-sm pb-2 border-b border-border/50 flex items-center gap-1.5 text-foreground">
+            <Calendar className="h-4.5 w-4.5 text-primary" />
             توقيت وتكلفة الجلسة
           </h4>
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex justify-between">
               <span>تاريخ ووقت البدء:</span>
-              <strong className="text-foreground">{formatLocalTime(booking.startTime)}</strong>
+              <strong className="text-foreground bg-primary/5 px-2 py-0.5 rounded-md text-primary">{formatLocalTime(booking.startTime)}</strong>
             </div>
             <div className="flex justify-between">
               <span>مدة الحصة:</span>
@@ -60,7 +60,7 @@ export default function BookingDetails({ booking, setPreviewImage }: BookingDeta
             </div>
             <div className="flex justify-between">
               <span>التكلفة الإجمالية:</span>
-              <strong className="text-foreground text-sm text-primary font-extrabold">{priceDisplay}</strong>
+              <strong className="text-foreground text-sm text-primary font-black">{priceDisplay}</strong>
             </div>
             {booking.bookingSource && (
               <div className="flex justify-between">
@@ -72,9 +72,9 @@ export default function BookingDetails({ booking, setPreviewImage }: BookingDeta
         </div>
 
         {/* Client & Tutor Info */}
-        <div className="p-4 border border-border bg-card rounded-xl space-y-3">
-          <h4 className="font-extrabold text-sm border-b border-border/50 pb-1.5 flex items-center gap-1 text-primary">
-            <User className="h-4 w-4" />
+        <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl space-y-4 shadow-sm border border-border/50">
+          <h4 className="font-black text-sm pb-2 border-b border-border/50 flex items-center gap-1.5 text-foreground">
+            <User className="h-4.5 w-4.5 text-secondary" />
             أطراف الجلسة التعليمية
           </h4>
           <div className="space-y-2">
@@ -117,9 +117,9 @@ export default function BookingDetails({ booking, setPreviewImage }: BookingDeta
 
       {/* Payment Information */}
       {!isTrial && (
-        <div className="p-4 border border-border bg-card rounded-xl space-y-3">
-          <h4 className="font-extrabold text-sm border-b border-border/50 pb-1.5 flex items-center gap-1 text-primary">
-            <CreditCard className="h-4 w-4" />
+        <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl space-y-4 shadow-sm border border-border/50">
+          <h4 className="font-black text-sm pb-2 border-b border-border/50 flex items-center gap-1.5 text-foreground">
+            <CreditCard className="h-4.5 w-4.5 text-emerald-500" />
             حالة الدفع وتأكيد الرسوم
           </h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -129,7 +129,7 @@ export default function BookingDetails({ booking, setPreviewImage }: BookingDeta
                 <strong className={cn(
                   "font-bold",
                   booking.paymentStatus === 'PAID' && "text-emerald-600",
-                  booking.paymentStatus === 'PENDING_VERIFICATION' && "text-yellow-600",
+                  booking.paymentStatus === 'PENDING_VERIFICATION' && "text-indigo-600",
                   booking.paymentStatus === 'UNPAID' && "text-rose-600"
                 )}>
                   {PAYMENT_STATUS_AR[booking.paymentStatus as keyof typeof PAYMENT_STATUS_AR]}
@@ -245,8 +245,8 @@ export default function BookingDetails({ booking, setPreviewImage }: BookingDeta
                       <Star 
                         key={s} 
                         size={12} 
-                        fill={s <= booking.report.studentPerformance ? '#eab308' : 'none'} 
-                        className={s <= booking.report.studentPerformance ? 'text-yellow-500' : 'text-muted-foreground/35'}
+                        fill={s <= booking.report.studentPerformance ? 'currentColor' : 'none'} 
+                        className={s <= booking.report.studentPerformance ? 'text-violet-500' : 'text-muted-foreground/35'}
                       />
                     ))}
                   </div>
@@ -284,15 +284,15 @@ export default function BookingDetails({ booking, setPreviewImage }: BookingDeta
 
       {/* Review Info */}
       {booking.status === 'COMPLETED' && booking.review && (
-        <div className="p-4 border border-yellow-500/20 bg-yellow-500/5 rounded-xl space-y-2">
-          <span className="font-bold text-yellow-600 dark:text-yellow-400 block text-xs">تقييم ولي الأمر للمعلم:</span>
+        <div className="p-4 border border-violet-500/20 bg-violet-500/5 rounded-xl space-y-2">
+          <span className="font-bold text-violet-600 dark:text-violet-400 block text-xs">تقييم ولي الأمر للمعلم:</span>
           <div className="flex items-center gap-1 mt-1">
             {[1, 2, 3, 4, 5].map((s: number) => (
               <Star 
                 key={s} 
                 size={14} 
-                fill={s <= booking.review.rating ? '#eab308' : 'none'} 
-                className={s <= booking.review.rating ? 'text-yellow-500' : 'text-muted-foreground/35'}
+                fill={s <= booking.review.rating ? 'currentColor' : 'none'} 
+                className={s <= booking.review.rating ? 'text-violet-500' : 'text-muted-foreground/35'}
               />
             ))}
             <span className="text-[10px] text-muted-foreground me-2">({booking.review.rating} من 5)</span>
