@@ -117,7 +117,7 @@ export async function getEntityDetails(
             },
           },
           services: {
-            where: { isActive: true },
+            where: { isActive: true, serviceType: { name: { not: 'الحقيبة الشهرية' } } },
             include: {
               serviceType: true,
             },

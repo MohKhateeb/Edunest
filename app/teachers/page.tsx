@@ -45,7 +45,7 @@ async function getTeachers(params: SearchParams) {
         gradeLevels: true,
         user: { select: { name: true } },
         services: {
-          where: { isActive: true },
+          where: { isActive: true, serviceType: { name: { not: 'الحقيبة الشهرية' } } },
           select: { price: true },
           orderBy: { price: 'asc' },
           take: 1,

@@ -3,6 +3,9 @@ import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import NewBookingPage from '@/components/shared/NewBookingPage';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function NewBookingPageRoute() {
   const session = await auth();
   if (!session) redirect('/login');
@@ -37,7 +40,7 @@ export default async function NewBookingPageRoute() {
         select: { name: true },
       },
       services: {
-        where: { isActive: true },
+        where: { isActive: true, serviceType: { name: { not: 'الحقيبة الشهرية' } } },
         select: {
           id: true,
           price: true,

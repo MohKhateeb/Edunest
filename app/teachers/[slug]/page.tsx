@@ -27,7 +27,7 @@ async function getTeacher(slug: string) {
     include: {
       user: { select: { name: true, email: true, isActive: true } },
       services: {
-        where: { isActive: true },
+        where: { isActive: true, serviceType: { name: { not: 'الحقيبة الشهرية' } } },
         include: { serviceType: { select: { name: true, defaultDuration: true } } },
         orderBy: { price: 'asc' },
       },

@@ -19,7 +19,13 @@ export default async function TeacherServicesPage() {
 
   // Fetch configured services for this teacher
   const configuredServices = await prisma.teacherService.findMany({
-    where: { teacherId: teacher.id, isActive: true },
+    where: { 
+      teacherId: teacher.id, 
+      isActive: true,
+      serviceType: {
+        name: { not: 'الحقيبة الشهرية' }
+      }
+    },
     select: {
       id: true,
       price: true,
@@ -43,7 +49,7 @@ export default async function TeacherServicesPage() {
 
   // Fetch active system service types
   const serviceTypes = await prisma.serviceType.findMany({
-    where: { isActive: true },
+    where: { isActive: true, name: { not: 'الحقيبة الشهرية' } },
     select: { id: true, name: true, defaultDuration: true },
     orderBy: { displayOrder: 'asc' },
   });
