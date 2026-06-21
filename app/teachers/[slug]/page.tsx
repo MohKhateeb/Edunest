@@ -72,11 +72,11 @@ export async function generateMetadata({
   });
 
   if (!teacher || !teacher.user.isActive) {
-    return { title: 'معلم غير موجود | إيدونِست' };
+    return { title: 'معلم غير موجود | إديونست' };
   }
 
   return {
-    title: `${teacher.user.name} - معلم ${teacher.specialization} | إيدونِست`,
+    title: `${teacher.user.name} - معلم ${teacher.specialization} | إديونست`,
     description: teacher.bio
       ? teacher.bio.slice(0, 155)
       : `معلم ${teacher.specialization} موثّق في ${teacher.city ?? 'الضفة الغربية'}. احجز جلستك التجريبية المجانية الآن.`,

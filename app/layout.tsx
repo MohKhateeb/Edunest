@@ -5,7 +5,7 @@ import ClientProvider from "@/components/shared/ClientProvider";
 import ToastProvider from '@/components/shared/ToastProvider';
 
 export const metadata: Metadata = {
-  title: "منصة إيدونِست | EduNest",
+  title: "منصة إديونست | EduNest",
   description: "المنصة الفلسطينية الأولى لربط أولياء الأمور بمعلمي الدروس الخصوصية الأكفاء في الضفة الغربية بطريقة منظمة وموثوقة.",
 };
 

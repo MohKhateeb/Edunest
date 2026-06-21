@@ -67,7 +67,7 @@ export default function HelpPage() {
       <section className="relative overflow-hidden bg-linear-to-b from-primary/10 via-background to-background py-16 border-b border-border/60">
         <div className="max-w-4xl mx-auto px-4 text-center space-y-4">
           <span className="inline-block text-xs font-bold bg-primary/10 text-primary px-3 py-1 rounded-full">
-            مركز مساعدة إيدونِست التفاعلي
+            مركز مساعدة إديونست التفاعلي
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-foreground">
             كيف يمكننا مساعدتك اليوم؟
@@ -186,7 +186,7 @@ export default function HelpPage() {
               <div className="border-b border-border pb-3">
                 <h2 className="text-xl font-extrabold flex items-center gap-2">
                   <BookOpen className="h-5 w-5 text-primary" />
-                  شروط وقواعد عمل منصة إيدونِست
+                  شروط وقواعد عمل منصة إديونست
                 </h2>
                 <p className="text-xs text-muted-foreground mt-1">القواعد العامة الحاكمة لماليات وجدولة المنصة.</p>
               </div>

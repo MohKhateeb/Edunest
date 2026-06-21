@@ -14,7 +14,7 @@ import {
 import { prisma } from '@/lib/prisma';
 import { ActionResponse } from '@/lib/types';
 import { tutoringRequestSchema } from '@/lib/validations/tutoring-request';
-import { checkTeacherAvailability } from '@/lib/utils/availability';
+import { checkTeacherAvailability, checkConflictingBookings } from '@/lib/utils/availability';
 import { hoursUntil } from '@/lib/utils/time';
 import { getSettingNumber } from '@/lib/settings';
 import { createNotification } from '@/lib/notifications';
@@ -278,8 +278,10 @@ export async function getAvailableRequestsForTeacher(): Promise<ActionResponse<{
     const availableRequests: any[] = [];
 
     for (const req of pendingRequests) {
-      const isTimeAvailable = await checkTeacherAvailability(teacher.id, req.startTime, req.duration);
-      if (isTimeAvailable.available) {
+      // For on-demand public requests, we bypass the weekly schedule check because the teacher is online now.
+      // We only verify they do not have overlapping actual bookings.
+      const conflictCheck = await checkConflictingBookings(teacher.id, req.startTime, req.duration);
+      if (!conflictCheck.conflict) {
         availableRequests.push({
           ...req,
           price: Number(req.price),
@@ -337,10 +339,10 @@ export async function createTutoringOffer(
       return { success: false, error: 'المرحلة الدراسية للطالب لا تقع ضمن المراحل التي تدرسها' };
     }
 
-    // التحقق من توفر وقت الجلسة
-    const availabilityCheck = await checkTeacherAvailability(teacher.id, request.startTime, request.duration);
-    if (!availabilityCheck.available) {
-      return { success: false, error: availabilityCheck.reason || 'هناك تعارض في وقتك مع هذا الطلب' };
+    // التحقق من عدم تعارض وقت الجلسة مع حجوزات المعلم الحالية
+    const conflictCheck = await checkConflictingBookings(teacher.id, request.startTime, request.duration);
+    if (conflictCheck.conflict) {
+      return { success: false, error: conflictCheck.reason || 'هناك تعارض في وقتك مع هذا الطلب' };
     }
 
     // التحقق من عدم تقديم عرض سابق

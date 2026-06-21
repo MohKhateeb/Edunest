@@ -6,7 +6,7 @@ import { FAQCategory } from '@prisma/client';
 import FAQAccordion from '@/components/shared/FAQAccordion';
 
 export const metadata: Metadata = {
-  title: 'الأسئلة الشائعة | منصة إيدونست',
+  title: 'الأسئلة الشائعة | منصة إديونست',
   description: 'الأسئلة الشائعة للمعلمين',
 };
 

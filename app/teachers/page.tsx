@@ -5,7 +5,7 @@ import Footer from '@/components/shared/Footer';
 import { prisma } from '@/lib/prisma';
 
 export const metadata = {
-  title: 'ابحث عن معلم | إيدونِست',
+  title: 'ابحث عن معلم | إديونست',
   description: 'تصفح قائمة المعلمين الموثّقين في الضفة الغربية وابحث بحسب التخصص والمدينة.',
 };
 

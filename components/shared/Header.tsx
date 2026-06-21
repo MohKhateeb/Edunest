@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSession, signOut } from 'next-auth/react';
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
@@ -78,10 +79,8 @@ export default function Header() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2 text-2xl font-extrabold text-primary tracking-tight">
-              <GraduationCap className="h-8 w-8 text-primary" />
-              <span>إيدونِست</span>
-              <span className="text-xs text-muted-foreground bg-primary/10 px-2 py-0.5 rounded-full font-normal font-sans">EduNest</span>
+            <Link href="/" className="flex items-center gap-2 tracking-tight">
+              <Image src="/logo.png" alt="EduNest" width={140} height={45} className="object-contain mix-blend-multiply" unoptimized />
             </Link>
           </div>
 

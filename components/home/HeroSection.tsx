@@ -35,7 +35,7 @@ export default function HeroSection() {
               كل عقل نير، يحتاج إلى <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">دليل مخلص</span> ليضيء له الطريق.
             </h1>
             <p className="text-base md:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-lg mx-auto lg:mx-0">
-              وهنا في إيدونِست، جعلنا رحلة البحث عن هذا الدليل أسهل وأمتع. انضم إلينا واكتشف متعة التعلم المخصص.
+              وهنا في إديونست، جعلنا رحلة البحث عن هذا الدليل أسهل وأمتع. انضم إلينا واكتشف متعة التعلم المخصص.
             </p>
           </motion.div>
 

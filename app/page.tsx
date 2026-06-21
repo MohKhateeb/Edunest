@@ -10,7 +10,7 @@ import AssuranceSection from '@/components/home/AssuranceSection';
 import FooterCTA from '@/components/home/FooterCTA';
 
 export const metadata = {
-  title: 'إيدونِست | المنصة التعليمية الفلسطينية الأولى',
+  title: 'إديونست | المنصة التعليمية الفلسطينية الأولى',
   description:
     'ابحث عن معلم خصوصي موثوق لطفلك في الضفة الغربية. حجز فوري، دفع آمن، ومتابعة مستمرة.',
 };

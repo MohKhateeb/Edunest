@@ -5,7 +5,7 @@ import { getFAQs } from '@/lib/actions/faq';
 import FAQAdminClient from './FAQAdminClient';
 
 export const metadata: Metadata = {
-  title: 'إدارة الأسئلة الشائعة | منصة إيدونست',
+  title: 'إدارة الأسئلة الشائعة | منصة إديونست',
   description: 'إدارة الأسئلة الشائعة لجميع أنواع المستخدمين',
 };
 

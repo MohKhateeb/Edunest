@@ -34,7 +34,7 @@ export default function FooterCTA() {
             نحن بانتظارك لنحتفل بنجاحاتك القادمة!
           </h2>
           <p className="text-lg text-blue-100 font-medium">
-            انضم لعائلة إيدونِست اليوم، وابدأ رحلة تعليمية لا تُنسى.
+            انضم لعائلة إديونست اليوم، وابدأ رحلة تعليمية لا تُنسى.
           </p>
         </motion.div>
 

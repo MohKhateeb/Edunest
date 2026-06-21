@@ -7,7 +7,7 @@ import FAQAccordion from '@/components/shared/FAQAccordion';
 import NajeebCharacter from '@/components/shared/NajeebCharacter';
 
 export const metadata: Metadata = {
-  title: 'الأسئلة الشائعة | منصة إيدونست',
+  title: 'الأسئلة الشائعة | منصة إديونست',
   description: 'الأسئلة الشائعة لأولياء الأمور',
 };
 

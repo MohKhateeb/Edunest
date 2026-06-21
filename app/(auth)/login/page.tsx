@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { GraduationCap, Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
 import { loginSchema } from '@/lib/validations/user';
 
@@ -75,9 +76,8 @@ export default function LoginPage() {
       <div className="w-full max-w-md space-y-6">
         {/* Logo and header */}
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2 text-3xl font-extrabold text-primary tracking-tight">
-            <GraduationCap className="h-10 w-10 text-primary" />
-            <span>إيدونِست</span>
+          <Link href="/" className="inline-flex items-center gap-2 tracking-tight">
+            <Image src="/logo.png" alt="EduNest" width={180} height={60} className="object-contain mix-blend-multiply" unoptimized />
           </Link>
           <h2 className="text-2xl font-bold tracking-tight text-foreground/90">أهلاً بك مجدداً</h2>
           <p className="text-xs text-muted-foreground">قم بتسجيل الدخول إلى حسابك للمتابعة</p>

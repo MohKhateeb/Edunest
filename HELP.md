@@ -2,7 +2,7 @@
 
 يمكنك نسخ هذا الملف بالكامل والبدء فوراً.
 
-**📘 PRD — EduNest (إيدونِست)**
+**📘 PRD — EduNest (إديونست)**
 
 **Product Requirements Document | الإصدار 8.1 — Production-Ready (Self-Contained Final)**  
 **آخر تحديث:** 2026-05-26 | **الحالة:** Ready for Implementation  
@@ -42,7 +42,7 @@ text
 
 | **الخاصية** | **القيمة** |
 | --- | --- |
-| **اسم المشروع** | EduNest — إيدونِست |
+| **اسم المشروع** | EduNest — إديونست |
 | **النوع** | Two-sided Marketplace (منصة ثنائية) |
 | **الجمهور** | أولياء الأمور الفلسطينيون + المعلمون |
 | **الهدف الأساسي** | ربط الأهالي بمعلمي الدروس الخصوصية بطريقة منظمة وموثوقة |
@@ -4150,7 +4150,7 @@ return (
 
 &lt;main className="container mx-auto px-4 py-16 text-center"&gt;
 
-&lt;h1 className="text-4xl font-bold mb-4"&gt;EduNest — إيدونِست&lt;/h1&gt;
+&lt;h1 className="text-4xl font-bold mb-4"&gt;EduNest — إديونست&lt;/h1&gt;
 
 &lt;p className="text-lg text-gray-600 mb-8"&gt;
 

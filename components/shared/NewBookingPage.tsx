@@ -1,11 +1,13 @@
 'use client';
 
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowRight } from 'lucide-react';
 import NewBookingForm from './NewBookingForm';
 import TimeFirstBookingForm from './TimeFirstBookingForm';
 import NewGeneralRequestForm from './NewGeneralRequestForm';
-import { User, Clock, Briefcase } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import BookingSelectionCards, { BookingMode } from './booking-journey/BookingSelectionCards';
+import CharacterDialogue from './booking-journey/CharacterDialogue';
 
 type Student = {
   id: string;
@@ -62,83 +64,73 @@ export default function NewBookingPage({
   specializations,
   serviceTypes,
 }: NewBookingPageProps) {
-  const [activeTab, setActiveTab] = useState<'teacher' | 'time' | 'general'>('teacher');
+  const [activeMode, setActiveMode] = useState<BookingMode | null>(null);
+
+  const modeContent = activeMode ? {
+    teacher: {
+      form: <NewBookingForm students={students} teachers={teachers} hasUsedTrial={hasUsedTrial} />,
+      dialogue: <CharacterDialogue character="najeeb" najeebMode="happy" message="اختيار ممتاز! تصفح قائمة المعلمين، واختر من يلبي طموحك، وأكمل تفاصيل الحجز وسنتولى نحن الباقي." align="right" />
+    },
+    time: {
+      form: <TimeFirstBookingForm students={students} specializations={specializations} hasUsedTrial={hasUsedTrial} />,
+      dialogue: <CharacterDialogue character="hakeem" message="خيار حكيم لحفظ وقتك. حدد موعدك ومادتك، وسأقوم بترشيح أفضل المعلمين المتاحين لك." align="right" />
+    },
+    general: {
+      form: <NewGeneralRequestForm students={students} specializations={specializations} serviceTypes={serviceTypes} />,
+      dialogue: <CharacterDialogue character="najeeb" najeebMode="success" message="أنا متحمس جداً! ارفع طلبك الآن وسأقوم بإرساله فوراً لجميع المعلمين المتاحين ليتنافسوا على مساعدتك." align="right" />
+    }
+  }[activeMode] : null;
 
   return (
-    <div className="space-y-4">
-      {/* عنوان الصفحة */}
-      <div className="text-center space-y-1 mb-2">
-        <h1 className="text-2xl font-extrabold">حجز جلسة جديدة</h1>
-        <p className="text-xs text-muted-foreground">اختر طريقة الحجز المناسبة لك</p>
+    <div className="space-y-4 relative min-h-[500px]" dir="rtl">
+      {/* عنوان الصفحة (يظهر دائماً) */}
+      <div className="text-center space-y-1 mb-8">
+        <h1 className="text-3xl font-black text-slate-900 dark:text-white">حجز جلسة جديدة</h1>
+        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">ابدأ رحلة التعلم بخطوات بسيطة</p>
       </div>
 
-      {/* التبويبات */}
-      <div className="max-w-3xl mx-auto">
-        <div className="flex gap-2 p-1 bg-muted/50 rounded-xl border border-border">
-          <button
-            type="button"
-            onClick={() => setActiveTab('teacher')}
-            className={cn(
-              'flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer',
-              activeTab === 'teacher'
-                ? 'bg-card text-foreground shadow-sm border border-border'
-                : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
-            )}
+      <AnimatePresence mode="wait">
+        {!activeMode ? (
+          <motion.div
+            key="selection-cards"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.3 }}
           >
-            <User className="h-4 w-4" />
-            اختيار المعلم أولاً
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('time')}
-            className={cn(
-              'flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer',
-              activeTab === 'time'
-                ? 'bg-card text-foreground shadow-sm border border-border'
-                : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
-            )}
-          >
-            <Clock className="h-4 w-4" />
-            البحث بالوقت والمادة
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('general')}
-            className={cn(
-              'flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer',
-              activeTab === 'general'
-                ? 'bg-card text-foreground shadow-sm border border-border'
-                : 'text-muted-foreground hover:text-foreground hover:bg-card/50'
-            )}
-          >
-            <Briefcase className="h-4 w-4" />
-            طلب معلم عام (أوبر)
-          </button>
-        </div>
-      </div>
-
-      {/* محتوى التبويب */}
-      <div className="animate-fadeIn">
-        {activeTab === 'teacher' ? (
-          <NewBookingForm
-            students={students}
-            teachers={teachers}
-            hasUsedTrial={hasUsedTrial}
-          />
-        ) : activeTab === 'time' ? (
-          <TimeFirstBookingForm
-            students={students}
-            specializations={specializations}
-            hasUsedTrial={hasUsedTrial}
-          />
+            <BookingSelectionCards onSelect={setActiveMode} />
+          </motion.div>
         ) : (
-          <NewGeneralRequestForm
-            students={students}
-            specializations={specializations}
-            serviceTypes={serviceTypes}
-          />
+          <motion.div
+            key="booking-form"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+            className="max-w-4xl mx-auto space-y-6 pb-20"
+          >
+            {/* رأس النموذج مع زر الرجوع وحوار الشخصية */}
+            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-6">
+              <button
+                onClick={() => setActiveMode(null)}
+                className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition-colors bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md"
+              >
+                <ArrowRight className="w-4 h-4" />
+                تغيير مسار الحجز
+              </button>
+
+              <div className="flex-1 max-w-lg">
+                {modeContent?.dialogue}
+              </div>
+            </div>
+
+            {/* عرض النموذج المختار */}
+            <div className="bg-slate-50/50 dark:bg-slate-900/50 p-1 rounded-3xl">
+              {modeContent?.form}
+            </div>
+          </motion.div>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
 }

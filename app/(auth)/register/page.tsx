@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { GraduationCap, Mail, Lock, User, Phone, Check, Loader2, AlertCircle, Briefcase } from 'lucide-react';
 import { registerUser } from '@/lib/actions/user';
 import { registerSchema } from '@/lib/validations/user';
@@ -82,9 +83,8 @@ export default function RegisterPage() {
       <div className="w-full max-w-md space-y-6">
         {/* Logo and header */}
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-flex items-center gap-2 text-3xl font-extrabold text-primary tracking-tight">
-            <GraduationCap className="h-10 w-10 text-primary" />
-            <span>إيدونِست</span>
+          <Link href="/" className="inline-flex items-center gap-2 tracking-tight">
+            <Image src="/logo.png" alt="EduNest" width={180} height={60} className="object-contain mix-blend-multiply" unoptimized />
           </Link>
           <h2 className="text-2xl font-bold tracking-tight text-foreground/90">إنشاء حساب جديد</h2>
           <p className="text-xs text-muted-foreground">انضم إلى مجتمعنا التعليمي الموثوق اليوم</p>
