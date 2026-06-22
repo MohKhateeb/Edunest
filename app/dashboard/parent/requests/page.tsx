@@ -12,9 +12,9 @@ export default async function ParentRequestsPage() {
   const res = await getTutoringRequestsForParent();
   const requests = res.success && res.data ? res.data : [];
   
-  const pendingCount = requests.filter((r: any) => r.status === 'PENDING').length;
-  const acceptedCount = requests.filter((r: any) => r.status === 'ACCEPTED').length;
-  const totalOffersCount = requests.reduce((acc: number, r: any) => acc + r.offers.length, 0);
+  const pendingCount = requests.filter((r: { status: string }) => r.status === 'PENDING').length;
+  const acceptedCount = requests.filter((r: { status: string }) => r.status === 'ACCEPTED').length;
+  const totalOffersCount = requests.reduce((acc: number, r: { offers: unknown[] }) => acc + r.offers.length, 0);
 
   const najeebMsg = pendingCount > 0 
     ? `لديك ${pendingCount} طلبات بانتظار العروض! نحن نتواصل مع أفضل المعلمين الآن لتوفير الخيار الأنسب لك.`

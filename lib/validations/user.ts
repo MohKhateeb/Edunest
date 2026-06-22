@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { USER_TYPE } from '@/lib/enums';
+import { UserType } from '@prisma/client';
 
 export const loginSchema = z.object({
   email: z.string().email('البريد الإلكتروني غير صالح'),
@@ -11,7 +11,7 @@ export const registerSchema = z.object({
   email: z.string().email('البريد الإلكتروني غير صالح'),
   phone: z.string().optional().or(z.literal('')),
   password: z.string().min(6, 'كلمة المرور يجب أن لا تقل عن 6 أحرف'),
-  userType: z.enum([USER_TYPE.PARENT, USER_TYPE.TEACHER]),
+  userType: z.enum([UserType.PARENT, UserType.TEACHER]),
 });
 
 export const studentSchema = z.object({

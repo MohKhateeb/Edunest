@@ -242,10 +242,7 @@ export default function TimeFirstBookingForm({
       setErrorMsg('يرجى تحديد الخدمة المطلوبة');
       return;
     }
-    if (bookingDetails.paymentMethod === 'BANK_TRANSFER' && !bookingDetails.isTrial && !bookingDetails.proofUrl) {
-      setErrorMsg('يرجى رفع إيصال التحويل البنكي للمتابعة');
-      return;
-    }
+
 
     setLoading(true);
     setErrorMsg(null);
@@ -263,8 +260,7 @@ export default function TimeFirstBookingForm({
         questionDetails: activeService?.serviceTypeName === 'شرح مسألة سريعة' ? bookingDetails.questionDetails : undefined,
         questionImageUrl: activeService?.serviceTypeName === 'شرح مسألة سريعة' ? bookingDetails.questionImageUrl : undefined,
         parentNotes: bookingDetails.parentNotes || undefined,
-        paymentMethod: bookingDetails.paymentMethod,
-        bankTransferProofUrl: bookingDetails.paymentMethod === 'BANK_TRANSFER' ? bookingDetails.proofUrl : undefined,
+        paymentMethod: 'ONLINE_CARD',
       });
 
       if (res.success) {

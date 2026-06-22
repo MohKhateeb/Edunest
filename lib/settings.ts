@@ -1,12 +1,16 @@
 import { prisma } from '@/lib/prisma';
-import { cache } from 'react';
+import { unstable_cache } from 'next/cache';
 
-export const getSetting = cache(async (key: string): Promise<string | null> => {
-  const setting = await prisma.systemSetting.findUnique({
-    where: { settingKey: key },
-  });
-  return setting?.settingValue ?? null;
-});
+export const getSetting = unstable_cache(
+  async (key: string): Promise<string | null> => {
+    const setting = await prisma.systemSetting.findUnique({
+      where: { settingKey: key },
+    });
+    return setting?.settingValue ?? null;
+  },
+  ['system-settings-fetch'],
+  { tags: ['system-settings'], revalidate: 3600 }
+);
 
 export async function getSettingNumber(key: string, defaultValue = 0): Promise<number> {
   const val = await getSetting(key);

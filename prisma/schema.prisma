@@ -1,10 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
 }
 
 datasource db {
-  provider  = "postgresql"
- 
+  provider   = "postgresql"
+  extensions = [pg_trgm]
 }
 
 // ════════════════════════════════════════════════════
@@ -47,6 +48,7 @@ model User {
   cancelledBookings     Booking[]             @relation("CancelledByUser")
   reviewedVerifications TeacherVerification[] @relation("ReviewedByUser")
   tutoringRequests      TutoringRequest[]     @relation("ParentRequests")
+  disputeMessages       DisputeMessage[]
 
   @@index([userType])
 }
@@ -90,8 +92,8 @@ model Teacher {
   reviews           Review[]
   tutoringOffers    TutoringOffer[]       @relation("TeacherOffers")
 
-  @@index([city])
-  @@index([specialization])
+  @@index([city(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([specialization(ops: raw("gin_trgm_ops"))], type: Gin)
   @@index([verificationLevel])
 }
 
@@ -118,8 +120,8 @@ model TeacherAvailability {
   teacherId String
   teacher   Teacher  @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   dayOfWeek Int
-  startTime String   // "HH:MM"
-  endTime   String   // "HH:MM"
+  startTime String // "HH:MM"
+  endTime   String // "HH:MM"
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -131,12 +133,12 @@ model TeacherAvailability {
 // الطلاب
 // ════════════════════════════════════════════════════
 model Student {
-  id           String    @id @default(cuid())
-  parentUserId String
-  parent       User      @relation(fields: [parentUserId], references: [id], onDelete: Cascade)
-  name         String
-  grade        Int
-  school       String?
+  id               String            @id @default(cuid())
+  parentUserId     String
+  parent           User              @relation(fields: [parentUserId], references: [id], onDelete: Cascade)
+  name             String
+  grade            Int
+  school           String?
   isActive         Boolean           @default(true)
   createdAt        DateTime          @default(now())
   bookings         Booking[]
@@ -149,15 +151,15 @@ model Student {
 // أنواع الخدمات
 // ════════════════════════════════════════════════════
 model ServiceType {
-  id              String           @id @default(cuid())
-  name            String           @unique
-  nameEnglish     String?
-  defaultDuration Int
-  description     String?
-  commissionRate  Decimal          @db.Decimal(5, 2)
-  isRecurring     Boolean          @default(false)
-  displayOrder    Int              @default(0)
-  isActive        Boolean          @default(true)
+  id               String            @id @default(cuid())
+  name             String            @unique
+  nameEnglish      String?
+  defaultDuration  Int
+  description      String?
+  commissionRate   Decimal           @db.Decimal(5, 2)
+  isRecurring      Boolean           @default(false)
+  displayOrder     Int               @default(0)
+  isActive         Boolean           @default(true)
   createdAt        DateTime          @default(now())
   teacherServices  TeacherService[]
   tutoringRequests TutoringRequest[] @relation("ServiceTypeRequests")
@@ -194,7 +196,6 @@ enum BookingStatus {
 
 enum PaymentStatus {
   UNPAID
-  PENDING_VERIFICATION
   PAID
   REFUNDED
 }
@@ -205,8 +206,6 @@ enum BookingSource {
 }
 
 enum PaymentMethod {
-  CASH
-  BANK_TRANSFER
   ONLINE_CARD
 }
 
@@ -218,8 +217,8 @@ model Booking {
   student               Student        @relation(fields: [studentId], references: [id])
   teacherServiceId      String
   teacherService        TeacherService @relation(fields: [teacherServiceId], references: [id])
-  startTime             DateTime       // UTC حصراً
-  duration              Int            // بالدقائق
+  startTime             DateTime // UTC حصراً
+  duration              Int // بالدقائق
   price                 Decimal        @db.Decimal(10, 2)
   appliedCommissionRate Decimal        @db.Decimal(5, 2)
   status                BookingStatus  @default(PENDING)
@@ -235,7 +234,7 @@ model Booking {
   teacherNotes          String?
   cancellationReason    String?
   cancelledBy           String?
-  payoutId              String?        // ⭐ يربط الحجز بالتسوية لمنع الدفع المزدوج
+  payoutId              String? // ⭐ يربط الحجز بالتسوية لمنع الدفع المزدوج
   createdAt             DateTime       @default(now())
   confirmedAt           DateTime?
   completedAt           DateTime?
@@ -245,6 +244,7 @@ model Booking {
   payment               Payment?
   cancellingUser        User?          @relation("CancelledByUser", fields: [cancelledBy], references: [id])
   payout                TeacherPayout? @relation("BookingPayout", fields: [payoutId], references: [id])
+  dispute               Dispute?
 
   @@index([parentUserId])
   @@index([status])
@@ -287,15 +287,14 @@ model Review {
 // المدفوعات
 // ════════════════════════════════════════════════════
 model Payment {
-  id                   String        @id @default(cuid())
-  bookingId            String        @unique
-  booking              Booking       @relation(fields: [bookingId], references: [id])
-  amount               Decimal       @db.Decimal(10, 2)
-  method               PaymentMethod
-  isPaid               Boolean       @default(false)
-  paidAt               DateTime?
-  bankTransferProofUrl String?
-  createdAt            DateTime      @default(now())
+  id        String        @id @default(cuid())
+  bookingId String        @unique
+  booking   Booking       @relation(fields: [bookingId], references: [id])
+  amount    Decimal       @db.Decimal(10, 2)
+  method    PaymentMethod @default(ONLINE_CARD)
+  isPaid    Boolean       @default(false)
+  paidAt    DateTime?
+  createdAt DateTime      @default(now())
 }
 
 model TeacherPayout {
@@ -376,14 +375,14 @@ model TutoringRequest {
   parent         User            @relation("ParentRequests", fields: [parentId], references: [id], onDelete: Cascade)
   studentId      String
   student        Student         @relation("StudentRequests", fields: [studentId], references: [id], onDelete: Cascade)
-  specialization String          // التخصص المطلوب (مثل: رياضيات)
-  serviceTypeId  String          // نوع الخدمة المطلوبة (مثل: شرح مسألة سريعة)
+  specialization String // التخصص المطلوب (مثل: رياضيات)
+  serviceTypeId  String // نوع الخدمة المطلوبة (مثل: شرح مسألة سريعة)
   serviceType    ServiceType     @relation("ServiceTypeRequests", fields: [serviceTypeId], references: [id])
-  title          String          // عنوان الطلب
+  title          String // عنوان الطلب
   details        String?         @db.Text
-  imageUrl       String?         // رابط صورة السؤال المرفوعة
-  startTime      DateTime        // الوقت المطلوب لبدء الجلسة (UTC)
-  duration       Int             // مدة الجلسة بالدقائق
+  imageUrl       String? // رابط صورة السؤال المرفوعة
+  startTime      DateTime // الوقت المطلوب لبدء الجلسة (UTC)
+  duration       Int // مدة الجلسة بالدقائق
   price          Decimal         @db.Decimal(10, 2) // السعر/الميزانية المقترحة من ولي الأمر
   status         RequestStatus   @default(PENDING)
   offers         TutoringOffer[]
@@ -410,4 +409,40 @@ model TutoringOffer {
   @@unique([requestId, teacherId])
   @@index([requestId])
   @@index([teacherId])
+}
+
+// ════════════════════════════════════════════════════
+// النزاعات والمراسلات (Disputes & Messages)
+// ════════════════════════════════════════════════════
+
+enum DisputeStatus {
+  OPEN
+  RESOLVED_IN_FAVOR_OF_PARENT
+  RESOLVED_IN_FAVOR_OF_TEACHER
+}
+
+model Dispute {
+  id           String           @id @default(cuid())
+  bookingId    String           @unique
+  booking      Booking          @relation(fields: [bookingId], references: [id])
+  parentUserId String
+  reason       String           @db.Text
+  status       DisputeStatus    @default(OPEN)
+  adminNotes   String?          @db.Text
+  resolvedAt   DateTime?
+  resolvedBy   String?
+  createdAt    DateTime         @default(now())
+  messages     DisputeMessage[]
+}
+
+model DisputeMessage {
+  id        String   @id @default(cuid())
+  disputeId String
+  dispute   Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User     @relation(fields: [senderId], references: [id])
+  message   String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([disputeId])
 }

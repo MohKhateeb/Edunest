@@ -217,16 +217,7 @@ export async function getEntityDetails(
           return { success: false, error: 'غير مصرح لك بمشاهدة تفاصيل حجز خاص بمعلم آخر.' };
         }
 
-        // Hide bank transfer proof images from teachers
-        const secureBooking = { ...booking };
-        if (secureBooking.payment) {
-          secureBooking.payment = {
-            ...secureBooking.payment,
-            bankTransferProofUrl: null,
-          };
-        }
-
-        return successResponse(secureBooking);
+        return successResponse(booking);
       }
 
       return { success: false, error: 'نوع الحساب غير مصرح له بالوصول.' };

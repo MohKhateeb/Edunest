@@ -24,6 +24,13 @@ export async function calculateDraftPayout(
       return { success: false, error: validated.error.issues[0].message };
     }
 
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    if (periodEnd >= today) {
+      return { success: false, error: 'تاريخ نهاية التسوية يجب أن يكون في الماضي (قبل اليوم الحالي).' };
+    }
+
     const { userId, userType } = await requireAuth([UserType.ADMIN, UserType.TEACHER]);
 
     if (userType === UserType.TEACHER) {
@@ -35,8 +42,12 @@ export async function calculateDraftPayout(
       }
     }
 
-    // Fetch eligible bookings: COMPLETED, not yet paid to tutor, and within period
-    const bookings = await prisma.booking.findMany({
+    // Calculate 24 hours ago
+    const twentyFourHoursAgo = new Date();
+    twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+
+    // Fetch eligible bookings: COMPLETED, not yet paid to tutor, within period, past 24h
+    let bookings = await prisma.booking.findMany({
       where: {
         teacherService: {
           teacherId,
@@ -47,6 +58,9 @@ export async function calculateDraftPayout(
           gte: periodStart,
           lte: periodEnd,
         },
+        completedAt: {
+          lte: twentyFourHoursAgo, // Must be older than 24h
+        },
         OR: [
           // Either it is paid by parent
           { paymentStatus: 'PAID' },
@@ -54,6 +68,14 @@ export async function calculateDraftPayout(
           { isTrial: true },
         ],
       },
+      include: { dispute: true },
+    });
+
+    // Filter out bookings that have an OPEN dispute or resolved in favor of parent
+    bookings = bookings.filter((b) => {
+      if (!b.dispute) return true; // No dispute -> OK
+      if (b.dispute.status === 'RESOLVED_IN_FAVOR_OF_TEACHER') return true; // Resolved for teacher -> OK
+      return false; // OPEN or RESOLVED_IN_FAVOR_OF_PARENT -> Exclude
     });
 
     let totalAmount = 0;
@@ -103,12 +125,37 @@ export async function createTeacherPayout(data: {
     await requireAuth([UserType.ADMIN]);
     const { teacherId, periodStart, periodEnd } = data;
 
+    const today = new Date();
+    today.setUTCHours(0, 0, 0, 0);
+
+    if (periodEnd >= today) {
+      return { success: false, error: 'تاريخ نهاية التسوية يجب أن يكون في الماضي (قبل اليوم الحالي).' };
+    }
+
     // Run in transaction to link bookings and create payout
     await prisma.$transaction(async (tx) => {
+      // Check for overlapping payouts
+      const overlapping = await tx.teacherPayout.findFirst({
+        where: {
+          teacherId,
+          AND: [
+            { periodStart: { lte: periodEnd } },
+            { periodEnd: { gte: periodStart } },
+          ],
+        },
+      });
+
+      if (overlapping) {
+        throw new Error('يوجد تداخل مع فترة تسوية سابقة لهذا المعلم.');
+      }
       await tx.$executeRaw`SELECT id FROM "Teacher" WHERE id = ${teacherId} FOR UPDATE`;
 
+      // Calculate 24 hours ago
+      const twentyFourHoursAgo = new Date();
+      twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+
       // 1. Fetch the bookings to include
-      const bookings = await tx.booking.findMany({
+      let bookings = await tx.booking.findMany({
         where: {
           teacherService: {
             teacherId,
@@ -119,11 +166,22 @@ export async function createTeacherPayout(data: {
             gte: periodStart,
             lte: periodEnd,
           },
+          completedAt: {
+            lte: twentyFourHoursAgo,
+          },
           OR: [
             { paymentStatus: 'PAID' },
             { isTrial: true },
           ],
         },
+        include: { dispute: true },
+      });
+
+      // Filter out bookings that have an OPEN dispute or resolved in favor of parent
+      bookings = bookings.filter((b) => {
+        if (!b.dispute) return true; // No dispute -> OK
+        if (b.dispute.status === 'RESOLVED_IN_FAVOR_OF_TEACHER') return true; // Resolved for teacher -> OK
+        return false; // OPEN or RESOLVED_IN_FAVOR_OF_PARENT -> Exclude
       });
 
       if (bookings.length === 0) {

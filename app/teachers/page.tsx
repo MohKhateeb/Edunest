@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Header from '@/components/shared/Header';
 import Footer from '@/components/shared/Footer';
 import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 
 export const metadata = {
   title: 'ابحث عن معلم | إديونست',
@@ -19,7 +20,7 @@ async function getTeachers(params: SearchParams) {
   const page = Math.max(1, parseInt(params.page ?? '1', 10));
   const PAGE_SIZE = 12;
 
-  const where: Record<string, any> = { 
+  const where: Prisma.TeacherWhereInput = { 
     isVerified: true,
     user: { isActive: true }
   };

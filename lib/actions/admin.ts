@@ -5,7 +5,7 @@ import { requireAuth } from '@/lib/require-auth';
 import { UserType, VerificationLevel, BookingStatus, PaymentStatus } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { ActionResponse } from '@/lib/types';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, updateTag } from 'next/cache';
 import { createNotification } from '@/lib/notifications';
 import {
   verifyTeacherSchema,
@@ -222,6 +222,7 @@ export async function updateSystemSettings(
     });
 
     revalidatePath('/dashboard/admin/settings');
+    updateTag('system-settings');
     return { success: true };
   } catch (err: unknown) {
     console.error(err);
@@ -286,6 +287,7 @@ export async function updateHomepageLayout(layoutJson: string): Promise<ActionRe
 
     revalidatePath('/');
     revalidatePath('/dashboard/admin/settings/homepage');
+    updateTag('system-settings');
     return { success: true };
   } catch (err: unknown) {
     console.error(err);

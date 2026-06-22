@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { cn, formatPrice, formatLocalTime } from '@/lib/utils';
 import { BOOKING_STATUS_AR, PAYMENT_STATUS_AR, PAYMENT_METHOD_AR } from '@/lib/translations';
+import { getDetailedSessionState } from '@/lib/utils/booking-state';
 
 interface BookingDetailsProps {
   booking: any;
@@ -16,6 +17,7 @@ interface BookingDetailsProps {
 export default function BookingDetails({ booking, setPreviewImage }: BookingDetailsProps) {
   const isTrial = booking.isTrial;
   const priceDisplay = isTrial ? 'جلسة تجريبية مجانية' : formatPrice(Number(booking.price));
+  const sessionTimeState = getDetailedSessionState(booking.startTime, booking.duration);
 
   return (
     <div className="space-y-6 text-xs text-muted-foreground">
@@ -183,18 +185,33 @@ export default function BookingDetails({ booking, setPreviewImage }: BookingDeta
       {booking.status === 'CONFIRMED' && (
         <div className="p-4 border border-border bg-card rounded-xl space-y-2">
           <span className="font-bold text-primary block text-[11px]">رابط القاعة الافتراضية (Jitsi Meet):</span>
-          <div className="flex items-center justify-between gap-4 flex-wrap bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-950/40 p-3 rounded-lg">
-            <span className="text-[11px] text-emerald-800 dark:text-emerald-400">القاعة الافتراضية جاهزة وتفتح للتحضير قبل الجلسة بخمس دقائق.</span>
-            <a 
-              href={booking.meetingUrl || `https://meet.jit.si/edunest-${booking.id}`} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="bg-emerald-600 text-white hover:bg-emerald-700 text-[10px] font-bold px-4 py-2 rounded-lg flex items-center gap-1.5"
-            >
-              <Video className="h-3.5 w-3.5" />
-              انضم للجلسة (قاعة ويب)
-            </a>
-          </div>
+          
+          {(sessionTimeState.status === 'active' || sessionTimeState.status === 'ready_to_join' || sessionTimeState.status === 'grace_period') ? (
+            <div className="flex items-center justify-between gap-4 flex-wrap bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-950/40 p-3 rounded-lg">
+              <span className="text-[11px] text-emerald-800 dark:text-emerald-400">القاعة الافتراضية جاهزة للتحضير والدخول.</span>
+              <a 
+                href={booking.meetingUrl || `https://meet.jit.si/edunest-${booking.id}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="bg-emerald-600 text-white hover:bg-emerald-700 text-[10px] font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 animate-pulse"
+              >
+                <Video className="h-3.5 w-3.5" />
+                انضم للجلسة (قاعة ويب)
+              </a>
+            </div>
+          ) : sessionTimeState.status === 'upcoming' ? (
+            <div className="flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 border border-border p-3 rounded-lg">
+              <span className="text-[11px] text-muted-foreground font-medium">
+                سيظهر رابط الدخول الخاص بك هنا قبل بدء الجلسة بـ 5 دقائق.
+              </span>
+            </div>
+          ) : (
+            <div className="flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 border border-border p-3 rounded-lg">
+              <span className="text-[11px] text-muted-foreground font-medium">
+                انتهى وقت الجلسة. رابط القاعة غير متاح حالياً.
+              </span>
+            </div>
+          )}
         </div>
       )}
 

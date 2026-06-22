@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { verifyTeacher, rejectTeacher } from '@/lib/actions/admin';
 import { ShieldCheck, XCircle, Clock, FileText, AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { VERIFICATION_LEVEL, type VerificationLevel } from '@/lib/enums';
+import { VerificationLevel } from '@prisma/client';
 import DetailsModal from '@/components/shared/DetailsModal';
 
 type VerificationRequest = {
@@ -282,7 +282,7 @@ export default function AdminVerificationQueue({ requests }: AdminVerificationQu
 
                   <div className="flex gap-2 flex-wrap">
                     <button
-                      onClick={() => handleVerify(VERIFICATION_LEVEL.BRONZE)}
+                      onClick={() => handleVerify(VerificationLevel.BRONZE)}
                       disabled={loading}
                       className="text-xs font-semibold bg-orange-100 hover:bg-orange-200 text-orange-800 px-3 py-2.5 rounded-lg flex items-center gap-1 cursor-pointer transition-colors shadow-sm"
                     >
@@ -290,7 +290,7 @@ export default function AdminVerificationQueue({ requests }: AdminVerificationQu
                       توثيق برونزي
                     </button>
                     <button
-                      onClick={() => handleVerify(VERIFICATION_LEVEL.SILVER)}
+                      onClick={() => handleVerify(VerificationLevel.SILVER)}
                       disabled={loading}
                       className="text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-2.5 rounded-lg flex items-center gap-1 cursor-pointer transition-colors shadow-sm"
                     >
@@ -298,7 +298,7 @@ export default function AdminVerificationQueue({ requests }: AdminVerificationQu
                       توثيق فضي
                     </button>
                     <button
-                      onClick={() => handleVerify(VERIFICATION_LEVEL.GOLD)}
+                      onClick={() => handleVerify(VerificationLevel.GOLD)}
                       disabled={loading}
                       className="text-xs font-semibold bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-2.5 rounded-lg flex items-center gap-1 cursor-pointer transition-colors shadow-sm"
                     >

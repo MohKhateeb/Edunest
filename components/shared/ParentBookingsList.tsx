@@ -5,6 +5,7 @@ import BookingCard from '@/components/shared/BookingCard';
 import type { DetailedBooking } from '@/lib/types';
 import { HelpCircle, Search } from 'lucide-react';
 import InteractiveMessage from '@/components/shared/InteractiveMessage';
+import { getDetailedSessionState } from '@/lib/utils/booking-state';
 
 interface ParentBookingsListProps {
   bookings: DetailedBooking[];
@@ -14,10 +15,11 @@ export default function ParentBookingsList({ bookings }: ParentBookingsListProps
   const [activeTab, setActiveTab] = useState<'UPCOMING' | 'PENDING' | 'COMPLETED' | 'ARCHIVED'>('UPCOMING');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // 1. حساب الإحصائيات ديناميكياً
   const upcomingCount = bookings.filter(b => b.status === 'CONFIRMED').length;
   const pendingCount = bookings.filter(b => b.status === 'PENDING').length;
   const reportsCount = bookings.filter(b => b.status === 'COMPLETED' && b.report).length;
+  
+  const ghostCount = bookings.filter(b => b.status === 'CONFIRMED' && getDetailedSessionState(b.startTime, b.duration).status === 'ghost').length;
 
   // 2. فلترة البيانات حسب التبويب النشط والبحث
   const getFilteredData = () => {
@@ -53,8 +55,12 @@ export default function ParentBookingsList({ bookings }: ParentBookingsListProps
       {/* 📊 ملخص ذكي بدلاً من البطاقات المزدحمة */}
       <InteractiveMessage 
         character="najeeb"
-        najeebMode={upcomingCount > 0 ? "study" : "welcome"}
-        message={`لدينا ${upcomingCount} حصص قادمة، و ${reportsCount} تقارير تعليمية للاطلاع عليها. يمكنك التبديل بين التبويبات بالأسفل لرؤية التفاصيل بسهولة!`}
+        najeebMode={ghostCount > 0 ? "help" : upcomingCount > 0 ? "study" : "welcome"}
+        message={
+          ghostCount > 0 
+          ? `انتباه! هناك ${ghostCount} جلسة انتهت منذ فترة ولم يقم المعلم بإنهاء إغلاقها ورفع التقرير. يرجى المتابعة مع المعلم.` 
+          : `لدينا ${upcomingCount} حصص قادمة، و ${reportsCount} تقارير تعليمية للاطلاع عليها. يمكنك التبديل بين التبويبات بالأسفل لرؤية التفاصيل بسهولة!`
+        }
       />
 
       {/* 🔍 أدوات التحكم والبحث - تصميم هادئ ومريح */}

@@ -6,11 +6,13 @@ import { BOOKING_STATUS_AR, PAYMENT_STATUS_AR, PAYMENT_METHOD_AR } from '@/lib/t
 import { formatLocalTime, formatPrice } from '@/lib/utils';
 import { acceptBooking, rejectBooking, cancelBooking, submitSessionReport } from '@/lib/actions/booking';
 import { submitReview } from '@/lib/actions/review';
-import { Calendar, Clock, Video, User as UserIcon, BookOpen, FileText, Star, Lock, TimerOff, Eye, GraduationCap } from 'lucide-react';
+import { getDetailedSessionState, SessionTimeState, canSubmitReport } from '@/lib/utils/booking-state';
+import { Calendar, Clock, Video, User as UserIcon, BookOpen, FileText, Star, Lock, TimerOff, Eye, GraduationCap, CreditCard, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 import DetailsModal from '@/components/shared/DetailsModal';
 import Portal from '@/components/shared/Portal';
+import { PaymentModal } from '@/components/shared/PaymentModal';
 
 type BookingCardProps = {
   booking: Booking & {
@@ -52,6 +54,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
   });
 
   const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const isTrial = booking.isTrial;
   const priceDisplay = isTrial ? 'تجريبية مجانية' : formatPrice(Number(booking.price));
@@ -152,45 +155,25 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
   const meetLink = booking.meetingUrl || `https://meet.jit.si/edunest-${booking.id}`;
 
   // ════════════════════════════════════════════════════
-  // حالة تفعيل زر الانضمام بناءً على الوقت
-  // يُفعّل قبل 5 دقائق من بداية الجلسة ويُلغى بعد انتهائها
+  // حالة تفعيل زر الانضمام بناءً على الوقت (مستورد من booking-state)
   // ════════════════════════════════════════════════════
-  const EARLY_JOIN_MINUTES = 5; // السماح بالانضمام قبل 5 دقائق
-
-  const getSessionTimeState = useCallback(() => {
-    const now = Date.now();
-    const sessionStart = new Date(booking.startTime).getTime();
-    const sessionEnd = sessionStart + booking.duration * 60_000;
-    const earlyJoinTime = sessionStart - EARLY_JOIN_MINUTES * 60_000;
-
-    if (now < earlyJoinTime) {
-      // لم يحن الوقت بعد
-      const minutesLeft = Math.ceil((earlyJoinTime - now) / 60_000);
-      return { status: 'waiting' as const, minutesLeft };
-    } else if (now >= earlyJoinTime && now <= sessionEnd) {
-      // وقت الجلسة (نشط)
-      return { status: 'active' as const, minutesLeft: 0 };
-    } else {
-      // انتهت الجلسة
-      return { status: 'expired' as const, minutesLeft: 0 };
-    }
-  }, [booking.startTime, booking.duration]);
-
-  const [sessionTimeState, setSessionTimeState] = useState(getSessionTimeState);
+  const [sessionTimeState, setSessionTimeState] = useState<SessionTimeState>(() => 
+    getDetailedSessionState(booking.startTime, booking.duration)
+  );
 
   useEffect(() => {
     if (booking.status !== 'CONFIRMED') return;
 
     // تحديث الحالة كل 30 ثانية
     const interval = setInterval(() => {
-      setSessionTimeState(getSessionTimeState());
+      setSessionTimeState(getDetailedSessionState(booking.startTime, booking.duration));
     }, 30_000);
 
     // تحديث فوري
-    setSessionTimeState(getSessionTimeState());
+    setSessionTimeState(getDetailedSessionState(booking.startTime, booking.duration));
 
     return () => clearInterval(interval);
-  }, [booking.status, getSessionTimeState]);
+  }, [booking.status, booking.startTime, booking.duration]);
 
   return (
     <div className="bg-white dark:bg-slate-900 border border-border/60 rounded-3xl p-5 hover:shadow-lg transition-all duration-300 flex flex-col justify-between group">
@@ -198,9 +181,17 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
       {/* 🔹 Top Row: Status & Price */}
       <div className="flex justify-between items-start mb-4">
         <div>
-          <span className={cn('text-[11px] font-bold px-3 py-1.5 rounded-full border', statusStyles[booking.status])}>
-            {BOOKING_STATUS_AR[booking.status]}
-          </span>
+          <div className="flex items-center gap-2">
+            <span className={cn('text-[11px] font-bold px-3 py-1.5 rounded-full border', statusStyles[booking.status])}>
+              {BOOKING_STATUS_AR[booking.status]}
+            </span>
+            {booking.status === 'CONFIRMED' && sessionTimeState.status === 'ghost' && (
+              <span className="flex items-center gap-1 text-[10px] font-bold px-2 py-1.5 rounded-full bg-rose-100 text-rose-700 border border-rose-300 dark:bg-rose-900/40 dark:text-rose-400">
+                <AlertTriangle className="h-3 w-3" />
+                متأخرة الإغلاق
+              </span>
+            )}
+          </div>
           {isTrial && (
             <span className="me-2 text-[10px] font-bold px-2 py-1 rounded-full border border-purple-200 bg-purple-50 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400 dark:border-purple-900 mt-2 inline-block">
               جلسة تجريبية
@@ -258,7 +249,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
       {/* 🔹 Bottom Row: Actions */}
       <div className="flex flex-wrap gap-2 mt-auto border-t border-border/40 pt-4">
         {/* The Meet link is the most prominent if active */}
-        {booking.status === 'CONFIRMED' && sessionTimeState.status === 'active' && (
+        {booking.status === 'CONFIRMED' && (sessionTimeState.status === 'active' || sessionTimeState.status === 'ready_to_join' || sessionTimeState.status === 'grace_period') && (
           <a
             href={meetLink}
             target="_blank"
@@ -304,7 +295,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
           </div>
         )}
 
-        {role === 'TEACHER' && booking.status === 'CONFIRMED' && (
+        {role === 'TEACHER' && booking.status === 'CONFIRMED' && canSubmitReport(booking.startTime, booking.duration) && (
           <button
             onClick={() => setShowReportModal(true)}
             className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 py-2.5 rounded-xl transition-colors"
@@ -323,7 +314,28 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
             تقييم المعلم
           </button>
         )}
+
+        {role === 'PARENT' && booking.status === 'PENDING' && booking.paymentStatus === 'UNPAID' && (
+          <button
+            onClick={() => setShowPaymentModal(true)}
+            className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs font-bold bg-emerald-600 text-white border border-emerald-700 hover:bg-emerald-700 py-2.5 rounded-xl transition-colors animate-pulse shadow-md"
+          >
+            <CreditCard className="h-4 w-4" />
+            دفع الآن (₪ {Number(booking.price)})
+          </button>
+        )}
       </div>
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <Portal>
+          <PaymentModal
+            bookingId={booking.id}
+            price={Number(booking.price)}
+            onClose={() => setShowPaymentModal(false)}
+          />
+        </Portal>
+      )}
 
       {/* Cancellation Modal */}
       {showCancelModal && (

@@ -44,6 +44,8 @@ export default function Header() {
     { href: '/dashboard/parent/students', label: 'إدارة الطلاب', icon: Users },
     { href: '/dashboard/parent/bookings', label: 'حجوزاتي', icon: Calendar },
     { href: '/dashboard/parent/bookings/new', label: 'حجز جلسة جديدة', icon: CalendarPlus },
+    { href: '/dashboard/parent/requests', label: 'طلبات المعلمين وعروضهم', icon: Briefcase },
+    { href: '/dashboard/parent/financials', label: 'السجل المالي', icon: CreditCard },
     { href: '/dashboard/parent/faq', label: 'الأسئلة الشائعة', icon: HelpCircle },
   ];
 
@@ -63,7 +65,7 @@ export default function Header() {
     { href: '/dashboard/admin/users', label: 'إدارة المستخدمين', icon: Users },
     { href: '/dashboard/admin/teachers', label: 'إدارة المعلمين', icon: Users },
     { href: '/dashboard/admin/bookings', label: 'كل الحجوزات', icon: Calendar },
-    { href: '/dashboard/admin/payments', label: 'تأكيد المدفوعات', icon: CreditCard },
+    { href: '/dashboard/admin/financials', label: 'الإدارة المالية الشاملة', icon: CreditCard },
     { href: '/dashboard/admin/payouts', label: 'تسويات المعلمين', icon: BadgeDollarSign },
     { href: '/dashboard/admin/settings', label: 'إعدادات النظام', icon: Settings },
     { href: '/dashboard/admin/verification', label: 'طلبات التوثيق', icon: ShieldCheck },

@@ -11,10 +11,7 @@ export default async function AdminDashboard() {
   if (!session) redirect('/login');
   if (session.user.userType !== 'ADMIN') redirect('/unauthorized');
 
-  // --- 1. Pending Actions ---
-  const pendingPayments = await prisma.payment.count({
-    where: { isPaid: false, method: 'BANK_TRANSFER', bankTransferProofUrl: { not: null } },
-  });
+
   const pendingVerifications = await prisma.teacherVerification.count({
     where: { reviewedAt: null },
   });
@@ -136,12 +133,7 @@ export default async function AdminDashboard() {
             </p>
           </div>
           <div className="flex gap-3">
-            {pendingPayments > 0 && (
-              <Link href="/dashboard/admin/payments" className="bg-white/20 hover:bg-white/30 backdrop-blur-md transition-all text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 border border-white/20">
-                <CreditCard className="h-4 w-4" /> حوالات معلقة
-                <span className="bg-rose-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">{pendingPayments}</span>
-              </Link>
-            )}
+
             {pendingVerifications > 0 && (
               <Link href="/dashboard/admin/verification" className="bg-white/20 hover:bg-white/30 backdrop-blur-md transition-all text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 border border-white/20">
                 <ShieldCheck className="h-4 w-4" /> توثيق معلمين

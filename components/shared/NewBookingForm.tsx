@@ -155,10 +155,7 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
       return;
     }
 
-    if (formData.paymentMethod === 'BANK_TRANSFER' && !formData.isTrial && !formData.proofUrl) {
-      setErrorMsg('يرجى رفع إيصال التحويل البنكي للمتابعة');
-      return;
-    }
+
 
     setLoading(true);
     setErrorMsg(null);
@@ -173,8 +170,7 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
         questionDetails: activeService?.serviceType.name === 'شرح مسألة سريعة' ? formData.questionDetails : undefined,
         questionImageUrl: activeService?.serviceType.name === 'شرح مسألة سريعة' ? formData.questionImageUrl : undefined,
         parentNotes: formData.parentNotes || undefined,
-        paymentMethod: formData.paymentMethod,
-        bankTransferProofUrl: formData.paymentMethod === 'BANK_TRANSFER' ? formData.proofUrl : undefined,
+        paymentMethod: 'ONLINE_CARD',
       });
 
       if (res.success) {

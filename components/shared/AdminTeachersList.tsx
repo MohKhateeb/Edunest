@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { verifyTeacher, rejectTeacher } from '@/lib/actions/admin';
 import { Star, Loader2, Eye } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { VERIFICATION_LEVEL, type VerificationLevel } from '@/lib/enums';
+import { VerificationLevel } from '@prisma/client';
 import { VERIFICATION_BADGE } from '@/lib/translations';
 import DetailsModal from '@/components/shared/DetailsModal';
 import DataTable from '@/components/shared/DataTable';
@@ -36,7 +36,7 @@ export default function AdminTeachersList({ teachers }: AdminTeachersListProps) 
 
   const handleLevelChange = async (teacherId: string, level: VerificationLevel) => {
     setLoadingId(teacherId);
-    if (level === VERIFICATION_LEVEL.NONE) {
+    if (level === VerificationLevel.NONE) {
       await rejectTeacher(teacherId, 'تم إلغاء التوثيق من المدير العام');
     } else {
       await verifyTeacher(teacherId, level);
@@ -73,10 +73,10 @@ export default function AdminTeachersList({ teachers }: AdminTeachersListProps) 
             onChange={(e) => setFilterLevel(e.target.value)}
           >
             <option value="ALL">كل المستويات</option>
-            <option value={VERIFICATION_LEVEL.NONE}>غير موثق</option>
-            <option value={VERIFICATION_LEVEL.BRONZE}>برونزي</option>
-            <option value={VERIFICATION_LEVEL.SILVER}>فضي</option>
-            <option value={VERIFICATION_LEVEL.GOLD}>ذهبي</option>
+            <option value={VerificationLevel.NONE}>غير موثق</option>
+            <option value={VerificationLevel.BRONZE}>برونزي</option>
+            <option value={VerificationLevel.SILVER}>فضي</option>
+            <option value={VerificationLevel.GOLD}>ذهبي</option>
           </select>
         }
         emptyMessage="لا توجد نتائج مطابقة للبحث."
@@ -144,10 +144,10 @@ export default function AdminTeachersList({ teachers }: AdminTeachersListProps) 
                     onChange={(e) => handleLevelChange(t.id, e.target.value as VerificationLevel)}
                     className="premium-input text-xs w-36 cursor-pointer"
                   >
-                    <option value={VERIFICATION_LEVEL.NONE}>غير موثق (NONE)</option>
-                    <option value={VERIFICATION_LEVEL.BRONZE}>برونزي (BRONZE)</option>
-                    <option value={VERIFICATION_LEVEL.SILVER}>فضي (SILVER)</option>
-                    <option value={VERIFICATION_LEVEL.GOLD}>ذهبي (GOLD)</option>
+                    <option value={VerificationLevel.NONE}>غير موثق (NONE)</option>
+                    <option value={VerificationLevel.BRONZE}>برونزي (BRONZE)</option>
+                    <option value={VerificationLevel.SILVER}>فضي (SILVER)</option>
+                    <option value={VerificationLevel.GOLD}>ذهبي (GOLD)</option>
                   </select>
                 )}
               </td>

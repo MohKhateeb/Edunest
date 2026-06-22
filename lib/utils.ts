@@ -43,13 +43,9 @@ export function sanitizePrismaData<T>(obj: T): T {
       return (obj as any).toNumber();
     }
 
-    const newObj: any = {};
-    for (const key in obj) {
-      if (Object.prototype.hasOwnProperty.call(obj, key)) {
-        newObj[key] = sanitizePrismaData(obj[key]);
-      }
-    }
-    return newObj;
+    return Object.fromEntries(
+      Object.entries(obj).map(([k, v]) => [k, sanitizePrismaData(v)])
+    ) as unknown as T;
   }
 
   return obj;

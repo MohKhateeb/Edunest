@@ -16,7 +16,6 @@ export const BOOKING_STATUS_AR: Record<BookingStatus, string> = {
 
 export const PAYMENT_STATUS_AR: Record<PaymentStatus, string> = {
   UNPAID: 'غير مدفوع',
-  PENDING_VERIFICATION: 'بانتظار التأكيد',
   PAID: 'مدفوع',
   REFUNDED: 'مُسترد',
 };
@@ -38,8 +37,6 @@ export const USER_TYPE_AR: Record<UserType, string> = {
 };
 
 export const PAYMENT_METHOD_AR: Record<PaymentMethod, string> = {
-  CASH: 'نقداً',
-  BANK_TRANSFER: 'تحويل بنكي',
   ONLINE_CARD: 'بطاقة إلكترونية',
 };
 

@@ -197,7 +197,7 @@ async function main() {
     { status: BookingStatus.COMPLETED, paymentStatus: PaymentStatus.PAID, daysOffset: -5, withReport: true, withReview: true },
     { status: BookingStatus.COMPLETED, paymentStatus: PaymentStatus.PAID, daysOffset: -3, withReport: true, withReview: false },
     { status: BookingStatus.CONFIRMED, paymentStatus: PaymentStatus.PAID, daysOffset: 1, withReport: false, withReview: false },
-    { status: BookingStatus.CONFIRMED, paymentStatus: PaymentStatus.PENDING_VERIFICATION, daysOffset: 2, withReport: false, withReview: false },
+    { status: BookingStatus.CONFIRMED, paymentStatus: PaymentStatus.PAID, daysOffset: 2, withReport: false, withReview: false },
     { status: BookingStatus.PENDING, paymentStatus: PaymentStatus.UNPAID, daysOffset: 3, withReport: false, withReview: false },
     { status: BookingStatus.PENDING, paymentStatus: PaymentStatus.UNPAID, daysOffset: 4, withReport: false, withReview: false },
     { status: BookingStatus.REJECTED, paymentStatus: PaymentStatus.REFUNDED, daysOffset: -1, withReport: false, withReview: false },
@@ -241,7 +241,7 @@ async function main() {
         data: {
           bookingId: booking.id,
           amount: teacherSvc.price,
-          method: PaymentMethod.BANK_TRANSFER,
+          method: PaymentMethod.ONLINE_CARD,
           isPaid: scenario.paymentStatus === PaymentStatus.PAID,
           paidAt: scenario.paymentStatus === PaymentStatus.PAID ? new Date() : null,
         }

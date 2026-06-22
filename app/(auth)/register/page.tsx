@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { GraduationCap, Mail, Lock, User, Phone, Check, Loader2, AlertCircle, Briefcase } from 'lucide-react';
 import { registerUser } from '@/lib/actions/user';
 import { registerSchema } from '@/lib/validations/user';
-import { UserType } from '@/lib/enums';
+import { UserType } from '@prisma/client';
 import { cn } from '@/lib/utils';
 
 export default function RegisterPage() {

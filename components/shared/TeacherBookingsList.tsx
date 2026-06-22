@@ -19,8 +19,11 @@ import {
   Video, 
   FileText, 
   X,
-  Clock
+  Clock,
+  AlertTriangle
 } from 'lucide-react';
+import InteractiveMessage from '@/components/shared/InteractiveMessage';
+import { getDetailedSessionState } from '@/lib/utils/booking-state';
 
 // أسماء الأشهر باللغة العربية
 const MONTHS_AR = [
@@ -66,6 +69,8 @@ export default function TeacherBookingsList({ bookings }: TeacherBookingsListPro
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
+
+  const ghostCount = bookings.filter(b => b.status === 'CONFIRMED' && getDetailedSessionState(b.startTime, b.duration).status === 'ghost').length;
 
   // تصفية الحجوزات بناءً على مدخلات البحث والحالة النشطة
   const filteredBookings = useMemo(() => {
@@ -215,6 +220,49 @@ export default function TeacherBookingsList({ bookings }: TeacherBookingsListPro
     <div className="space-y-6" dir="rtl">
       {/* قسم البحث والتصفية للتقويم والقائمة */}
       <div className="flex flex-col gap-4 bg-card border border-border p-5 rounded-xl shadow-sm">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-2xl font-extrabold text-slate-800 dark:text-white">جدول الحصص</h1>
+            <p className="text-sm text-muted-foreground mt-1">تتبع جدولك، قم بإدارة مواعيدك، وتواصل مع طلابك</p>
+          </div>
+          
+          <div className="flex gap-2 w-full sm:w-auto">
+            <button
+              onClick={() => setViewMode('calendar')}
+              className={cn(
+                "flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all",
+                viewMode === 'calendar' 
+                  ? "bg-primary text-white shadow-md" 
+                  : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-border hover:bg-slate-50 dark:hover:bg-slate-700"
+              )}
+            >
+              <CalendarIcon className="w-4 h-4" />
+              <span>التقويم</span>
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={cn(
+                "flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-xl text-sm font-bold transition-all",
+                viewMode === 'list' 
+                  ? "bg-primary text-white shadow-md" 
+                  : "bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-border hover:bg-slate-50 dark:hover:bg-slate-700"
+              )}
+            >
+              <List className="w-4 h-4" />
+              <span>القائمة</span>
+            </button>
+          </div>
+        </div>
+
+        {ghostCount > 0 && (
+          <InteractiveMessage 
+            character="najeeb"
+            najeebMode="help"
+            message={`تنبيه هام! لديك ${ghostCount} جلسة معلقة لم تقم بإغلاقها ورفع تقريرها لأكثر من 24 ساعة. لن يتم احتساب أرباح هذه الجلسات حتى تقوم بإنهائها.`}
+          />
+        )}
+
+        {/* 2. شريط الفلاتر والبحث المتطور (شاشات كبيرة) */}
         <div className="flex flex-col md:flex-row gap-4">
           <div className="relative flex-1">
             <input

@@ -45,12 +45,7 @@ export function getLocalTimeString(utcDate: Date): string {
 }
 
 export function getLocalDateString(utcDate: Date): string {
-  const parts = new Intl.DateTimeFormat('en-CA', {
-    timeZone: PALESTINE_TZ,
-    year: 'numeric', month: '2-digit', day: '2-digit',
-  }).formatToParts(utcDate);
-  const get = (type: string) => parts.find(p => p.type === type)?.value ?? '';
-  return `${get('year')}-${get('month')}-${get('day')}`;
+  return new Intl.DateTimeFormat('en-CA', { timeZone: PALESTINE_TZ }).format(utcDate);
 }
 
 export function crossesMidnight(startUtc: Date, durationMinutes: number): boolean {

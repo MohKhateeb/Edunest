@@ -33,19 +33,14 @@ export async function markNotificationAsRead(notificationId: string): Promise<Ac
       return { success: false, error: 'غير مصرح لك' };
     }
 
-    // Verify ownership
-    const notification = await prisma.notification.findUnique({
-      where: { id: notificationId },
-    });
-
-    if (!notification || notification.userId !== session.user.id) {
-      return { success: false, error: 'الإشعار غير موجود' };
-    }
-
-    await prisma.notification.update({
-      where: { id: notificationId },
+    const result = await prisma.notification.updateMany({
+      where: { id: notificationId, userId: session.user.id },
       data: { isRead: true },
     });
+
+    if (result.count === 0) {
+      return { success: false, error: 'الإشعار غير موجود' };
+    }
 
     return { success: true };
   } catch (error) {
