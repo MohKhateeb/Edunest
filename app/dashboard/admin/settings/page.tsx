@@ -7,7 +7,6 @@ export default async function AdminSettingsPage() {
   const session = await auth();
   if (!session) redirect('/login');
 
-  if (session.user.userType !== 'ADMIN') redirect('/unauthorized');
 
   const settings = await prisma.systemSetting.findMany({
     orderBy: { settingKey: 'asc' },

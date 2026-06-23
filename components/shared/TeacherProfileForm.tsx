@@ -120,7 +120,7 @@ export default function TeacherProfileForm({ initialData }: TeacherProfileFormPr
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
+    <div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl shadow-sm hover:shadow-md transition-all overflow-hidden">
       {/* Stepper Header */}
       <div className="bg-muted/30 border-b border-border px-8 py-6">
         <h2 className="font-extrabold text-xl mb-6">إعداد الملف الشخصي</h2>

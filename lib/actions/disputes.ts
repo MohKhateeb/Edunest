@@ -150,6 +150,19 @@ export async function sendDisputeMessage(data: z.infer<typeof sendMessageSchema>
       return { success: false, error: 'غير مصرح.' };
     }
 
+    // Verify Turn
+    if (userType !== UserType.ADMIN) {
+      if (dispute.allowedTurn === 'NONE') {
+        return { success: false, error: 'المحادثة مغلقة من قبل الإدارة حالياً.' };
+      }
+      if (dispute.allowedTurn === 'PARENT' && userType !== UserType.PARENT) {
+        return { success: false, error: 'عذراً، الإدارة تنتظر رد ولي الأمر الآن. لا يمكنك الإرسال.' };
+      }
+      if (dispute.allowedTurn === 'TEACHER' && userType !== UserType.TEACHER) {
+        return { success: false, error: 'عذراً، الإدارة تنتظر رد المعلم الآن. لا يمكنك الإرسال.' };
+      }
+    }
+
     await prisma.disputeMessage.create({
       data: {
         disputeId,
@@ -164,6 +177,36 @@ export async function sendDisputeMessage(data: z.infer<typeof sendMessageSchema>
   } catch (err: unknown) {
     console.error(err);
     return { success: false, error: 'حدث خطأ أثناء إرسال الرسالة' };
+  }
+}
+
+export async function changeDisputeTurn(disputeId: string, turn: 'BOTH' | 'PARENT' | 'TEACHER' | 'NONE'): Promise<ActionResponse> {
+  try {
+    await requireAuth([UserType.ADMIN]);
+
+    const dispute = await prisma.dispute.findUnique({
+      where: { id: disputeId }
+    });
+
+    if (!dispute) {
+      return { success: false, error: 'النزاع غير موجود.' };
+    }
+
+    if (dispute.status !== 'OPEN') {
+      return { success: false, error: 'لا يمكن تغيير دور المحادثة لنزاع مغلق.' };
+    }
+
+    await prisma.dispute.update({
+      where: { id: disputeId },
+      data: { allowedTurn: turn }
+    });
+
+    revalidatePath(`/dashboard/disputes/${disputeId}`);
+
+    return { success: true };
+  } catch (err: unknown) {
+    console.error(err);
+    return { success: false, error: 'حدث خطأ أثناء تغيير صلاحيات المحادثة' };
   }
 }
 
@@ -217,18 +260,19 @@ export async function resolveDispute(data: z.infer<typeof resolveDisputeSchema>)
 
       // 3. Update payment logic if resolved in favor of parent
       if (decision === 'RESOLVED_IN_FAVOR_OF_PARENT') {
-        // Simulating refund by marking payment as REFUNDED
         await tx.booking.update({
           where: { id: dispute.bookingId },
           data: { paymentStatus: 'REFUNDED' },
         });
 
-        if (dispute.booking.payment) {
-            await tx.payment.update({
-              where: { bookingId: dispute.bookingId },
-              data: { isPaid: false },
-            });
-        }
+        // Create ParentRefund pending transfer
+        await tx.parentRefund.create({
+          data: {
+            bookingId: dispute.bookingId,
+            amount: dispute.booking.price,
+            isPaid: false,
+          },
+        });
       }
 
       // Notifications

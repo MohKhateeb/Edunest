@@ -49,6 +49,7 @@ model User {
   reviewedVerifications TeacherVerification[] @relation("ReviewedByUser")
   tutoringRequests      TutoringRequest[]     @relation("ParentRequests")
   disputeMessages       DisputeMessage[]
+  disputes              Dispute[]
 
   @@index([userType])
 }
@@ -95,6 +96,7 @@ model Teacher {
   @@index([city(ops: raw("gin_trgm_ops"))], type: Gin)
   @@index([specialization(ops: raw("gin_trgm_ops"))], type: Gin)
   @@index([verificationLevel])
+  @@index([averageRating(sort: Desc)])
 }
 
 model TeacherVerification {
@@ -212,11 +214,11 @@ enum PaymentMethod {
 model Booking {
   id                    String         @id @default(cuid())
   parentUserId          String
-  parent                User           @relation("ParentBookings", fields: [parentUserId], references: [id])
+  parent                User           @relation("ParentBookings", fields: [parentUserId], references: [id], onDelete: Restrict)
   studentId             String
-  student               Student        @relation(fields: [studentId], references: [id])
+  student               Student        @relation(fields: [studentId], references: [id], onDelete: Restrict)
   teacherServiceId      String
-  teacherService        TeacherService @relation(fields: [teacherServiceId], references: [id])
+  teacherService        TeacherService @relation(fields: [teacherServiceId], references: [id], onDelete: Restrict)
   startTime             DateTime // UTC حصراً
   duration              Int // بالدقائق
   price                 Decimal        @db.Decimal(10, 2)
@@ -234,6 +236,7 @@ model Booking {
   teacherNotes          String?
   cancellationReason    String?
   cancelledBy           String?
+  cancelledByType       UserType?
   payoutId              String? // ⭐ يربط الحجز بالتسوية لمنع الدفع المزدوج
   createdAt             DateTime       @default(now())
   confirmedAt           DateTime?
@@ -245,8 +248,10 @@ model Booking {
   cancellingUser        User?          @relation("CancelledByUser", fields: [cancelledBy], references: [id])
   payout                TeacherPayout? @relation("BookingPayout", fields: [payoutId], references: [id])
   dispute               Dispute?
+  parentRefund          ParentRefund?
 
   @@index([parentUserId])
+  @@index([teacherServiceId])
   @@index([status])
   @@index([isTrial])
   @@index([startTime])
@@ -272,7 +277,7 @@ model SessionReport {
 model Review {
   id        String   @id @default(cuid())
   bookingId String   @unique
-  booking   Booking  @relation(fields: [bookingId], references: [id])
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Restrict)
   teacherId String
   teacher   Teacher  @relation(fields: [teacherId], references: [id])
   rating    Int
@@ -289,7 +294,7 @@ model Review {
 model Payment {
   id        String        @id @default(cuid())
   bookingId String        @unique
-  booking   Booking       @relation(fields: [bookingId], references: [id])
+  booking   Booking       @relation(fields: [bookingId], references: [id], onDelete: Restrict)
   amount    Decimal       @db.Decimal(10, 2)
   method    PaymentMethod @default(ONLINE_CARD)
   isPaid    Boolean       @default(false)
@@ -315,6 +320,18 @@ model TeacherPayout {
   @@index([teacherId])
 }
 
+model ParentRefund {
+  id        String    @id @default(cuid())
+  bookingId String    @unique
+  booking   Booking   @relation(fields: [bookingId], references: [id])
+  amount    Decimal   @db.Decimal(10, 2)
+  isPaid    Boolean   @default(false)
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([bookingId])
+}
+
 // ════════════════════════════════════════════════════
 // الإشعارات
 // ════════════════════════════════════════════════════
@@ -324,6 +341,7 @@ model Notification {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   title     String
   message   String
+  link      String? // رابط للتوجيه عند النقر
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
 
@@ -382,8 +400,8 @@ model TutoringRequest {
   details        String?         @db.Text
   imageUrl       String? // رابط صورة السؤال المرفوعة
   startTime      DateTime // الوقت المطلوب لبدء الجلسة (UTC)
-  duration       Int // مدة الجلسة بالدقائق
-  price          Decimal         @db.Decimal(10, 2) // السعر/الميزانية المقترحة من ولي الأمر
+  duration       Int? // مدة الجلسة بالدقائق
+  price          Decimal?        @db.Decimal(10, 2) // السعر/الميزانية المقترحة من ولي الأمر
   status         RequestStatus   @default(PENDING)
   offers         TutoringOffer[]
   createdAt      DateTime        @default(now())
@@ -401,6 +419,7 @@ model TutoringOffer {
   request   TutoringRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
   teacherId String
   teacher   Teacher         @relation("TeacherOffers", fields: [teacherId], references: [id], onDelete: Cascade)
+  duration  Int             @default(30) // المدة المحددة من المعلم
   price     Decimal         @db.Decimal(10, 2) // السعر المعروض من المعلم
   notes     String?         @db.Text
   status    OfferStatus     @default(PENDING)
@@ -421,18 +440,29 @@ enum DisputeStatus {
   RESOLVED_IN_FAVOR_OF_TEACHER
 }
 
+enum DisputeTurn {
+  BOTH
+  PARENT
+  TEACHER
+  NONE
+}
+
 model Dispute {
   id           String           @id @default(cuid())
   bookingId    String           @unique
-  booking      Booking          @relation(fields: [bookingId], references: [id])
+  booking      Booking          @relation(fields: [bookingId], references: [id], onDelete: Restrict)
   parentUserId String
+  parent       User             @relation(fields: [parentUserId], references: [id])
   reason       String           @db.Text
   status       DisputeStatus    @default(OPEN)
+  allowedTurn  DisputeTurn      @default(TEACHER) // Default to waiting for Teacher since Parent opened it
   adminNotes   String?          @db.Text
   resolvedAt   DateTime?
   resolvedBy   String?
   createdAt    DateTime         @default(now())
   messages     DisputeMessage[]
+
+  @@index([parentUserId])
 }
 
 model DisputeMessage {

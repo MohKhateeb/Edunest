@@ -1,4 +1,6 @@
 import { prisma } from '@/lib/prisma';
+import { bookingDetailsInclude } from '@/lib/types';
+import { sanitizePrismaData } from '@/lib/utils';
 
 export type DashboardInsights = {
   hakeemMessage: string;
@@ -42,19 +44,11 @@ export async function getParentDashboardInsights(userId: string, userName: strin
       status: 'CONFIRMED',
       startTime: { gte: new Date() },
     },
-    include: {
-      student: true,
-      teacherService: {
-        include: {
-          serviceType: true,
-          teacher: {
-            include: { user: { select: { name: true } } },
-          },
-        },
-      },
-    },
+    include: bookingDetailsInclude,
     orderBy: { startTime: 'asc' },
   });
+
+  const sanitizedNextSession = nextSession ? sanitizePrismaData(nextSession) : null;
 
   const students = await prisma.student.findMany({
     where: { parentUserId: userId, isActive: true },
@@ -167,7 +161,7 @@ export async function getParentDashboardInsights(userId: string, userName: strin
       avgRating,
       isWeekly
     },
-    nextSession,
+    nextSession: sanitizedNextSession,
     notifications
   };
 }

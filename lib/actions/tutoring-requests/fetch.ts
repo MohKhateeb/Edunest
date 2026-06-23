@@ -2,6 +2,7 @@
 
 import { requireAuth } from '@/lib/require-auth';
 import { UserType, RequestStatus } from '@prisma/client';
+import { requireTeacherProfile } from '@/lib/actions/auth-helpers';
 import { prisma } from '@/lib/prisma';
 import { ActionResponse } from '@/lib/types';
 import { checkConflictingBookings } from '@/lib/utils/availability';
@@ -70,16 +71,7 @@ export async function getAvailableRequestsForTeacher(): Promise<ActionResponse<{
   try {
     const { userId } = await requireAuth([UserType.TEACHER]);
 
-    const teacher = await prisma.teacher.findUnique({
-      where: { userId },
-      include: {
-        user: { select: { name: true } },
-      },
-    });
-
-    if (!teacher) {
-      return { success: false, error: 'لم يتم العثور على ملف المعلم' };
-    }
+    const teacher = await requireTeacherProfile(userId);
 
     if (!teacher.isVerified) {
       return { success: false, error: 'يجب توثيق حسابك أولاً لتتمكن من تقديم عروض' };

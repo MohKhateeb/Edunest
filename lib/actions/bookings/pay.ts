@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { ActionResponse } from '@/lib/types';
 import { createNotification } from '@/lib/notifications';
 import { revalidatePath } from 'next/cache';
+import crypto from 'crypto';
 
 export async function processPayment(bookingId: string): Promise<ActionResponse> {
   try {
@@ -33,8 +34,6 @@ export async function processPayment(bookingId: string): Promise<ActionResponse>
       return { success: false, error: 'هذا الحجز ليس بحالة انتظار الدفع' };
     }
 
-    // Artificial delay to simulate network request for mock payment
-    await new Promise((resolve) => setTimeout(resolve, 2000));
 
     await prisma.$transaction(async (tx) => {
       // 1. تحديث جدول Payment (إن وجد) أو إنشاؤه إذا لم يكن موجوداً
@@ -58,19 +57,26 @@ export async function processPayment(bookingId: string): Promise<ActionResponse>
         });
       }
 
-      // 2. تحديث حالة الدفع في جدول الحجز نفسه
+      // 2. تحديث حالة الدفع في جدول الحجز نفسه وتحويله لـ CONFIRMED وتوليد الرابط
       await tx.booking.update({
         where: { id: bookingId },
         data: {
           paymentStatus: PaymentStatus.PAID,
+          status: BookingStatus.CONFIRMED,
+          confirmedAt: new Date(),
+          meetingUrl: booking.meetingUrl || `https://meet.jit.si/edunest-${crypto.randomUUID()}`,
         },
       });
 
-      // 3. إرسال إشعار للمعلم بأنه يمكنه الآن الموافقة
+      // 3. إرسال إشعار للمعلم بتأكيد الحجز الفوري
+      const isImmediate = booking.startTime <= new Date(Date.now() + 5 * 60000);
       await createNotification({
         userId: booking.teacherService.teacher.userId,
-        title: 'تم دفع قيمة الحجز 💳',
-        message: 'قام ولي الأمر بدفع قيمة الحجز المعلق، يمكنك الآن الدخول وتأكيد الحجز وبدء الجلسة في موعدها.',
+        title: isImmediate ? 'الجلسة الفورية بدأت الآن! 🚨' : 'حجز جديد مؤكد! 🎉',
+        message: isImmediate 
+          ? 'لقد وافقت على الطلب وقام ولي الأمر بالدفع. الجلسة بدأت فوراً، ادخل الآن وتوجه لصفحة الحجوزات لتجد الرابط!'
+          : 'قام ولي الأمر بدفع قيمة الحجز وتم تأكيده تلقائياً. يمكنك الآن الدخول وتجهيز الجلسة في موعدها.',
+        link: '/dashboard/teacher/bookings',
       }, tx);
     });
 

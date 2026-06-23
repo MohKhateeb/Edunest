@@ -5,14 +5,13 @@ import { useRouter } from 'next/navigation';
 import { searchAvailableTeachers } from '@/lib/actions/booking';
 import { createBooking } from '@/lib/actions/booking';
 import { getLocalDateString, PALESTINE_TZ } from '@/lib/utils/time';
+import { PaymentModal } from '@/components/shared/PaymentModal';
 import {
   Search,
   User,
   BookOpen,
-  CreditCard,
   Loader2,
   AlertCircle,
-  UploadCloud,
   CheckCircle,
   Clock,
   Calendar,
@@ -99,16 +98,14 @@ export default function TimeFirstBookingForm({
     selectedServiceId: '',
     selectedStudentId: students[0]?.id ?? '',
     isTrial: false,
-    paymentMethod: 'CASH' as 'CASH' | 'BANK_TRANSFER',
     parentNotes: '',
     questionTitle: '',
     questionDetails: '',
     questionImageUrl: '',
-    proofUrl: '',
   });
-  const [uploadingProof, setUploadingProof] = useState(false);
 
   // حالة الإرسال
+  const [createdBooking, setCreatedBooking] = useState<{ id: string; price: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -197,39 +194,6 @@ export default function TimeFirstBookingForm({
     setCurrentStep('details');
   };
 
-  // رفع إيصال
-  const handleUploadProof = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploadingProof(true);
-    setErrorMsg(null);
-
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('bucket', 'payment-proofs');
-
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      const resData = await res.json();
-      setUploadingProof(false);
-
-      if (res.ok && resData.url) {
-        handleBookingChange('proofUrl', resData.url);
-      } else {
-        setErrorMsg(resData.error || 'فشل رفع إيصال التحويل');
-      }
-    } catch (err: unknown) {
-      console.error(err);
-      setErrorMsg('حدث خطأ أثناء الاتصال بمركز رفع الملفات');
-      setUploadingProof(false);
-    }
-  };
-
   // إرسال الحجز النهائي
   const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -242,7 +206,6 @@ export default function TimeFirstBookingForm({
       setErrorMsg('يرجى تحديد الخدمة المطلوبة');
       return;
     }
-
 
     setLoading(true);
     setErrorMsg(null);
@@ -264,10 +227,14 @@ export default function TimeFirstBookingForm({
       });
 
       if (res.success) {
-        setSuccess(true);
-        setTimeout(() => {
-          router.push('/dashboard/parent/bookings');
-        }, 2000);
+        if (bookingDetails.isTrial) {
+          setSuccess(true);
+          setTimeout(() => {
+            router.push('/dashboard/parent/bookings');
+          }, 2000);
+        } else if (res.data) {
+          setCreatedBooking({ id: res.data.bookingId, price: activeService?.price || 0 });
+        }
       } else {
         setErrorMsg(res.error);
         setLoading(false);
@@ -331,6 +298,20 @@ export default function TimeFirstBookingForm({
 
   return (
     <div className="max-w-2xl mx-auto space-y-4">
+      {createdBooking && (
+        <PaymentModal
+          bookingId={createdBooking.id}
+          price={createdBooking.price}
+          onClose={() => {
+            setCreatedBooking(null);
+            setSuccess(true);
+            setTimeout(() => {
+              router.push('/dashboard/parent/bookings');
+            }, 1500);
+          }}
+        />
+      )}
+
       {/* شريط الخطوات */}
       <div className="flex items-center gap-2 mb-2">
         {[
@@ -742,80 +723,6 @@ export default function TimeFirstBookingForm({
               </div>
             )}
 
-            {/* طريقة الدفع */}
-            {!bookingDetails.isTrial && (
-              <div className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
-                    <CreditCard className="h-4 w-4" />
-                    طريقة الدفع
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => handleBookingChange('paymentMethod', 'CASH')}
-                      className={cn(
-                        'p-3 rounded-lg border text-xs font-semibold text-center cursor-pointer transition-all',
-                        bookingDetails.paymentMethod === 'CASH'
-                          ? 'bg-primary/10 border-primary text-primary'
-                          : 'border-border hover:bg-accent'
-                      )}
-                    >
-                      نقداً (مع نهاية الجلسة)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleBookingChange('paymentMethod', 'BANK_TRANSFER')}
-                      className={cn(
-                        'p-3 rounded-lg border text-xs font-semibold text-center cursor-pointer transition-all',
-                        bookingDetails.paymentMethod === 'BANK_TRANSFER'
-                          ? 'bg-primary/10 border-primary text-primary'
-                          : 'border-border hover:bg-accent'
-                      )}
-                    >
-                      تحويل بنكي (قبل موعد الجلسة)
-                    </button>
-                  </div>
-                </div>
-
-                {/* رفع إيصال التحويل */}
-                {bookingDetails.paymentMethod === 'BANK_TRANSFER' && (
-                  <div className="space-y-2 border border-dashed border-border rounded-xl p-4 text-center bg-accent/20">
-                    <UploadCloud className="h-8 w-8 text-muted-foreground mx-auto" />
-                    <span className="text-xs font-bold text-foreground/80 block">إيصال تأكيد التحويل البنكي *</span>
-                    <p className="text-[10px] text-muted-foreground">
-                      قم بتحويل الرسوم المقررة للبنك، ثم ارفع لقطة شاشة لإثبات التحويل
-                    </p>
-
-                    <div className="pt-2 flex justify-center">
-                      <input
-                        type="file"
-                        id="proof-time"
-                        accept="image/*"
-                        onChange={handleUploadProof}
-                        className="hidden"
-                      />
-                      <label
-                        htmlFor="proof-time"
-                        className="bg-card border border-border hover:bg-accent text-xs font-semibold px-4 py-2 rounded-lg cursor-pointer flex items-center gap-1.5 shadow-sm"
-                      >
-                        {uploadingProof ? (
-                          <>
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                            جاري الرفع...
-                          </>
-                        ) : bookingDetails.proofUrl ? (
-                          'تم رفع الإيصال بنجاح ✓'
-                        ) : (
-                          'اختر ملف الصورة للرفع'
-                        )}
-                      </label>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
             {/* ملاحظات */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-muted-foreground">ملاحظات إضافية للمعلم (اختياري)</label>
@@ -833,7 +740,7 @@ export default function TimeFirstBookingForm({
             <div className="border-t border-border pt-4">
               <button
                 type="submit"
-                disabled={loading || uploadingProof}
+                disabled={loading}
                 className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-3 rounded-lg text-sm font-bold shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
               >
                 {loading ? (

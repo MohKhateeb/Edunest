@@ -80,7 +80,7 @@ export default function AdminVerificationQueue({ requests }: AdminVerificationQu
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
       {/* Requests List */}
-      <div className="lg:col-span-1 bg-card border border-border rounded-xl p-5 shadow-sm space-y-4">
+      <div className="lg:col-span-1 bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all space-y-4">
         <h3 className="font-extrabold text-sm border-b border-border pb-2.5 flex items-center gap-2">
           <Clock className="h-5 w-5 text-yellow-600" />
           طلبات التوثيق المعلقة ({requests.length})
@@ -134,7 +134,7 @@ export default function AdminVerificationQueue({ requests }: AdminVerificationQu
       </div>
 
       {/* Review Panel */}
-      <div className="lg:col-span-2 bg-card border border-border rounded-xl p-6 shadow-sm min-h-[300px] flex flex-col justify-between">
+      <div className="lg:col-span-2 bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all min-h-[300px] flex flex-col justify-between">
         {activeRequest ? (
           <div className="space-y-6">
             <div className="border-b border-border pb-3 flex justify-between items-start gap-4">

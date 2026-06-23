@@ -122,7 +122,7 @@ export default function TeacherVerificationForm({ initialData, isVerified }: Tea
   const isFieldsDisabled = isVerified || isPending;
 
   return (
-    <div className="bg-card border border-border rounded-xl p-8 space-y-6 shadow-sm">
+    <div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-8 space-y-6 shadow-sm hover:shadow-md transition-all">
       <div>
         <h2 className="font-extrabold text-xl mb-1">توثيق الملف الأكاديمي</h2>
         <p className="text-xs text-muted-foreground">

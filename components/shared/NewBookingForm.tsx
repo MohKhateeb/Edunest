@@ -4,8 +4,8 @@ import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createBooking } from '@/lib/actions/booking';
 import TimeSlotPicker from './TimeSlotPicker';
-import { User, BookOpen, CreditCard, Loader2, AlertCircle, UploadCloud, CheckCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { PaymentModal } from '@/components/shared/PaymentModal';
+import { User, BookOpen, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
 
 type Student = {
   id: string;
@@ -72,16 +72,13 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
     selectedStudentId: students[0]?.id ?? '',
     isTrial: false,
     startTime: null as Date | null,
-    paymentMethod: 'CASH' as 'CASH' | 'BANK_TRANSFER',
     parentNotes: '',
     questionTitle: '',
     questionDetails: '',
     questionImageUrl: '',
-    proofUrl: '',
   });
-  const [uploadingProof, setUploadingProof] = useState(false);
 
-  // General submission state
+  const [createdBooking, setCreatedBooking] = useState<{ id: string; price: number } | null>(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -89,7 +86,6 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
   const activeTutor = teachers.find((t) => t.id === formData.selectedTutorId);
   const activeService = activeTutor?.services.find((s) => s.id === formData.selectedServiceId);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleCustomChange = (name: string, value: any) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -101,39 +97,6 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
 
   const handleCheckboxChange = (name: string, checked: boolean) => {
     setFormData((prev) => ({ ...prev, [name]: checked }));
-  };
-
-  // Handle bank transfer screenshot upload
-  const handleUploadProof = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploadingProof(true);
-    setErrorMsg(null);
-
-    const data = new FormData();
-    data.append('file', file);
-    data.append('bucket', 'payment-proofs');
-
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: data,
-      });
-
-      const resData = await res.json();
-      setUploadingProof(false);
-
-      if (res.ok && resData.url) {
-        handleCustomChange('proofUrl', resData.url);
-      } else {
-        setErrorMsg(resData.error || 'فشل رفع إيصال التحويل');
-      }
-    } catch (err: unknown) {
-      console.error(err);
-      setErrorMsg('حدث خطأ أثناء الاتصال بمركز رفع الملفات');
-      setUploadingProof(false);
-    }
   };
 
   const handleBookingSubmit = async (e: React.FormEvent) => {
@@ -155,8 +118,6 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
       return;
     }
 
-
-
     setLoading(true);
     setErrorMsg(null);
 
@@ -174,10 +135,14 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
       });
 
       if (res.success) {
-        setSuccess(true);
-        setTimeout(() => {
-          router.push('/dashboard/parent/bookings');
-        }, 2000);
+        if (formData.isTrial) {
+          setSuccess(true);
+          setTimeout(() => {
+            router.push('/dashboard/parent/bookings');
+          }, 2000);
+        } else if (res.data) {
+          setCreatedBooking({ id: res.data.bookingId, price: activeService?.price || 0 });
+        }
       } else {
         setErrorMsg(res.error);
         setLoading(false);
@@ -209,6 +174,19 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
 
   return (
     <div className="max-w-2xl mx-auto">
+      {createdBooking && (
+        <PaymentModal
+          bookingId={createdBooking.id}
+          price={createdBooking.price}
+          onClose={() => {
+            setCreatedBooking(null);
+            setSuccess(true);
+            setTimeout(() => {
+              router.push('/dashboard/parent/bookings');
+            }, 1500);
+          }}
+        />
+      )}
       <div className="bg-card border border-border rounded-2xl p-8 shadow-sm space-y-6">
         {success ? (
           <div className="text-center py-8 space-y-3">
@@ -231,7 +209,6 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
               </div>
             )}
 
-            {/* 1. Student Selection */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
                 <User className="h-4 w-4" />
@@ -250,7 +227,6 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
               </select>
             </div>
 
-            {/* 2. Teacher Selection */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
                 <User className="h-4 w-4" />
@@ -299,7 +275,6 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
               </div>
             )}
 
-            {/* 3. Service Selection */}
             {formData.selectedTutorId && activeTutor && (
               <div className="space-y-1.5 animate-fadeIn">
                 <label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
@@ -327,7 +302,6 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
               </div>
             )}
 
-            {/* Free Trial Option */}
             {formData.selectedServiceId && !hasUsedTrial && (
               <div className="flex items-center gap-2 p-3 bg-purple-50 dark:bg-purple-950/20 rounded-xl border border-purple-100 dark:border-purple-900">
                 <input
@@ -343,11 +317,9 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
               </div>
             )}
 
-            {/* Quick help fields */}
             {activeService?.serviceType.name === 'شرح مسألة سريعة' && (
               <div className="bg-accent/40 border border-border rounded-xl p-4 space-y-3 animate-fadeIn">
                 <h3 className="text-xs font-bold text-primary">بيانات المسألة السريعة المطلوب شرحها:</h3>
-                
                 <div className="space-y-1">
                   <label className="text-[11px] font-semibold text-muted-foreground block">عنوان السؤال / المسألة *</label>
                   <input
@@ -360,7 +332,6 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
                     className="w-full premium-input text-xs"
                   />
                 </div>
-
                 <div className="space-y-1">
                   <label className="text-[11px] font-semibold text-muted-foreground block">تفاصيل المسألة أو الواجب الدراسي *</label>
                   <textarea
@@ -376,7 +347,6 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
               </div>
             )}
 
-            {/* 4. Slot Picker */}
             {formData.selectedServiceId && activeTutor && (
               <div className="border-t border-border pt-4">
                 <TimeSlotPicker
@@ -385,78 +355,6 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
                   duration={formData.isTrial ? 30 : activeService?.duration || 60}
                   onChange={(date) => handleCustomChange('startTime', date)}
                 />
-              </div>
-            )}
-
-            {/* 5. Payment details */}
-            {formData.startTime && !formData.isTrial && (
-              <div className="border-t border-border pt-4 space-y-4 animate-fadeIn">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
-                    <CreditCard className="h-4 w-4" />
-                    طريقة الدفع
-                  </label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => handleCustomChange('paymentMethod', 'CASH')}
-                      className={cn(
-                        "p-3 rounded-lg border text-xs font-semibold text-center cursor-pointer transition-all",
-                        formData.paymentMethod === 'CASH'
-                          ? "bg-primary/10 border-primary text-primary"
-                          : "border-border hover:bg-accent"
-                      )}
-                    >
-                      نقداً (مع نهاية الجلسة)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleCustomChange('paymentMethod', 'BANK_TRANSFER')}
-                      className={cn(
-                        "p-3 rounded-lg border text-xs font-semibold text-center cursor-pointer transition-all",
-                        formData.paymentMethod === 'BANK_TRANSFER'
-                          ? "bg-primary/10 border-primary text-primary"
-                          : "border-border hover:bg-accent"
-                      )}
-                    >
-                      تحويل بنكي (قبل موعد الجلسة)
-                    </button>
-                  </div>
-                </div>
-
-                {/* Proof screenshot only for Bank Transfer */}
-                {formData.paymentMethod === 'BANK_TRANSFER' && (
-                  <div className="space-y-2 border border-dashed border-border rounded-xl p-4 text-center bg-accent/20">
-                    <UploadCloud className="h-8 w-8 text-muted-foreground mx-auto" />
-                    <span className="text-xs font-bold text-foreground/80 block">إيصال تأكيد التحويل البنكي *</span>
-                    <p className="text-[10px] text-muted-foreground">قم بتحويل الرسوم المقررة للبنك، ثم ارفع لقطة شاشة لإثبات التحويل</p>
-
-                    <div className="pt-2 flex justify-center">
-                      <input
-                        type="file"
-                        id="proof"
-                        accept="image/*"
-                        onChange={handleUploadProof}
-                        className="hidden"
-                      />
-                      <label
-                        htmlFor="proof"
-                        className="bg-card border border-border hover:bg-accent text-xs font-semibold px-4 py-2 rounded-lg cursor-pointer flex items-center gap-1.5 shadow-sm"
-                      >
-                        {uploadingProof ? (
-                          <>
-                            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                            جاري الرفع...
-                          </>
-                        ) : formData.proofUrl ? (
-                          'تم رفع الإيصال بنجاح ✓'
-                        ) : (
-                          'اختر ملف الصورة للرفع'
-                        )}
-                      </label>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
 
@@ -477,10 +375,10 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
 
             {/* Confirm Book */}
             {formData.startTime && (
-              <div className="border-t border-border pt-4">
+              <div className="pt-4 border-t border-border flex justify-end">
                 <button
                   type="submit"
-                  disabled={loading || uploadingProof}
+                  disabled={loading}
                   className="w-full bg-primary text-primary-foreground hover:bg-primary/90 py-3 rounded-lg text-sm font-bold shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
                 >
                   {loading ? (

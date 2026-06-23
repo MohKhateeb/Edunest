@@ -83,6 +83,7 @@ export async function cancelBooking(data: z.infer<typeof cancellationSchema>): P
         data: {
           status: BookingStatus.CANCELLED,
           cancelledBy: userId,
+          cancelledByType: userType,
           cancelledAt: new Date(),
           cancellationReason: reason,
           paymentStatus: !isTrial && refundEligible && booking.paymentStatus === PaymentStatus.PAID
@@ -96,6 +97,15 @@ export async function cancelBooking(data: z.infer<typeof cancellationSchema>): P
         await tx.payment.update({
           where: { bookingId },
           data: { isPaid: false },
+        });
+
+        // 🚀 Create ParentRefund automatically (Fix for Issue #1)
+        await tx.parentRefund.create({
+          data: {
+            bookingId: bookingId,
+            amount: booking.price,
+            isPaid: false,
+          },
         });
       }
 

@@ -191,6 +191,26 @@ export async function createBooking(
         }
       }
 
+      // Check overlapping bookings for the student
+      const studentActiveBookings = await tx.booking.findMany({
+        where: {
+          studentId,
+          status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
+          startTime: { gte: dayStart, lte: dayEnd },
+        },
+        select: { startTime: true, duration: true },
+      });
+
+      for (const b of studentActiveBookings) {
+        const otherStartMs = b.startTime.getTime();
+        const otherEndMs = otherStartMs + b.duration * 60_000;
+
+        const hasOverlap = Math.max(requestedStartMs, otherStartMs) < Math.min(requestedEndMs, otherEndMs);
+        if (hasOverlap) {
+          throw new Error('الطالب لديه حجز آخر متداخل في هذا الوقت مع معلم آخر. يرجى اختيار وقت آخر');
+        }
+      }
+
       // Create Booking
       const booking = await tx.booking.create({
         data: {
@@ -207,7 +227,8 @@ export async function createBooking(
           questionDetails,
           questionImageUrl,
           parentNotes,
-          status: BookingStatus.PENDING,
+          status: isTrial ? BookingStatus.CONFIRMED : BookingStatus.PENDING,
+          confirmedAt: isTrial ? new Date() : null,
           paymentStatus,
           bookingSource: BookingSource.WEB,
           meetingUrl: isTrial ? `https://meet.jit.si/edunest-${crypto.randomUUID()}` : null,
@@ -234,6 +255,7 @@ export async function createBooking(
       userId: teacherService.teacher.userId,
       title: 'طلب حجز جديد',
       message: `لديك طلب حجز جديد من ولي الأمر لجلسة بتاريخ ${startTime.toLocaleString('ar-EG')}`,
+        link: '/dashboard/teacher/requests',
     });
 
     revalidatePath('/dashboard/parent/bookings');

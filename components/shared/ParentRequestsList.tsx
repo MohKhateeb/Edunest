@@ -24,6 +24,7 @@ type TutoringOffer = {
   requestId: string;
   teacherId: string;
   price: number;
+  duration: number;
   notes: string | null;
   status: 'PENDING' | 'ACCEPTED' | 'REJECTED';
   createdAt: Date;
@@ -90,7 +91,7 @@ export default function ParentRequestsList({ requests: initialRequests }: Parent
     try {
       const res = await acceptTutoringOffer(offerId);
       if (res.success) {
-        toast.success('تم قبول العرض بنجاح وإنشاء الحجز! يرجى رفع إيصال الدفع لتأكيده.');
+        toast.success('تم قبول العرض! جاري تحويلك لصفحة الحجوزات لإتمام الدفع وبدء الجلسة فوراً.');
         setSelectedRequestForOffers(null); // إغلاق النافذة المنبثقة
         router.push('/dashboard/parent/bookings');
       } else {
@@ -231,7 +232,7 @@ export default function ParentRequestsList({ requests: initialRequests }: Parent
                         <Calendar className="h-3.5 w-3.5" /> <span>{formatLocalTime(request.startTime).split('،')[0]}</span>
                       </div>
                       <div className="flex items-center gap-1.5 text-xs text-muted-foreground font-semibold">
-                        <Clock className="h-3.5 w-3.5" /> <span>{request.duration} دقيقة</span>
+                        <Clock className="h-3.5 w-3.5" /> <span className="text-primary font-bold">جلسة فورية</span>
                       </div>
                     </div>
                   </div>
@@ -377,9 +378,15 @@ export default function ParentRequestsList({ requests: initialRequests }: Parent
 
                         {/* السعر والإجراءات */}
                         <div className="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center w-full sm:w-auto border-t sm:border-t-0 pt-4 sm:pt-0 border-border/50 gap-3">
-                          <div className="text-right sm:text-left">
-                            <span className="block text-[10px] text-muted-foreground font-bold mb-0.5">السعر المقترح</span>
-                            <span className="text-xl font-black text-primary leading-none">{formatPrice(offer.price)}</span>
+                          <div className="text-right sm:text-left flex flex-col gap-1">
+                            <div>
+                              <span className="block text-[10px] text-muted-foreground font-bold mb-0.5">السعر المعروض</span>
+                              <span className="text-xl font-black text-primary leading-none">{formatPrice(offer.price)}</span>
+                            </div>
+                            <div className="flex items-center justify-end sm:justify-start gap-1">
+                              <Clock className="h-3 w-3 text-muted-foreground" />
+                              <span className="text-[10px] text-muted-foreground font-bold">{offer.duration} دقيقة</span>
+                            </div>
                           </div>
 
                           {selectedRequestForOffers.status === 'PENDING' && offer.status === 'PENDING' && (
@@ -390,9 +397,9 @@ export default function ParentRequestsList({ requests: initialRequests }: Parent
                               className="bg-emerald-500 hover:bg-emerald-600 text-white py-2.5 px-6 rounded-xl text-xs font-black transition-all hover:scale-105 shadow-md shadow-emerald-500/20 disabled:opacity-50 disabled:hover:scale-100 flex items-center gap-2 whitespace-nowrap"
                             >
                               {loadingOfferId === offer.id ? (
-                                <><Loader2 className="h-4 w-4 animate-spin" /> جاري...</>
+                                <><Loader2 className="h-4 w-4 animate-spin" /> جاري التحويل للدفع...</>
                               ) : (
-                                <>قبول العرض</>
+                                <>قبول ودفع</>
                               )}
                             </button>
                           )}

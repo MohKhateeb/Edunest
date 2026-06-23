@@ -11,34 +11,35 @@ import {
   BookingSource 
 } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
+import { requireTeacherProfile } from '@/lib/actions/auth-helpers';
 import { ActionResponse } from '@/lib/types';
 import { checkConflictingBookings } from '@/lib/utils/availability';
 import { getSettingNumber } from '@/lib/settings';
 import { createNotification } from '@/lib/notifications';
 import { revalidatePath } from 'next/cache';
 
+import { offerSchema } from '@/lib/validations/tutoring-request';
+import { z } from 'zod';
+
 /**
  * تقديم عرض من المعلم على طلب عام
  */
 export async function createTutoringOffer(
-  requestId: string,
-  price: number,
-  notes?: string
+  data: z.infer<typeof offerSchema>
 ): Promise<ActionResponse<void>> {
   try {
+    const validated = offerSchema.safeParse(data);
+    if (!validated.success) {
+      return { success: false, error: validated.error.issues[0].message };
+    }
+
+    const { requestId, price, duration, notes } = validated.data;
     const { userId } = await requireAuth([UserType.TEACHER]);
     
     // تعقيم وتنظيف الملاحظات لمنع ثغرات XSS
     const sanitizedNotes = notes ? notes.replace(/<[^>]*>?/gm, '').trim() : undefined;
 
-    const teacher = await prisma.teacher.findUnique({
-      where: { userId },
-      include: { user: { select: { name: true } } },
-    });
-
-    if (!teacher) {
-      return { success: false, error: 'لم يتم العثور على ملف المعلم' };
-    }
+    const teacher = await requireTeacherProfile(userId);
 
     if (!teacher.isVerified) {
       return { success: false, error: 'يجب توثيق حسابك أولاً لتقديم عروض' };
@@ -61,10 +62,10 @@ export async function createTutoringOffer(
       return { success: false, error: 'المرحلة الدراسية للطالب لا تقع ضمن المراحل التي تدرسها' };
     }
 
-    // التحقق من عدم تعارض وقت الجلسة مع حجوزات المعلم الحالية
-    const conflictCheck = await checkConflictingBookings(teacher.id, request.startTime, request.duration);
+    // التحقق من عدم تعارض وقت الجلسة الفورية مع حجوزات المعلم الحالية
+    const conflictCheck = await checkConflictingBookings(teacher.id, new Date(), duration);
     if (conflictCheck.conflict) {
-      return { success: false, error: conflictCheck.reason || 'هناك تعارض في وقتك مع هذا الطلب' };
+      return { success: false, error: conflictCheck.reason || 'هناك تعارض في وقتك الآن للقيام بهذه الجلسة المباشرة' };
     }
 
     // التحقق من عدم تقديم عرض سابق
@@ -86,6 +87,7 @@ export async function createTutoringOffer(
         requestId,
         teacherId: teacher.id,
         price,
+        duration,
         notes: sanitizedNotes,
         status: OfferStatus.PENDING,
       },
@@ -96,6 +98,7 @@ export async function createTutoringOffer(
       userId: request.parentId,
       title: 'عرض جديد على طلبك للتدريس 💰',
       message: `قدم المعلم (${teacher.user.name}) عرضاً بقيمة ${price} شيكل على طلبك موضوع: "${request.title}". تفقد العرض الآن!`,
+        link: '/dashboard/parent/requests',
     });
 
     revalidatePath('/dashboard/teacher/requests');
@@ -158,8 +161,9 @@ export async function acceptTutoringOffer(offerId: string): Promise<ActionRespon
       }
 
       // 3. التحقق من توفر وقت الجلسة الفعلي للمعلم وتجنب تداخل الحجوزات
-      const dayStart = new Date(request.startTime.getTime() - 24 * 3600 * 1000);
-      const dayEnd = new Date(request.startTime.getTime() + 24 * 3600 * 1000);
+      const now = new Date();
+      const dayStart = new Date(now.getTime() - 24 * 3600 * 1000);
+      const dayEnd = new Date(now.getTime() + 24 * 3600 * 1000);
 
       const activeBookings = await tx.booking.findMany({
         where: {
@@ -170,8 +174,8 @@ export async function acceptTutoringOffer(offerId: string): Promise<ActionRespon
         select: { startTime: true, duration: true },
       });
 
-      const requestedStartMs = request.startTime.getTime();
-      const requestedEndMs = requestedStartMs + request.duration * 60_000;
+      const requestedStartMs = now.getTime();
+      const requestedEndMs = requestedStartMs + offer.duration * 60_000;
 
       for (const b of activeBookings) {
         const otherStartMs = b.startTime.getTime();
@@ -179,11 +183,30 @@ export async function acceptTutoringOffer(offerId: string): Promise<ActionRespon
 
         const hasOverlap = Math.max(requestedStartMs, otherStartMs) < Math.min(requestedEndMs, otherEndMs);
         if (hasOverlap) {
-          throw new Error('المعلم لديه حجز آخر متداخل في هذا الوقت حالياً. يرجى رفض العرض أو البحث عن موعد آخر');
+          throw new Error('المعلم لديه حجز آخر متداخل في هذا الوقت حالياً. يرجى الانتظار قليلاً أو البحث عن معلم آخر');
         }
       }
 
-      // 4. إيجاد أو إنشاء خدمة المعلم (TeacherService) لتوافق مع نظام الحجز العام
+      // 3.5 التحقق من عدم تعارض وقت الجلسة الفعلي للطالب (قد يكون الطالب في جلسة أخرى الآن)
+      const studentActiveBookings = await tx.booking.findMany({
+        where: {
+          studentId: request.studentId,
+          status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
+          startTime: { gte: dayStart, lte: dayEnd },
+        },
+        select: { startTime: true, duration: true },
+      });
+
+      for (const b of studentActiveBookings) {
+        const otherStartMs = b.startTime.getTime();
+        const otherEndMs = otherStartMs + b.duration * 60_000;
+
+        const hasOverlap = Math.max(requestedStartMs, otherStartMs) < Math.min(requestedEndMs, otherEndMs);
+        if (hasOverlap) {
+          throw new Error('الطالب لديه حجز آخر متداخل في هذا الوقت مع معلم آخر. يرجى الانتظار حتى تنتهي جلسته');
+        }
+      }
+
       let teacherService = await tx.teacherService.findFirst({
         where: {
           teacherId: offer.teacherId,
@@ -199,7 +222,7 @@ export async function acceptTutoringOffer(offerId: string): Promise<ActionRespon
             teacherId: offer.teacherId,
             serviceTypeId: request.serviceTypeId,
             price: offer.price,
-            duration: request.duration,
+            duration: offer.duration,
             customDescription: 'خدمة مخصصة لطلب عام تم قبول عرضه',
             isActive: true,
           },
@@ -217,8 +240,8 @@ export async function acceptTutoringOffer(offerId: string): Promise<ActionRespon
           parentUserId,
           studentId: request.studentId,
           teacherServiceId: teacherService.id,
-          startTime: request.startTime,
-          duration: request.duration,
+          startTime: now,
+          duration: offer.duration,
           price: offer.price,
           appliedCommissionRate: commissionRate,
           status: BookingStatus.PENDING,
@@ -253,6 +276,16 @@ export async function acceptTutoringOffer(offerId: string): Promise<ActionRespon
         data: { status: OfferStatus.ACCEPTED },
       });
 
+
+      // الحصول على العروض المرفوضة لإرسال إشعارات لطيفة لأصحابها
+      const rejectedOffers = await tx.tutoringOffer.findMany({
+        where: {
+          requestId: request.id,
+          id: { not: offer.id },
+        },
+        include: { teacher: true }
+      });
+
       // رفض بقية العروض تلقائياً
       await tx.tutoringOffer.updateMany({
         where: {
@@ -274,6 +307,15 @@ export async function acceptTutoringOffer(offerId: string): Promise<ActionRespon
         title: 'تم قبول العرض بنجاح 📆',
         message: `لقد قبلت عرض المعلم (${offer.teacher.user.name}) للطلب موضوع: "${request.title}". يرجى رفع إيصال الدفع لتأكيد الحجز وبدء الجلسة.`,
       }, tx);
+
+      // 10. إرسال إشعارات لطيفة للمعلمين الذين لم يتم اختيار عروضهم
+      for (const rejectedOffer of rejectedOffers) {
+        await createNotification({
+          userId: rejectedOffer.teacher.userId,
+          title: 'تحديث بخصوص عرضك 📝',
+          message: `شكراً لجهودك وعرضك على الطلب "${request.title}". قام ولي الأمر باختيار عرض آخر هذه المرة. لا تحبط! هناك دائماً طلاب آخرون بحاجة لخبراتك. نتمنى لك التوفيق في المرة القادمة 🌟`,
+        }, tx);
+      }
 
       return booking;
     });

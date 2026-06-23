@@ -1,17 +1,19 @@
 import { auth } from '@/lib/auth';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { ShieldCheck, CreditCard, Users, Calendar, AlertTriangle, ArrowUpRight, GraduationCap, TrendingUp, CheckCircle } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import { calculateEarnings } from '@/lib/utils/financial';
 import AdminAnalyticsCharts from '@/components/shared/charts/AdminAnalyticsCharts';
+import InteractiveMessage from '@/components/shared/InteractiveMessage';
 
 export default async function AdminDashboard() {
+  await requireAuth([UserType.ADMIN]);
   const session = await auth();
-  if (!session) redirect('/login');
-  if (session.user.userType !== 'ADMIN') redirect('/unauthorized');
 
-
+  if (!session) return null;
   const pendingVerifications = await prisma.teacherVerification.count({
     where: { reviewedAt: null },
   });
@@ -22,6 +24,8 @@ export default async function AdminDashboard() {
   const activeTeachers = await prisma.teacher.count({ where: { isVerified: true } });
   
   const allBookings = await prisma.booking.findMany({
+    take: 500,
+    orderBy: { createdAt: 'desc' },
     select: {
       status: true,
       price: true,
@@ -45,11 +49,17 @@ export default async function AdminDashboard() {
   let totalBookingsValue = 0;
 
   for (const b of completedBookings) {
-    totalBookingsValue += Number(b.price);
+    const earnings = calculateEarnings(
+      b.price,
+      b.appliedCommissionRate,
+      b.isTrial,
+      b.trialCostToPlatform
+    );
+    totalBookingsValue += earnings.totalAmount;
     if (b.isTrial) {
-      totalPlatformRevenue -= Number(b.trialCostToPlatform);
+      totalPlatformRevenue -= earnings.trialCompensation;
     } else {
-      totalPlatformRevenue += (Number(b.price) * Number(b.appliedCommissionRate)) / 100;
+      totalPlatformRevenue += earnings.commissionAmount;
     }
   }
 
@@ -120,82 +130,63 @@ export default async function AdminDashboard() {
     .map(({ grade, ...rest }) => rest);
 
   return (
-    <div className="space-y-6">
-      {/* Header Section */}
-      <div className="bg-gradient-to-r from-teal-900 via-teal-800 to-primary rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
-        <div className="absolute -end-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-        <div className="absolute -start-10 -bottom-10 w-40 h-40 bg-teal-400/20 rounded-full blur-2xl"></div>
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-extrabold mb-2">لوحة قيادة المنصة (SaaS Dashboard)</h1>
-            <p className="text-teal-100 text-sm max-w-xl leading-relaxed">
-              مرحباً {session.user.name}. تتيح لك هذه اللوحة مراقبة مؤشرات الأداء الرئيسية (KPIs)، وتحليل اتجاهات الطلب الفعلي، وإدارة التدفقات المالية للمنصة بشكل مباشر.
-            </p>
-          </div>
-          <div className="flex gap-3">
-
-            {pendingVerifications > 0 && (
-              <Link href="/dashboard/admin/verification" className="bg-white/20 hover:bg-white/30 backdrop-blur-md transition-all text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 border border-white/20">
-                <ShieldCheck className="h-4 w-4" /> توثيق معلمين
-                <span className="bg-yellow-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">{pendingVerifications}</span>
-              </Link>
-            )}
-          </div>
-        </div>
+    <div className="space-y-8 text-right pb-10" dir="rtl">
+      {/* Welcome header & Interactive Message */}
+      <div className="mt-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+        <InteractiveMessage 
+          character="hakeem"
+          title={`أهلاً بك، ${session.user.name}`}
+          message="تتيح لك لوحة القيادة مراقبة مؤشرات الأداء الرئيسية (KPIs)، وتحليل اتجاهات الطلب الفعلي، وإدارة التدفقات المالية للمنصة بشكل مباشر. راقب الأرقام لضمان النمو."
+          className="lg:w-2/3"
+        />
+        {pendingVerifications > 0 && (
+          <Link 
+            href="/dashboard/admin/verification" 
+            className="flex-shrink-0 bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-4 rounded-2xl shadow-md transition-all font-black flex items-center gap-2 animate-pulse-soft"
+          >
+            <ShieldCheck className="h-5 w-5" /> 
+            توثيق معلمين
+            <span className="bg-white text-yellow-600 text-xs px-2 py-0.5 rounded-full mr-2">{pendingVerifications}</span>
+          </Link>
+        )}
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
         
-        <div className="glass-card rounded-2xl p-6 flex flex-col justify-between shadow-sm hover-card border-t-4 border-t-sky-500">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-sky-50 dark:bg-sky-950/30 text-sky-600 rounded-xl">
-              <GraduationCap className="h-6 w-6" />
-            </div>
+        <div className="bg-white dark:bg-slate-900 border border-border/60 rounded-3xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all">
+          <div className="p-2 bg-sky-50 dark:bg-sky-950/30 text-sky-600 rounded-2xl mb-2">
+            <GraduationCap className="h-5 w-5" />
           </div>
-          <div>
-            <span className="text-3xl font-extrabold text-foreground">{totalStudents}</span>
-            <span className="text-sm text-muted-foreground block font-semibold mt-1">إجمالي الطلاب (الطلب)</span>
-          </div>
+          <span className="text-2xl font-black text-foreground mb-1">{totalStudents}</span>
+          <span className="text-xs text-muted-foreground font-bold">إجمالي الطلاب</span>
         </div>
 
-        <div className="glass-card rounded-2xl p-6 flex flex-col justify-between shadow-sm hover-card border-t-4 border-t-emerald-500">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 rounded-xl">
-              <Users className="h-6 w-6" />
-            </div>
+        <div className="bg-white dark:bg-slate-900 border border-border/60 rounded-3xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all">
+          <div className="p-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 rounded-2xl mb-2">
+            <Users className="h-5 w-5" />
           </div>
-          <div>
-            <span className="text-3xl font-extrabold text-foreground">{activeTeachers}</span>
-            <span className="text-sm text-muted-foreground block font-semibold mt-1">المعلمين النشطين (العرض)</span>
-          </div>
+          <span className="text-2xl font-black text-foreground mb-1">{activeTeachers}</span>
+          <span className="text-xs text-muted-foreground font-bold">معلمين نشطين</span>
         </div>
 
-        <div className="glass-card rounded-2xl p-6 flex flex-col justify-between shadow-sm hover-card border-t-4 border-t-purple-500">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-purple-50 dark:bg-purple-950/30 text-purple-600 rounded-xl">
-              <TrendingUp className="h-6 w-6" />
-            </div>
+        <div className="bg-white dark:bg-slate-900 border border-border/60 rounded-3xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all">
+          <div className="p-2 bg-purple-50 dark:bg-purple-950/30 text-purple-600 rounded-2xl mb-2">
+            <TrendingUp className="h-5 w-5" />
           </div>
-          <div>
-            <span className="text-3xl font-extrabold text-foreground">{formatPrice(averageOrderValue)}</span>
-            <span className="text-sm text-muted-foreground block font-semibold mt-1">متوسط قيمة الجلسة (AOV)</span>
-          </div>
+          <span className="text-2xl font-black text-foreground mb-1">{formatPrice(averageOrderValue)}</span>
+          <span className="text-xs text-muted-foreground font-bold">متوسط الدفع (AOV)</span>
         </div>
 
-        <div className="glass-card rounded-2xl p-6 flex flex-col justify-between shadow-sm hover-card border-t-4 border-t-teal-500">
-          <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-teal-50 dark:bg-teal-950/30 text-teal-600 rounded-xl">
-              <CheckCircle className="h-6 w-6" />
-            </div>
+        <div className="bg-white dark:bg-slate-900 border border-border/60 rounded-3xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all">
+          <div className="p-2 bg-teal-50 dark:bg-teal-950/30 text-teal-600 rounded-2xl mb-2">
+            <CheckCircle className="h-5 w-5" />
           </div>
-          <div>
-            <div className="flex items-baseline gap-1">
-              <span className="text-3xl font-extrabold text-foreground">{completionRate}</span>
-              <span className="text-xl font-bold text-muted-foreground">%</span>
-            </div>
-            <span className="text-sm text-muted-foreground block font-semibold mt-1">نسبة إكمال الحجوزات</span>
+          <div className="flex items-baseline gap-1">
+            <span className="text-2xl font-black text-foreground mb-1">{completionRate}</span>
+            <span className="text-sm font-bold text-muted-foreground">%</span>
           </div>
+          <span className="text-xs text-muted-foreground font-bold">إكمال الحجوزات</span>
         </div>
 
       </div>

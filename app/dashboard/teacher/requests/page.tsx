@@ -27,7 +27,7 @@ export default async function TeacherRequestsPage() {
   // 2. التحقق من التوثيق
   if (!teacher.isVerified) {
     return (
-      <div className="max-w-2xl mx-auto bg-card border border-border p-8 rounded-2xl text-center space-y-4 my-10" dir="rtl">
+      <div className="max-w-2xl mx-auto bg-white dark:bg-slate-900 border border-border/80 p-8 rounded-3xl text-center space-y-4 my-10 shadow-sm" dir="rtl">
         <div className="mx-auto w-16 h-16 bg-yellow-500/10 text-yellow-600 rounded-full flex items-center justify-center">
           <CalendarPlus className="h-10 w-10 animate-pulse" />
         </div>
@@ -54,7 +54,7 @@ export default async function TeacherRequestsPage() {
         </p>
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-4">
+      <div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all space-y-4">
         <h2 className="font-extrabold text-base border-b border-border pb-2.5 flex items-center gap-2" dir="rtl">
           <CalendarPlus className="h-5 w-5 text-primary" />
           لوحة طلبات التدريس وعروض الأسعار
@@ -62,7 +62,6 @@ export default async function TeacherRequestsPage() {
 
         <TeacherRequestsList
           teacherId={teacher.id}
-          initialIsAvailable={teacher.isAvailableNow}
           availableRequests={availableRequests}
           myOffers={myOffers}
         />

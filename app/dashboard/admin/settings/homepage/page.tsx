@@ -7,7 +7,6 @@ export default async function AdminHomepageSettingsPage() {
   const session = await auth();
   if (!session) redirect('/login');
 
-  if (session.user.userType !== 'ADMIN') redirect('/unauthorized');
 
   const layoutSetting = await prisma.systemSetting.findUnique({
     where: { settingKey: 'HomepageLayout' },

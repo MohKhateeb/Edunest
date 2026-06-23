@@ -53,7 +53,7 @@ export default function AdminSettingsForm({ initialSettings }: AdminSettingsForm
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-card border border-border rounded-xl p-8 space-y-6 shadow-sm">
+    <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-8 space-y-6 shadow-sm hover:shadow-md transition-all">
       <div>
         <h2 className="font-extrabold text-xl mb-1">إعدادات النظام الديناميكية</h2>
         <p className="text-xs text-muted-foreground">

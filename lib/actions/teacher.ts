@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma';
 import { ActionResponse } from '@/lib/types';
 import { teacherProfileSchema, teacherServiceSchema } from '@/lib/validations/teacher';
 import { generateUniqueSlug } from '@/lib/utils/slug';
+import { requireTeacherProfile } from '@/lib/actions/auth-helpers';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
@@ -87,13 +88,7 @@ export async function addOrUpdateTeacherService(
       return { success: false, error: validated.error.issues[0].message };
     }
 
-    const teacher = await prisma.teacher.findUnique({
-      where: { userId },
-    });
-
-    if (!teacher) {
-      return { success: false, error: 'الملف الشخصي للمعلم غير موجود، يرجى ملء بيانات الملف أولاً' };
-    }
+    const teacher = await requireTeacherProfile(userId);
 
     // Check if the service type exists
     const serviceType = await prisma.serviceType.findUnique({
@@ -149,13 +144,7 @@ export async function submitVerificationDocuments(data: {
   try {
     const { userId } = await requireAuth([UserType.TEACHER]);
 
-    const teacher = await prisma.teacher.findUnique({
-      where: { userId },
-    });
-
-    if (!teacher) {
-      return { success: false, error: 'الملف الشخصي للمعلم غير موجود' };
-    }
+    const teacher = await requireTeacherProfile(userId);
 
     await prisma.teacherVerification.upsert({
       where: { teacherId: teacher.id },
@@ -199,13 +188,7 @@ export async function updateTeacherSlug(
 
     const { slug: newSlug } = validated.data;
 
-    const teacher = await prisma.teacher.findUnique({
-      where: { userId },
-    });
-
-    if (!teacher) {
-      return { success: false, error: 'الملف الشخصي للمعلم غير موجود' };
-    }
+    const teacher = await requireTeacherProfile(userId);
 
     if (teacher.slugUpdated) {
       return { success: false, error: 'لقد قمت بتعديل الرابط الخاص بك مسبقاً. لا يمكن تعديله مرة أخرى.' };
@@ -238,5 +221,28 @@ export async function updateTeacherSlug(
   } catch (err: unknown) {
     console.error(err);
     return { success: false, error: 'حدث خطأ أثناء تحديث الرابط.' };
+  }
+}
+
+export async function toggleTeacherAvailability(
+  isAvailableNow: boolean
+): Promise<ActionResponse> {
+  try {
+    const { userId } = await requireAuth([UserType.TEACHER]);
+
+    const teacher = await requireTeacherProfile(userId);
+
+    await prisma.teacher.update({
+      where: { id: teacher.id },
+      data: { isAvailableNow },
+    });
+
+    revalidatePath('/dashboard/teacher');
+    revalidatePath(`/teachers/${teacher.slug}`);
+    
+    return { success: true };
+  } catch (error) {
+    console.error('Error toggling availability:', error);
+    return { success: false, error: 'فشل في تحديث حالة التواجد' };
   }
 }

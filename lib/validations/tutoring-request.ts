@@ -10,7 +10,11 @@ export const tutoringRequestSchema = z.object({
   title: z.string().trim().min(3, 'عنوان الطلب يجب أن لا يقل عن 3 أحرف').max(200).transform(sanitizeText),
   details: z.string().trim().max(2000, 'التفاصيل طويلة جداً').optional().transform(val => val ? sanitizeText(val) : val),
   imageUrl: z.string().url('رابط الصورة غير صالح').optional().or(z.literal('')),
-  startTime: z.coerce.date({ message: 'تاريخ وبدء الجلسة مطلوب' }),
+});
+
+export const offerSchema = z.object({
+  requestId: z.string().min(1, 'معرف الطلب مطلوب'),
+  price: z.coerce.number().min(5, 'السعر المعروض يجب أن لا يقل عن 5 شواكل').max(10000),
   duration: z.coerce.number().int().min(5, 'المدة يجب أن لا تقل عن 5 دقائق').max(300, 'المدة تتجاوز الحد الأقصى'),
-  price: z.coerce.number().min(5, 'الميزانية المقترحة يجب أن لا تقل عن 5 شواكل').max(10000),
+  notes: z.string().trim().max(1000).optional().transform(val => val ? sanitizeText(val) : val),
 });

@@ -1,6 +1,7 @@
 'use server';
 
-import { auth } from '@/lib/auth';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { ActionResponse } from '@/lib/types';
 import { Notification } from '@prisma/client';
@@ -8,13 +9,10 @@ import { revalidatePath } from 'next/cache';
 
 export async function getUserNotifications(): Promise<ActionResponse<Notification[]>> {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: 'غير مصرح لك' };
-    }
+    const { userId } = await requireAuth([UserType.PARENT, UserType.TEACHER, UserType.ADMIN]);
 
     const notifications = await prisma.notification.findMany({
-      where: { userId: session.user.id },
+      where: { userId },
       orderBy: { createdAt: 'desc' },
       take: 20, // Fetch the latest 20 notifications
     });
@@ -28,13 +26,10 @@ export async function getUserNotifications(): Promise<ActionResponse<Notificatio
 
 export async function markNotificationAsRead(notificationId: string): Promise<ActionResponse> {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: 'غير مصرح لك' };
-    }
+    const { userId } = await requireAuth([UserType.PARENT, UserType.TEACHER, UserType.ADMIN]);
 
     const result = await prisma.notification.updateMany({
-      where: { id: notificationId, userId: session.user.id },
+      where: { id: notificationId, userId },
       data: { isRead: true },
     });
 
@@ -51,13 +46,10 @@ export async function markNotificationAsRead(notificationId: string): Promise<Ac
 
 export async function markAllNotificationsAsRead(): Promise<ActionResponse> {
   try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return { success: false, error: 'غير مصرح لك' };
-    }
+    const { userId } = await requireAuth([UserType.PARENT, UserType.TEACHER, UserType.ADMIN]);
 
     await prisma.notification.updateMany({
-      where: { userId: session.user.id, isRead: false },
+      where: { userId, isRead: false },
       data: { isRead: true },
     });
 

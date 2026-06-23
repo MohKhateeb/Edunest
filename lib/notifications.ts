@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
 
 export async function createNotification(
-  data: { userId: string; title: string; message: string },
+  data: { userId: string; title: string; message: string; link?: string },
   tx?: Prisma.TransactionClient
 ) {
   const client = tx || prisma;

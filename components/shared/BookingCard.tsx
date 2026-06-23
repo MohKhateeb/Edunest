@@ -248,17 +248,27 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 
       {/* 🔹 Bottom Row: Actions */}
       <div className="flex flex-wrap gap-2 mt-auto border-t border-border/40 pt-4">
-        {/* The Meet link is the most prominent if active */}
-        {booking.status === 'CONFIRMED' && (sessionTimeState.status === 'active' || sessionTimeState.status === 'ready_to_join' || sessionTimeState.status === 'grace_period') && (
-          <a
-            href={meetLink}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold bg-emerald-500 text-white hover:bg-emerald-600 py-2.5 rounded-xl shadow-sm transition-transform hover:scale-105 animate-pulse"
-          >
-            <Video className="h-4 w-4" />
-            انضم الآن
-          </a>
+        {/* The Meet link is visible but might be disabled based on time */}
+        {booking.status === 'CONFIRMED' && (
+          (sessionTimeState.status === 'active' || sessionTimeState.status === 'ready_to_join' || sessionTimeState.status === 'grace_period') ? (
+            <a
+              href={meetLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold bg-emerald-500 text-white hover:bg-emerald-600 py-2.5 rounded-xl shadow-sm transition-transform hover:scale-105 animate-pulse"
+            >
+              <Video className="h-4 w-4" />
+              انضم الآن
+            </a>
+          ) : (
+            <div className="flex-1 flex flex-col items-center">
+              <button disabled className="w-full flex items-center justify-center gap-1.5 text-xs font-bold bg-slate-100 text-slate-400 border border-slate-200 py-2.5 rounded-xl cursor-not-allowed dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
+                <Lock className="h-4 w-4" />
+                رابط الجلسة
+              </button>
+              <span className="text-[10px] font-bold text-muted-foreground mt-1 text-center w-full">سيُفتح الرابط قبل الجلسة بـ 5 دقائق</span>
+            </div>
+          )
         )}
 
         {/* View Details is secondary but always available */}
@@ -276,24 +286,6 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
         </button>
 
         {/* Action icons based on role and status */}
-        {role === 'TEACHER' && booking.status === 'PENDING' && (
-          <div className="flex w-full gap-2 mt-2">
-            <button
-              onClick={handleReject}
-              disabled={loading}
-              className="flex-1 text-xs font-bold border border-rose-200 text-rose-600 hover:bg-rose-50 py-2.5 rounded-xl transition-colors"
-            >
-              رفض
-            </button>
-            <button
-              onClick={handleAccept}
-              disabled={loading}
-              className="flex-1 text-xs font-bold bg-primary text-white hover:bg-primary/90 py-2.5 rounded-xl shadow-sm transition-colors"
-            >
-              قبول
-            </button>
-          </div>
-        )}
 
         {role === 'TEACHER' && booking.status === 'CONFIRMED' && canSubmitReport(booking.startTime, booking.duration) && (
           <button

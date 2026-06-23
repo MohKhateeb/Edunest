@@ -7,7 +7,9 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatPrice(amount: number | string): string {
   const num = typeof amount === 'string' ? parseFloat(amount) : amount;
-  return `${num.toFixed(0)} ₪`;
+  // إظهار الخانات العشرية فقط إذا كان الرقم يحتوي على كسور لتفادي لبس التقريب
+  const formatted = Number.isInteger(num) ? num.toString() : num.toFixed(2);
+  return `${formatted} ₪`;
 }
 
 export function formatDuration(minutes: number): string {

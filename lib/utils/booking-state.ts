@@ -56,5 +56,7 @@ export function getDetailedSessionState(startTime: Date | string, durationMinute
  */
 export function canSubmitReport(startTime: Date | string, durationMinutes: number): boolean {
   const state = getDetailedSessionState(startTime, durationMinutes);
-  return ['grace_period', 'expired', 'ghost'].includes(state.status);
+  // 🚀 Fix Issue #3: Do not allow teachers to submit reports for 'ghost' sessions (>24h).
+  if (state.status === 'ghost') return false;
+  return ['grace_period', 'expired'].includes(state.status);
 }

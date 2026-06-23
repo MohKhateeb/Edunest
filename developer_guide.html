@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>دليل المطور المبتدئ - منصة EduNest</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Tajawal', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .gradient-text {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to left, #4f46e5, #0ea5e9);
+        }
+        .code-container {
+            direction: ltr;
+            text-align: left;
+            border-radius: 0.75rem;
+            margin: 1rem 0;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .nav-btn.active {
+            background-color: #e0e7ff;
+            color: #4f46e5;
+            font-weight: 700;
+            border-right: 4px solid #4f46e5;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-brand-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
+                    EN
+                </div>
+                <div>
+                    <h1 class="text-2xl font-bold text-slate-800">إديونست <span class="gradient-text">(EduNest)</span></h1>
+                    <p class="text-sm text-slate-500">دليل المطور الشامل للتعرف على الكود والتعديل عليه</p>
+                </div>
+            </div>
+            <button onclick="window.print()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-semibold transition-colors flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
+                حفظ كملف PDF
+            </button>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row gap-8">
+        
+        <!-- Sidebar Navigation -->
+        <aside class="w-full md:w-64 shrink-0">
+            <nav class="flex flex-col gap-1 bg-white p-4 rounded-2xl shadow-sm border border-slate-100 sticky top-28">
+                <button onclick="switchTab('overview')" id="btn-overview" class="nav-btn active text-right px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-all font-medium">✨ نظرة عامة والتقنيات</button>
+                <button onclick="switchTab('structure')" id="btn-structure" class="nav-btn text-right px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-all font-medium">📁 هيكل المشروع</button>
+                <button onclick="switchTab('database')" id="btn-database" class="nav-btn text-right px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-all font-medium">🗄️ قاعدة البيانات</button>
+                <button onclick="switchTab('how-it-works')" id="btn-how-it-works" class="nav-btn text-right px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-all font-medium">⚙️ كيف تعمل المنصة</button>
+                <button onclick="switchTab('how-to-edit')" id="btn-how-to-edit" class="nav-btn text-right px-4 py-3 rounded-lg text-slate-600 hover:bg-slate-50 transition-all font-medium">🛠️ دليل التعديل السريع</button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 bg-white p-8 rounded-2xl shadow-sm border border-slate-100 min-h-[70vh]">
+            
+            <!-- Tab 1: Overview -->
+            <section id="overview" class="tab-content active">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800">مرحباً بك في كود إديونست! 👋</h2>
+                <p class="text-slate-600 mb-6 leading-relaxed text-lg">
+                    إديونست هي منصة تعليمية تربط الطلاب والمعلمين في فلسطين. كمبرمج جديد في المشروع، هذا الدليل صُنع خصيصاً ليأخذ بيدك خطوة بخطوة لفهم الكود والمساهمة فيه بسهولة وبدون أي قلق.
+                </p>
+                
+                <h3 class="text-xl font-bold mb-4 text-brand-600 mt-8">التقنيات الأساسية (Tech Stack)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 border border-slate-100 rounded-xl bg-slate-50 hover:shadow-md transition-shadow">
+                        <div class="font-bold text-lg mb-1 flex items-center gap-2">
+                            <span class="text-blue-500">⚛️</span> Next.js (App Router)
+                        </div>
+                        <p class="text-sm text-slate-600">إطار العمل الأساسي. نستخدم الإصدار 14+ مع مجلد <code>app/</code> بدلاً من <code>pages/</code> القديم.</p>
+                    </div>
+                    <div class="p-4 border border-slate-100 rounded-xl bg-slate-50 hover:shadow-md transition-shadow">
+                        <div class="font-bold text-lg mb-1 flex items-center gap-2">
+                            <span class="text-cyan-500">🌊</span> Tailwind CSS
+                        </div>
+                        <p class="text-sm text-slate-600">لتصميم الواجهات. كل التنسيقات تكتب داخل كلاسات HTML مباشرة (Utility-first).</p>
+                    </div>
+                    <div class="p-4 border border-slate-100 rounded-xl bg-slate-50 hover:shadow-md transition-shadow">
+                        <div class="font-bold text-lg mb-1 flex items-center gap-2">
+                            <span class="text-green-600">🗄️</span> Prisma ORM & PostgreSQL
+                        </div>
+                        <p class="text-sm text-slate-600">للتعامل مع قاعدة البيانات بسهولة عبر كود TypeScript بدلاً من كتابة SQL معقدة.</p>
+                    </div>
+                    <div class="p-4 border border-slate-100 rounded-xl bg-slate-50 hover:shadow-md transition-shadow">
+                        <div class="font-bold text-lg mb-1 flex items-center gap-2">
+                            <span class="text-purple-500">🔐</span> NextAuth.js
+                        </div>
+                        <p class="text-sm text-slate-600">نظام تسجيل الدخول وحماية الصفحات وإدارة الجلسات للمستخدمين.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 2: Structure -->
+            <section id="structure" class="tab-content">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800">أين أجد الملفات؟ 📁</h2>
+                <p class="text-slate-600 mb-6 leading-relaxed text-lg">
+                    لا تضيع وقتك في البحث العشوائي. إليك خريطة المجلدات لتصل لما تريده في ثوانٍ:
+                </p>
+
+                <div class="space-y-4">
+                    <!-- Folder Item -->
+                    <div class="flex gap-4 p-4 border border-slate-100 rounded-xl bg-white">
+                        <div class="text-3xl">🌐</div>
+                        <div>
+                            <h4 class="font-bold text-lg font-mono text-slate-800">app/</h4>
+                            <p class="text-slate-600 mt-1">هنا توجد كل صفحات الموقع. كل مجلد يمثل رابطاً (Route).</p>
+                            <ul class="mt-2 text-sm text-slate-500 list-disc list-inside space-y-1">
+                                <li><code>app/dashboard/admin</code>: لوحة تحكم الإدارة</li>
+                                <li><code>app/dashboard/teacher</code>: لوحة تحكم المعلم</li>
+                                <li><code>app/dashboard/parent</code>: لوحة تحكم ولي الأمر</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Folder Item -->
+                    <div class="flex gap-4 p-4 border border-slate-100 rounded-xl bg-white">
+                        <div class="text-3xl">🧩</div>
+                        <div>
+                            <h4 class="font-bold text-lg font-mono text-slate-800">components/</h4>
+                            <p class="text-slate-600 mt-1">المكونات الجاهزة التي نستخدمها في أكثر من مكان (أزرار، نوافذ منبثقة، بطاقات).</p>
+                        </div>
+                    </div>
+
+                    <!-- Folder Item -->
+                    <div class="flex gap-4 p-4 border border-slate-100 rounded-xl bg-white">
+                        <div class="text-3xl">⚙️</div>
+                        <div>
+                            <h4 class="font-bold text-lg font-mono text-slate-800">lib/</h4>
+                            <p class="text-slate-600 mt-1">عقل المشروع! يحتوي على الوظائف والأدوات:</p>
+                            <ul class="mt-2 text-sm text-slate-500 list-disc list-inside space-y-1">
+                                <li><code>lib/actions/</code>: عمليات حفظ وتعديل البيانات (Server Actions).</li>
+                                <li><code>lib/auth.ts</code>: كود تسجيل الدخول والمصادقة.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Folder Item -->
+                    <div class="flex gap-4 p-4 border border-slate-100 rounded-xl bg-white">
+                        <div class="text-3xl">🗄️</div>
+                        <div>
+                            <h4 class="font-bold text-lg font-mono text-slate-800">prisma/</h4>
+                            <p class="text-slate-600 mt-1">يحتوي على ملف <code>schema.prisma</code> الذي يحدد شكل جداول قاعدة البيانات.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab 3: Database -->
+            <section id="database" class="tab-content">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800">قاعدة البيانات (Prisma) 🗄️</h2>
+                <p class="text-slate-600 mb-6 leading-relaxed">
+                    نحن نستخدم Prisma، مما يعني أنك لست بحاجة لكتابة استعلامات SQL معقدة. كل شيء موجود في ملف واحد: <code>prisma/schema.prisma</code>.
+                </p>
+
+                <h3 class="text-xl font-bold mb-3 text-brand-600">الجداول الأساسية (Models):</h3>
+                <div class="grid grid-cols-1 gap-4 mb-6">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 border-r-4 border-r-blue-500">
+                        <strong class="text-blue-700 font-mono text-lg">User</strong><br>
+                        <span class="text-sm text-slate-600">يحتوي على بيانات الدخول الأساسية (الإيميل، الباسورد المشفّر، نوع المستخدم: أب، معلم، أدمن).</span>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 border-r-4 border-r-green-500">
+                        <strong class="text-green-700 font-mono text-lg">Teacher</strong><br>
+                        <span class="text-sm text-slate-600">مرتبط بالمستخدم. يحتوي على بيانات المعلم الإضافية (التخصص، التوثيق، النبذة).</span>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 border-r-4 border-r-purple-500">
+                        <strong class="text-purple-700 font-mono text-lg">Booking</strong><br>
+                        <span class="text-sm text-slate-600">سجل الحجوزات. يربط بين الطالب، المعلم، وتفاصيل الجلسة وحالة الدفع.</span>
+                    </div>
+                </div>
+
+                <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 text-yellow-800">
+                    <strong>💡 نصيحة للمطور:</strong> 
+                    إذا أردت رؤية قاعدة البيانات وتعديل البيانات يدوياً كأدمن، افتح التيرمينال واكتب الأمر:
+                    <code class="block mt-2 bg-yellow-100 p-2 rounded text-left direction-ltr font-mono">npx prisma studio</code>
+                </div>
+            </section>
+
+            <!-- Tab 4: How it works -->
+            <section id="how-it-works" class="tab-content">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800">كيف تعمل المنصة خلف الكواليس؟ ⚙️</h2>
+                
+                <h3 class="font-bold text-lg mt-6 mb-2 border-b pb-2">1. جلب البيانات (Data Fetching)</h3>
+                <p class="text-slate-600 mb-4">
+                    في Next.js 14+، نحن نجلب البيانات مباشرة داخل مكونات الخادم (Server Components) بدون الحاجة إلى API!
+                </p>
+                <div class="code-container">
+<pre><code class="language-tsx">// كمثال لصفحة تجلب بيانات المعلمين من قاعدة البيانات
+import prisma from "@/lib/prisma";
+
+export default async function TeachersPage() {
+  // جلب البيانات من الداتا بيز مباشرة!
+  const teachers = await prisma.teacher.findMany();
+  
+  return (
+    &lt;div&gt;
+      {teachers.map(teacher =&gt; (
+         &lt;p key={teacher.id}&gt;{teacher.specialization}&lt;/p&gt;
+      ))}
+    &lt;/div&gt;
+  );
+}</code></pre>
+                </div>
+
+                <h3 class="font-bold text-lg mt-8 mb-2 border-b pb-2">2. حفظ وتعديل البيانات (Server Actions)</h3>
+                <p class="text-slate-600 mb-4">
+                    عندما يضغط المستخدم على زر "حفظ"، لا نستخدم مسار API تقليدي (`fetch`) بل نستخدم دوال Server Actions الموجودة في مجلد `lib/actions/`.
+                </p>
+                <div class="code-container">
+<pre><code class="language-typescript">// lib/actions/booking.ts
+"use server" // هذه الكلمة السحرية تجعل الدالة تعمل في السيرفر فقط
+
+import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
+
+export async function createBooking(data) {
+   await prisma.booking.create({ data });
+   revalidatePath('/dashboard'); // تحديث الصفحة تلقائياً
+}</code></pre>
+                </div>
+
+            </section>
+
+            <!-- Tab 5: How to Edit -->
+            <section id="how-to-edit" class="tab-content">
+                <h2 class="text-3xl font-bold mb-4 text-slate-800">دليل التعديل السريع 🛠️</h2>
+                <p class="text-slate-600 mb-8 text-lg">هذا الدليل سيساعدك في إنجاز أشهر المهام المطلوبة منك كمطور بكل سهولة.</p>
+
+                <!-- Task 1 -->
+                <div class="mb-8 p-6 bg-slate-50 border border-slate-200 rounded-2xl">
+                    <h3 class="text-xl font-bold text-brand-600 flex items-center gap-2 mb-3">
+                        <span class="bg-brand-100 text-brand-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+                        كيف أقوم بإضافة صفحة جديدة؟
+                    </h3>
+                    <p class="text-slate-600 mb-3">الخطوات بسيطة جداً بفضل Next.js App Router:</p>
+                    <ol class="list-decimal list-inside text-slate-600 space-y-2 mb-4">
+                        <li>اذهب إلى المجلد <code>app/</code> أو أي مجلد فرعي مثل <code>app/dashboard/admin/</code></li>
+                        <li>قم بإنشاء مجلد جديد باسم الرابط الذي تريده، مثلاً: <code>reports</code></li>
+                        <li>بداخل هذا المجلد الجديد، أنشئ ملفاً باسم <code>page.tsx</code> حصراً!</li>
+                        <li>اكتب المكون البرمجي الخاص بك بداخله، وسيعمل الرابط فوراً <code>/dashboard/admin/reports</code></li>
+                    </ol>
+                </div>
+
+                <!-- Task 2 -->
+                <div class="mb-8 p-6 bg-slate-50 border border-slate-200 rounded-2xl">
+                    <h3 class="text-xl font-bold text-brand-600 flex items-center gap-2 mb-3">
+                        <span class="bg-brand-100 text-brand-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
+                        كيف أغير لوناً أو أعدل تصميماً؟
+                    </h3>
+                    <p class="text-slate-600 mb-3">نحن نستخدم Tailwind CSS. لتغيير التصميم:</p>
+                    <ol class="list-decimal list-inside text-slate-600 space-y-2 mb-4">
+                        <li>ابحث عن العنصر في الكود الخاص بك (مثلاً داخل <code>components/</code>).</li>
+                        <li>ستجد خاصية <code>className="..."</code>.</li>
+                        <li>لتغيير اللون للآحمر، غير <code>text-blue-500</code> إلى <code>text-red-500</code>.</li>
+                        <li>لإضافة مسافة حول العنصر أضف <code>p-4</code> (يعني Padding).</li>
+                    </ol>
+                </div>
+
+                <!-- Task 3 -->
+                <div class="mb-8 p-6 bg-slate-50 border border-slate-200 rounded-2xl">
+                    <h3 class="text-xl font-bold text-brand-600 flex items-center gap-2 mb-3">
+                        <span class="bg-brand-100 text-brand-600 w-8 h-8 rounded-full flex items-center justify-center text-sm">3</span>
+                        كيف أضيف حقلاً جديداً في قاعدة البيانات؟
+                    </h3>
+                    <p class="text-slate-600 mb-3">لنفرض أنك طُلب منك إضافة حقل "رقم الهاتف الإحتياطي" للمستخدم:</p>
+                    <ol class="list-decimal list-inside text-slate-600 space-y-2 mb-4">
+                        <li>افتح ملف <code>prisma/schema.prisma</code></li>
+                        <li>في جدول الموديل المعني (مثلاً User)، أضف السطر الجديد: <code>secondaryPhone String?</code></li>
+                        <li>افتح التيرمينال واكتب هذا الأمر السحري لتطبيق التعديلات:</li>
+                    </ol>
+                    <div class="code-container">
+<pre><code class="language-bash">npx prisma db push
+# أو في بيئة الإنتاج:
+npx prisma migrate dev --name add_secondary_phone</code></pre>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12 p-6 bg-green-50 text-green-800 rounded-xl border border-green-200">
+                    <h4 class="font-bold text-xl mb-2">أنت الآن جاهز للبرمجة! 🚀</h4>
+                    <p>لا تتردد في استكشاف الكود والتجربة. نحن نؤمن بأن الخطأ هو أول خطوة للتعلم.</p>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Scripts for Tab Functionality & Syntax Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-typescript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-tsx.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-bash.min.js"></script>
+    
+    <script>
+        function switchTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Remove active class from all buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+            // Add active class to clicked button
+            document.getElementById('btn-' + tabId).classList.add('active');
+        }
+    </script>
+</body>
+</html>

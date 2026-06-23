@@ -106,6 +106,7 @@ export default async function DisputePage({ params }: { params: Promise<{ id: st
           <DisputeChat
             disputeId={dispute.id}
             status={dispute.status}
+            allowedTurn={dispute.allowedTurn}
             messages={dispute.messages as any}
             currentUserId={userId}
             currentUserType={userType}

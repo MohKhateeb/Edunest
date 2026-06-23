@@ -6,7 +6,6 @@ import AdminUsersList from '@/components/shared/AdminUsersList';
 export default async function AdminUsersPage() {
   const session = await auth();
   if (!session) redirect('/login');
-  if (session.user.userType !== 'ADMIN') redirect('/unauthorized');
 
   // Fetch all users with related students and teacher profile details
   const users = await prisma.user.findMany({

@@ -27,7 +27,6 @@ export default async function AdminVerificationPage() {
   const session = await auth();
   if (!session) redirect('/login');
 
-  if (session.user.userType !== 'ADMIN') redirect('/unauthorized');
 
   // Fetch pending verifications
   const pendingRequests: AdminVerificationRequest[] = await prisma.teacherVerification.findMany({

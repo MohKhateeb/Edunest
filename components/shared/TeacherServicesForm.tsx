@@ -96,7 +96,7 @@ export default function TeacherServicesForm({ serviceTypes, configuredServices }
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl p-8 space-y-8 shadow-sm">
+    <div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-8 space-y-8 shadow-sm hover:shadow-md transition-all">
       <div>
         <h2 className="font-extrabold text-xl mb-1">إدارة الخدمات والأسعار</h2>
         <p className="text-xs text-muted-foreground">
@@ -107,7 +107,7 @@ export default function TeacherServicesForm({ serviceTypes, configuredServices }
       {/* Grid: Configured List vs Addition Form */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
         {/* Addition form */}
-        <form onSubmit={handleSubmit} className="lg:col-span-1 bg-accent/30 border border-border rounded-xl p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="lg:col-span-1 bg-slate-50 dark:bg-slate-800/50 border border-border/50 rounded-3xl p-6 space-y-4 shadow-inner">
           <h3 className="font-bold text-sm border-b border-border pb-2.5 flex items-center gap-1.5 text-primary">
             <Plus className="h-4.5 w-4.5" />
             إضافة / تحديث خدمة
@@ -208,13 +208,13 @@ export default function TeacherServicesForm({ serviceTypes, configuredServices }
           </h3>
 
           {configuredServices.length === 0 ? (
-            <div className="border border-border border-dashed rounded-xl p-10 text-center text-xs text-muted-foreground bg-accent/10">
+            <div className="border border-border/50 border-dashed rounded-3xl p-10 text-center text-sm font-semibold text-muted-foreground bg-slate-50 dark:bg-slate-800/50">
               لا توجد خدمات مضافة حالياً. يرجى استخدام النموذج لإضافة خدمتك الأولى ليتمكن الأهالي من حجز حصصك.
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {configuredServices.map((cs) => (
-                <div key={cs.id} className="border border-border rounded-xl p-5 hover-card bg-card relative space-y-3">
+                <div key={cs.id} className="border border-border/60 rounded-3xl p-5 hover:shadow-md bg-white dark:bg-slate-900 relative space-y-3 transition-all">
                   <div className="font-bold text-sm text-foreground/80">{cs.serviceType.name}</div>
                   
                   <div className="flex gap-4 text-xs text-muted-foreground">

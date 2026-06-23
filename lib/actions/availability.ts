@@ -7,6 +7,7 @@ import { ActionResponse } from '@/lib/types';
 import { availabilityItemSchema } from '@/lib/validations/teacher';
 import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
+import { requireTeacherProfile } from '@/lib/actions/auth-helpers';
 
 const availabilityArraySchema = z.array(availabilityItemSchema);
 
@@ -16,14 +17,7 @@ export async function updateWeeklyAvailability(
   try {
     const { userId } = await requireAuth([UserType.TEACHER]);
 
-    // Find the teacher profile associated with this user
-    const teacher = await prisma.teacher.findUnique({
-      where: { userId },
-    });
-
-    if (!teacher) {
-      return { success: false, error: 'الملف الشخصي للمعلم غير موجود' };
-    }
+    const teacher = await requireTeacherProfile(userId);
 
     // Validate using Zod
     const validated = availabilityArraySchema.safeParse(items);

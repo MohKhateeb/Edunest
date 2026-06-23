@@ -7,7 +7,6 @@ export default async function AdminTeachersPage() {
   const session = await auth();
   if (!session) redirect('/login');
 
-  if (session.user.userType !== 'ADMIN') redirect('/unauthorized');
 
   // Fetch teachers
   const teachers = await prisma.teacher.findMany({

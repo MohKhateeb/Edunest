@@ -42,6 +42,13 @@ export async function POST(req: NextRequest) {
     }
     const bucket = bucketParam || 'uploads';
 
+    // Security Check: Restrict sensitive buckets by role
+    if (bucket === 'verifications' && session.user.userType === 'PARENT') {
+      return NextResponse.json({ error: 'غير مصرح لك برفع ملفات توثيق' }, { status: 403 });
+    }
+    // Only Admin can upload to system directories if any exist, currently verifications is the most sensitive.
+
+
     const fileExt = file.name.split('.').pop() || '';
     const safeExt = fileExt.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
     
@@ -93,8 +100,17 @@ export async function POST(req: NextRequest) {
 
     // 6. الحفظ المحلي الاحتياطي (Fallback) في حال عدم تهيئة Supabase أو حدوث أي خطأ في الاتصال
     if (!uploadSuccess) {
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads', bucket, session.user.id);
+      if (!/^[a-zA-Z0-9-]+$/.test(session.user.id)) {
+        return NextResponse.json({ error: 'معرف مستخدم غير صالح' }, { status: 400 });
+      }
+
+      const uploadDir = path.resolve(process.cwd(), 'public', 'uploads', bucket, session.user.id);
       
+      const baseUploadsDir = path.resolve(process.cwd(), 'public', 'uploads');
+      if (!uploadDir.startsWith(baseUploadsDir)) {
+        return NextResponse.json({ error: 'مسار رفع غير صالح' }, { status: 400 });
+      }
+
       if (!fs.existsSync(uploadDir)) {
         fs.mkdirSync(uploadDir, { recursive: true });
       }

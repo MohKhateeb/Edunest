@@ -12,7 +12,6 @@ export const metadata: Metadata = {
 export default async function AdminFAQPage() {
   const session = await auth();
   if (!session) redirect('/login');
-  if (session.user.userType !== 'ADMIN') redirect('/unauthorized');
 
   const res = await getFAQs(undefined, true);
 

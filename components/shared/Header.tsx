@@ -24,6 +24,7 @@ import {
   CreditCard,
   Settings,
   ShieldCheck,
+  ShieldAlert,
   HelpCircle
 } from 'lucide-react';
 import NotificationBell from '@/components/shared/NotificationBell';
@@ -65,6 +66,7 @@ export default function Header() {
     { href: '/dashboard/admin/users', label: 'إدارة المستخدمين', icon: Users },
     { href: '/dashboard/admin/teachers', label: 'إدارة المعلمين', icon: Users },
     { href: '/dashboard/admin/bookings', label: 'كل الحجوزات', icon: Calendar },
+    { href: '/dashboard/admin/disputes', label: 'إدارة النزاعات', icon: ShieldAlert },
     { href: '/dashboard/admin/financials', label: 'الإدارة المالية الشاملة', icon: CreditCard },
     { href: '/dashboard/admin/payouts', label: 'تسويات المعلمين', icon: BadgeDollarSign },
     { href: '/dashboard/admin/settings', label: 'إعدادات النظام', icon: Settings },
@@ -82,7 +84,9 @@ export default function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center gap-2 tracking-tight">
-              <Image src="/logo.png" alt="EduNest" width={140} height={45} className="object-contain mix-blend-multiply" unoptimized />
+              <div className="w-[140px] h-[45px] flex items-center justify-center overflow-hidden">
+                <img src="/logo.png" alt="EduNest" className="w-[180px] max-w-none h-auto object-contain mix-blend-multiply translate-x-2" />
+              </div>
             </Link>
           </div>
 

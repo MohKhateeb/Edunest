@@ -1,0 +1,190 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { createTutoringRequest } from '@/lib/actions/tutoring-requests/create';
+import { checkLiveRequestMatch } from '@/lib/actions/tutoring-requests/status';
+import { 
+  Search, Zap, Loader2, BookOpen, UserCircle, Rocket 
+} from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
+
+interface Student {
+  id: string;
+  name: string;
+  grade: number;
+}
+
+interface ServiceType {
+  id: string;
+  name: string;
+}
+
+interface ParentLiveRadarClientProps {
+  students: Student[];
+  serviceTypes: ServiceType[];
+}
+
+export default function ParentLiveRadarClient({ students, serviceTypes }: ParentLiveRadarClientProps) {
+  const router = useRouter();
+  const [isSearching, setIsSearching] = useState(false);
+  const [activeRequestId, setActiveRequestId] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    studentId: students[0]?.id || '',
+    serviceTypeId: serviceTypes.find(s => s.name.includes('سريعة'))?.id || serviceTypes[0]?.id || '',
+    specialization: 'رياضيات',
+    title: '',
+    details: '',
+  });
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!formData.studentId || !formData.title || !formData.specialization) {
+      toast.error('يرجى تعبئة الحقول الأساسية لطلب الفزعة!');
+      return;
+    }
+
+    setIsSearching(true);
+    toast.loading('جاري بث طلبك لجميع المعلمين المتاحين الآن... 📡', { id: 'live-request' });
+
+    try {
+      const res = await createTutoringRequest(formData);
+      if (res.success && res.data) {
+        toast.success('تم إرسال الطلب بنجاح! نحن نبحث لك عن المعلم الأسرع...', { id: 'live-request' });
+        setActiveRequestId(res.data.requestId);
+      } else {
+        toast.error(res.error || 'حدث خطأ أثناء الطلب', { id: 'live-request' });
+        setIsSearching(false);
+      }
+    } catch (err) {
+      toast.error('خطأ غير متوقع', { id: 'live-request' });
+      setIsSearching(false);
+    }
+  };
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    
+    if (isSearching && activeRequestId) {
+      interval = setInterval(async () => {
+        try {
+          const res = await checkLiveRequestMatch(activeRequestId);
+          if (res.success && res.data?.isMatched && res.data.bookingId) {
+            clearInterval(interval);
+            toast.success('تم العثور على معلم! جاري توجيهك للجلسة...', { id: 'live-match' });
+            router.push(`/dashboard/session/${res.data.bookingId}`);
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      }, 3000); // يفحص كل 3 ثواني
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isSearching, activeRequestId, router]);
+
+  if (isSearching) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-8 animate-in fade-in zoom-in duration-500">
+        <div className="relative">
+          <div className="absolute inset-0 bg-indigo-500/20 rounded-full animate-ping scale-150"></div>
+          <div className="absolute inset-0 bg-indigo-500/10 rounded-full animate-ping scale-110" style={{ animationDelay: '0.5s' }}></div>
+          <div className="relative bg-white dark:bg-slate-900 p-8 rounded-full border-4 border-indigo-500 shadow-2xl shadow-indigo-500/50">
+            <Search className="w-16 h-16 text-indigo-500 animate-pulse" />
+          </div>
+        </div>
+        
+        <div className="space-y-3">
+          <h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">
+            رادار EduNest يعمل 📡
+          </h2>
+          <p className="text-lg text-slate-500 max-w-md mx-auto">
+            لقد تم بث طلبك بنجاح! ننتظر الآن أول معلم متصل ليقوم بالتقاطه. يرجى الانتظار، سيتم نقلك تلقائياً.
+          </p>
+        </div>
+        <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-3xl mx-auto">
+      <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2rem] p-8 text-white mb-8 shadow-xl shadow-indigo-500/20 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+        <div className="relative z-10 flex items-start justify-between">
+          <div>
+            <h2 className="text-3xl font-black mb-2 flex items-center gap-2">
+              فزعة سريعة <Zap className="w-8 h-8 text-yellow-300" />
+            </h2>
+            <p className="text-indigo-100 max-w-md">
+              هل يواجه ابنك صعوبة في مسألة الآن؟ حدد المادة وسنقوم بربطك فوراً بأول معلم متاح لجلسة سريعة (30 دقيقة بـ 50 شيكل فقط!).
+            </p>
+          </div>
+          <Rocket className="w-24 h-24 text-white/20 hidden md:block" />
+        </div>
+      </div>
+
+      <form onSubmit={handleSearch} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2rem] p-6 md:p-10 shadow-sm space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+              <UserCircle className="w-4 h-4 text-indigo-500" /> الطالب
+            </label>
+            <select
+              value={formData.studentId}
+              onChange={(e) => setFormData({ ...formData, studentId: e.target.value })}
+              className="w-full p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-indigo-500 outline-none transition-colors"
+              required
+            >
+              {students.map((s) => (
+                <option key={s.id} value={s.id}>{s.name} (الصف {s.grade})</option>
+              ))}
+            </select>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-purple-500" /> المادة / التخصص
+            </label>
+            <select
+              value={formData.specialization}
+              onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
+              className="w-full p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-purple-500 outline-none transition-colors"
+              required
+            >
+              <option value="رياضيات">رياضيات</option>
+              <option value="لغة إنجليزية">لغة إنجليزية</option>
+              <option value="لغة عربية">لغة عربية</option>
+              <option value="علوم">علوم</option>
+              <option value="فيزياء">فيزياء</option>
+              <option value="كيمياء">كيمياء</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-bold text-slate-700 dark:text-slate-300">ما هو السؤال أو الموضوع؟ (باختصار)</label>
+          <input
+            type="text"
+            placeholder="مثال: مساعدة في حل معادلة من الدرجة الثانية"
+            value={formData.title}
+            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            className="w-full p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-indigo-500 outline-none transition-colors font-semibold"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full flex items-center justify-center gap-3 py-5 bg-slate-900 hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white rounded-2xl font-black text-xl transition-all hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-slate-900/20 dark:shadow-indigo-500/20"
+        >
+          <Search className="w-6 h-6 text-indigo-400 dark:text-white" />
+          ابحث عن معلم الآن (50 ₪)
+        </button>
+      </form>
+    </div>
+  );
+}

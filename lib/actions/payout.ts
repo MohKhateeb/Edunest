@@ -2,210 +2,113 @@
 
 import { requireAuth } from '@/lib/require-auth';
 import { UserType } from '@prisma/client';
+import { requireTeacherProfile } from '@/lib/actions/auth-helpers';
 import { prisma } from '@/lib/prisma';
 import { ActionResponse } from '@/lib/types';
 import { revalidatePath } from 'next/cache';
-import { draftPayoutSchema, payoutIdSchema } from '@/lib/validations/payout';
+import { createPayoutSchema, payoutIdSchema } from '@/lib/validations/payout';
+import { calculateEarnings } from '@/lib/utils/financial';
 
-export async function calculateDraftPayout(
-  teacherId: string,
-  periodStart: Date,
-  periodEnd: Date
-): Promise<ActionResponse<{
-  bookingCount: number;
-  totalAmount: number;
-  commissionAmount: number;
-  trialCompensation: number;
-  netAmount: number;
-}>> {
+export async function getPendingPayoutBookingsForTeacher(teacherId: string) {
   try {
-    const validated = draftPayoutSchema.safeParse({ teacherId, periodStart, periodEnd });
-    if (!validated.success) {
-      return { success: false, error: validated.error.issues[0].message };
-    }
-
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
-
-    if (periodEnd >= today) {
-      return { success: false, error: 'تاريخ نهاية التسوية يجب أن يكون في الماضي (قبل اليوم الحالي).' };
-    }
-
     const { userId, userType } = await requireAuth([UserType.ADMIN, UserType.TEACHER]);
-
-    if (userType === UserType.TEACHER) {
-      const teacherProfile = await prisma.teacher.findUnique({
-        where: { userId },
-      });
+    
+    // Security Check: IDOR prevention
+    if (userType === 'TEACHER') {
+      const teacherProfile = await prisma.teacher.findUnique({ where: { userId } });
       if (!teacherProfile || teacherProfile.id !== teacherId) {
-        return { success: false, error: 'غير مصرح لك بالاطلاع على مسودة تسوية خاصة بمعلم آخر.' };
+        throw new Error('غير مصرح لك باستعراض بيانات معلم آخر');
       }
     }
 
-    // Calculate 24 hours ago
     const twentyFourHoursAgo = new Date();
     twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
 
-    // Fetch eligible bookings: COMPLETED, not yet paid to tutor, within period, past 24h
     let bookings = await prisma.booking.findMany({
       where: {
-        teacherService: {
-          teacherId,
-        },
+        teacherService: { teacherId },
         status: 'COMPLETED',
         payoutId: null,
-        startTime: {
-          gte: periodStart,
-          lte: periodEnd,
-        },
-        completedAt: {
-          lte: twentyFourHoursAgo, // Must be older than 24h
-        },
-        OR: [
-          // Either it is paid by parent
-          { paymentStatus: 'PAID' },
-          // Or it is a free trial (which doesn't require parent payment but is compensated by platform)
-          { isTrial: true },
-        ],
+        completedAt: { lte: twentyFourHoursAgo },
+        OR: [{ paymentStatus: 'PAID' }, { isTrial: true }],
       },
-      include: { dispute: true },
+      include: {
+        dispute: true,
+        student: { select: { name: true } },
+        teacherService: { include: { serviceType: { select: { name: true } } } }
+      },
+      orderBy: { startTime: 'asc' },
     });
 
-    // Filter out bookings that have an OPEN dispute or resolved in favor of parent
-    bookings = bookings.filter((b) => {
-      if (!b.dispute) return true; // No dispute -> OK
-      if (b.dispute.status === 'RESOLVED_IN_FAVOR_OF_TEACHER') return true; // Resolved for teacher -> OK
-      return false; // OPEN or RESOLVED_IN_FAVOR_OF_PARENT -> Exclude
+    const filteredBookings = bookings.filter((b) => {
+      if (!b.dispute) return true;
+      if (b.dispute.status === 'RESOLVED_IN_FAVOR_OF_TEACHER') return true;
+      return false;
     });
 
-    let totalAmount = 0;
-    let commissionAmount = 0;
-    let trialCompensation = 0;
-
-    for (const b of bookings) {
-      const price = Number(b.price);
-      if (b.isTrial) {
-        trialCompensation += Number(b.trialCostToPlatform);
-      } else {
-        totalAmount += price;
-        const commRate = Number(b.appliedCommissionRate);
-        commissionAmount += (price * commRate) / 100;
-      }
-    }
-
-    const netAmount = totalAmount - commissionAmount + trialCompensation;
-
-    return {
-      success: true,
-      data: {
-        bookingCount: bookings.length,
-        totalAmount,
-        commissionAmount,
-        trialCompensation,
-        netAmount,
-      },
-    };
+    return { success: true, data: filteredBookings };
   } catch (err: unknown) {
     console.error(err);
-    return { success: false, error: 'حدث خطأ أثناء احتساب المستحقات' };
+    return { success: false, error: 'حدث خطأ أثناء جلب الجلسات المستحقة' };
   }
 }
 
 export async function createTeacherPayout(data: {
   teacherId: string;
-  periodStart: Date;
-  periodEnd: Date;
+  bookingIds: string[];
 }): Promise<ActionResponse> {
   try {
-    const validated = draftPayoutSchema.safeParse(data);
+    const validated = createPayoutSchema.safeParse(data);
     if (!validated.success) {
       return { success: false, error: validated.error.issues[0].message };
     }
 
     await requireAuth([UserType.ADMIN]);
-    const { teacherId, periodStart, periodEnd } = data;
+    const { teacherId, bookingIds } = data;
 
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
-
-    if (periodEnd >= today) {
-      return { success: false, error: 'تاريخ نهاية التسوية يجب أن يكون في الماضي (قبل اليوم الحالي).' };
-    }
-
-    // Run in transaction to link bookings and create payout
     await prisma.$transaction(async (tx) => {
-      // Check for overlapping payouts
-      const overlapping = await tx.teacherPayout.findFirst({
-        where: {
-          teacherId,
-          AND: [
-            { periodStart: { lte: periodEnd } },
-            { periodEnd: { gte: periodStart } },
-          ],
-        },
-      });
-
-      if (overlapping) {
-        throw new Error('يوجد تداخل مع فترة تسوية سابقة لهذا المعلم.');
-      }
       await tx.$executeRaw`SELECT id FROM "Teacher" WHERE id = ${teacherId} FOR UPDATE`;
 
-      // Calculate 24 hours ago
-      const twentyFourHoursAgo = new Date();
-      twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
-
-      // 1. Fetch the bookings to include
-      let bookings = await tx.booking.findMany({
+      // Fetch the selected bookings to verify they belong to the teacher and are eligible
+      const bookings = await tx.booking.findMany({
         where: {
-          teacherService: {
-            teacherId,
-          },
+          id: { in: bookingIds },
+          teacherService: { teacherId },
           status: 'COMPLETED',
           payoutId: null,
-          startTime: {
-            gte: periodStart,
-            lte: periodEnd,
-          },
-          completedAt: {
-            lte: twentyFourHoursAgo,
-          },
-          OR: [
-            { paymentStatus: 'PAID' },
-            { isTrial: true },
-          ],
+          OR: [{ paymentStatus: 'PAID' }, { isTrial: true }],
         },
-        include: { dispute: true },
       });
 
-      // Filter out bookings that have an OPEN dispute or resolved in favor of parent
-      bookings = bookings.filter((b) => {
-        if (!b.dispute) return true; // No dispute -> OK
-        if (b.dispute.status === 'RESOLVED_IN_FAVOR_OF_TEACHER') return true; // Resolved for teacher -> OK
-        return false; // OPEN or RESOLVED_IN_FAVOR_OF_PARENT -> Exclude
-      });
-
-      if (bookings.length === 0) {
-        throw new Error('لا توجد حجوزات مستحقة للدفع في هذه الفترة');
+      if (bookings.length !== bookingIds.length) {
+        throw new Error('بعض الجلسات المحددة غير صالحة للتسوية أو تم تسويتها مسبقاً.');
       }
 
       let totalAmount = 0;
       let commissionAmount = 0;
       let trialCompensation = 0;
+      let minStartTime = bookings[0].startTime;
+      let maxStartTime = bookings[0].startTime;
 
       for (const b of bookings) {
-        const price = Number(b.price);
-        if (b.isTrial) {
-          trialCompensation += Number(b.trialCostToPlatform);
-        } else {
-          totalAmount += price;
-          const commRate = Number(b.appliedCommissionRate);
-          commissionAmount += (price * commRate) / 100;
-        }
+        if (b.startTime < minStartTime) minStartTime = b.startTime;
+        if (b.startTime > maxStartTime) maxStartTime = b.startTime;
+
+        const earnings = calculateEarnings(
+          b.price,
+          b.appliedCommissionRate,
+          b.isTrial,
+          b.trialCostToPlatform
+        );
+
+        totalAmount += earnings.totalAmount;
+        commissionAmount += earnings.commissionAmount;
+        trialCompensation += earnings.trialCompensation;
       }
 
-      const netAmount = totalAmount - commissionAmount + trialCompensation;
+      const netAmount = Math.round((totalAmount - commissionAmount) * 100) / 100;
 
-      // 2. Create the Payout record
+      // Create the Payout record
       const payout = await tx.teacherPayout.create({
         data: {
           teacherId,
@@ -213,18 +116,16 @@ export async function createTeacherPayout(data: {
           commissionAmount,
           trialCompensation,
           netAmount,
-          periodStart,
-          periodEnd,
+          periodStart: minStartTime,
+          periodEnd: maxStartTime,
           isPaid: false,
         },
       });
 
-      // 3. Link all included bookings to this payoutId
+      // Link all included bookings to this payoutId
       await tx.booking.updateMany({
         where: {
-          id: {
-            in: bookings.map((b) => b.id),
-          },
+          id: { in: bookingIds },
         },
         data: {
           payoutId: payout.id,
@@ -279,5 +180,44 @@ export async function markPayoutAsPaid(payoutId: string): Promise<ActionResponse
   } catch (err: unknown) {
     console.error(err);
     return { success: false, error: 'حدث خطأ أثناء تحديث حالة الدفع' };
+  }
+}
+
+export async function markParentRefundAsPaid(refundId: string): Promise<ActionResponse> {
+  try {
+    const validated = payoutIdSchema.safeParse({ payoutId: refundId });
+    if (!validated.success) {
+      return { success: false, error: validated.error.issues[0].message };
+    }
+
+    await requireAuth([UserType.ADMIN]);
+
+    const refund = await prisma.parentRefund.findUnique({
+      where: { id: refundId },
+    });
+
+    if (!refund) {
+      return { success: false, error: 'عملية الاسترداد غير موجودة' };
+    }
+
+    if (refund.isPaid) {
+      return { success: false, error: 'تم تحويل مبلغ الاسترداد مسبقاً' };
+    }
+
+    await prisma.parentRefund.update({
+      where: { id: refundId },
+      data: {
+        isPaid: true,
+        paidAt: new Date(),
+      },
+    });
+
+    revalidatePath('/dashboard/admin/payouts');
+    revalidatePath('/dashboard/parent/financials');
+
+    return { success: true };
+  } catch (err: unknown) {
+    console.error(err);
+    return { success: false, error: 'حدث خطأ أثناء تحديث حالة الاسترداد' };
   }
 }

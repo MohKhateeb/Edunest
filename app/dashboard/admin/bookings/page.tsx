@@ -10,7 +10,6 @@ export default async function AdminBookingsPage() {
   const session = await auth();
   if (!session) redirect('/login');
 
-  if (session.user.userType !== 'ADMIN') redirect('/unauthorized');
 
   const bookings: DetailedBooking[] = await prisma.booking.findMany({
     include: bookingDetailsInclude,
@@ -28,7 +27,7 @@ export default async function AdminBookingsPage() {
         </p>
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-4">
+      <div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all space-y-4">
         <h2 className="font-extrabold text-base border-b border-border pb-2.5 flex items-center gap-2">
           <Calendar className="h-5 w-5 text-primary" />
           كل الطلبات والحصص ({bookings.length})

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { createTutoringOffer, toggleTeacherAvailabilityStatus } from '@/lib/actions/tutoring-request';
+import { createTutoringOffer } from '@/lib/actions/tutoring-request';
 import { Calendar, Clock, CreditCard, Send, Loader2, AlertCircle, CheckCircle, Wifi, WifiOff, FileText } from 'lucide-react';
 import { cn, formatLocalTime, formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
@@ -47,37 +47,33 @@ type MyOffer = {
 
 interface TeacherRequestsListProps {
   teacherId: string;
-  initialIsAvailable: boolean;
   availableRequests: TutoringRequest[];
   myOffers: MyOffer[];
 }
 
 export default function TeacherRequestsList({
   teacherId,
-  initialIsAvailable,
   availableRequests: initialAvailable,
   myOffers: initialMyOffers,
 }: TeacherRequestsListProps) {
   const router = useRouter();
   
   // حالات الاتصال وقوائم البيانات
-  const [isAvailable, setIsAvailable] = useState(initialIsAvailable);
+  const [activeTab, setActiveTab] = useState<'available' | 'my-offers'>('available');
   const [availableRequests, setAvailableRequests] = useState<TutoringRequest[]>(initialAvailable);
   const [myOffers, setMyOffers] = useState<MyOffer[]>(initialMyOffers);
   
-  const [activeTab, setActiveTab] = useState<'available' | 'my-offers'>('available');
-  const [togglingStatus, setTogglingStatus] = useState(false);
   const [submittingOfferId, setSubmittingOfferId] = useState<string | null>(null);
 
-  // تخزين قيم العروض المدخلة لكل طلب (سعر العرض والملاحظات)
-  const [offerInputs, setOfferInputs] = useState<Record<string, { price: number; notes: string }>>(
+  // تخزين قيم العروض المدخلة لكل طلب (سعر العرض والملاحظات والمدة)
+  const [offerInputs, setOfferInputs] = useState<Record<string, { price: number; duration: number; notes: string }>>(
     initialAvailable.reduce((acc, req) => {
-      acc[req.id] = { price: req.price, notes: '' };
+      acc[req.id] = { price: req.price || 50, duration: req.duration || 30, notes: '' };
       return acc;
-    }, {} as Record<string, { price: number; notes: string }>)
+    }, {} as Record<string, { price: number; duration: number; notes: string }>)
   );
 
-  const handleInputChange = (requestId: string, field: 'price' | 'notes', value: any) => {
+  const handleInputChange = (requestId: string, field: 'price' | 'duration' | 'notes', value: any) => {
     setOfferInputs((prev) => ({
       ...prev,
       [requestId]: {
@@ -85,27 +81,6 @@ export default function TeacherRequestsList({
         [field]: value,
       },
     }));
-  };
-
-  // تغيير وضع التواجد (متاح الآن)
-  const handleToggleStatus = async () => {
-    setTogglingStatus(true);
-    const newStatus = !isAvailable;
-    try {
-      const res = await toggleTeacherAvailabilityStatus(newStatus);
-      if (res.success) {
-        setIsAvailable(newStatus);
-        toast.success(newStatus ? 'أنت الآن متاح وتستقبل طلبات أولياء الأمور' : 'تم تغيير حالتك إلى غير متصل');
-        router.refresh();
-      } else {
-        toast.error('فشل تغيير الحالة', { description: res.error });
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error('حدث خطأ أثناء تعديل حالة التوفر');
-    } finally {
-      setTogglingStatus(false);
-    }
   };
 
   // تقديم عرض سعر
@@ -119,7 +94,12 @@ export default function TeacherRequestsList({
 
     setSubmittingOfferId(requestId);
     try {
-      const res = await createTutoringOffer(requestId, input.price, input.notes);
+      const res = await createTutoringOffer({
+        requestId,
+        price: input.price,
+        duration: input.duration,
+        notes: input.notes
+      });
       if (res.success) {
         toast.success('تم تقديم عرضك لولي الأمر بنجاح!');
         // إزالة الطلب من الطلبات المتاحة وإضافته للعروض المقدمة محلياً للتحديث الفوري
@@ -164,53 +144,6 @@ export default function TeacherRequestsList({
 
   return (
     <div className="space-y-6 text-right" dir="rtl">
-      
-      {/* 🟢 شريط حالة التوفر العلوي الفخم */}
-      <div className={cn(
-        'border p-5 rounded-2xl flex flex-col sm:flex-row justify-between items-center gap-4 transition-all shadow-xs',
-        isAvailable 
-          ? 'bg-emerald-500/5 border-emerald-500/10' 
-          : 'bg-slate-500/5 border-slate-500/10'
-      )}>
-        <div className="flex items-center gap-3">
-          <div className={cn(
-            'p-3 rounded-xl',
-            isAvailable ? 'bg-emerald-500/10 text-emerald-600' : 'bg-slate-500/10 text-slate-500'
-          )}>
-            {isAvailable ? <Wifi className="h-6 w-6 animate-pulse" /> : <WifiOff className="h-6 w-6" />}
-          </div>
-          <div className="space-y-1">
-            <span className="text-xs text-muted-foreground block font-semibold">حالة استقبال الطلبات الفورية</span>
-            <span className="text-sm font-extrabold">
-              {isAvailable ? 'أنت متصل الآن (Online) وتستقبل طلبات الحجز العامة' : 'أنت غير متصل (Offline) ولا تظهر لأولياء الأمور'}
-            </span>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          onClick={handleToggleStatus}
-          disabled={togglingStatus}
-          className={cn(
-            'premium-btn py-2.5 px-6 text-xs font-bold flex items-center gap-2 cursor-pointer transition-all',
-            isAvailable 
-              ? 'bg-rose-600 hover:bg-rose-700 text-white border-rose-600' 
-              : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600'
-          )}
-        >
-          {togglingStatus ? (
-            <>
-              <Loader2 className="h-4 w-4 animate-spin" />
-              جاري تغيير الحالة...
-            </>
-          ) : isAvailable ? (
-            'تعطيل وضع الاستقبال (أوفلاين)'
-          ) : (
-            'تفعيل وضع الاستقبال (أونلاين)'
-          )}
-        </button>
-      </div>
-
       {/* 🔍 تبويبات التنقل */}
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-center bg-card p-2 rounded-2xl border border-border shadow-xs">
         <div className="flex bg-muted/40 p-1 rounded-xl w-full sm:w-auto gap-1">
@@ -241,15 +174,7 @@ export default function TeacherRequestsList({
 
       {/* 📭 عرض النتائج والبطاقات */}
       {activeTab === 'available' ? (
-        !isAvailable ? (
-          <div className="flex flex-col items-center justify-center py-20 bg-card border border-border border-dashed rounded-2xl text-center">
-            <WifiOff className="h-10 w-10 text-muted-foreground/40 mb-3" />
-            <p className="text-sm font-bold text-foreground/80 font-semibold">أنت غير متصل حالياً</p>
-            <p className="text-xs text-muted-foreground mt-1 max-w-sm">
-              قم بتفعيل وضع الاستقبال (أونلاين) أعلاه لتتمكن من تصفح طلبات التدريس العامة لطلاب تخصصك وتقديم عروض أسعار لهم.
-            </p>
-          </div>
-        ) : availableRequests.length === 0 ? (
+        availableRequests.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 bg-card border border-border border-dashed rounded-2xl text-center">
             <CheckCircle className="h-10 w-10 text-emerald-500/40 mb-3 animate-pulse" />
             <p className="text-sm font-bold text-foreground/80">لا توجد طلبات جديدة حالياً</p>
@@ -283,8 +208,8 @@ export default function TeacherRequestsList({
                     </div>
                     
                     <div className="text-left flex flex-col items-end gap-1">
-                      <span className="text-[10px] text-muted-foreground">ميزانية ولي الأمر المقترحة</span>
-                      <span className="text-base font-black text-primary">{formatPrice(req.price)}</span>
+                      <span className="text-[10px] text-muted-foreground">ميزانية مقترحة (اختياري)</span>
+                      <span className="text-base font-black text-primary">{req.price ? formatPrice(req.price) : 'غير محدد'}</span>
                     </div>
                   </div>
 
@@ -294,15 +219,11 @@ export default function TeacherRequestsList({
                     </p>
                   )}
 
-                  {/* تفاصيل الموعد والمدة والمرفقات */}
+                  {/* تفاصيل الموعد والمرفقات */}
                   <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-muted-foreground border-y border-border/40 py-2.5 my-1">
                     <div className="flex items-center gap-1.5">
-                      <Calendar className="h-4 w-4 text-primary" />
-                      <span>تاريخ البدء: <strong className="text-foreground/80">{formatLocalTime(req.startTime)}</strong></span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
                       <Clock className="h-4 w-4 text-primary" />
-                      <span>المدة: <strong className="text-foreground/80">{req.duration} دقيقة</strong></span>
+                      <span className="text-foreground/80 font-bold">جلسة فورية (تبدأ بمجرد الدفع)</span>
                     </div>
                     {req.imageUrl && (
                       <a
@@ -332,6 +253,23 @@ export default function TeacherRequestsList({
                         required
                         value={input.price}
                         onChange={(e) => handleInputChange(req.id, 'price', Number(e.target.value))}
+                        className="premium-input w-full text-xs"
+                      />
+                    </div>
+
+                    {/* المدة المطلوبة */}
+                    <div className="space-y-1.5 w-full md:w-32">
+                      <label className="text-[10px] font-bold text-foreground/70 flex items-center gap-1">
+                        <Clock className="h-3.5 w-3.5" />
+                        وقت الشرح (دقائق)
+                      </label>
+                      <input
+                        type="number"
+                        min={5}
+                        max={300}
+                        required
+                        value={input.duration}
+                        onChange={(e) => handleInputChange(req.id, 'duration', Number(e.target.value))}
                         className="premium-input w-full text-xs"
                       />
                     </div>

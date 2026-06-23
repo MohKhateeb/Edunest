@@ -6,6 +6,7 @@ import { getUserNotifications, markNotificationAsRead, markAllNotificationsAsRea
 import { Notification } from '@prisma/client';
 import { formatLocalTime } from '@/lib/utils';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export default function NotificationBell() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -103,42 +104,70 @@ export default function NotificationBell() {
               </div>
             ) : (
               <ul className="divide-y divide-border">
-                {notifications.map(notification => (
-                  <li 
-                    key={notification.id}
-                    className={cn(
-                      "p-4 hover:bg-accent/50 transition-colors relative group",
-                      !notification.isRead && "bg-primary/5"
-                    )}
-                  >
-                    {!notification.isRead && (
-                      <div className="absolute end-2 top-4 w-1.5 h-1.5 rounded-full bg-primary" />
-                    )}
-                    <div className="pe-4">
-                      <p className={cn("text-sm mb-1", !notification.isRead ? "font-bold text-foreground" : "font-medium text-foreground/80")}>
-                        {notification.title}
-                      </p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
-                        {notification.message}
-                      </p>
-                      <div className="flex justify-between items-center mt-3">
-                        <span className="text-[10px] text-muted-foreground font-medium">
-                          {formatLocalTime(notification.createdAt)}
-                        </span>
-                        
-                        {!notification.isRead && (
-                          <button 
-                            onClick={() => handleMarkAsRead(notification.id)}
-                            className="text-[10px] flex items-center gap-1 text-primary hover:text-primary/80 font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <Check className="h-3 w-3" />
-                            تحديد كمقروء
-                          </button>
-                        )}
+                {notifications.map(notification => {
+                  const NotificationContent = (
+                    <>
+                      {!notification.isRead && (
+                        <div className="absolute end-2 top-4 w-1.5 h-1.5 rounded-full bg-primary" />
+                      )}
+                      <div className="pe-4">
+                        <p className={cn("text-sm mb-1 transition-colors", !notification.isRead ? "font-bold text-foreground group-hover:text-primary" : "font-medium text-foreground/80")}>
+                          {notification.title}
+                        </p>
+                        <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                          {notification.message}
+                        </p>
+                        <div className="flex justify-between items-center mt-3">
+                          <span className="text-[10px] text-muted-foreground font-medium">
+                            {formatLocalTime(notification.createdAt)}
+                          </span>
+                          
+                          {!notification.isRead && (
+                            <button 
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleMarkAsRead(notification.id);
+                              }}
+                              className="text-[10px] flex items-center gap-1 text-primary hover:text-primary/80 font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <Check className="h-3 w-3" />
+                              تحديد كمقروء
+                            </button>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </li>
-                ))}
+                    </>
+                  );
+
+                  return (
+                    <li 
+                      key={notification.id}
+                      className={cn(
+                        "p-4 hover:bg-accent/50 transition-colors relative group",
+                        !notification.isRead && "bg-primary/5"
+                      )}
+                    >
+                      {/* @ts-ignore - Assuming link exists in the extended type */}
+                      {notification.link ? (
+                        <Link 
+                          // @ts-ignore
+                          href={notification.link}
+                          onClick={() => {
+                            if (!notification.isRead) handleMarkAsRead(notification.id);
+                            setIsOpen(false);
+                          }}
+                          className="block"
+                        >
+                          {NotificationContent}
+                        </Link>
+                      ) : (
+                        <div className="block">
+                          {NotificationContent}
+                        </div>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>

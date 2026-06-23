@@ -30,14 +30,11 @@ export async function createTutoringRequest(
       title,
       details,
       imageUrl,
-      startTime,
-      duration,
-      price,
     } = validated.data;
 
     // 1. لا نطبق مهلة الحد الأدنى للطلب العام لأنه مخصص للطلبات الفورية (Uber-like)
-    // نعين وقت البدء ليكون الآن (باعتباره طلباً عاجلاً) إذا كان الوقت المرسل قديماً
-    const actualStartTime = startTime < new Date() ? new Date() : startTime;
+    // نعين وقت البدء ليكون الآن (باعتباره طلباً عاجلاً)
+    const actualStartTime = new Date();
 
     // 2. التحقق من الطالب وولي أمره
     const student = await prisma.student.findUnique({
@@ -66,8 +63,8 @@ export async function createTutoringRequest(
         details,
         imageUrl,
         startTime: actualStartTime,
-        duration,
-        price,
+        duration: 30, // ⚡ سعر ومدة ثابتة لنموذج Live Radar V2
+        price: 50,    // ⚡ السعر الثابت 50 شيكل
         status: RequestStatus.PENDING,
       },
     });
@@ -92,8 +89,9 @@ export async function createTutoringRequest(
     for (const t of matchingTeachers) {
       await createNotification({
         userId: t.userId,
-        title: 'طلب تدريس جديد في مادتك 📢',
-        message: `طلب جديد للطالب (${student.name} - الصف ${student.grade}) في مادة ${specialization} لموضوع: "${title}". تصفح الطلب وقدم عرضك الآن!`,
+        title: '⚡ طلب فوري جديد! (Live Radar) 📢',
+        message: `طلب عاجل من الطالب (${student.name} - الصف ${student.grade}) في مادة ${specialization}. الطلب مدفوع مسبقاً (50 شيكل - 30 دقيقة). أسرع والتقط الطلب الآن قبل غيرك!`,
+        link: '/dashboard/teacher/live',
       });
     }
 

@@ -20,7 +20,8 @@ import {
   HelpCircle,
   ChevronLeft,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  ShieldAlert
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import HakeemCharacter from '@/components/shared/HakeemCharacter';
@@ -31,8 +32,8 @@ const parentLinks = [
   { href: '/dashboard/parent', label: 'الرئيسية', icon: LayoutDashboard },
   { href: '/dashboard/parent/students', label: 'إدارة الطلاب', icon: Users },
   { href: '/dashboard/parent/bookings', label: 'حجوزاتي', icon: Calendar },
-  { href: '/dashboard/parent/bookings/new', label: 'حجز جلسة جديدة', icon: CalendarPlus },
-  { href: '/dashboard/parent/requests', label: 'طلبات المعلمين وعروضهم', icon: Briefcase },
+  { href: '/dashboard/parent/live', label: 'فزعة سريعة (أوبر) ⚡', icon: CalendarPlus },
+  { href: '/dashboard/parent/requests', label: 'الطلبات المجدولة', icon: Briefcase },
   { href: '/dashboard/parent/financials', label: 'السجل المالي', icon: CreditCard },
   { href: '/dashboard/parent/faq', label: 'الأسئلة الشائعة', icon: HelpCircle },
 ];
@@ -42,7 +43,8 @@ const teacherLinks = [
   { href: '/dashboard/teacher/profile', label: 'تعديل الملف الشخصي', icon: UserCheck },
   { href: '/dashboard/teacher/services', label: 'إدارة الخدمات', icon: Briefcase },
   { href: '/dashboard/teacher/availability', label: 'أوقات التوفر الأسبوعية', icon: Clock },
-  { href: '/dashboard/teacher/requests', label: 'طلبات التدريس المتاحة', icon: CalendarPlus },
+  { href: '/dashboard/teacher/live', label: 'الرادار الحي 📡', icon: CalendarPlus },
+  { href: '/dashboard/teacher/requests', label: 'الطلبات المجدولة', icon: Briefcase },
   { href: '/dashboard/teacher/bookings', label: 'الحجوزات الواردة', icon: Calendar },
   { href: '/dashboard/teacher/earnings', label: 'الأرباح والتسويات', icon: BadgeDollarSign },
   { href: '/dashboard/teacher/verification', label: 'رفع وثائق التوثيق', icon: FileCheck },
@@ -54,6 +56,7 @@ const adminLinks = [
   { href: '/dashboard/admin/users', label: 'إدارة المستخدمين', icon: Users },
   { href: '/dashboard/admin/teachers', label: 'إدارة المعلمين', icon: Users },
   { href: '/dashboard/admin/bookings', label: 'كل الحجوزات', icon: Calendar },
+  { href: '/dashboard/admin/disputes', label: 'إدارة النزاعات', icon: ShieldAlert },
   { href: '/dashboard/admin/financials', label: 'الإدارة المالية الشاملة', icon: CreditCard },
   { href: '/dashboard/admin/payouts', label: 'تسويات المعلمين', icon: BadgeDollarSign },
   { href: '/dashboard/admin/settings', label: 'إعدادات النظام', icon: Settings },

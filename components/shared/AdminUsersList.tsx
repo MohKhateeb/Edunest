@@ -279,7 +279,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
                             <p className="text-xs text-muted-foreground italic col-span-full">لا يوجد طلاب مضافين لهذا الحساب بعد.</p>
                           ) : (
                             u.students.map((student) => (
-                              <div key={student.id} className="p-3 bg-card border border-border rounded-xl flex items-center gap-3">
+                              <div key={student.id} className="p-3 bg-white dark:bg-slate-900 border border-border/80 rounded-3xl flex items-center gap-3">
                                 <div className="h-8 w-8 rounded-full bg-emerald-500/10 text-emerald-600 flex items-center justify-center font-bold text-xs">
                                   {student.name.charAt(0)}
                                 </div>
@@ -295,7 +295,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 
                       {/* Teacher Role - List Specialization */}
                       {u.userType === 'TEACHER' && (
-                        <div className="p-4 bg-card border border-border rounded-xl space-y-2 max-w-md">
+                        <div className="p-4 bg-white dark:bg-slate-900 border border-border/80 rounded-3xl space-y-2 max-w-md">
                           <div className="text-xs flex justify-between border-b border-border/40 pb-2">
                             <span className="text-muted-foreground font-semibold">التخصص الأساسي:</span>
                             <span className="font-bold text-foreground">{u.teacher?.specialization || 'غير محدد'}</span>

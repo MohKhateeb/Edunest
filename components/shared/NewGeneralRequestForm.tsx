@@ -41,8 +41,6 @@ export default function NewGeneralRequestForm({
     title: '',
     details: '',
     imageUrl: '',
-    duration: serviceTypes[0]?.defaultDuration ?? 60,
-    price: 50,
   });
 
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -63,7 +61,6 @@ export default function NewGeneralRequestForm({
     setFormData((prev) => ({
       ...prev,
       serviceTypeId,
-      duration: selectedService?.defaultDuration ?? prev.duration,
     }));
   };
 
@@ -273,39 +270,6 @@ export default function NewGeneralRequestForm({
           </div>
         </div>
 
-        {/* مدة الجلسة الفعلي */}
-        <div className="space-y-2">
-          <label className="text-xs font-bold text-foreground/80 flex items-center gap-1.5">
-            <Clock className="h-4 w-4 text-muted-foreground" />
-            مدة الجلسة بالدقائق
-          </label>
-          <input
-            type="number"
-            name="duration"
-            value={formData.duration}
-            onChange={handleChange}
-            min={5}
-            className="premium-input w-full text-xs"
-            required
-          />
-        </div>
-
-        {/* الميزانية المقترحة */}
-        <div className="space-y-2">
-          <label className="text-xs font-bold text-foreground/80 flex items-center gap-1.5">
-            <CreditCard className="h-4 w-4 text-muted-foreground" />
-            الميزانية المقترحة (شيكل)
-          </label>
-          <input
-            type="number"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            min={5}
-            className="premium-input w-full text-xs"
-            required
-          />
-        </div>
       </div>
 
       {/* عنوان المشكلة أو موضوع الدرس */}

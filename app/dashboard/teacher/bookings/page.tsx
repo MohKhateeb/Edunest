@@ -41,9 +41,9 @@ export default async function TeacherBookingsPage() {
         </p>
       </div>
 
-      <div className="bg-card border border-border rounded-xl p-6 shadow-sm space-y-4">
-        <h2 className="font-extrabold text-base border-b border-border pb-2.5 flex items-center gap-2">
-          <Calendar className="h-5 w-5 text-primary" />
+      <div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all space-y-4">
+        <h2 className="font-black text-lg border-b border-border pb-3 flex items-center gap-2">
+          <Calendar className="h-6 w-6 text-primary" />
           سجل الحصص الواردة
         </h2>
 

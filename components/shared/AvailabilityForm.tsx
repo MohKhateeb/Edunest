@@ -206,7 +206,7 @@ export default function AvailabilityForm({ initialAvailability }: AvailabilityFo
   return (
     <div className="space-y-6" dir="rtl">
       {/* Top Banner and Quick Presets */}
-      <div className="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4 transition-all hover:shadow-md">
         <div>
           <h1 className="text-2xl font-extrabold mb-1">جدول التوفر الأسبوعي المعتاد</h1>
           <p className="text-xs text-muted-foreground max-w-xl leading-relaxed">
@@ -259,7 +259,7 @@ export default function AvailabilityForm({ initialAvailability }: AvailabilityFo
           return (
             <div
               key={day}
-              className="bg-card border border-border rounded-2xl p-4 flex flex-col min-h-[300px] shadow-sm hover:shadow-md transition-shadow relative"
+              className="bg-white dark:bg-slate-900 border border-border/60 rounded-3xl p-4 flex flex-col min-h-[300px] shadow-sm hover:shadow-md transition-all relative"
             >
               {/* Day Header */}
               <div className="flex justify-between items-center pb-3 border-b border-border mb-3">
@@ -393,7 +393,7 @@ export default function AvailabilityForm({ initialAvailability }: AvailabilityFo
       </div>
 
       {/* Action Footer */}
-      <div className="flex justify-end pt-2 bg-card border border-border rounded-2xl p-4 shadow-sm">
+      <div className="flex justify-end pt-2 bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-4 shadow-sm hover:shadow-md transition-all">
         <button
           type="button"
           onClick={handleSave}
