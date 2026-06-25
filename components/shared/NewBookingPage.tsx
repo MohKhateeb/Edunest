@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import NewBookingForm from './NewBookingForm';
 import TimeFirstBookingForm from './TimeFirstBookingForm';
-import NewGeneralRequestForm from './NewGeneralRequestForm';
 import BookingSelectionCards, { BookingMode } from './booking-journey/BookingSelectionCards';
 import CharacterDialogue from './booking-journey/CharacterDialogue';
 
@@ -54,7 +53,6 @@ type NewBookingPageProps = {
   teachers: Teacher[];
   hasUsedTrial: boolean;
   subjects: { id: string; name: string }[];
-  serviceTypes: ServiceType[];
 };
 
 export default function NewBookingPage({
@@ -62,7 +60,6 @@ export default function NewBookingPage({
   teachers,
   hasUsedTrial,
   subjects,
-  serviceTypes,
 }: NewBookingPageProps) {
   const [activeMode, setActiveMode] = useState<BookingMode | null>(null);
 
@@ -74,10 +71,6 @@ export default function NewBookingPage({
     time: {
       form: <TimeFirstBookingForm students={students} subjects={subjects} hasUsedTrial={hasUsedTrial} />,
       dialogue: <CharacterDialogue character="hakeem" message="خيار حكيم لحفظ وقتك. حدد موعدك ومادتك، وسأقوم بترشيح أفضل المعلمين المتاحين لك." align="right" />
-    },
-    general: {
-      form: <NewGeneralRequestForm students={students} subjects={subjects} serviceTypes={serviceTypes} />,
-      dialogue: <CharacterDialogue character="najeeb" najeebMode="success" message="أنا متحمس جداً! ارفع طلبك الآن وسأقوم بإرساله فوراً لجميع المعلمين المتاحين ليتنافسوا على مساعدتك." align="right" />
     }
   }[activeMode] : null;
 

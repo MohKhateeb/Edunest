@@ -91,7 +91,6 @@ model Teacher {
   availability      TeacherAvailability[]
   subjects          TeacherSubject[]
   reviews           Review[]
-  tutoringOffers    TutoringOffer[]       @relation("TeacherOffers")
 
   @@index([city(ops: raw("gin_trgm_ops"))], type: Gin)
   @@index([gradeLevels], type: Gin)
@@ -412,12 +411,6 @@ enum RequestStatus {
   CANCELLED
 }
 
-enum OfferStatus {
-  PENDING
-  ACCEPTED
-  REJECTED
-}
-
 model TutoringRequest {
   id             String          @id @default(cuid())
   parentId       String
@@ -435,7 +428,6 @@ model TutoringRequest {
   duration       Int? // مدة الجلسة بالدقائق
   price          Decimal?        @db.Decimal(10, 2) // السعر/الميزانية المقترحة من ولي الأمر
   status         RequestStatus   @default(PENDING)
-  offers         TutoringOffer[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 
@@ -443,23 +435,6 @@ model TutoringRequest {
   @@index([studentId])
   @@index([subjectId])
   @@index([status])
-}
-
-model TutoringOffer {
-  id        String          @id @default(cuid())
-  requestId String
-  request   TutoringRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
-  teacherId String
-  teacher   Teacher         @relation("TeacherOffers", fields: [teacherId], references: [id], onDelete: Cascade)
-  duration  Int             @default(30) // المدة المحددة من المعلم
-  price     Decimal         @db.Decimal(10, 2) // السعر المعروض من المعلم
-  notes     String?         @db.Text
-  status    OfferStatus     @default(PENDING)
-  createdAt DateTime        @default(now())
-
-  @@unique([requestId, teacherId])
-  @@index([requestId])
-  @@index([teacherId])
 }
 
 // ════════════════════════════════════════════════════

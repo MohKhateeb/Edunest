@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import CharacterDialogue from './CharacterDialogue';
 import { useRouter } from 'next/navigation';
 
-export type BookingMode = 'teacher' | 'time' | 'general';
+export type BookingMode = 'teacher' | 'time';
 
 type BookingSelectionCardsProps = {
   onSelect: (mode: BookingMode) => void;

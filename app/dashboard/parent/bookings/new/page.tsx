@@ -114,12 +114,7 @@ export default async function NewBookingPageRoute() {
     orderBy: { name: 'asc' },
   });
 
-  // 5. جلب أنواع الخدمات المتاحة للطلبات العامة
-  const serviceTypes = await prisma.serviceType.findMany({
-    where: { isActive: true },
-    select: { id: true, name: true, nameEnglish: true, defaultDuration: true },
-    orderBy: { displayOrder: 'asc' },
-  });
+
 
   return (
     <NewBookingPage
@@ -127,7 +122,6 @@ export default async function NewBookingPageRoute() {
       teachers={teachersWithBookings}
       hasUsedTrial={parentUser?.hasUsedFreeTrial ?? false}
       subjects={subjects}
-      serviceTypes={serviceTypes}
     />
   );
 }

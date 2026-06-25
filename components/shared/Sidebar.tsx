@@ -35,7 +35,6 @@ const parentLinks = [
   { href: '/dashboard/parent/bookings', label: 'حجوزاتي', icon: Calendar },
   { href: '/dashboard/parent/bookings/new', label: 'حجز جلسة جديدة', icon: CalendarPlus },
   { href: '/dashboard/parent/live', label: 'فزعة سريعة (أوبر) ⚡', icon: Zap },
-  { href: '/dashboard/parent/requests', label: 'الطلبات المجدولة', icon: Briefcase },
   { href: '/dashboard/parent/financials', label: 'السجل المالي', icon: CreditCard },
   { href: '/dashboard/parent/faq', label: 'الأسئلة الشائعة', icon: HelpCircle },
 ];
@@ -46,7 +45,6 @@ const teacherLinks = [
   { href: '/dashboard/teacher/services', label: 'إدارة الخدمات', icon: Briefcase },
   { href: '/dashboard/teacher/availability', label: 'أوقات التوفر الأسبوعية', icon: Clock },
   { href: '/dashboard/teacher/live', label: 'الرادار الحي 📡', icon: CalendarPlus },
-  { href: '/dashboard/teacher/requests', label: 'الطلبات المجدولة', icon: Briefcase },
   { href: '/dashboard/teacher/bookings', label: 'الحجوزات الواردة', icon: Calendar },
   { href: '/dashboard/teacher/earnings', label: 'الأرباح والتسويات', icon: BadgeDollarSign },
   { href: '/dashboard/teacher/verification', label: 'رفع وثائق التوثيق', icon: FileCheck },

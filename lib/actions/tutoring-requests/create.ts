@@ -10,7 +10,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
 /**
- * إنشاء طلب معلم عام من ولي الأمر
+ * إنشاء طلب فزعة (Instant Help / Live Radar) من ولي الأمر
  */
 export async function createTutoringRequest(
   data: z.infer<typeof tutoringRequestSchema>
@@ -102,7 +102,7 @@ export async function createTutoringRequest(
       );
     }
 
-    revalidatePath('/dashboard/parent/requests');
+    revalidatePath('/dashboard/parent/live');
     return { success: true, data: { requestId: request.id } };
   } catch (error: any) {
     return { success: false, error: error.message || 'حدث خطأ أثناء إنشاء الطلب' };
