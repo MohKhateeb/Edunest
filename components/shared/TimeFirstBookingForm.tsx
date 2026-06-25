@@ -57,7 +57,7 @@ type AvailableTeacher = {
 
 type TimeFirstBookingFormProps = {
   students: Student[];
-  specializations: string[];
+  subjects: { id: string; name: string }[];
   hasUsedTrial: boolean;
 };
 
@@ -71,7 +71,7 @@ const VERIFICATION_BADGES: Record<string, { label: string; color: string; icon: 
 
 export default function TimeFirstBookingForm({
   students,
-  specializations,
+  subjects,
   hasUsedTrial,
 }: TimeFirstBookingFormProps) {
   const router = useRouter();
@@ -165,7 +165,7 @@ export default function TimeFirstBookingForm({
 
     try {
       const result = await searchAvailableTeachers({
-        specialization: searchQuery.selectedSpec,
+        subjectId: searchQuery.selectedSpec,
         date: searchQuery.selectedDate,
         timeSlot: searchQuery.selectedTime,
       });
@@ -377,12 +377,14 @@ export default function TimeFirstBookingForm({
               onChange={(e) => handleSearchChange('selectedSpec', e.target.value)}
               className="w-full premium-input text-xs"
             >
-              <option value="">-- اختر المادة المطلوبة --</option>
-              {specializations.map((spec) => (
-                <option key={spec} value={spec}>
-                  {spec}
-                </option>
-              ))}
+              <option value="" disabled>اختر المادة</option>
+              {subjects.length === 0 ? (
+                <option value="" disabled>لا توجد مواد متاحة حالياً</option>
+              ) : (
+                subjects.map((s) => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))
+              )}
             </select>
           </div>
 

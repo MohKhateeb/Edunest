@@ -4,16 +4,14 @@ import StarRating from './StarRating';
 import { MapPin, BadgeCheck } from 'lucide-react';
 import { VERIFICATION_BADGE } from '@/lib/translations';
 import { formatPrice } from '@/lib/utils';
-import type { Teacher, User } from '@prisma/client';
+import type { Teacher, User, VerificationLevel } from '@prisma/client';
 
 type TeacherCardProps = {
-  teacher: Teacher & {
-    user: Pick<User, 'name'>;
-  };
+  teacher: any;
 };
 
 export default function TeacherCard({ teacher }: TeacherCardProps) {
-  const badge = VERIFICATION_BADGE[teacher.verificationLevel];
+  const badge = VERIFICATION_BADGE[teacher.verificationLevel as VerificationLevel];
 
   // Helper colors for badges
   const badgeColors: Record<string, string> = {
@@ -58,7 +56,7 @@ export default function TeacherCard({ teacher }: TeacherCardProps) {
             </span>
           </div>
 
-          <p className="text-sm text-primary font-medium mt-1">{teacher.specialization}</p>
+          <p className="text-sm text-primary font-medium mt-1">{teacher.subjects?.map((s: any) => s.subject.name).join(', ') || 'غير محدد'}</p>
 
           <div className="flex items-center gap-2 mt-2">
             <StarRating rating={Number(teacher.averageRating)} size={14} />

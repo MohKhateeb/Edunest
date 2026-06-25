@@ -58,7 +58,7 @@ export default function LiveRadar({ teacherId, initialRequests, isAvailableNow }
         // Redirect to the session lobby
         router.push(`/dashboard/session/${res.data.bookingId}`);
       } else {
-        toast.error(res.error || 'عذراً، التقط معلم آخر هذا الطلب قبلك!', { id: `claim-${requestId}` });
+        toast.error(!res.success ? res.error : 'عذراً، التقط معلم آخر هذا الطلب قبلك!', { id: `claim-${requestId}` });
       }
     } catch (error) {
       toast.error('حدث خطأ أثناء الاتصال', { id: `claim-${requestId}` });

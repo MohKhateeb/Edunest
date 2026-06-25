@@ -5,7 +5,7 @@ const sanitizeText = (val: string) => val.replace(/<[^>]*>?/gm, '');
 
 export const tutoringRequestSchema = z.object({
   studentId: z.string().min(1, 'الطالب مطلوب'),
-  specialization: z.string().trim().min(1, 'التخصص مطلوب').max(100),
+  subjectId: z.string().trim().min(1, 'التخصص مطلوب'),
   serviceTypeId: z.string().min(1, 'نوع الخدمة مطلوب'),
   title: z.string().trim().min(3, 'عنوان الطلب يجب أن لا يقل عن 3 أحرف').max(200).transform(sanitizeText),
   details: z.string().trim().max(2000, 'التفاصيل طويلة جداً').optional().transform(val => val ? sanitizeText(val) : val),

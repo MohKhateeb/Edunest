@@ -39,7 +39,7 @@ type UserRow = {
   students: StudentRow[];
   teacher?: {
     id: string;
-    specialization: string;
+    subjects?: { subject: { name: string } }[];
   } | null;
 };
 
@@ -298,7 +298,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
                         <div className="p-4 bg-white dark:bg-slate-900 border border-border/80 rounded-3xl space-y-2 max-w-md">
                           <div className="text-xs flex justify-between border-b border-border/40 pb-2">
                             <span className="text-muted-foreground font-semibold">التخصص الأساسي:</span>
-                            <span className="font-bold text-foreground">{u.teacher?.specialization || 'غير محدد'}</span>
+                            <span className="font-bold text-foreground">{u.teacher?.subjects?.map(s => s.subject.name).join(', ') || 'غير محدد'}</span>
                           </div>
                           <div className="text-xs flex justify-between">
                             <span className="text-muted-foreground font-semibold">الملف التعريفي:</span>

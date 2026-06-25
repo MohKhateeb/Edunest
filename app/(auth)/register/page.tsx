@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -9,6 +9,7 @@ import { registerUser } from '@/lib/actions/user';
 import { registerSchema } from '@/lib/validations/user';
 import { UserType } from '@prisma/client';
 import { cn } from '@/lib/utils';
+import { getActiveSubjects } from '@/lib/actions/subject';
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -18,11 +19,20 @@ export default function RegisterPage() {
     email: '',
     phone: '',
     password: '',
-    specialization: 'رياضيات',
+    subjectIds: [] as string[],
   });
+  const [subjects, setSubjects] = useState<{id: string, name: string}[]>([]);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    getActiveSubjects().then(res => {
+      if (res.success && res.data) {
+        setSubjects(res.data);
+      }
+    });
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -59,7 +69,7 @@ export default function RegisterPage() {
         phone: formData.phone,
         password: formData.password,
         userType: formData.role,
-        specialization: formData.role === UserType.TEACHER ? formData.specialization : undefined,
+        subjectIds: formData.role === UserType.TEACHER ? formData.subjectIds : undefined,
       });
 
       if (res.success) {
@@ -184,26 +194,40 @@ export default function RegisterPage() {
                 />
               </div>
 
-              {/* Specialization only for Tutor */}
+              {/* Subjects only for Tutor */}
               {formData.role === UserType.TEACHER && (
                 <div className="space-y-1.5">
                   <label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
                     <Briefcase className="h-3.5 w-3.5" />
-                    التخصص الأساسي
+                    المواد التي تدرسها
                   </label>
-                  <select
-                    name="specialization"
-                    value={formData.specialization}
-                    onChange={handleChange}
-                    className="w-full premium-input text-sm"
-                  >
-                    <option value="رياضيات">رياضيات</option>
-                    <option value="علوم">علوم</option>
-                    <option value="لغة إنجليزية">لغة إنجليزية</option>
-                    <option value="لغة عربية">لغة عربية</option>
-                    <option value="فيزياء">فيزياء</option>
-                    <option value="كيمياء">كيمياء</option>
-                  </select>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {subjects.map((sub) => {
+                      const isSelected = formData.subjectIds.includes(sub.id);
+                      return (
+                        <button
+                          key={sub.id}
+                          type="button"
+                          onClick={() => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              subjectIds: isSelected
+                                ? prev.subjectIds.filter((id) => id !== sub.id)
+                                : [...prev.subjectIds, sub.id],
+                            }));
+                          }}
+                          className={cn(
+                            'px-3 py-1.5 rounded-full text-xs font-medium transition-colors border',
+                            isSelected
+                              ? 'bg-primary text-primary-foreground border-primary'
+                              : 'bg-transparent text-muted-foreground border-input hover:border-primary/50'
+                          )}
+                        >
+                          {sub.name}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
 

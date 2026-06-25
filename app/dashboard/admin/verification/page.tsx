@@ -8,7 +8,7 @@ const pendingVerificationInclude = {
   teacher: {
     select: {
       id: true,
-      specialization: true,
+      subjects: { include: { subject: true } },
       city: true,
       education: true,
       profileImageUrl: true,

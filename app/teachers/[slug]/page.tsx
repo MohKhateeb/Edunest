@@ -26,6 +26,7 @@ async function getTeacher(slug: string) {
     where: { slug },
     include: {
       user: { select: { name: true, email: true, isActive: true } },
+      subjects: { include: { subject: true } },
       services: {
         where: { isActive: true, serviceType: { name: { not: 'الحقيبة الشهرية' } } },
         include: { serviceType: { select: { name: true, defaultDuration: true } } },
@@ -64,7 +65,7 @@ export async function generateMetadata({
   const teacher = await prisma.teacher.findUnique({
     where: { slug },
     select: {
-      specialization: true,
+      subjects: { include: { subject: true } },
       bio: true,
       city: true,
       user: { select: { name: true, isActive: true } },
@@ -75,11 +76,13 @@ export async function generateMetadata({
     return { title: 'معلم غير موجود | إديونست' };
   }
 
+  const spec = teacher.subjects?.map(s => s.subject.name).join(', ') || 'غير محدد';
+
   return {
-    title: `${teacher.user.name} - معلم ${teacher.specialization} | إديونست`,
+    title: `${teacher.user.name} - معلم ${spec} | إديونست`,
     description: teacher.bio
       ? teacher.bio.slice(0, 155)
-      : `معلم ${teacher.specialization} موثّق في ${teacher.city ?? 'الضفة الغربية'}. احجز جلستك التجريبية المجانية الآن.`,
+      : `معلم ${spec} موثّق في ${teacher.city ?? 'الضفة الغربية'}. احجز جلستك التجريبية المجانية الآن.`,
   };
 }
 
@@ -129,7 +132,7 @@ export default async function TeacherProfilePage({
               )}
             </div>
             <p className="text-white/70 text-lg mb-3">
-              {teacher.specialization}
+              {teacher.subjects?.map(s => s.subject.name).join(', ') || 'غير محدد'}
               {teacher.subSpecialization ? ` · ${teacher.subSpecialization}` : ''}
             </p>
             <div className="flex flex-wrap justify-center sm:justify-start gap-4 text-sm text-white/60">

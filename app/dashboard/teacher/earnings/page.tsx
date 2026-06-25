@@ -66,10 +66,10 @@ export default async function TeacherEarningsPage({
     if (b.payoutId !== null) return;
 
     const earnings = calculateEarnings(
-      b.price,
-      b.appliedCommissionRate,
+      Number(b.price),
+      Number(b.appliedCommissionRate),
       b.isTrial,
-      b.trialCostToPlatform
+      Number(b.trialCostToPlatform)
     );
     const net = earnings.teacherTotalEarnings;
 

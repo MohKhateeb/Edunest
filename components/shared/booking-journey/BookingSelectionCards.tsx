@@ -2,9 +2,10 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { User, Clock, Briefcase, ArrowLeft } from 'lucide-react';
+import { User, Clock, Briefcase, ArrowLeft, Zap } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import CharacterDialogue from './CharacterDialogue';
+import { useRouter } from 'next/navigation';
 
 export type BookingMode = 'teacher' | 'time' | 'general';
 
@@ -13,6 +14,7 @@ type BookingSelectionCardsProps = {
 };
 
 export default function BookingSelectionCards({ onSelect }: BookingSelectionCardsProps) {
+  const router = useRouter();
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -99,25 +101,25 @@ export default function BookingSelectionCards({ onSelect }: BookingSelectionCard
           </div>
         </motion.button>
 
-        {/* الخيار الثالث: الطلب العام */}
+        {/* الخيار الثالث: فزعة سريعة (الرادار الحي) */}
         <motion.button
           variants={itemVariants}
-          onClick={() => onSelect('general')}
+          onClick={() => router.push('/dashboard/parent/live')}
           className="group relative flex flex-col text-right bg-white dark:bg-slate-800 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 hover:shadow-xl hover:border-emerald-200 dark:hover:border-emerald-800 transition-all duration-300 overflow-hidden cursor-pointer h-full"
         >
           <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 dark:bg-emerald-900/20 rounded-bl-full -z-0 transition-transform duration-500 group-hover:scale-110" />
           
           <div className="relative z-10 flex-1 flex flex-col">
             <div className="w-14 h-14 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform duration-300">
-              <Briefcase className="w-7 h-7" />
+              <Zap className="w-7 h-7" />
             </div>
             
             <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-3">
-              أحتاج مساعدة عاجلة! 🚀
+              فزعة سريعة (الرادار الحي) ⚡
             </h3>
             
             <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-              ارفع سؤالك أو طلبك للعامة، وسيتسابق خيرة معلمينا للرد عليك بلمح البصر!
+              أرسل إشعاراً فورياً لجميع المعلمين المتاحين الآن للحصول على مساعدة عاجلة في أقل من دقيقة!
             </p>
 
             <div className="mt-auto flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm opacity-80 group-hover:opacity-100 transition-opacity">

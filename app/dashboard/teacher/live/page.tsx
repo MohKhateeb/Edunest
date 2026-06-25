@@ -15,7 +15,7 @@ export default async function TeacherLiveRadarPage() {
   // Fetch teacher details
   const teacher = await prisma.teacher.findUnique({
     where: { userId: session.user.id },
-    select: { id: true, specialization: true, gradeLevels: true, isAvailableNow: true }
+    select: { id: true, subjects: { select: { subjectId: true } }, gradeLevels: true, isAvailableNow: true }
   });
 
   if (!teacher) {
@@ -26,13 +26,14 @@ export default async function TeacherLiveRadarPage() {
   const rawRequests = await prisma.tutoringRequest.findMany({
     where: {
       status: 'PENDING',
-      specialization: teacher.specialization,
+      subjectId: { in: teacher.subjects.map(s => s.subjectId) },
       student: {
         grade: { in: teacher.gradeLevels }
       }
     },
     include: {
-      student: { select: { name: true, grade: true } }
+      student: { select: { name: true, grade: true } },
+      subject: { select: { name: true } }
     },
     orderBy: { createdAt: 'desc' }
   });
@@ -41,7 +42,7 @@ export default async function TeacherLiveRadarPage() {
   const liveRequests = rawRequests.map(req => ({
     id: req.id,
     title: req.title,
-    specialization: req.specialization,
+    specialization: req.subject?.name || 'غير محدد',
     price: Number(req.price || 50),
     duration: req.duration || 30,
     createdAt: req.createdAt,

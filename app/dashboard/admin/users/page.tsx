@@ -28,7 +28,7 @@ export default async function AdminUsersPage() {
       teacher: {
         select: {
           id: true,
-          specialization: true,
+          subjects: { include: { subject: true } },
         },
       },
     },

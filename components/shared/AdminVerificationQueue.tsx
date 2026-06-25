@@ -15,7 +15,7 @@ type VerificationRequest = {
   createdAt: Date;
   teacher: {
     id: string;
-    specialization: string;
+    subjects?: { subject: { name: string } }[];
     city: string | null;
     education: string | null;
     profileImageUrl: string | null;
@@ -122,7 +122,7 @@ export default function AdminVerificationQueue({ requests }: AdminVerificationQu
                 </div>
                 <div className="flex-1 min-w-0 space-y-0.5">
                   <span className="font-bold text-xs text-foreground/80 truncate block">{r.teacher.user.name}</span>
-                  <span className="text-[10px] text-primary truncate block">{r.teacher.specialization}</span>
+                  <span className="text-[10px] text-primary truncate block">{r.teacher.subjects?.map(s => s.subject.name).join(', ') || 'غير محدد'}</span>
                   <span className="text-[9px] text-muted-foreground block">
                     تاريخ الطلب: {new Date(r.createdAt).toLocaleDateString('ar-EG')}
                   </span>
@@ -154,7 +154,7 @@ export default function AdminVerificationQueue({ requests }: AdminVerificationQu
                 </div>
                 <div>
                   <h3 className="font-extrabold text-base">{activeRequest.teacher.user.name}</h3>
-                  <span className="text-xs text-primary">{activeRequest.teacher.specialization} | {activeRequest.teacher.user.email}</span>
+                  <span className="text-xs text-primary">{activeRequest.teacher.subjects?.map(s => s.subject.name).join(', ') || 'غير محدد'} | {activeRequest.teacher.user.email}</span>
                 </div>
               </div>
               <span className="text-xs text-muted-foreground">

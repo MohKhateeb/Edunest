@@ -55,7 +55,7 @@ export async function createTutoringOffer(
     }
 
     // التحقق من مطابقة شروط التخصص والصف
-    if (request.specialization !== teacher.specialization) {
+    if (!teacher.subjects.some(s => s.subjectId === request.subjectId)) {
       return { success: false, error: 'تخصصك لا يطابق التخصص المطلوب في هذا الطلب' };
     }
     if (!teacher.gradeLevels.includes(request.student.grade)) {

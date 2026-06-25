@@ -12,10 +12,17 @@ export default async function TeacherProfilePage() {
 
   const teacher = await prisma.teacher.findUnique({
     where: { userId },
+    include: { subjects: { select: { subjectId: true } } }
+  });
+
+  const subjects = await prisma.subject.findMany({
+    where: { isActive: true },
+    select: { id: true, name: true },
+    orderBy: { name: 'asc' }
   });
 
   const initialData = {
-    specialization: teacher?.specialization || '',
+    subjectIds: teacher?.subjects.map(s => s.subjectId) || [],
     subSpecialization: teacher?.subSpecialization || null,
     bio: teacher?.bio || null,
     gradeLevels: teacher?.gradeLevels || [],
@@ -35,7 +42,7 @@ export default async function TeacherProfilePage() {
           slugUpdated={teacher.slugUpdated} 
         />
       )}
-      <TeacherProfileForm initialData={initialData} />
+      <TeacherProfileForm initialData={initialData} subjects={subjects} />
     </div>
   );
 }

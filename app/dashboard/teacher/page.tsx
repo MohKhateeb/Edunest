@@ -1,6 +1,6 @@
 import { auth } from '@/lib/auth';
 import { requireAuth } from '@/lib/require-auth';
-import { UserType, BookingStatus, TeacherAvailabilityStatus } from '@prisma/client';
+import { UserType, BookingStatus } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { bookingDetailsInclude, type DetailedBooking } from '@/lib/types';
 import { redirect } from 'next/navigation';
@@ -80,10 +80,10 @@ export default async function TeacherDashboard() {
   let pendingEarnings = 0;
   for (const b of completedUnpaidBookings) {
     const earnings = calculateEarnings(
-      b.price,
-      b.appliedCommissionRate,
+      Number(b.price),
+      Number(b.appliedCommissionRate),
       b.isTrial,
-      b.trialCostToPlatform
+      Number(b.trialCostToPlatform)
     );
     pendingEarnings += earnings.teacherTotalEarnings;
   }

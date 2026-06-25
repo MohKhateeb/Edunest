@@ -24,7 +24,7 @@ async function getTeachers(params: SearchParams) {
     isVerified: true,
     user: { isActive: true }
   };
-  if (params.subject) where.specialization = { contains: params.subject, mode: 'insensitive' };
+  if (params.subject) where.subjects = { some: { subject: { name: { contains: params.subject, mode: 'insensitive' } } } };
   if (params.city) where.city = { contains: params.city, mode: 'insensitive' };
 
   const [teachers, total] = await Promise.all([
@@ -33,7 +33,7 @@ async function getTeachers(params: SearchParams) {
       select: {
         id: true,
         slug: true,
-        specialization: true,
+        subjects: { include: { subject: true } },
         subSpecialization: true,
         city: true,
         area: true,
@@ -213,7 +213,7 @@ export default async function TeachersPage({
                         {t.user.name}
                       </h2>
                       <p className="text-xs text-muted-foreground mb-1 truncate">
-                        {t.specialization}
+                        {t.subjects?.map(s => s.subject.name).join(', ') || 'غير محدد'}
                         {t.subSpecialization ? ` · ${t.subSpecialization}` : ''}
                       </p>
                       {t.city && (

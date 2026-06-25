@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const teacherProfileSchema = z.object({
-  specialization: z.string().min(2, 'التخصص مطلوب'),
+  subjectIds: z.array(z.string()).min(1, 'يجب اختيار مادة واحدة على الأقل'),
   subSpecialization: z.string().optional().nullable(),
   bio: z.string().optional().nullable(),
   gradeLevels: z.array(z.coerce.number().int().min(1).max(12)).min(1, 'يرجى اختيار صف دراسي واحد على الأقل'),

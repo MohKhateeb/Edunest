@@ -8,7 +8,7 @@ import { hoursUntil } from '@/lib/utils/time';
 import { getSettingNumber } from '@/lib/settings';
 
 export async function searchAvailableTeachers(input: {
-  specialization: string;
+  subjectId: string;
   date: string; // "YYYY-MM-DD"
   timeSlot: string; // "HH:MM"
 }): Promise<
@@ -41,9 +41,9 @@ export async function searchAvailableTeachers(input: {
   try {
     await requireAuth([UserType.PARENT]);
 
-    const { specialization, date, timeSlot } = input;
+    const { subjectId, date, timeSlot } = input;
 
-    if (!specialization || !date || !timeSlot) {
+    if (!subjectId || !date || !timeSlot) {
       return { success: false, error: 'يرجى تحديد المادة والتاريخ والوقت' };
     }
 
@@ -68,9 +68,12 @@ export async function searchAvailableTeachers(input: {
     const teachers = await prisma.teacher.findMany({
       where: {
         isVerified: true,
-        specialization,
+        subjects: {
+          some: { subjectId: subjectId }
+        },
       },
       include: {
+        subjects: { include: { subject: true } },
         user: { select: { name: true } },
         availability: {
           where: {
@@ -163,7 +166,7 @@ export async function searchAvailableTeachers(input: {
           userId: teacher.userId,
           slug: teacher.slug,
           userName: teacher.user.name,
-          specialization: teacher.specialization,
+          specialization: teacher.subjects?.map(s => s.subject.name).join(', ') || 'غير محدد',
           city: teacher.city,
           profileImageUrl: teacher.profileImageUrl,
           verificationLevel: teacher.verificationLevel,

@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { createTeacherPayout, markPayoutAsPaid, markParentRefundAsPaid } from '@/lib/actions/payout';
 import { Calculator, BadgeDollarSign, AlertCircle, Loader2, RefreshCcw, Printer, Users, CheckSquare, Square, CheckCircle2, Receipt, Search, Check } from 'lucide-react';
 import { formatPrice, cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { calculateEarnings } from '@/lib/utils/financial';
 import DetailsModal from '@/components/shared/DetailsModal';
 

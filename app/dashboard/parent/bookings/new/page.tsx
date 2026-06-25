@@ -61,11 +61,17 @@ export default async function NewBookingPageRoute() {
     orderBy: { user: { name: 'asc' } },
   });
 
-  // Fetch all scheduled bookings (PENDING or CONFIRMED) for these teachers to prevent overlaps
+  // Fetch scheduled bookings for the next 14 days for these teachers to prevent overlaps
+  const fourteenDaysFromNow = new Date();
+  fourteenDaysFromNow.setDate(fourteenDaysFromNow.getDate() + 14);
+
+  const teacherIds = teachers.map((t) => t.id);
+  
   const bookings = await prisma.booking.findMany({
     where: {
       status: { in: ['PENDING', 'CONFIRMED'] },
-      startTime: { gte: new Date() },
+      startTime: { gte: new Date(), lte: fourteenDaysFromNow },
+      teacherService: { teacherId: { in: teacherIds } }
     },
     select: {
       startTime: true,
@@ -102,17 +108,11 @@ export default async function NewBookingPageRoute() {
     };
   });
 
-  // 4. جلب التخصصات الفريدة للمعلمين الموثقين (للبحث بالوقت)
-  const uniqueSpecsResult = await prisma.teacher.findMany({
-    where: { 
-      isVerified: true,
-      user: { isActive: true }
-    },
-    select: { specialization: true },
-    distinct: ['specialization'],
-    orderBy: { specialization: 'asc' },
+  // 4. جلب المواد المتاحة
+  const subjects = await prisma.subject.findMany({
+    where: { isActive: true },
+    orderBy: { name: 'asc' },
   });
-  const uniqueSpecializations = uniqueSpecsResult.map((t) => t.specialization);
 
   // 5. جلب أنواع الخدمات المتاحة للطلبات العامة
   const serviceTypes = await prisma.serviceType.findMany({
@@ -126,7 +126,7 @@ export default async function NewBookingPageRoute() {
       students={students}
       teachers={teachersWithBookings}
       hasUsedTrial={parentUser?.hasUsedFreeTrial ?? false}
-      specializations={uniqueSpecializations}
+      subjects={subjects}
       serviceTypes={serviceTypes}
     />
   );

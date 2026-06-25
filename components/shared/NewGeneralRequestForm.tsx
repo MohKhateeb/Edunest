@@ -22,13 +22,13 @@ type ServiceType = {
 
 type NewGeneralRequestFormProps = {
   students: Student[];
-  specializations: string[];
+  subjects: { id: string; name: string }[];
   serviceTypes: ServiceType[];
 };
 
 export default function NewGeneralRequestForm({
   students,
-  specializations,
+  subjects,
   serviceTypes,
 }: NewGeneralRequestFormProps) {
   const router = useRouter();
@@ -36,7 +36,7 @@ export default function NewGeneralRequestForm({
   // الحالة الافتراضية للنموذج
   const [formData, setFormData] = useState({
     studentId: students[0]?.id ?? '',
-    specialization: specializations[0] ?? '',
+    subjectId: subjects[0]?.id ?? '',
     serviceTypeId: serviceTypes[0]?.id ?? '',
     title: '',
     details: '',
@@ -107,7 +107,7 @@ export default function NewGeneralRequestForm({
       setErrorMsg('يرجى تحديد الطالب');
       return;
     }
-    if (!formData.specialization) {
+    if (!formData.subjectId) {
       setErrorMsg('يرجى تحديد التخصص/المادة');
       return;
     }
@@ -125,7 +125,6 @@ export default function NewGeneralRequestForm({
     try {
       const res = await createTutoringRequest({
         ...formData,
-        startTime: new Date(), // الطلب العام يكون للوقت الحالي (الآن)
       });
 
       setLoading(false);
@@ -219,18 +218,18 @@ export default function NewGeneralRequestForm({
             المادة / التخصص
           </label>
           <select
-            name="specialization"
-            value={formData.specialization}
+            name="subjectId"
+            value={formData.subjectId}
             onChange={handleChange}
             className="premium-input w-full text-xs"
             required
           >
-            {specializations.length === 0 ? (
-              <option value="">لا توجد تخصصات متوفرة</option>
+            {subjects.length === 0 ? (
+              <option value="">لا توجد مواد متوفرة</option>
             ) : (
-              specializations.map((spec) => (
-                <option key={spec} value={spec}>
-                  {spec}
+              subjects.map((spec) => (
+                <option key={spec.id} value={spec.id}>
+                  {spec.name}
                 </option>
               ))
             )}

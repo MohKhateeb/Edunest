@@ -18,8 +18,7 @@ async function debugQuickHelp() {
       console.log(`Title: ${req.title}`);
       console.log(`Status: ${req.status}`);
       console.log(`Price: ${req.price}`);
-      console.log(`Duration: ${req.duration}`);
-      console.log(`Specialization: ${req.specialization}`);
+      console.log(`Subject ID: ${req.subjectId}`);
       console.log(`Service Type: ${req.serviceType?.name}`);
       console.log(`Student Grade: ${req.student?.grade}`);
     });
@@ -32,7 +31,7 @@ async function debugQuickHelp() {
     
     console.log(`\nFound ${activeTeachers.length} teachers currently 'Available Now':`);
     activeTeachers.forEach(t => {
-      console.log(`- ${t.user.name} (Specialization: ${t.specialization}, Grades: ${t.gradeLevels.join(',')})`);
+      console.log(`- ${t.user.name} (Grades: ${t.gradeLevels.join(',')})`);
     });
 
   } catch (err) {

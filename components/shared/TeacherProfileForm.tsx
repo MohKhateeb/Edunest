@@ -10,7 +10,7 @@ import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
 type ProfileData = {
-  specialization: string;
+  subjectIds: string[];
   subSpecialization: string | null;
   bio: string | null;
   gradeLevels: number[];
@@ -24,9 +24,10 @@ type ProfileData = {
 
 type TeacherProfileFormProps = {
   initialData: ProfileData;
+  subjects: { id: string, name: string }[];
 };
 
-export default function TeacherProfileForm({ initialData }: TeacherProfileFormProps) {
+export default function TeacherProfileForm({ initialData, subjects }: TeacherProfileFormProps) {
   const router = useRouter();
   const [formData, setFormData] = useState<ProfileData>(initialData);
   const [loading, setLoading] = useState(false);
@@ -89,7 +90,7 @@ export default function TeacherProfileForm({ initialData }: TeacherProfileFormPr
     }
 
     const res = await updateTeacherProfile({
-      specialization: formData.specialization,
+      subjectIds: formData.subjectIds,
       subSpecialization: formData.subSpecialization || undefined,
       bio: formData.bio || undefined,
       gradeLevels: formData.gradeLevels,
@@ -222,15 +223,34 @@ export default function TeacherProfileForm({ initialData }: TeacherProfileFormPr
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1.5">
-                  <label className="text-xs font-semibold text-muted-foreground block">التخصص الأساسي *</label>
-                  <input
-                    type="text"
-                    required
-                    value={formData.specialization}
-                    onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
-                    placeholder="مثال: رياضيات، فيزياء، لغة إنجليزية"
-                    className="w-full premium-input text-sm"
-                  />
+                  <label className="text-xs font-semibold text-muted-foreground block">المواد التي تدرسها *</label>
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {subjects.map((sub) => {
+                      const isSelected = formData.subjectIds.includes(sub.id);
+                      return (
+                        <button
+                          key={sub.id}
+                          type="button"
+                          onClick={() => {
+                            setFormData((prev) => ({
+                              ...prev,
+                              subjectIds: isSelected
+                                ? prev.subjectIds.filter((id) => id !== sub.id)
+                                : [...prev.subjectIds, sub.id],
+                            }));
+                          }}
+                          className={cn(
+                            'px-3 py-1.5 rounded-full text-xs font-medium transition-colors border',
+                            isSelected
+                              ? 'bg-primary text-primary-foreground border-primary'
+                              : 'bg-transparent text-muted-foreground border-input hover:border-primary/50'
+                          )}
+                        >
+                          {sub.name}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <div className="space-y-1.5">

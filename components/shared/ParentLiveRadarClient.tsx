@@ -24,23 +24,24 @@ interface ServiceType {
 interface ParentLiveRadarClientProps {
   students: Student[];
   serviceTypes: ServiceType[];
+  subjects: { id: string; name: string }[];
 }
 
-export default function ParentLiveRadarClient({ students, serviceTypes }: ParentLiveRadarClientProps) {
+export default function ParentLiveRadarClient({ students, serviceTypes, subjects }: ParentLiveRadarClientProps) {
   const router = useRouter();
   const [isSearching, setIsSearching] = useState(false);
   const [activeRequestId, setActiveRequestId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     studentId: students[0]?.id || '',
     serviceTypeId: serviceTypes.find(s => s.name.includes('سريعة'))?.id || serviceTypes[0]?.id || '',
-    specialization: 'رياضيات',
+    subjectId: subjects[0]?.id || '',
     title: '',
     details: '',
   });
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.studentId || !formData.title || !formData.specialization) {
+    if (!formData.studentId || !formData.title || !formData.subjectId) {
       toast.error('يرجى تعبئة الحقول الأساسية لطلب الفزعة!');
       return;
     }
@@ -54,7 +55,7 @@ export default function ParentLiveRadarClient({ students, serviceTypes }: Parent
         toast.success('تم إرسال الطلب بنجاح! نحن نبحث لك عن المعلم الأسرع...', { id: 'live-request' });
         setActiveRequestId(res.data.requestId);
       } else {
-        toast.error(res.error || 'حدث خطأ أثناء الطلب', { id: 'live-request' });
+        toast.error(!res.success ? res.error : 'حدث خطأ أثناء الطلب', { id: 'live-request' });
         setIsSearching(false);
       }
     } catch (err) {
@@ -150,17 +151,14 @@ export default function ParentLiveRadarClient({ students, serviceTypes }: Parent
               <BookOpen className="w-4 h-4 text-purple-500" /> المادة / التخصص
             </label>
             <select
-              value={formData.specialization}
-              onChange={(e) => setFormData({ ...formData, specialization: e.target.value })}
+              value={formData.subjectId}
+              onChange={(e) => setFormData({ ...formData, subjectId: e.target.value })}
               className="w-full p-4 rounded-2xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 focus:border-purple-500 outline-none transition-colors"
               required
             >
-              <option value="رياضيات">رياضيات</option>
-              <option value="لغة إنجليزية">لغة إنجليزية</option>
-              <option value="لغة عربية">لغة عربية</option>
-              <option value="علوم">علوم</option>
-              <option value="فيزياء">فيزياء</option>
-              <option value="كيمياء">كيمياء</option>
+              {subjects.map(s => (
+                <option key={s.id} value={s.id}>{s.name}</option>
+              ))}
             </select>
           </div>
         </div>

@@ -44,7 +44,7 @@ export async function claimLiveRequest(requestId: string): Promise<ActionRespons
       }
 
       // التحقق من مطابقة شروط التخصص والصف
-      if (request.specialization !== teacher.specialization) {
+      if (!teacher.subjects.some(s => s.subjectId === request.subjectId)) {
         throw new Error('تخصصك لا يطابق التخصص المطلوب في هذا الطلب');
       }
       if (!teacher.gradeLevels.includes(request.student.grade)) {

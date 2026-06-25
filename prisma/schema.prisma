@@ -68,7 +68,6 @@ model Teacher {
   id                String                @id @default(cuid())
   userId            String                @unique
   user              User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  specialization    String
   subSpecialization String?
   bio               String?
   gradeLevels       Int[]
@@ -90,13 +89,43 @@ model Teacher {
   payouts           TeacherPayout[]
   verification      TeacherVerification?
   availability      TeacherAvailability[]
+  subjects          TeacherSubject[]
   reviews           Review[]
   tutoringOffers    TutoringOffer[]       @relation("TeacherOffers")
 
   @@index([city(ops: raw("gin_trgm_ops"))], type: Gin)
-  @@index([specialization(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([gradeLevels], type: Gin)
+  @@index([isAvailableNow, isVerified])
   @@index([verificationLevel])
   @@index([averageRating(sort: Desc)])
+}
+
+// ════════════════════════════════════════════════════
+// المواد والتخصصات (Subjects)
+// ════════════════════════════════════════════════════
+model Subject {
+  id               String            @id @default(cuid())
+  name             String            @unique
+  nameEnglish      String?
+  isActive         Boolean           @default(true)
+  displayOrder     Int               @default(0)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  teachers         TeacherSubject[]
+  tutoringRequests TutoringRequest[] @relation("SubjectRequests")
+
+  @@index([isActive])
+}
+
+model TeacherSubject {
+  teacherId String
+  subjectId String
+  teacher   Teacher @relation(fields: [teacherId], references: [id], onDelete: Cascade)
+  subject   Subject @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+
+  @@id([teacherId, subjectId])
+  @@index([teacherId])
+  @@index([subjectId])
 }
 
 model TeacherVerification {
@@ -162,6 +191,8 @@ model ServiceType {
   isRecurring      Boolean           @default(false)
   displayOrder     Int               @default(0)
   isActive         Boolean           @default(true)
+  fazaaPrice       Decimal?          @db.Decimal(10, 2) // سعر الفزعة الموحد لهذا النوع
+  fazaaDuration    Int? // مدة الفزعة بالدقائق لهذا النوع
   createdAt        DateTime          @default(now())
   teacherServices  TeacherService[]
   tutoringRequests TutoringRequest[] @relation("ServiceTypeRequests")
@@ -393,7 +424,8 @@ model TutoringRequest {
   parent         User            @relation("ParentRequests", fields: [parentId], references: [id], onDelete: Cascade)
   studentId      String
   student        Student         @relation("StudentRequests", fields: [studentId], references: [id], onDelete: Cascade)
-  specialization String // التخصص المطلوب (مثل: رياضيات)
+  subjectId      String? // المادة المطلوبة (Lookup)
+  subject        Subject?        @relation("SubjectRequests", fields: [subjectId], references: [id])
   serviceTypeId  String // نوع الخدمة المطلوبة (مثل: شرح مسألة سريعة)
   serviceType    ServiceType     @relation("ServiceTypeRequests", fields: [serviceTypeId], references: [id])
   title          String // عنوان الطلب
@@ -409,7 +441,7 @@ model TutoringRequest {
 
   @@index([parentId])
   @@index([studentId])
-  @@index([specialization])
+  @@index([subjectId])
   @@index([status])
 }
 

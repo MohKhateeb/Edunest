@@ -145,7 +145,6 @@ async function main() {
       const teacher = await prisma.teacher.create({
         data: {
           userId: tUser.id,
-          specialization: t.spec,
           subSpecialization: t.subSpec,
           slug: `${t.name.split(' ')[1]}-${t.spec}-${slugSuffix}`.replace(/ /g, '-'),
           city: t.city,

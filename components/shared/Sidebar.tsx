@@ -21,7 +21,8 @@ import {
   ChevronLeft,
   ChevronRight,
   Sparkles,
-  ShieldAlert
+  ShieldAlert,
+  Zap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import HakeemCharacter from '@/components/shared/HakeemCharacter';
@@ -32,7 +33,8 @@ const parentLinks = [
   { href: '/dashboard/parent', label: 'الرئيسية', icon: LayoutDashboard },
   { href: '/dashboard/parent/students', label: 'إدارة الطلاب', icon: Users },
   { href: '/dashboard/parent/bookings', label: 'حجوزاتي', icon: Calendar },
-  { href: '/dashboard/parent/live', label: 'فزعة سريعة (أوبر) ⚡', icon: CalendarPlus },
+  { href: '/dashboard/parent/bookings/new', label: 'حجز جلسة جديدة', icon: CalendarPlus },
+  { href: '/dashboard/parent/live', label: 'فزعة سريعة (أوبر) ⚡', icon: Zap },
   { href: '/dashboard/parent/requests', label: 'الطلبات المجدولة', icon: Briefcase },
   { href: '/dashboard/parent/financials', label: 'السجل المالي', icon: CreditCard },
   { href: '/dashboard/parent/faq', label: 'الأسئلة الشائعة', icon: HelpCircle },

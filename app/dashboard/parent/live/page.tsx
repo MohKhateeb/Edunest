@@ -27,9 +27,15 @@ export default async function ParentLiveRadarPage() {
     select: { id: true, name: true }
   });
 
+  const subjects = await prisma.subject.findMany({
+    where: { isActive: true },
+    select: { id: true, name: true },
+    orderBy: { name: 'asc' }
+  });
+
   return (
     <div className="space-y-6" dir="rtl">
-      <ParentLiveRadarClient students={students} serviceTypes={serviceTypes} />
+      <ParentLiveRadarClient students={students} serviceTypes={serviceTypes} subjects={subjects} />
     </div>
   );
 }

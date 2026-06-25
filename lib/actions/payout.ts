@@ -95,10 +95,10 @@ export async function createTeacherPayout(data: {
         if (b.startTime > maxStartTime) maxStartTime = b.startTime;
 
         const earnings = calculateEarnings(
-          b.price,
-          b.appliedCommissionRate,
+          Number(b.price),
+          Number(b.appliedCommissionRate),
           b.isTrial,
-          b.trialCostToPlatform
+          Number(b.trialCostToPlatform)
         );
 
         totalAmount += earnings.totalAmount;

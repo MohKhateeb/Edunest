@@ -34,10 +34,11 @@ export default function TeacherDetails({ teacher, activeTab, setActiveTab }: Tea
           </div>
           <div>
             <h3 className="text-xl font-extrabold text-foreground">أ. {teacher.user.name}</h3>
-            <span className="text-xs text-primary font-bold">{teacher.specialization}</span>
-            {teacher.subSpecialization && (
-              <span className="text-[10px] text-muted-foreground me-1">({teacher.subSpecialization})</span>
-            )}
+            <span className="text-xs text-primary font-bold">
+              {teacher.subjects && teacher.subjects.length > 0 
+                ? teacher.subjects.map((s: any) => s.subject.name).join('، ')
+                : teacher.specialization}
+            </span>
           </div>
         </div>
 

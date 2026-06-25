@@ -53,7 +53,7 @@ type NewBookingPageProps = {
   students: Student[];
   teachers: Teacher[];
   hasUsedTrial: boolean;
-  specializations: string[];
+  subjects: { id: string; name: string }[];
   serviceTypes: ServiceType[];
 };
 
@@ -61,7 +61,7 @@ export default function NewBookingPage({
   students,
   teachers,
   hasUsedTrial,
-  specializations,
+  subjects,
   serviceTypes,
 }: NewBookingPageProps) {
   const [activeMode, setActiveMode] = useState<BookingMode | null>(null);
@@ -72,11 +72,11 @@ export default function NewBookingPage({
       dialogue: <CharacterDialogue character="najeeb" najeebMode="happy" message="اختيار ممتاز! تصفح قائمة المعلمين، واختر من يلبي طموحك، وأكمل تفاصيل الحجز وسنتولى نحن الباقي." align="right" />
     },
     time: {
-      form: <TimeFirstBookingForm students={students} specializations={specializations} hasUsedTrial={hasUsedTrial} />,
+      form: <TimeFirstBookingForm students={students} subjects={subjects} hasUsedTrial={hasUsedTrial} />,
       dialogue: <CharacterDialogue character="hakeem" message="خيار حكيم لحفظ وقتك. حدد موعدك ومادتك، وسأقوم بترشيح أفضل المعلمين المتاحين لك." align="right" />
     },
     general: {
-      form: <NewGeneralRequestForm students={students} specializations={specializations} serviceTypes={serviceTypes} />,
+      form: <NewGeneralRequestForm students={students} subjects={subjects} serviceTypes={serviceTypes} />,
       dialogue: <CharacterDialogue character="najeeb" najeebMode="success" message="أنا متحمس جداً! ارفع طلبك الآن وسأقوم بإرساله فوراً لجميع المعلمين المتاحين ليتنافسوا على مساعدتك." align="right" />
     }
   }[activeMode] : null;

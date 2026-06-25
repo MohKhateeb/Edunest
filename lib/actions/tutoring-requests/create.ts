@@ -5,7 +5,7 @@ import { UserType, RequestStatus } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { ActionResponse } from '@/lib/types';
 import { tutoringRequestSchema } from '@/lib/validations/tutoring-request';
-import { createNotification } from '@/lib/notifications';
+import { createNotification, createManyNotifications } from '@/lib/notifications';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 
@@ -25,7 +25,7 @@ export async function createTutoringRequest(
 
     const {
       studentId,
-      specialization,
+      subjectId,
       serviceTypeId,
       title,
       details,
@@ -57,25 +57,27 @@ export async function createTutoringRequest(
       data: {
         parentId: parentUserId,
         studentId,
-        specialization,
+        subjectId,
         serviceTypeId,
         title,
         details,
         imageUrl,
         startTime: actualStartTime,
-        duration: 30, // ⚡ سعر ومدة ثابتة لنموذج Live Radar V2
-        price: 50,    // ⚡ السعر الثابت 50 شيكل
+        duration: serviceType.fazaaDuration ?? 30, // ⚡ سعر ومدة ديناميكية
+        price: serviceType.fazaaPrice ?? 50,       // ⚡ من الخدمة نفسها
         status: RequestStatus.PENDING,
       },
     });
 
     // 5. البحث عن المعلمين المتوافقين وإرسال إشعارات لهم
-    // الشروط: متاح حالياً، نفس التخصص، يدرس نفس الصف الدراسي للطالب، وموثق
+    // الشروط: متاح حالياً، يدرس المادة المطلوبة، يدرس نفس الصف الدراسي للطالب، وموثق
     const matchingTeachers = await prisma.teacher.findMany({
       where: {
         isVerified: true,
         isAvailableNow: true,
-        specialization: specialization,
+        subjects: {
+          some: { subjectId: subjectId }
+        },
         gradeLevels: { has: student.grade },
         user: { isActive: true },
       },
@@ -85,14 +87,19 @@ export async function createTutoringRequest(
       },
     });
 
-    // إرسال إشعار لكل معلم متطابق
-    for (const t of matchingTeachers) {
-      await createNotification({
-        userId: t.userId,
-        title: '⚡ طلب فوري جديد! (Live Radar) 📢',
-        message: `طلب عاجل من الطالب (${student.name} - الصف ${student.grade}) في مادة ${specialization}. الطلب مدفوع مسبقاً (50 شيكل - 30 دقيقة). أسرع والتقط الطلب الآن قبل غيرك!`,
-        link: '/dashboard/teacher/live',
-      });
+    const duration = serviceType.fazaaDuration ?? 30;
+    const price = serviceType.fazaaPrice ?? 50;
+
+    // إرسال إشعار لكل معلم متطابق بشكل جماعي لتحسين الأداء
+    if (matchingTeachers.length > 0) {
+      await createManyNotifications(
+        matchingTeachers.map((t) => ({
+          userId: t.userId,
+          title: '⚡ طلب فوري جديد! (Live Radar) 📢',
+          message: `طلب عاجل من الطالب (${student.name} - الصف ${student.grade}). الطلب مدفوع مسبقاً (${price} شيكل - ${duration} دقيقة). أسرع والتقط الطلب الآن قبل غيرك!`,
+          link: '/dashboard/teacher/live',
+        }))
+      );
     }
 
     revalidatePath('/dashboard/parent/requests');

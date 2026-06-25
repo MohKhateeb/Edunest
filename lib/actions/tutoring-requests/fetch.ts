@@ -23,6 +23,7 @@ export async function getTutoringRequestsForParent(): Promise<ActionResponse<any
         serviceType: {
           select: { name: true, nameEnglish: true },
         },
+        subject: { select: { name: true } },
         offers: {
           include: {
             teacher: {
@@ -47,6 +48,7 @@ export async function getTutoringRequestsForParent(): Promise<ActionResponse<any
     // تحويل أسعار الـ Decimal إلى أرقام عادية للتوافق مع مكونات الواجهة
     const serializedRequests = requests.map((req) => ({
       ...req,
+      specialization: req.subject?.name || 'غير محدد',
       price: Number(req.price),
       offers: req.offers.map((off) => ({
         ...off,
@@ -84,7 +86,8 @@ export async function getAvailableRequestsForTeacher(): Promise<ActionResponse<{
         request: {
           include: {
             student: { select: { name: true, grade: true } },
-            serviceType: { select: { name: true } },
+            serviceType: { select: { name: true, nameEnglish: true } },
+            subject: { select: { name: true } },
           },
         },
       },
@@ -109,7 +112,7 @@ export async function getAvailableRequestsForTeacher(): Promise<ActionResponse<{
     const pendingRequests = await prisma.tutoringRequest.findMany({
       where: {
         status: RequestStatus.PENDING,
-        specialization: teacher.specialization,
+        subjectId: { in: teacher.subjects.map((s) => s.subjectId) },
         student: {
           grade: { in: teacher.gradeLevels },
         },
@@ -125,20 +128,37 @@ export async function getAvailableRequestsForTeacher(): Promise<ActionResponse<{
         serviceType: {
           select: { name: true, nameEnglish: true },
         },
+        subject: { select: { name: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
 
-    // 3. فلترة الطلبات بناءً على تعارض الوقت مع جدول الحجوزات الحالي وتوفر المعلم
+    // 3. فلترة الطلبات بناءً على تعارض الوقت (بشكل مجمّع لمنع N+1 Queries)
     const availableRequests: any[] = [];
+    
+    const now = new Date();
+    const activeBookings = await prisma.booking.findMany({
+      where: {
+        teacherService: { teacherId: teacher.id },
+        status: { in: ['PENDING', 'CONFIRMED'] },
+        startTime: { gte: new Date(now.getTime() - 24 * 3600 * 1000) },
+      },
+    });
 
     for (const req of pendingRequests) {
-      // For on-demand public requests, we bypass the weekly schedule check because the teacher is online now.
-      // We only verify they do not have overlapping actual bookings.
-      const conflictCheck = await checkConflictingBookings(teacher.id, req.startTime, req.duration);
-      if (!conflictCheck.conflict) {
+      const reqStart = req.startTime.getTime();
+      const reqEnd = reqStart + (req.duration || 30) * 60_000;
+      
+      const hasConflict = activeBookings.some((b) => {
+         const bStart = b.startTime.getTime();
+         const bEnd = bStart + b.duration * 60_000;
+         return reqStart < bEnd && bStart < reqEnd;
+      });
+
+      if (!hasConflict) {
         availableRequests.push({
           ...req,
+          specialization: req.subject?.name || 'غير محدد',
           price: Number(req.price),
         });
       }

@@ -10,3 +10,13 @@ export async function createNotification(
     data,
   });
 }
+
+export async function createManyNotifications(
+  data: { userId: string; title: string; message: string; link?: string }[],
+  tx?: Prisma.TransactionClient
+) {
+  const client = tx || prisma;
+  return client.notification.createMany({
+    data,
+  });
+}

@@ -36,7 +36,7 @@ export default async function AdminDashboard() {
       teacherService: {
         select: {
           serviceType: { select: { name: true } },
-          teacher: { select: { specialization: true } },
+          teacher: { select: { subjects: { include: { subject: true } } } },
         }
       }
     }
@@ -50,10 +50,10 @@ export default async function AdminDashboard() {
 
   for (const b of completedBookings) {
     const earnings = calculateEarnings(
-      b.price,
-      b.appliedCommissionRate,
+      Number(b.price),
+      Number(b.appliedCommissionRate),
       b.isTrial,
-      b.trialCostToPlatform
+      Number(b.trialCostToPlatform)
     );
     totalBookingsValue += earnings.totalAmount;
     if (b.isTrial) {
@@ -102,8 +102,16 @@ export default async function AdminDashboard() {
   // --- 6. Chart: Most Requested Specializations ---
   const specCounts: Record<string, number> = {};
   for (const b of allBookings) {
-    const spec = b.teacherService.teacher.specialization;
-    specCounts[spec] = (specCounts[spec] || 0) + 1;
+    const subjects = b.teacherService.teacher.subjects;
+    if (subjects && subjects.length > 0) {
+      for (const s of subjects) {
+        const spec = s.subject.name;
+        specCounts[spec] = (specCounts[spec] || 0) + 1;
+      }
+    } else {
+      const spec = 'غير محدد';
+      specCounts[spec] = (specCounts[spec] || 0) + 1;
+    }
   }
   const requestedSpecializations = Object.entries(specCounts)
     .map(([name, count]) => ({ name, count }))

@@ -11,7 +11,7 @@ import { requireAuth } from '@/lib/require-auth';
 import { revalidatePath } from 'next/cache';
 
 export async function registerUser(
-  data: z.infer<typeof registerSchema> & { specialization?: string }
+  data: z.infer<typeof registerSchema> & { subjectIds?: string[] }
 ): Promise<ActionResponse> {
   try {
     const validated = registerSchema.safeParse(data);
@@ -44,13 +44,14 @@ export async function registerUser(
       });
 
       if (userType === UserType.TEACHER) {
-        const spec = data.specialization || 'عام';
-        const slug = await generateUniqueSlug(name, spec);
+        const slug = await generateUniqueSlug(name);
         await tx.teacher.create({
           data: {
             userId: user.id,
-            specialization: spec,
             slug,
+            subjects: data.subjectIds?.length ? {
+              create: data.subjectIds.map(id => ({ subjectId: id }))
+            } : undefined
           },
         });
       }

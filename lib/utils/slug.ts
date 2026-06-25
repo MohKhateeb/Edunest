@@ -3,11 +3,10 @@ import { prisma } from '@/lib/prisma';
 
 export async function generateUniqueSlug(
   name: string,
-  specialization: string,
   maxAttempts = 5
 ): Promise<string> {
   // Normalize string for slug representation
-  const base = `${name}-${specialization}`
+  const base = `${name}`
     .toLowerCase()
     .replace(/[^\w\u0600-\u06FF\s-]/g, '') // Keep alphanumeric, Arabic, spaces, dashes
     .replace(/\s+/g, '-')

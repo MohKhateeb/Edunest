@@ -31,14 +31,17 @@ export async function updateTeacherProfile(
     }
 
     let slug = user.teacher?.slug || '';
-    if (!slug || user.teacher?.specialization !== validated.data.specialization) {
-      slug = await generateUniqueSlug(user.name, validated.data.specialization);
+    if (!slug) {
+      slug = await generateUniqueSlug(user.name);
     }
 
     await prisma.teacher.upsert({
       where: { userId },
       update: {
-        specialization: validated.data.specialization,
+        subjects: {
+          deleteMany: {},
+          create: validated.data.subjectIds.map(id => ({ subjectId: id }))
+        },
         subSpecialization: validated.data.subSpecialization,
         bio: validated.data.bio,
         gradeLevels: validated.data.gradeLevels,
@@ -52,7 +55,9 @@ export async function updateTeacherProfile(
       },
       create: {
         userId,
-        specialization: validated.data.specialization,
+        subjects: {
+          create: validated.data.subjectIds.map(id => ({ subjectId: id }))
+        },
         subSpecialization: validated.data.subSpecialization,
         bio: validated.data.bio,
         gradeLevels: validated.data.gradeLevels,

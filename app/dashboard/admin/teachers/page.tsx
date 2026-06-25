@@ -12,7 +12,7 @@ export default async function AdminTeachersPage() {
   const teachers = await prisma.teacher.findMany({
     select: {
       id: true,
-      specialization: true,
+      subjects: { include: { subject: true } },
       isVerified: true,
       verificationLevel: true,
       averageRating: true,
@@ -27,7 +27,7 @@ export default async function AdminTeachersPage() {
 
   const mappedTeachers = teachers.map((t) => ({
     id: t.id,
-    specialization: t.specialization,
+    specialization: t.subjects?.map(s => s.subject.name).join(', ') || 'غير محدد',
     isVerified: t.isVerified,
     verificationLevel: t.verificationLevel,
     averageRating: Number(t.averageRating),

@@ -14,20 +14,22 @@ function successResponse(data: any): ActionResponse<any> {
   return { success: true, data: sanitizePrismaData(data) };
 }
 
+const commonStudentInclude = {
+  parent: { select: { id: true, name: true, email: true, phone: true } },
+  bookings: {
+    include: {
+      teacherService: { include: { serviceType: true, teacher: { include: { user: { select: { name: true } } } } } },
+      report: true, review: true,
+    },
+    orderBy: { startTime: 'desc' as const },
+  },
+};
+
 async function getStudentDetails(entityId: string, userId: string, userType: UserType): Promise<ActionResponse<any>> {
   if (userType === UserType.PARENT) {
     const student = await prisma.student.findUnique({
       where: { id: entityId },
-      include: {
-        parent: { select: { id: true, name: true, email: true, phone: true } },
-        bookings: {
-          include: {
-            teacherService: { include: { serviceType: true, teacher: { include: { user: { select: { name: true } } } } } },
-            report: true, review: true,
-          },
-          orderBy: { startTime: 'desc' },
-        },
-      },
+      include: commonStudentInclude,
     });
 
     if (!student) return { success: false, error: 'الطالب المطلوب غير موجود.' };
@@ -40,14 +42,10 @@ async function getStudentDetails(entityId: string, userId: string, userType: Use
     const student = await prisma.student.findUnique({
       where: { id: entityId },
       include: {
-        parent: { select: { id: true, name: true, email: true, phone: true } },
+        ...commonStudentInclude,
         bookings: {
+          ...commonStudentInclude.bookings,
           where: { teacherService: { teacherId: teacher.id } }, // Only fetch teacher's bookings to avoid overfetching
-          include: {
-            teacherService: { include: { serviceType: true, teacher: { include: { user: { select: { name: true } } } } } },
-            report: true, review: true,
-          },
-          orderBy: { startTime: 'desc' },
         },
       },
     });
@@ -60,16 +58,7 @@ async function getStudentDetails(entityId: string, userId: string, userType: Use
   if (userType === UserType.ADMIN) {
     const student = await prisma.student.findUnique({
       where: { id: entityId },
-      include: {
-        parent: { select: { id: true, name: true, email: true, phone: true } },
-        bookings: {
-          include: {
-            teacherService: { include: { serviceType: true, teacher: { include: { user: { select: { name: true } } } } } },
-            report: true, review: true,
-          },
-          orderBy: { startTime: 'desc' },
-        },
-      },
+      include: commonStudentInclude,
     });
     if (!student) return { success: false, error: 'الطالب المطلوب غير موجود.' };
     return successResponse(student);
@@ -86,6 +75,7 @@ async function getTeacherDetails(entityId: string, userId: string, userType: Use
       services: { where: { isActive: true, serviceType: { name: { not: 'الحقيبة الشهرية' } } }, include: { serviceType: true } },
       reviews: { where: { isVisible: true }, orderBy: { createdAt: 'desc' }, take: 15, include: { booking: { select: { student: { select: { name: true } } } } } },
       verification: true,
+      subjects: { include: { subject: true } },
     },
   });
 
