@@ -2,9 +2,12 @@ import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import SessionLobbyClient from '@/components/shared/SessionLobbyClient';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
-export default async function SessionLobbyPage({ params }: { params: { id: string } }) {
+export default async function SessionLobbyPage({ params }: { params: Promise<{ id: string }> }) {
   const session = await auth();
+  await requireAuth([UserType.ADMIN, UserType.TEACHER, UserType.PARENT]);
   if (!session) redirect('/login');
 
   const { id: bookingId } = await params;

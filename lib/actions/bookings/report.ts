@@ -1,18 +1,17 @@
 'use server';
 
-import { requireAuth } from '@/lib/require-auth';
 import { UserType, BookingStatus } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import { ActionResponse } from '@/lib/types';
 import { reportSchema } from '@/lib/validations/booking';
-import { isValidTransition, getTransitionError, canSubmitReport } from '@/lib/utils/booking-state';
+import { isValidTransition, getTransitionError, canSubmitReport, revalidateBookingPaths } from '@/lib/utils/booking-state';
 import { createNotification } from '@/lib/notifications';
 import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
+import { withAuthAction } from '@/lib/action-wrapper';
 
-export async function submitSessionReport(data: z.infer<typeof reportSchema>): Promise<ActionResponse> {
-  try {
-    const { userId } = await requireAuth([UserType.TEACHER]);
+export const submitSessionReport = withAuthAction(
+  [UserType.TEACHER],
+  async ({ userId }, data: z.infer<typeof reportSchema>) => {
 
     const validated = reportSchema.safeParse(data);
     if (!validated.success) {
@@ -88,13 +87,8 @@ export async function submitSessionReport(data: z.infer<typeof reportSchema>): P
       }, tx);
     });
 
-    revalidatePath('/dashboard/teacher/bookings');
-    revalidatePath('/dashboard/parent/bookings');
+    revalidateBookingPaths(revalidatePath);
 
     return { success: true };
-  } catch (err: unknown) {
-    console.error(err);
-    const msg = err instanceof Error ? err.message : 'حدث خطأ أثناء رفع التقرير وحفظ الجلسة';
-    return { success: false, error: msg };
   }
-}
+);

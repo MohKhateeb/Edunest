@@ -16,6 +16,7 @@ import TeacherOnlineToggle from '@/components/shared/TeacherOnlineToggle';
 export default async function TeacherDashboard() {
   await requireAuth([UserType.TEACHER]);
   const session = await auth();
+  await requireAuth([UserType.TEACHER]);
 
   if (!session) return null;
 

@@ -12,6 +12,7 @@ import InteractiveMessage from '@/components/shared/InteractiveMessage';
 export default async function AdminDashboard() {
   await requireAuth([UserType.ADMIN]);
   const session = await auth();
+  await requireAuth([UserType.ADMIN]);
 
   if (!session) return null;
   const pendingVerifications = await prisma.teacherVerification.count({

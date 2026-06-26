@@ -3,6 +3,8 @@ import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { getFAQs } from '@/lib/actions/faq';
 import FAQAdminClient from './FAQAdminClient';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export const metadata: Metadata = {
   title: 'إدارة الأسئلة الشائعة | منصة إديونست',
@@ -11,6 +13,7 @@ export const metadata: Metadata = {
 
 export default async function AdminFAQPage() {
   const session = await auth();
+  await requireAuth([UserType.ADMIN]);
   if (!session) redirect('/login');
 
   const res = await getFAQs(undefined, true);

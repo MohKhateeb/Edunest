@@ -13,6 +13,7 @@ export default async function ParentDashboard() {
   // To get the user's name, we can still fetch the session, but requireAuth already proved they are active.
   const { auth } = await import('@/lib/auth');
   const session = await auth();
+  await requireAuth([UserType.PARENT]);
   const userName = session?.user?.name || 'ولي الأمر';
 
 

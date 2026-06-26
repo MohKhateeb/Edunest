@@ -7,7 +7,8 @@ import {
 } from 'lucide-react';
 import { cn, formatPrice, formatLocalTime } from '@/lib/utils';
 import { BOOKING_STATUS_AR, PAYMENT_STATUS_AR, PAYMENT_METHOD_AR } from '@/lib/translations';
-import { getDetailedSessionState } from '@/lib/utils/booking-state';
+import { getDetailedSessionState, SessionTimeState, canSubmitReport } from '@/lib/utils/booking-state';
+import JoinMeetingButton from '@/components/shared/JoinMeetingButton';
 
 interface BookingDetailsProps {
   booking: any;
@@ -189,15 +190,11 @@ export default function BookingDetails({ booking, setPreviewImage }: BookingDeta
           {(sessionTimeState.status === 'active' || sessionTimeState.status === 'ready_to_join' || sessionTimeState.status === 'grace_period') ? (
             <div className="flex items-center justify-between gap-4 flex-wrap bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-950/40 p-3 rounded-lg">
               <span className="text-[11px] text-emerald-800 dark:text-emerald-400">القاعة الافتراضية جاهزة للتحضير والدخول.</span>
-              <a 
-                href={booking.meetingUrl || `https://meet.jit.si/edunest-${booking.id}`} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="bg-emerald-600 text-white hover:bg-emerald-700 text-[10px] font-bold px-4 py-2 rounded-lg flex items-center gap-1.5 animate-pulse"
-              >
-                <Video className="h-3.5 w-3.5" />
-                انضم للجلسة (قاعة ويب)
-              </a>
+              <JoinMeetingButton 
+                bookingId={booking.id} 
+                variant="small" 
+                label="انضم للجلسة (قاعة ويب)" 
+              />
             </div>
           ) : sessionTimeState.status === 'upcoming' ? (
             <div className="flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 border border-border p-3 rounded-lg">
@@ -216,8 +213,17 @@ export default function BookingDetails({ booking, setPreviewImage }: BookingDeta
       )}
 
       {/* Notes Box */}
-      {(booking.parentNotes || booking.teacherNotes || booking.cancellationReason) && (
+      {(booking.parentNotes || booking.teacherNotes || booking.cancellationReason || booking.questionTitle) && (
         <div className="space-y-3">
+          {booking.questionTitle && (
+            <div className="p-4 border border-border bg-background rounded-xl">
+              <span className="font-bold text-primary block mb-1">موضوع الجلسة:</span>
+              <p className="text-foreground/80 leading-relaxed font-semibold">{booking.questionTitle}</p>
+              {booking.questionDetails && (
+                <p className="text-foreground/70 leading-relaxed mt-2 text-xs">{booking.questionDetails}</p>
+              )}
+            </div>
+          )}
           {booking.parentNotes && (
             <div className="p-4 border border-border bg-accent/20 rounded-xl">
               <span className="font-bold text-foreground/80 block mb-1">ملاحظات حجز ولي الأمر:</span>

@@ -6,9 +6,12 @@ import { Calendar } from 'lucide-react';
 import { sanitizePrismaData } from '@/lib/utils';
 import ParentBookingsList from '@/components/shared/ParentBookingsList';
 import InteractiveMessage from '@/components/shared/InteractiveMessage';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export default async function ParentBookingsPage() {
   const session = await auth();
+  await requireAuth([UserType.PARENT]);
   if (!session) redirect('/login');
 
   const userId = session.user.id;

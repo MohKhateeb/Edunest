@@ -5,9 +5,12 @@ import AddStudentForm from '@/components/shared/AddStudentForm';
 import ParentStudentsList from '@/components/shared/ParentStudentsList';
 import { Users } from 'lucide-react';
 import InteractiveMessage from '@/components/shared/InteractiveMessage';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export default async function ParentStudentsPage() {
   const session = await auth();
+  await requireAuth([UserType.PARENT]);
   if (!session) redirect('/login');
 
   const userId = session.user.id;

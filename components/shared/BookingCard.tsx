@@ -9,6 +9,7 @@ import { submitReview } from '@/lib/actions/review';
 import { getDetailedSessionState, SessionTimeState, canSubmitReport } from '@/lib/utils/booking-state';
 import { Calendar, Clock, Video, User as UserIcon, BookOpen, FileText, Star, Lock, TimerOff, Eye, GraduationCap, CreditCard, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import JoinMeetingButton from '@/components/shared/JoinMeetingButton';
 import { toast } from 'sonner';
 import DetailsModal from '@/components/shared/DetailsModal';
 import Portal from '@/components/shared/Portal';
@@ -222,6 +223,12 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
             <Clock className="h-3.5 w-3.5" />
             <span>{booking.duration} دقيقة</span>
           </div>
+          {booking.questionTitle && (
+            <div className="mt-2 text-xs font-semibold text-muted-foreground bg-accent/40 p-2.5 rounded-xl border border-border flex items-start gap-2">
+              <span className="shrink-0 text-primary">موضوع الجلسة:</span>
+              <span className="text-foreground">{booking.questionTitle}</span>
+            </div>
+          )}
         </div>
 
         {/* Date / Time */}
@@ -251,15 +258,11 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
         {/* The Meet link is visible but might be disabled based on time */}
         {booking.status === 'CONFIRMED' && (
           (sessionTimeState.status === 'active' || sessionTimeState.status === 'ready_to_join' || sessionTimeState.status === 'grace_period') ? (
-            <a
-              href={meetLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex-1 flex items-center justify-center gap-1.5 text-xs font-bold bg-emerald-500 text-white hover:bg-emerald-600 py-2.5 rounded-xl shadow-sm transition-transform hover:scale-105 animate-pulse"
-            >
-              <Video className="h-4 w-4" />
-              انضم الآن
-            </a>
+            <JoinMeetingButton
+              bookingId={booking.id}
+              variant="large"
+              label="انضم الآن"
+            />
           ) : (
             <div className="flex-1 flex flex-col items-center">
               <button disabled className="w-full flex items-center justify-center gap-1.5 text-xs font-bold bg-slate-100 text-slate-400 border border-slate-200 py-2.5 rounded-xl cursor-not-allowed dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">

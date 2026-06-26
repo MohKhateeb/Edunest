@@ -3,11 +3,14 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import LiveRadar from '@/components/shared/LiveRadar';
 import InteractiveMessage from '@/components/shared/InteractiveMessage';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 
 export default async function TeacherLiveRadarPage() {
   const session = await auth();
+  await requireAuth([UserType.TEACHER]);
   if (!session || session.user.userType !== 'TEACHER') {
     redirect('/login');
   }
@@ -22,10 +25,13 @@ export default async function TeacherLiveRadarPage() {
     redirect('/dashboard/profile');
   }
 
-  // Fetch only PENDING requests that match the teacher's specialization and grades
+  // Fetch only PENDING requests created within the last 15 minutes that match the teacher's specialization and grades
+  const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
+  
   const rawRequests = await prisma.tutoringRequest.findMany({
     where: {
       status: 'PENDING',
+      createdAt: { gte: fifteenMinutesAgo },
       subjectId: { in: teacher.subjects.map(s => s.subjectId) },
       student: {
         grade: { in: teacher.gradeLevels }

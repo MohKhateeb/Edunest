@@ -2,12 +2,15 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import NewBookingPage from '@/components/shared/NewBookingPage';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function NewBookingPageRoute() {
   const session = await auth();
+  await requireAuth([UserType.PARENT]);
   if (!session) redirect('/login');
 
   const userId = session.user.id;

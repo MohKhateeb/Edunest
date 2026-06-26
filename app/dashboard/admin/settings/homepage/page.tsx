@@ -2,9 +2,12 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import HomepageLayoutForm from '@/components/shared/HomepageLayoutForm';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export default async function AdminHomepageSettingsPage() {
   const session = await auth();
+  await requireAuth([UserType.ADMIN]);
   if (!session) redirect('/login');
 
 

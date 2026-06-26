@@ -2,9 +2,12 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import AvailabilityForm from '@/components/shared/AvailabilityForm';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export default async function TeacherAvailabilityPage() {
   const session = await auth();
+  await requireAuth([UserType.TEACHER]);
   if (!session) redirect('/login');
 
   const userId = session.user.id;

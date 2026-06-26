@@ -1,29 +1,18 @@
 'use server';
 
-import { requireAuth } from '@/lib/require-auth';
 import { UserType, BookingStatus, PaymentStatus } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import { ActionResponse } from '@/lib/types';
-import { isValidTransition, getTransitionError } from '@/lib/utils/booking-state';
+import { isValidTransition, getTransitionError, revalidateBookingPaths } from '@/lib/utils/booking-state';
 import { createNotification } from '@/lib/notifications';
 import { revalidatePath } from 'next/cache';
+import { getAuthorizedBooking } from '@/lib/services/booking-service';
+import { withAuthAction } from '@/lib/action-wrapper';
 
-export async function rejectBooking(bookingId: string): Promise<ActionResponse> {
-  try {
-    const { userId } = await requireAuth([UserType.TEACHER]);
+export const rejectBooking = withAuthAction(
+  [UserType.TEACHER],
+  async ({ userId, userType }, bookingId: string) => {
 
-    const booking = await prisma.booking.findUnique({
-      where: { id: bookingId },
-      include: {
-        teacherService: {
-          include: { teacher: true },
-        },
-      },
-    });
-
-    if (!booking || booking.teacherService.teacher.userId !== userId) {
-      return { success: false, error: 'الحجز غير موجود أو غير تابع لك' };
-    }
+    const booking = await getAuthorizedBooking(bookingId, userId, userType);
 
     if (!isValidTransition(booking.status, BookingStatus.REJECTED)) {
       return { success: false, error: getTransitionError(booking.status, BookingStatus.REJECTED) };
@@ -58,12 +47,8 @@ export async function rejectBooking(bookingId: string): Promise<ActionResponse> 
       }, tx);
     });
 
-    revalidatePath('/dashboard/teacher/bookings');
-    revalidatePath('/dashboard/parent/bookings');
+    revalidateBookingPaths(revalidatePath);
 
     return { success: true };
-  } catch (err: unknown) {
-    console.error(err);
-    return { success: false, error: 'حدث خطأ أثناء رفض الحجز' };
   }
-}
+);

@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import type { Prisma } from '@prisma/client';
 import { redirect } from 'next/navigation';
 import AdminVerificationQueue from '@/components/shared/AdminVerificationQueue';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 const pendingVerificationInclude = {
   teacher: {
@@ -25,6 +27,7 @@ type AdminVerificationRequest = Prisma.TeacherVerificationGetPayload<{
 
 export default async function AdminVerificationPage() {
   const session = await auth();
+  await requireAuth([UserType.ADMIN]);
   if (!session) redirect('/login');
 
 

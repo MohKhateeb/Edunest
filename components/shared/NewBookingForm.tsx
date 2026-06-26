@@ -5,6 +5,11 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { createBooking } from '@/lib/actions/booking';
 import TimeSlotPicker from './TimeSlotPicker';
 import { PaymentModal } from '@/components/shared/PaymentModal';
+import { useBookingSubmission } from '@/hooks/useBookingSubmission';
+import { NoStudentsState } from '@/components/bookings/NoStudentsState';
+import { BookingSuccessState } from '@/components/bookings/BookingSuccessState';
+import { TrialToggle } from '@/components/bookings/TrialToggle';
+import { QuickQuestionFields } from '@/components/bookings/QuickQuestionFields';
 import { User, BookOpen, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
 
 type Student = {
@@ -78,10 +83,7 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
     questionImageUrl: '',
   });
 
-  const [createdBooking, setCreatedBooking] = useState<{ id: string; price: number } | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const { createdBooking, loading, errorMsg, setErrorMsg, success, submitBooking, closePaymentModal } = useBookingSubmission();
 
   const activeTutor = teachers.find((t) => t.id === formData.selectedTutorId);
   const activeService = activeTutor?.services.find((s) => s.id === formData.selectedServiceId);
@@ -118,58 +120,21 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
       return;
     }
 
-    setLoading(true);
-    setErrorMsg(null);
-
-    try {
-      const res = await createBooking({
-        studentId: formData.selectedStudentId,
-        teacherServiceId: formData.selectedServiceId,
-        startTime: formData.startTime,
-        isTrial: formData.isTrial,
-        questionTitle: activeService?.serviceType.name === 'شرح مسألة سريعة' ? formData.questionTitle : undefined,
-        questionDetails: activeService?.serviceType.name === 'شرح مسألة سريعة' ? formData.questionDetails : undefined,
-        questionImageUrl: activeService?.serviceType.name === 'شرح مسألة سريعة' ? formData.questionImageUrl : undefined,
-        parentNotes: formData.parentNotes || undefined,
-        paymentMethod: 'ONLINE_CARD',
-      });
-
-      if (res.success) {
-        if (formData.isTrial) {
-          setSuccess(true);
-          setTimeout(() => {
-            router.push('/dashboard/parent/bookings');
-          }, 2000);
-        } else if (res.data) {
-          setCreatedBooking({ id: res.data.bookingId, price: activeService?.price || 0 });
-        }
-      } else {
-        setErrorMsg(res.error);
-        setLoading(false);
-      }
-    } catch (err: unknown) {
-      console.error(err);
-      setErrorMsg('حدث خطأ غير متوقع أثناء إتمام الحجز');
-      setLoading(false);
-    }
+    await submitBooking({
+      studentId: formData.selectedStudentId,
+      teacherServiceId: formData.selectedServiceId,
+      startTime: formData.startTime,
+      isTrial: formData.isTrial,
+      questionTitle: activeService?.serviceType.name === 'شرح مسألة سريعة' ? formData.questionTitle : undefined,
+      questionDetails: activeService?.serviceType.name === 'شرح مسألة سريعة' ? formData.questionDetails : undefined,
+      questionImageUrl: activeService?.serviceType.name === 'شرح مسألة سريعة' ? formData.questionImageUrl : undefined,
+      parentNotes: formData.parentNotes || undefined,
+      price: activeService?.price || 0,
+    });
   };
 
   if (students.length === 0) {
-    return (
-      <div className="bg-card border border-border rounded-xl p-8 text-center max-w-md mx-auto space-y-4">
-        <AlertCircle className="h-12 w-12 text-yellow-500 mx-auto" />
-        <h3 className="font-extrabold text-lg">لم تقم بإضافة طلاب بعد</h3>
-        <p className="text-xs text-muted-foreground">
-          يجب عليك إضافة طالب واحد على الأقل لحسابك لتتمكن من حجز الحصص والدروس.
-        </p>
-        <button
-          onClick={() => router.push('/dashboard/parent/students')}
-          className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold px-6 py-2.5 rounded-lg cursor-pointer"
-        >
-          اذهب لإضافة طالب
-        </button>
-      </div>
-    );
+    return <NoStudentsState />;
   }
 
   return (
@@ -178,24 +143,12 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
         <PaymentModal
           bookingId={createdBooking.id}
           price={createdBooking.price}
-          onClose={() => {
-            setCreatedBooking(null);
-            setSuccess(true);
-            setTimeout(() => {
-              router.push('/dashboard/parent/bookings');
-            }, 1500);
-          }}
+          onClose={closePaymentModal}
         />
       )}
       <div className="bg-card border border-border rounded-2xl p-8 shadow-sm space-y-6">
         {success ? (
-          <div className="text-center py-8 space-y-3">
-            <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
-              <CheckCircle className="h-10 w-10" />
-            </div>
-            <h2 className="text-xl font-bold">تم إرسال طلب الحجز بنجاح!</h2>
-            <p className="text-xs text-muted-foreground">بانتظار موافقة المعلم وتأكيد الحجز. يتم نقلك الآن...</p>
-          </div>
+          <BookingSuccessState />
         ) : (
           <form onSubmit={handleBookingSubmit} className="space-y-6">
             <h2 className="font-extrabold text-xl border-b border-border pb-3 flex items-center gap-2">
@@ -303,48 +256,15 @@ export default function NewBookingForm({ students, teachers, hasUsedTrial }: New
             )}
 
             {formData.selectedServiceId && !hasUsedTrial && (
-              <div className="flex items-center gap-2 p-3 bg-purple-50 dark:bg-purple-950/20 rounded-xl border border-purple-100 dark:border-purple-900">
-                <input
-                  type="checkbox"
-                  id="trial"
-                  checked={formData.isTrial}
-                  onChange={(e) => handleCheckboxChange('isTrial', e.target.checked)}
-                  className="rounded border-purple-300 text-purple-600 focus:ring-purple-500 h-4 w-4"
-                />
-                <label htmlFor="trial" className="text-xs font-bold text-purple-800 dark:text-purple-300 cursor-pointer">
-                  هل ترغب في حجز هذه الجلسة كـ حصة تجريبية مجانية؟ (30 دقيقة - مرة واحدة لكل ولي أمر)
-                </label>
-              </div>
+              <TrialToggle isTrial={formData.isTrial} onChange={(c) => handleCheckboxChange('isTrial', c)} />
             )}
 
             {activeService?.serviceType.name === 'شرح مسألة سريعة' && (
-              <div className="bg-accent/40 border border-border rounded-xl p-4 space-y-3 animate-fadeIn">
-                <h3 className="text-xs font-bold text-primary">بيانات المسألة السريعة المطلوب شرحها:</h3>
-                <div className="space-y-1">
-                  <label className="text-[11px] font-semibold text-muted-foreground block">عنوان السؤال / المسألة *</label>
-                  <input
-                    type="text"
-                    name="questionTitle"
-                    required
-                    value={formData.questionTitle}
-                    onChange={handleChange}
-                    placeholder="مثال: حل معادلة تفاضلية من الدرجة الثانية"
-                    className="w-full premium-input text-xs"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <label className="text-[11px] font-semibold text-muted-foreground block">تفاصيل المسألة أو الواجب الدراسي *</label>
-                  <textarea
-                    name="questionDetails"
-                    required
-                    rows={3}
-                    value={formData.questionDetails}
-                    onChange={handleChange}
-                    placeholder="اكتب تفاصيل المسألة الحسابية أو الدرس المطلوب شرحه بالتفصيل..."
-                    className="w-full premium-input text-xs resize-none"
-                  />
-                </div>
-              </div>
+              <QuickQuestionFields
+                title={formData.questionTitle}
+                details={formData.questionDetails}
+                onChange={(name, value) => handleCustomChange(name, value)}
+              />
             )}
 
             {formData.selectedServiceId && activeTutor && (

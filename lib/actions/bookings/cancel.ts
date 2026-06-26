@@ -1,20 +1,20 @@
 'use server';
 
-import { requireAuth } from '@/lib/require-auth';
 import { UserType, BookingStatus, PaymentStatus } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import { ActionResponse } from '@/lib/types';
 import { cancellationSchema } from '@/lib/validations/booking';
-import { isValidTransition, getTransitionError } from '@/lib/utils/booking-state';
+import { isValidTransition, getTransitionError, revalidateBookingPaths } from '@/lib/utils/booking-state';
 import { hoursUntil } from '@/lib/utils/time';
 import { getSettingNumber } from '@/lib/settings';
 import { createNotification } from '@/lib/notifications';
 import { revalidatePath } from 'next/cache';
+import { getAuthorizedBooking } from '@/lib/services/booking-service';
 import { z } from 'zod';
+import { withAuthAction } from '@/lib/action-wrapper';
 
-export async function cancelBooking(data: z.infer<typeof cancellationSchema>): Promise<ActionResponse> {
-  try {
-    const { userId, userType } = await requireAuth([UserType.PARENT, UserType.TEACHER, UserType.ADMIN]);
+export const cancelBooking = withAuthAction(
+  [UserType.PARENT, UserType.TEACHER, UserType.ADMIN],
+  async ({ userId, userType }, data: z.infer<typeof cancellationSchema>) => {
 
     const validated = cancellationSchema.safeParse(data);
     if (!validated.success) {
@@ -23,27 +23,7 @@ export async function cancelBooking(data: z.infer<typeof cancellationSchema>): P
 
     const { bookingId, reason } = validated.data;
 
-    const booking = await prisma.booking.findUnique({
-      where: { id: bookingId },
-      include: {
-        teacherService: {
-          include: { teacher: true },
-        },
-        parent: true,
-      },
-    });
-
-    if (!booking) {
-      return { success: false, error: 'الحجز غير موجود' };
-    }
-
-    // Verify auth context
-    if (userType === UserType.PARENT && booking.parentUserId !== userId) {
-      return { success: false, error: 'غير مصرح لك بإلغاء هذا الحجز' };
-    }
-    if (userType === UserType.TEACHER && booking.teacherService.teacher.userId !== userId) {
-      return { success: false, error: 'غير مصرح لك بإلغاء هذا الحجز' };
-    }
+    const booking = await getAuthorizedBooking(bookingId, userId, userType);
 
     if (!isValidTransition(booking.status, BookingStatus.CANCELLED)) {
       return { success: false, error: getTransitionError(booking.status, BookingStatus.CANCELLED) };
@@ -147,14 +127,8 @@ export async function cancelBooking(data: z.infer<typeof cancellationSchema>): P
       }
     });
 
-    revalidatePath('/dashboard/parent/bookings');
-    revalidatePath('/dashboard/teacher/bookings');
-    revalidatePath('/dashboard/admin/bookings');
+    revalidateBookingPaths(revalidatePath);
 
     return { success: true };
-  } catch (err: unknown) {
-    console.error(err);
-    const msg = err instanceof Error ? err.message : 'حدث خطأ أثناء إلغاء الحجز';
-    return { success: false, error: msg };
   }
-}
+);

@@ -51,12 +51,22 @@ export function getDetailedSessionState(startTime: Date | string, durationMinute
   }
 }
 
-/**
- * التحقق مما إذا كان المعلم يحق له كتابة تقرير (الجلسة انتهت فعلاً)
- */
 export function canSubmitReport(startTime: Date | string, durationMinutes: number): boolean {
   const state = getDetailedSessionState(startTime, durationMinutes);
-  // 🚀 Fix Issue #3: Do not allow teachers to submit reports for 'ghost' sessions (>24h).
-  if (state.status === 'ghost') return false;
-  return ['grace_period', 'expired'].includes(state.status);
+  // Ghost sessions are delayed > 24h, but the teacher MUST still submit the report to get paid!
+  return ['grace_period', 'expired', 'ghost'].includes(state.status);
+}
+
+export function isBookingInPast(startTime: Date | string): boolean {
+  return new Date(startTime).getTime() < Date.now();
+}
+
+/**
+ * دالة مركزية لتحديث واجهات الحجوزات (Revalidation) بناءً على مبدأ DRY.
+ * يضمن هذا تغيير الروابط في مكان واحد في المستقبل لو تغيرت مسارات لوحة التحكم.
+ */
+export function revalidateBookingPaths(revalidatePathFn: (path: string) => void) {
+  revalidatePathFn('/dashboard/teacher/bookings');
+  revalidatePathFn('/dashboard/parent/bookings');
+  revalidatePathFn('/dashboard/admin/bookings');
 }

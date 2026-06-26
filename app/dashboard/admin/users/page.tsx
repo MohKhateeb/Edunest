@@ -2,9 +2,12 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import AdminUsersList from '@/components/shared/AdminUsersList';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export default async function AdminUsersPage() {
   const session = await auth();
+  await requireAuth([UserType.ADMIN]);
   if (!session) redirect('/login');
 
   // Fetch all users with related students and teacher profile details

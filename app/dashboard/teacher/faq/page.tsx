@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation';
 import { getFAQs } from '@/lib/actions/faq';
 import { FAQCategory } from '@prisma/client';
 import FAQAccordion from '@/components/shared/FAQAccordion';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export const metadata: Metadata = {
   title: 'الأسئلة الشائعة | منصة إديونست',
@@ -12,6 +14,7 @@ export const metadata: Metadata = {
 
 export default async function TeacherFAQPage() {
   const session = await auth();
+  await requireAuth([UserType.TEACHER]);
   if (!session) redirect('/login');
 
   const res = await getFAQs(FAQCategory.TEACHER);

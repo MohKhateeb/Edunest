@@ -59,6 +59,7 @@ const adminLinks = [
   { href: '/dashboard/admin/disputes', label: 'إدارة النزاعات', icon: ShieldAlert },
   { href: '/dashboard/admin/financials', label: 'الإدارة المالية الشاملة', icon: CreditCard },
   { href: '/dashboard/admin/payouts', label: 'تسويات المعلمين', icon: BadgeDollarSign },
+  { href: '/dashboard/admin/services', label: 'إدارة أنواع الخدمات', icon: Briefcase },
   { href: '/dashboard/admin/settings', label: 'إعدادات النظام', icon: Settings },
   { href: '/dashboard/admin/settings/homepage', label: 'إعدادات الصفحة الرئيسية', icon: Settings },
   { href: '/dashboard/admin/verification', label: 'طلبات التوثيق', icon: ShieldCheck },

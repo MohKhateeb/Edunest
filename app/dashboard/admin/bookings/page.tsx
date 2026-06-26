@@ -5,9 +5,12 @@ import { redirect } from 'next/navigation';
 import { Calendar } from 'lucide-react';
 import { sanitizePrismaData } from '@/lib/utils';
 import AdminBookingsList from '@/components/shared/AdminBookingsList';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export default async function AdminBookingsPage() {
   const session = await auth();
+  await requireAuth([UserType.ADMIN]);
   if (!session) redirect('/login');
 
 

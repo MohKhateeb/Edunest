@@ -1,30 +1,19 @@
 'use server';
 
-import { requireAuth } from '@/lib/require-auth';
 import { UserType, PaymentStatus, BookingStatus } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import { ActionResponse } from '@/lib/types';
+import { isValidTransition, getTransitionError, isBookingInPast, revalidateBookingPaths } from '@/lib/utils/booking-state';
 import { createNotification } from '@/lib/notifications';
 import { revalidatePath } from 'next/cache';
+import { getAuthorizedBooking } from '@/lib/services/booking-service';
 import crypto from 'crypto';
+import { withAuthAction } from '@/lib/action-wrapper';
 
-export async function processPayment(bookingId: string): Promise<ActionResponse> {
-  try {
-    const { userId } = await requireAuth([UserType.PARENT]);
+export const processPayment = withAuthAction(
+  [UserType.PARENT],
+  async ({ userId, userType }, bookingId: string) => {
 
-    const booking = await prisma.booking.findUnique({
-      where: { id: bookingId },
-      include: {
-        payment: true,
-        teacherService: {
-          include: { teacher: true },
-        },
-      },
-    });
-
-    if (!booking || booking.parentUserId !== userId) {
-      return { success: false, error: 'الحجز غير موجود أو لا تملك صلاحية الدفع له' };
-    }
+    const booking = await getAuthorizedBooking(bookingId, userId, userType);
 
     if (booking.status !== BookingStatus.PENDING) {
       return { success: false, error: 'لا يمكن الدفع لحجز غير معلق' };
@@ -34,6 +23,9 @@ export async function processPayment(bookingId: string): Promise<ActionResponse>
       return { success: false, error: 'هذا الحجز ليس بحالة انتظار الدفع' };
     }
 
+    if (isBookingInPast(booking.startTime)) {
+      return { success: false, error: 'لقد مضى موعد الجلسة بالفعل، لا يمكن الدفع الآن. سيقوم النظام بإلغائها قريباً.' };
+    }
 
     await prisma.$transaction(async (tx) => {
       // 1. تحديث جدول Payment (إن وجد) أو إنشاؤه إذا لم يكن موجوداً
@@ -80,12 +72,8 @@ export async function processPayment(bookingId: string): Promise<ActionResponse>
       }, tx);
     });
 
-    revalidatePath('/dashboard/parent/bookings');
-    revalidatePath('/dashboard/teacher/bookings');
+    revalidateBookingPaths(revalidatePath);
 
     return { success: true };
-  } catch (err: unknown) {
-    console.error(err);
-    return { success: false, error: 'حدث خطأ غير متوقع أثناء معالجة الدفع' };
   }
-}
+);

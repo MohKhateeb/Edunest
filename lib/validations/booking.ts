@@ -19,8 +19,16 @@ export const cancellationSchema = z.object({
 export const reportSchema = z.object({
   bookingId: z.string().min(1),
   studentAttended: z.boolean(),
-  topicsCovered: z.string().min(3, 'يرجى كتابة المواضيع التي تم تغطيتها'),
+  topicsCovered: z.string(),
   studentPerformance: z.coerce.number().int().min(1).max(5).optional().nullable(),
   homeworkAssigned: z.string().optional(),
   teacherNotes: z.string().optional(),
+}).superRefine((data, ctx) => {
+  if (data.studentAttended && data.topicsCovered.trim().length < 3) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'يرجى كتابة المواضيع التي تم تغطيتها',
+      path: ['topicsCovered'],
+    });
+  }
 });

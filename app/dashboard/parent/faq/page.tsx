@@ -5,6 +5,8 @@ import { getFAQs } from '@/lib/actions/faq';
 import { FAQCategory } from '@prisma/client';
 import FAQAccordion from '@/components/shared/FAQAccordion';
 import NajeebCharacter from '@/components/shared/NajeebCharacter';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export const metadata: Metadata = {
   title: 'الأسئلة الشائعة | منصة إديونست',
@@ -13,6 +15,7 @@ export const metadata: Metadata = {
 
 export default async function ParentFAQPage() {
   const session = await auth();
+  await requireAuth([UserType.PARENT]);
   if (!session) redirect('/login');
 
   const res = await getFAQs(FAQCategory.PARENT);

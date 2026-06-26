@@ -2,6 +2,8 @@ import { auth } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import Header from '@/components/shared/Header';
 import Sidebar from '@/components/shared/Sidebar';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export default async function DashboardLayout({
   children,
@@ -9,6 +11,7 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
+  await requireAuth([UserType.ADMIN, UserType.TEACHER, UserType.PARENT]);
 
   if (!session) {
     redirect('/login');

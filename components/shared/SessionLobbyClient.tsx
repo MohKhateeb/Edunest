@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { 
-  Video, CreditCard, Clock, CheckCircle2, Loader2, AlertCircle 
-} from 'lucide-react';
+import { Shield, Sparkles, Video, Clock, Loader2, ArrowRight, CreditCard, CheckCircle2, AlertCircle } from 'lucide-react';
+import Link from 'next/link';
+import JoinMeetingButton from '@/components/shared/JoinMeetingButton';
 import { toast } from 'sonner';
-// import { processPayment } from '@/lib/actions/bookings/pay'; // We'll simulate payment for now
+import { processPayment } from '@/lib/actions/bookings/pay';
 
 interface SessionLobbyClientProps {
   bookingId: string;
@@ -46,19 +46,13 @@ export default function SessionLobbyClient({
     toast.loading('جاري معالجة الدفع... 💳', { id: 'payment' });
     
     try {
-      // In a real app, this calls the payment gateway.
-      // We will call an action to mark it as paid.
-      const res = await fetch('/api/simulate-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bookingId })
-      });
+      const res = await processPayment(bookingId);
       
-      if (res.ok) {
+      if (res.success) {
         toast.success('تم الدفع بنجاح! جاري تجهيز الغرفة...', { id: 'payment' });
         router.refresh(); // Refresh to get the Meeting URL
       } else {
-        toast.error('حدث خطأ في الدفع', { id: 'payment' });
+        toast.error(res.error || 'حدث خطأ في الدفع', { id: 'payment' });
       }
     } catch (error) {
       toast.error('خطأ في الاتصال', { id: 'payment' });
@@ -139,15 +133,11 @@ export default function SessionLobbyClient({
               <div className="p-6 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800 rounded-2xl">
                 <p className="text-sm text-emerald-600 dark:text-emerald-400 mb-2">رابط الجلسة الفورية الخاصة بكما</p>
                 {meetingUrl ? (
-                  <a 
-                    href={meetingUrl} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    className="w-full flex items-center justify-center gap-3 py-4 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black text-xl transition-all shadow-lg shadow-emerald-600/20"
-                  >
-                    <Video className="w-6 h-6" />
-                    ادخل الجلسة الآن
-                  </a>
+                  <JoinMeetingButton
+                    bookingId={bookingId}
+                    variant="giant"
+                    label="ادخل الجلسة الآن"
+                  />
                 ) : (
                   <div className="flex items-center justify-center gap-2 text-amber-600">
                     <AlertCircle className="w-5 h-5" /> جاري توليد الرابط... يرجى الانتظار ثانية

@@ -3,9 +3,12 @@ import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
 import TeacherProfileForm from '@/components/shared/TeacherProfileForm';
 import TeacherSlugForm from '@/components/shared/TeacherSlugForm';
+import { requireAuth } from '@/lib/require-auth';
+import { UserType } from '@prisma/client';
 
 export default async function TeacherProfilePage() {
   const session = await auth();
+  await requireAuth([UserType.TEACHER]);
   if (!session) redirect('/login');
 
   const userId = session.user.id;

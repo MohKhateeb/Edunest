@@ -19,6 +19,8 @@ interface Student {
 interface ServiceType {
   id: string;
   name: string;
+  fazaaPrice: number;
+  fazaaDuration: number;
 }
 
 interface ParentLiveRadarClientProps {
@@ -33,11 +35,13 @@ export default function ParentLiveRadarClient({ students, serviceTypes, subjects
   const [activeRequestId, setActiveRequestId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     studentId: students[0]?.id || '',
-    serviceTypeId: serviceTypes.find(s => s.name.includes('سريعة'))?.id || serviceTypes[0]?.id || '',
+    serviceTypeId: serviceTypes[0]?.id || '',
     subjectId: subjects[0]?.id || '',
     title: '',
     details: '',
   });
+
+  const selectedServiceType = serviceTypes.find(s => s.id === formData.serviceTypeId) || serviceTypes[0];
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -121,7 +125,7 @@ export default function ParentLiveRadarClient({ students, serviceTypes, subjects
               فزعة سريعة <Zap className="w-8 h-8 text-yellow-300" />
             </h2>
             <p className="text-indigo-100 max-w-md">
-              هل يواجه ابنك صعوبة في مسألة الآن؟ حدد المادة وسنقوم بربطك فوراً بأول معلم متاح لجلسة سريعة (30 دقيقة بـ 50 شيكل فقط!).
+              هل يواجه ابنك صعوبة في فهم موضوع معين الآن؟ اطلب فزعة وسنقوم بربطك فوراً بأول معلم متاح!
             </p>
           </div>
           <Rocket className="w-24 h-24 text-white/20 hidden md:block" />
@@ -164,6 +168,43 @@ export default function ParentLiveRadarClient({ students, serviceTypes, subjects
         </div>
 
         <div className="space-y-2">
+          <label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+            <Zap className="w-4 h-4 text-amber-500" /> نوع الجلسة (المدة والسعر)
+          </label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {serviceTypes.map((st) => (
+              <label 
+                key={st.id} 
+                className={cn(
+                  "flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all",
+                  formData.serviceTypeId === st.id 
+                    ? "border-indigo-500 bg-indigo-50 dark:bg-indigo-900/20" 
+                    : "border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:border-indigo-300"
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <input 
+                    type="radio" 
+                    name="serviceType" 
+                    value={st.id}
+                    checked={formData.serviceTypeId === st.id}
+                    onChange={() => setFormData({ ...formData, serviceTypeId: st.id })}
+                    className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                  />
+                  <div>
+                    <div className="font-bold text-slate-800 dark:text-slate-200">{st.name}</div>
+                    <div className="text-xs text-slate-500 dark:text-slate-400">{st.fazaaDuration} دقيقة</div>
+                  </div>
+                </div>
+                <div className="font-black text-indigo-600 dark:text-indigo-400">
+                  {st.fazaaPrice} ₪
+                </div>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="space-y-2">
           <label className="text-sm font-bold text-slate-700 dark:text-slate-300">ما هو السؤال أو الموضوع؟ (باختصار)</label>
           <input
             type="text"
@@ -180,7 +221,7 @@ export default function ParentLiveRadarClient({ students, serviceTypes, subjects
           className="w-full flex items-center justify-center gap-3 py-5 bg-slate-900 hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white rounded-2xl font-black text-xl transition-all hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-slate-900/20 dark:shadow-indigo-500/20"
         >
           <Search className="w-6 h-6 text-indigo-400 dark:text-white" />
-          ابحث عن معلم الآن (50 ₪)
+          ابحث عن معلم الآن ({selectedServiceType?.fazaaPrice} ₪)
         </button>
       </form>
     </div>
