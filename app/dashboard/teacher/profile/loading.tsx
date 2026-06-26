@@ -1,9 +1,9 @@
-import { ProfileSkeleton } from '@/components/shared/Skeletons';
+import { ProfileSkeleton } from "@/components/shared/Skeletons";
 
 export default function Loading() {
-  return (
-    <div className="space-y-6">
-      <ProfileSkeleton />
-    </div>
-  );
+	return (
+		<div className="space-y-6">
+			<ProfileSkeleton />
+		</div>
+	);
 }

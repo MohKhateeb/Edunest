@@ -1,22 +1,22 @@
-import { prisma } from '@/lib/prisma';
-import { Prisma } from '@prisma/client';
+import type { Prisma } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
 export async function createNotification(
-  data: { userId: string; title: string; message: string; link?: string },
-  tx?: Prisma.TransactionClient
+	data: { userId: string; title: string; message: string; link?: string },
+	tx?: Prisma.TransactionClient,
 ) {
-  const client = tx || prisma;
-  return client.notification.create({
-    data,
-  });
+	const client = tx || prisma;
+	return client.notification.create({
+		data,
+	});
 }
 
 export async function createManyNotifications(
-  data: { userId: string; title: string; message: string; link?: string }[],
-  tx?: Prisma.TransactionClient
+	data: { userId: string; title: string; message: string; link?: string }[],
+	tx?: Prisma.TransactionClient,
 ) {
-  const client = tx || prisma;
-  return client.notification.createMany({
-    data,
-  });
+	const client = tx || prisma;
+	return client.notification.createMany({
+		data,
+	});
 }

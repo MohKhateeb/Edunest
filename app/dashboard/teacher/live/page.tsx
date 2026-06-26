@@ -1,91 +1,96 @@
-import { auth } from '@/lib/auth';
-import { redirect } from 'next/navigation';
-import { prisma } from '@/lib/prisma';
-import LiveRadar from '@/components/shared/LiveRadar';
-import InteractiveMessage from '@/components/shared/InteractiveMessage';
-import { requireAuth } from '@/lib/require-auth';
-import { UserType } from '@prisma/client';
+import { UserType } from "@prisma/client";
+import { redirect } from "next/navigation";
+import InteractiveMessage from "@/components/shared/InteractiveMessage";
+import LiveRadar from "@/components/shared/LiveRadar";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/require-auth";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default async function TeacherLiveRadarPage() {
-  const session = await auth();
-  await requireAuth([UserType.TEACHER]);
-  if (!session || session.user.userType !== 'TEACHER') {
-    redirect('/login');
-  }
+	const session = await auth();
+	await requireAuth([UserType.TEACHER]);
+	if (!session || session.user.userType !== "TEACHER") {
+		redirect("/login");
+	}
 
-  // Fetch teacher details
-  const teacher = await prisma.teacher.findUnique({
-    where: { userId: session.user.id },
-    select: { id: true, subjects: { select: { subjectId: true } }, gradeLevels: true, isAvailableNow: true }
-  });
+	// Fetch teacher details
+	const teacher = await prisma.teacher.findUnique({
+		where: { userId: session.user.id },
+		select: {
+			id: true,
+			subjects: { select: { subjectId: true } },
+			gradeLevels: true,
+			isAvailableNow: true,
+		},
+	});
 
-  if (!teacher) {
-    redirect('/dashboard/profile');
-  }
+	if (!teacher) {
+		redirect("/dashboard/profile");
+	}
 
-  // Fetch only PENDING requests created within the last 15 minutes that match the teacher's specialization and grades
-  const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
-  
-  const rawRequests = await prisma.tutoringRequest.findMany({
-    where: {
-      status: 'PENDING',
-      createdAt: { gte: fifteenMinutesAgo },
-      subjectId: { in: teacher.subjects.map(s => s.subjectId) },
-      student: {
-        grade: { in: teacher.gradeLevels }
-      }
-    },
-    include: {
-      student: { select: { name: true, grade: true } },
-      subject: { select: { name: true } }
-    },
-    orderBy: { createdAt: 'desc' }
-  });
+	// Fetch only PENDING requests created within the last 15 minutes that match the teacher's specialization and grades
+	const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
 
-  // Transform Decimals to numbers for the Client Component
-  const liveRequests = rawRequests.map(req => ({
-    id: req.id,
-    title: req.title,
-    specialization: req.subject?.name || 'غير محدد',
-    price: Number(req.price || 50),
-    duration: req.duration || 30,
-    createdAt: req.createdAt,
-    student: {
-      name: req.student.name,
-      grade: req.student.grade
-    }
-  }));
+	const rawRequests = await prisma.tutoringRequest.findMany({
+		where: {
+			status: "PENDING",
+			createdAt: { gte: fifteenMinutesAgo },
+			subjectId: { in: teacher.subjects.map((s) => s.subjectId) },
+			student: {
+				grade: { in: teacher.gradeLevels },
+			},
+		},
+		include: {
+			student: { select: { name: true, grade: true } },
+			subject: { select: { name: true } },
+		},
+		orderBy: { createdAt: "desc" },
+	});
 
-  return (
-    <div className="space-y-6" dir="rtl">
-      <div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
-        <div>
-          <h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
-            الرادار الحي 📡
-          </h1>
-          <p className="text-slate-500 mt-2">
-            التقط طلبات الفزعة الفورية للطلاب، وادخل الجلسة في ثوانٍ معدودة.
-          </p>
-        </div>
-        
-        <InteractiveMessage 
-          character="hakeem"
-          message={
-            teacher.isAvailableNow 
-              ? "الرادار يعمل! أي طالب يطلب فزعة في مادتك سيظهر هنا. كن أسرع من يلتقطه!"
-              : "لتفعيل الرادار واستقبال الطلبات، يجب عليك تفعيل خيار 'متاح الآن' من ملفك."
-          }
-          className="max-w-md"
-        />
-      </div>
+	// Transform Decimals to numbers for the Client Component
+	const liveRequests = rawRequests.map((req) => ({
+		id: req.id,
+		title: req.title,
+		specialization: req.subject?.name || "غير محدد",
+		price: Number(req.price || 50),
+		duration: req.duration || 30,
+		createdAt: req.createdAt,
+		student: {
+			name: req.student.name,
+			grade: req.student.grade,
+		},
+	}));
 
-      <LiveRadar 
-        teacherId={teacher.id} 
-        initialRequests={liveRequests} 
-        isAvailableNow={teacher.isAvailableNow} 
-      />
-    </div>
-  );
+	return (
+		<div className="space-y-6" dir="rtl">
+			<div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
+				<div>
+					<h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
+						الرادار الحي 📡
+					</h1>
+					<p className="text-slate-500 mt-2">
+						التقط طلبات الفزعة الفورية للطلاب، وادخل الجلسة في ثوانٍ معدودة.
+					</p>
+				</div>
+
+				<InteractiveMessage
+					character="hakeem"
+					message={
+						teacher.isAvailableNow
+							? "الرادار يعمل! أي طالب يطلب فزعة في مادتك سيظهر هنا. كن أسرع من يلتقطه!"
+							: "لتفعيل الرادار واستقبال الطلبات، يجب عليك تفعيل خيار 'متاح الآن' من ملفك."
+					}
+					className="max-w-md"
+				/>
+			</div>
+
+			<LiveRadar
+				teacherId={teacher.id}
+				initialRequests={liveRequests}
+				isAvailableNow={teacher.isAvailableNow}
+			/>
+		</div>
+	);
 }

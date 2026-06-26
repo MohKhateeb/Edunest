@@ -1,0 +1,79 @@
+import { UserType } from "@prisma/client";
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import TimeFirstBookingForm from "@/components/shared/TimeFirstBookingForm";
+import CharacterDialogue from "@/components/shared/booking-journey/CharacterDialogue";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/require-auth";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export default async function BookByTimePage() {
+	const session = await auth();
+	await requireAuth([UserType.PARENT]);
+	if (!session) redirect("/login");
+
+	const userId = session.user.id;
+
+	// 1. Fetch parent's active students list
+	const students = await prisma.student.findMany({
+		where: { parentUserId: userId, isActive: true },
+		select: { id: true, name: true, grade: true },
+		orderBy: { name: "asc" },
+	});
+
+	// 2. Fetch parent user to check free trial status
+	const parentUser = await prisma.user.findUnique({
+		where: { id: userId },
+		select: { hasUsedFreeTrial: true },
+	});
+
+	// 3. Fetch active subjects
+	const subjects = await prisma.subject.findMany({
+		where: { isActive: true },
+		orderBy: { name: "asc" },
+	});
+
+	return (
+		<div className="space-y-4 relative min-h-[500px]" dir="rtl">
+			<div className="text-center space-y-1 mb-8">
+				<h1 className="text-3xl font-black text-slate-900 dark:text-white">
+					حجز جلسة جديدة
+				</h1>
+				<p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+					البحث بالوقت والمادة
+				</p>
+			</div>
+
+			<div className="max-w-4xl mx-auto space-y-6 pb-20">
+				{/* Header with back button and dialogue */}
+				<div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4 mb-6">
+					<Link
+						href="/dashboard/parent/bookings/new"
+						className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition-colors bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md"
+					>
+						<ArrowRight className="w-4 h-4" />
+						تغيير مسار الحجز
+					</Link>
+
+					<div className="flex-1 max-w-lg">
+						<CharacterDialogue
+							character="hakeem"
+							message="خيار حكيم لحفظ وقتك. حدد موعدك ومادتك، وسأقوم بترشيح أفضل المعلمين المتاحين لك."
+							align="right"
+						/>
+					</div>
+				</div>
+
+				<TimeFirstBookingForm
+					students={students}
+					subjects={subjects}
+					hasUsedTrial={parentUser?.hasUsedFreeTrial ?? false}
+				/>
+			</div>
+		</div>
+	);
+}

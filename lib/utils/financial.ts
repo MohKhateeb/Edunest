@@ -12,41 +12,41 @@
  * @returns An object containing the commissionAmount, netAmount, etc.
  */
 export function calculateEarnings(
-  price: number | string,
-  appliedCommissionRate: number | string,
-  isTrial: boolean,
-  trialCostToPlatform: number | string
+	price: number | string,
+	appliedCommissionRate: number | string,
+	isTrial: boolean,
+	trialCostToPlatform: number | string,
 ) {
-  const numericPrice = Number(price);
-  const numericCommRate = Number(appliedCommissionRate);
-  const numericTrialCost = Number(trialCostToPlatform);
+	const numericPrice = Number(price);
+	const numericCommRate = Number(appliedCommissionRate);
+	const numericTrialCost = Number(trialCostToPlatform);
 
-  let commissionAmount = 0;
-  let trialCompensation = 0;
-  let totalAmount = 0;
+	let commissionAmount = 0;
+	let trialCompensation = 0;
+	let totalAmount = 0;
 
-  if (isTrial) {
-    trialCompensation = numericTrialCost;
-  } else {
-    totalAmount = numericPrice;
-    commissionAmount = (numericPrice * numericCommRate) / 100;
-  }
+	if (isTrial) {
+		trialCompensation = numericTrialCost;
+	} else {
+		totalAmount = numericPrice;
+		commissionAmount = (numericPrice * numericCommRate) / 100;
+	}
 
-  // Use precision rounding to avoid floating-point math issues
-  totalAmount = Math.round(totalAmount * 100) / 100;
-  commissionAmount = Math.round(commissionAmount * 100) / 100;
-  trialCompensation = Math.round(trialCompensation * 100) / 100;
-  
-  const netAmount = Math.round((totalAmount - commissionAmount) * 100) / 100;
+	// Use precision rounding to avoid floating-point math issues
+	totalAmount = Math.round(totalAmount * 100) / 100;
+	commissionAmount = Math.round(commissionAmount * 100) / 100;
+	trialCompensation = Math.round(trialCompensation * 100) / 100;
 
-  // The actual payout adds trial compensation to the teacher's wallet
-  const teacherTotalEarnings = netAmount + trialCompensation;
+	const netAmount = Math.round((totalAmount - commissionAmount) * 100) / 100;
 
-  return {
-    totalAmount,
-    commissionAmount,
-    trialCompensation,
-    netAmount,
-    teacherTotalEarnings,
-  };
+	// The actual payout adds trial compensation to the teacher's wallet
+	const teacherTotalEarnings = netAmount + trialCompensation;
+
+	return {
+		totalAmount,
+		commissionAmount,
+		trialCompensation,
+		netAmount,
+		teacherTotalEarnings,
+	};
 }

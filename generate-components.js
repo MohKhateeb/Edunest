@@ -1,11 +1,13 @@
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
-const dir = path.join(__dirname, 'components/bookings');
+const dir = path.join(__dirname, "components/bookings");
 if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 
 // 1. Create NoStudentsState.tsx
-fs.writeFileSync(path.join(dir, 'NoStudentsState.tsx'), `import { AlertCircle } from 'lucide-react';
+fs.writeFileSync(
+	path.join(dir, "NoStudentsState.tsx"),
+	`import { AlertCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 export function NoStudentsState() {
@@ -27,10 +29,13 @@ export function NoStudentsState() {
     </div>
   );
 }
-`);
+`,
+);
 
 // 2. Create BookingSuccessState.tsx
-fs.writeFileSync(path.join(dir, 'BookingSuccessState.tsx'), `import { CheckCircle } from 'lucide-react';
+fs.writeFileSync(
+	path.join(dir, "BookingSuccessState.tsx"),
+	`import { CheckCircle } from 'lucide-react';
 
 export function BookingSuccessState() {
   return (
@@ -45,10 +50,13 @@ export function BookingSuccessState() {
     </div>
   );
 }
-`);
+`,
+);
 
 // 3. Create TrialToggle.tsx
-fs.writeFileSync(path.join(dir, 'TrialToggle.tsx'), `export function TrialToggle({ isTrial, onChange }: { isTrial: boolean; onChange: (checked: boolean) => void }) {
+fs.writeFileSync(
+	path.join(dir, "TrialToggle.tsx"),
+	`export function TrialToggle({ isTrial, onChange }: { isTrial: boolean; onChange: (checked: boolean) => void }) {
   return (
     <div className="flex items-center gap-2 p-3 bg-purple-50 dark:bg-purple-950/20 rounded-xl border border-purple-100 dark:border-purple-900">
       <input
@@ -64,10 +72,13 @@ fs.writeFileSync(path.join(dir, 'TrialToggle.tsx'), `export function TrialToggle
     </div>
   );
 }
-`);
+`,
+);
 
 // 4. Create QuickQuestionFields.tsx
-fs.writeFileSync(path.join(dir, 'QuickQuestionFields.tsx'), `export function QuickQuestionFields({
+fs.writeFileSync(
+	path.join(dir, "QuickQuestionFields.tsx"),
+	`export function QuickQuestionFields({
   title,
   details,
   onChange
@@ -104,6 +115,7 @@ fs.writeFileSync(path.join(dir, 'QuickQuestionFields.tsx'), `export function Qui
     </div>
   );
 }
-`);
+`,
+);
 
 console.log("Created 4 UI components");

@@ -1,257 +1,327 @@
-import { requireAuth } from '@/lib/require-auth';
-import { UserType } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import { ArrowRight, Calendar, Clock, CreditCard, AlertCircle, FileText, User, CheckCircle2, Wallet, Landmark } from 'lucide-react';
-import InteractiveMessage from '@/components/shared/InteractiveMessage';
+import { UserType } from "@prisma/client";
+import {
+	AlertCircle,
+	ArrowRight,
+	Calendar,
+	CheckCircle2,
+	Clock,
+	CreditCard,
+	FileText,
+	Landmark,
+	User,
+	Wallet,
+} from "lucide-react";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import InteractiveMessage from "@/components/shared/InteractiveMessage";
+import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/require-auth";
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }) {
-  const resolvedParams = await params;
-  return {
-    title: `تفاصيل الجلسة #${resolvedParams.id.slice(0, 8)} | EduNest`,
-  };
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ id: string }>;
+}) {
+	const resolvedParams = await params;
+	return {
+		title: `تفاصيل الجلسة #${resolvedParams.id.slice(0, 8)} | EduNest`,
+	};
 }
 
 export default async function TeacherBookingDetailsPage({
-  params,
+	params,
 }: {
-  params: Promise<{ id: string }>;
+	params: Promise<{ id: string }>;
 }) {
-  const { userId } = await requireAuth([UserType.TEACHER]);
-  const resolvedParams = await params;
+	const { userId } = await requireAuth([UserType.TEACHER]);
+	const resolvedParams = await params;
 
-  const teacher = await prisma.teacher.findUnique({
-    where: { userId },
-  });
+	const teacher = await prisma.teacher.findUnique({
+		where: { userId },
+	});
 
-  if (!teacher) {
-    return <div>حدث خطأ، لا يوجد ملف معلم.</div>;
-  }
+	if (!teacher) {
+		return <div>حدث خطأ، لا يوجد ملف معلم.</div>;
+	}
 
-  const booking = await prisma.booking.findUnique({
-    where: { 
-      id: resolvedParams.id,
-      teacherService: { teacherId: teacher.id }
-    },
-    include: {
-      student: { include: { parent: true } },
-      teacherService: { include: { serviceType: true } },
-      dispute: true,
-      payout: true,
-    }
-  });
+	const booking = await prisma.booking.findUnique({
+		where: {
+			id: resolvedParams.id,
+			teacherService: { teacherId: teacher.id },
+		},
+		include: {
+			student: { include: { parent: true } },
+			teacherService: { include: { serviceType: true } },
+			dispute: true,
+			payout: true,
+		},
+	});
 
-  if (!booking) {
-    notFound();
-  }
+	if (!booking) {
+		notFound();
+	}
 
-  const price = Number(booking.price);
-  const commissionRate = Number(booking.appliedCommissionRate);
-  const commissionAmount = (price * commissionRate) / 100;
-  const netProfit = booking.isTrial ? Number(booking.trialCostToPlatform) : (price - commissionAmount);
-  
-  const endTime = new Date(booking.startTime.getTime() + booking.duration * 60000);
-  const notes = booking.parentNotes || booking.questionDetails;
+	const price = Number(booking.price);
+	const commissionRate = Number(booking.appliedCommissionRate);
+	const commissionAmount = (price * commissionRate) / 100;
+	const netProfit = booking.isTrial
+		? Number(booking.trialCostToPlatform)
+		: price - commissionAmount;
 
-  // Status mapping
-  const statusLabels: Record<string, string> = {
-    PENDING: 'قيد الانتظار',
-    ACCEPTED: 'مقبولة',
-    COMPLETED: 'مكتملة',
-    CANCELLED: 'ملغاة',
-  };
+	const endTime = new Date(
+		booking.startTime.getTime() + booking.duration * 60000,
+	);
+	const notes = booking.parentNotes || booking.questionDetails;
 
-  const statusColors: Record<string, string> = {
-    PENDING: 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400',
-    ACCEPTED: 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400',
-    COMPLETED: 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400',
-    CANCELLED: 'bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400',
-  };
+	// Status mapping
+	const statusLabels: Record<string, string> = {
+		PENDING: "قيد الانتظار",
+		ACCEPTED: "مقبولة",
+		COMPLETED: "مكتملة",
+		CANCELLED: "ملغاة",
+	};
 
-  return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10" dir="rtl">
-      
-      {/* Header & Back Button */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <Link href="/dashboard/teacher/earnings?tab=history" className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors mb-2">
-            <ArrowRight className="w-4 h-4" /> العودة لسجل الجلسات
-          </Link>
-          <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
-            تفاصيل الجلسة
-            <span className="text-lg font-mono text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700">
-              #{booking.id.slice(0, 8)}
-            </span>
-          </h1>
-        </div>
-        <div>
-          <span className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold border ${statusColors[booking.status]}`}>
-            {booking.status === 'COMPLETED' && <CheckCircle2 className="w-4 h-4" />}
-            {statusLabels[booking.status] || booking.status}
-          </span>
-        </div>
-      </div>
+	const statusColors: Record<string, string> = {
+		PENDING:
+			"bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400",
+		ACCEPTED:
+			"bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400",
+		COMPLETED:
+			"bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400",
+		CANCELLED:
+			"bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400",
+	};
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* Right Column: Session & Student Details */}
-        <div className="lg:col-span-2 space-y-6">
-          
-          {/* Main Info Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-1.5 h-full bg-blue-500"></div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-blue-500" />
-              معلومات الجلسة
-            </h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div>
-                <p className="text-sm text-gray-500 mb-1">الخدمة المقدمة</p>
-                <p className="font-bold text-gray-900 dark:text-white text-lg">{booking.teacherService.serviceType.name}</p>
-                {booking.isTrial && (
-                  <span className="inline-block mt-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded font-bold">جلسة تجريبية مخفضة</span>
-                )}
-              </div>
-              
-              <div>
-                <p className="text-sm text-gray-500 mb-1">موعد الجلسة</p>
-                <div className="flex items-center gap-2 font-bold text-gray-900 dark:text-white text-lg">
-                  <Calendar className="w-4 h-4 text-gray-400" />
-                  {booking.startTime.toLocaleDateString('ar-SA')}
-                </div>
-                <div className="flex items-center gap-2 mt-1 text-gray-600 dark:text-gray-300">
-                  <Clock className="w-4 h-4 text-gray-400" />
-                  {booking.startTime.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })} - {endTime.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}
-                </div>
-              </div>
-            </div>
-            
-            {notes && (
-              <div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
-                <p className="text-sm text-gray-500 mb-2">ملاحظات قبل الجلسة</p>
-                <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-xl text-gray-700 dark:text-gray-300 text-sm leading-relaxed border border-gray-100 dark:border-gray-700">
-                  {notes}
-                </div>
-              </div>
-            )}
-          </div>
+	return (
+		<div
+			className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10"
+			dir="rtl"
+		>
+			{/* Header & Back Button */}
+			<div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+				<div>
+					<Link
+						href="/dashboard/teacher/earnings?tab=history"
+						className="inline-flex items-center gap-2 text-sm font-bold text-gray-500 hover:text-blue-600 transition-colors mb-2"
+					>
+						<ArrowRight className="w-4 h-4" /> العودة لسجل الجلسات
+					</Link>
+					<h1 className="text-3xl font-extrabold text-gray-900 dark:text-white flex items-center gap-2">
+						تفاصيل الجلسة
+						<span className="text-lg font-mono text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700">
+							#{booking.id.slice(0, 8)}
+						</span>
+					</h1>
+				</div>
+				<div>
+					<span
+						className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold border ${statusColors[booking.status]}`}
+					>
+						{booking.status === "COMPLETED" && (
+							<CheckCircle2 className="w-4 h-4" />
+						)}
+						{statusLabels[booking.status] || booking.status}
+					</span>
+				</div>
+			</div>
 
-          {/* Student Info Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-              <User className="w-5 h-5 text-indigo-500" />
-              معلومات الطالب
-            </h2>
-            
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-xl border border-indigo-200 dark:border-indigo-800">
-                {booking.student.name.charAt(0)}
-              </div>
-              <div>
-                <p className="font-bold text-gray-900 dark:text-white text-lg">{booking.student.name}</p>
-                <p className="text-sm text-gray-500 flex items-center gap-1">
-                  مضاف من قِبل: {booking.student.parent.name}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-        </div>
+			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+				{/* Right Column: Session & Student Details */}
+				<div className="lg:col-span-2 space-y-6">
+					{/* Main Info Card */}
+					<div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden">
+						<div className="absolute top-0 right-0 w-1.5 h-full bg-blue-500"></div>
+						<h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+							<FileText className="w-5 h-5 text-blue-500" />
+							معلومات الجلسة
+						</h2>
 
-        {/* Left Column: Financials & Disputes */}
-        <div className="space-y-6">
-          
-          {/* Financial Breakdown Card */}
-          <div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-emerald-500" />
-              الملخص المالي
-            </h2>
-            
-            <div className="space-y-4">
-              <div className="flex justify-between items-center text-sm">
-                <span className="text-gray-500">سعر الجلسة الأساسي</span>
-                <span className="font-bold text-gray-900 dark:text-white">{price.toFixed(2)} ₪</span>
-              </div>
-              
-              {!booking.isTrial && (
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-500">عمولة المنصة ({commissionRate}%)</span>
-                  <span className="font-bold text-red-500">-{commissionAmount.toFixed(2)} ₪</span>
-                </div>
-              )}
+						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+							<div>
+								<p className="text-sm text-gray-500 mb-1">الخدمة المقدمة</p>
+								<p className="font-bold text-gray-900 dark:text-white text-lg">
+									{booking.teacherService.serviceType.name}
+								</p>
+								{booking.isTrial && (
+									<span className="inline-block mt-2 text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded font-bold">
+										جلسة تجريبية مخفضة
+									</span>
+								)}
+							</div>
 
-              {booking.isTrial && (
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-gray-500">تعويض الجلسة التجريبية</span>
-                  <span className="font-bold text-emerald-500">+{netProfit.toFixed(2)} ₪</span>
-                </div>
-              )}
-              
-              <div className="pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center">
-                <span className="font-bold text-gray-900 dark:text-white">الصافي المستحق لك</span>
-                <span className="font-black text-2xl text-emerald-600 dark:text-emerald-400">{netProfit.toFixed(2)} ₪</span>
-              </div>
-            </div>
-            
-            {/* Financial Status */}
-            <div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
-               {booking.payoutId ? (
-                 <div className="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 p-3 rounded-xl flex flex-col gap-1 border border-emerald-100 dark:border-emerald-900/30">
-                   <div className="flex items-center gap-2 font-bold text-sm">
-                     <Landmark className="w-4 h-4" />
-                     تمت التسوية والتحويل
-                   </div>
-                   <Link href="/dashboard/teacher/earnings?tab=payouts" className="text-xs underline hover:text-emerald-800 transition-colors">
-                     عرض في سجل التحويلات
-                   </Link>
-                 </div>
-               ) : (
-                 <div className="bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-300 p-3 rounded-xl flex items-center gap-2 border border-gray-200 dark:border-gray-700 text-sm font-bold">
-                   <Wallet className="w-4 h-4" />
-                   الرصيد متاح في المحفظة
-                 </div>
-               )}
-            </div>
-          </div>
+							<div>
+								<p className="text-sm text-gray-500 mb-1">موعد الجلسة</p>
+								<div className="flex items-center gap-2 font-bold text-gray-900 dark:text-white text-lg">
+									<Calendar className="w-4 h-4 text-gray-400" />
+									{booking.startTime.toLocaleDateString("ar-SA")}
+								</div>
+								<div className="flex items-center gap-2 mt-1 text-gray-600 dark:text-gray-300">
+									<Clock className="w-4 h-4 text-gray-400" />
+									{booking.startTime.toLocaleTimeString("ar-SA", {
+										hour: "2-digit",
+										minute: "2-digit",
+									})}{" "}
+									-{" "}
+									{endTime.toLocaleTimeString("ar-SA", {
+										hour: "2-digit",
+										minute: "2-digit",
+									})}
+								</div>
+							</div>
+						</div>
 
-          {/* Dispute Card */}
-          {booking.dispute && (
-            <div className="bg-red-50 dark:bg-red-900/10 rounded-3xl p-6 border border-red-100 dark:border-red-900/30 shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-1.5 h-full bg-red-400 dark:bg-red-600"></div>
-              <h2 className="text-xl font-bold text-red-800 dark:text-red-400 mb-4 flex items-center gap-2">
-                <AlertCircle className="w-5 h-5" />
-                حالة النزاع
-              </h2>
-              
-              <div className="mb-4">
-                 <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold ${
-                   booking.dispute.status === 'OPEN' 
-                     ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 ring-1 ring-amber-200' 
-                     : booking.dispute.status === 'RESOLVED_IN_FAVOR_OF_TEACHER'
-                       ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 ring-1 ring-emerald-200'
-                       : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 ring-1 ring-red-200'
-                 }`}>
-                   {booking.dispute.status === 'OPEN' ? (
-                     <><span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> قيد المراجعة</>
-                   ) : booking.dispute.status === 'RESOLVED_IN_FAVOR_OF_TEACHER' ? (
-                     <><CheckCircle2 className="w-4 h-4" /> حُسم لصالحك</>
-                   ) : (
-                     <><AlertCircle className="w-4 h-4" /> حُسم لولي الأمر</>
-                   )}
-                 </span>
-              </div>
-              
-              <Link href={`/dashboard/disputes/${booking.dispute.id}`} className="flex justify-center items-center gap-2 w-full text-sm font-bold text-white bg-gray-900 dark:bg-white dark:text-gray-900 hover:bg-blue-600 dark:hover:bg-blue-500 px-4 py-3 rounded-xl transition-all shadow-sm">
-                فتح محادثة النزاع <ArrowRight className="w-4 h-4 rotate-180" />
-              </Link>
-            </div>
-          )}
+						{notes && (
+							<div className="mt-6 pt-6 border-t border-gray-100 dark:border-gray-700">
+								<p className="text-sm text-gray-500 mb-2">ملاحظات قبل الجلسة</p>
+								<div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-xl text-gray-700 dark:text-gray-300 text-sm leading-relaxed border border-gray-100 dark:border-gray-700">
+									{notes}
+								</div>
+							</div>
+						)}
+					</div>
 
-        </div>
-      </div>
-    </div>
-  );
+					{/* Student Info Card */}
+					<div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
+						<h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+							<User className="w-5 h-5 text-indigo-500" />
+							معلومات الطالب
+						</h2>
+
+						<div className="flex items-center gap-4">
+							<div className="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-xl border border-indigo-200 dark:border-indigo-800">
+								{booking.student.name.charAt(0)}
+							</div>
+							<div>
+								<p className="font-bold text-gray-900 dark:text-white text-lg">
+									{booking.student.name}
+								</p>
+								<p className="text-sm text-gray-500 flex items-center gap-1">
+									مضاف من قِبل: {booking.student.parent.name}
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				{/* Left Column: Financials & Disputes */}
+				<div className="space-y-6">
+					{/* Financial Breakdown Card */}
+					<div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm">
+						<h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
+							<CreditCard className="w-5 h-5 text-emerald-500" />
+							الملخص المالي
+						</h2>
+
+						<div className="space-y-4">
+							<div className="flex justify-between items-center text-sm">
+								<span className="text-gray-500">سعر الجلسة الأساسي</span>
+								<span className="font-bold text-gray-900 dark:text-white">
+									{price.toFixed(2)} ₪
+								</span>
+							</div>
+
+							{!booking.isTrial && (
+								<div className="flex justify-between items-center text-sm">
+									<span className="text-gray-500">
+										عمولة المنصة ({commissionRate}%)
+									</span>
+									<span className="font-bold text-red-500">
+										-{commissionAmount.toFixed(2)} ₪
+									</span>
+								</div>
+							)}
+
+							{booking.isTrial && (
+								<div className="flex justify-between items-center text-sm">
+									<span className="text-gray-500">تعويض الجلسة التجريبية</span>
+									<span className="font-bold text-emerald-500">
+										+{netProfit.toFixed(2)} ₪
+									</span>
+								</div>
+							)}
+
+							<div className="pt-4 border-t border-gray-100 dark:border-gray-700 flex justify-between items-center">
+								<span className="font-bold text-gray-900 dark:text-white">
+									الصافي المستحق لك
+								</span>
+								<span className="font-black text-2xl text-emerald-600 dark:text-emerald-400">
+									{netProfit.toFixed(2)} ₪
+								</span>
+							</div>
+						</div>
+
+						{/* Financial Status */}
+						<div className="mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
+							{booking.payoutId ? (
+								<div className="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 p-3 rounded-xl flex flex-col gap-1 border border-emerald-100 dark:border-emerald-900/30">
+									<div className="flex items-center gap-2 font-bold text-sm">
+										<Landmark className="w-4 h-4" />
+										تمت التسوية والتحويل
+									</div>
+									<Link
+										href="/dashboard/teacher/earnings?tab=payouts"
+										className="text-xs underline hover:text-emerald-800 transition-colors"
+									>
+										عرض في سجل التحويلات
+									</Link>
+								</div>
+							) : (
+								<div className="bg-gray-50 dark:bg-gray-800/50 text-gray-600 dark:text-gray-300 p-3 rounded-xl flex items-center gap-2 border border-gray-200 dark:border-gray-700 text-sm font-bold">
+									<Wallet className="w-4 h-4" />
+									الرصيد متاح في المحفظة
+								</div>
+							)}
+						</div>
+					</div>
+
+					{/* Dispute Card */}
+					{booking.dispute && (
+						<div className="bg-red-50 dark:bg-red-900/10 rounded-3xl p-6 border border-red-100 dark:border-red-900/30 shadow-sm relative overflow-hidden group">
+							<div className="absolute top-0 right-0 w-1.5 h-full bg-red-400 dark:bg-red-600"></div>
+							<h2 className="text-xl font-bold text-red-800 dark:text-red-400 mb-4 flex items-center gap-2">
+								<AlertCircle className="w-5 h-5" />
+								حالة النزاع
+							</h2>
+
+							<div className="mb-4">
+								<span
+									className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold ${
+										booking.dispute.status === "OPEN"
+											? "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400 ring-1 ring-amber-200"
+											: booking.dispute.status ===
+													"RESOLVED_IN_FAVOR_OF_TEACHER"
+												? "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400 ring-1 ring-emerald-200"
+												: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400 ring-1 ring-red-200"
+									}`}
+								>
+									{booking.dispute.status === "OPEN" ? (
+										<>
+											<span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>{" "}
+											قيد المراجعة
+										</>
+									) : booking.dispute.status ===
+										"RESOLVED_IN_FAVOR_OF_TEACHER" ? (
+										<>
+											<CheckCircle2 className="w-4 h-4" /> حُسم لصالحك
+										</>
+									) : (
+										<>
+											<AlertCircle className="w-4 h-4" /> حُسم لولي الأمر
+										</>
+									)}
+								</span>
+							</div>
+
+							<Link
+								href={`/dashboard/disputes/${booking.dispute.id}`}
+								className="flex justify-center items-center gap-2 w-full text-sm font-bold text-white bg-gray-900 dark:bg-white dark:text-gray-900 hover:bg-blue-600 dark:hover:bg-blue-500 px-4 py-3 rounded-xl transition-all shadow-sm"
+							>
+								فتح محادثة النزاع <ArrowRight className="w-4 h-4 rotate-180" />
+							</Link>
+						</div>
+					)}
+				</div>
+			</div>
+		</div>
+	);
 }

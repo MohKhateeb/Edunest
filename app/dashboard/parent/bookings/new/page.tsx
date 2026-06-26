@@ -1,130 +1,30 @@
-import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
-import { redirect } from 'next/navigation';
-import NewBookingPage from '@/components/shared/NewBookingPage';
-import { requireAuth } from '@/lib/require-auth';
-import { UserType } from '@prisma/client';
+import { UserType } from "@prisma/client";
+import { redirect } from "next/navigation";
+import BookingSelectionCards from "@/components/shared/booking-journey/BookingSelectionCards";
+import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/require-auth";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function NewBookingPageRoute() {
-  const session = await auth();
-  await requireAuth([UserType.PARENT]);
-  if (!session) redirect('/login');
+	const session = await auth();
+	await requireAuth([UserType.PARENT]);
+	if (!session) redirect("/login");
 
-  const userId = session.user.id;
+	return (
+		<div className="space-y-4 relative min-h-[500px]" dir="rtl">
+			{/* عنوان الصفحة (يظهر دائماً) */}
+			<div className="text-center space-y-1 mb-8">
+				<h1 className="text-3xl font-black text-slate-900 dark:text-white">
+					حجز جلسة جديدة
+				</h1>
+				<p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+					ابدأ رحلة التعلم بخطوات بسيطة
+				</p>
+			</div>
 
-  // 1. Fetch parent's active students list
-  const students = await prisma.student.findMany({
-    where: { parentUserId: userId, isActive: true },
-    select: { id: true, name: true, grade: true },
-    orderBy: { name: 'asc' },
-  });
-
-  // 2. Fetch parent user to check free trial status
-  const parentUser = await prisma.user.findUnique({
-    where: { id: userId },
-    select: { hasUsedFreeTrial: true },
-  });
-
-  // 3. Fetch active verified teachers with their services, active schedule availability, and scheduled bookings (to prevent overlap)
-  const teachers = await prisma.teacher.findMany({
-    where: { 
-      isVerified: true,
-      user: { isActive: true }
-    },
-    select: {
-      id: true,
-      userId: true,
-      slug: true,
-      profileImageUrl: true,
-      user: {
-        select: { name: true },
-      },
-      services: {
-        where: { isActive: true, serviceType: { name: { not: 'الحقيبة الشهرية' } } },
-        select: {
-          id: true,
-          price: true,
-          duration: true,
-          serviceType: {
-            select: { id: true, name: true, nameEnglish: true, defaultDuration: true },
-          },
-        },
-      },
-      availability: {
-        where: { isActive: true },
-        select: { dayOfWeek: true, startTime: true, endTime: true },
-      },
-      reviews: {
-        select: { rating: true },
-      },
-    },
-    orderBy: { user: { name: 'asc' } },
-  });
-
-  // Fetch scheduled bookings for the next 14 days for these teachers to prevent overlaps
-  const fourteenDaysFromNow = new Date();
-  fourteenDaysFromNow.setDate(fourteenDaysFromNow.getDate() + 14);
-
-  const teacherIds = teachers.map((t) => t.id);
-  
-  const bookings = await prisma.booking.findMany({
-    where: {
-      status: { in: ['PENDING', 'CONFIRMED'] },
-      startTime: { gte: new Date(), lte: fourteenDaysFromNow },
-      teacherService: { teacherId: { in: teacherIds } }
-    },
-    select: {
-      startTime: true,
-      duration: true,
-      teacherService: {
-        select: { teacherId: true },
-      },
-    },
-  });
-
-  // Inject bookings to respective teacher profiles in memory
-  const teachersWithBookings = teachers.map((t) => {
-    const tutorBookings = bookings
-      .filter((b) => b.teacherService.teacherId === t.id)
-      .map((b) => ({
-        startTime: b.startTime,
-        duration: b.duration,
-      }));
-
-    return {
-      id: t.id,
-      userId: t.userId,
-      slug: t.slug,
-      profileImageUrl: t.profileImageUrl,
-      user: { name: t.user.name },
-      services: t.services.map((s) => ({
-        id: s.id,
-        price: Number(s.price),
-        duration: s.duration,
-        serviceType: s.serviceType,
-      })),
-      availability: t.availability,
-      bookings: tutorBookings,
-    };
-  });
-
-  // 4. جلب المواد المتاحة
-  const subjects = await prisma.subject.findMany({
-    where: { isActive: true },
-    orderBy: { name: 'asc' },
-  });
-
-
-
-  return (
-    <NewBookingPage
-      students={students}
-      teachers={teachersWithBookings}
-      hasUsedTrial={parentUser?.hasUsedFreeTrial ?? false}
-      subjects={subjects}
-    />
-  );
+			<BookingSelectionCards />
+		</div>
+	);
 }

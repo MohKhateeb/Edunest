@@ -1,8 +1,9 @@
 export class AuthError extends Error {
-  constructor(public code: 'UNAUTHORIZED' | 'FORBIDDEN', message?: string) {
-    super(message ?? code);
-    this.name = 'AuthError';
-  }
+	constructor(
+		public code: "UNAUTHORIZED" | "FORBIDDEN",
+		message?: string,
+	) {
+		super(message ?? code);
+		this.name = "AuthError";
+	}
 }
-
-
