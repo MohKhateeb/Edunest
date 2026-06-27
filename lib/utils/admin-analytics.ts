@@ -15,7 +15,10 @@ export type BookingAnalyticsData = {
 	} | null;
 };
 
-export function computeFinancialKPIs(completedBookings: BookingAnalyticsData[], totalBookings: number) {
+export function computeFinancialKPIs(
+	completedBookings: BookingAnalyticsData[],
+	totalBookings: number,
+) {
 	let totalPlatformRevenue = 0;
 	let totalBookingsValue = 0;
 
@@ -34,8 +37,14 @@ export function computeFinancialKPIs(completedBookings: BookingAnalyticsData[], 
 		}
 	}
 
-	const averageOrderValue = completedBookings.length > 0 ? totalBookingsValue / completedBookings.length : 0;
-	const completionRate = totalBookings > 0 ? ((completedBookings.length / totalBookings) * 100).toFixed(1) : "0.0";
+	const averageOrderValue =
+		completedBookings.length > 0
+			? totalBookingsValue / completedBookings.length
+			: 0;
+	const completionRate =
+		totalBookings > 0
+			? ((completedBookings.length / totalBookings) * 100).toFixed(1)
+			: "0.0";
 
 	return { totalPlatformRevenue, averageOrderValue, completionRate };
 }
@@ -58,17 +67,25 @@ export function computeBookingStatuses(allBookings: BookingAnalyticsData[]) {
 	}));
 }
 
-export function computeRevenueTrends(completedBookings: BookingAnalyticsData[]) {
+export function computeRevenueTrends(
+	completedBookings: BookingAnalyticsData[],
+) {
 	const revenueMap = new Map<string, number>();
 	for (let i = 13; i >= 0; i--) {
 		const d = new Date();
 		d.setDate(d.getDate() - i);
-		const dateStr = d.toLocaleDateString("ar-PS", { month: "short", day: "numeric" });
+		const dateStr = d.toLocaleDateString("ar-PS", {
+			month: "short",
+			day: "numeric",
+		});
 		revenueMap.set(dateStr, 0);
 	}
 	for (const b of completedBookings) {
 		if (!b.completedAt) continue;
-		const dateStr = b.completedAt.toLocaleDateString("ar-PS", { month: "short", day: "numeric" });
+		const dateStr = b.completedAt.toLocaleDateString("ar-PS", {
+			month: "short",
+			day: "numeric",
+		});
 		if (revenueMap.has(dateStr)) {
 			let rev = 0;
 			if (b.isTrial) rev -= Number(b.trialCostToPlatform);
@@ -76,10 +93,15 @@ export function computeRevenueTrends(completedBookings: BookingAnalyticsData[]) 
 			revenueMap.set(dateStr, (revenueMap.get(dateStr) || 0) + rev);
 		}
 	}
-	return Array.from(revenueMap.entries()).map(([date, revenue]) => ({ date, revenue }));
+	return Array.from(revenueMap.entries()).map(([date, revenue]) => ({
+		date,
+		revenue,
+	}));
 }
 
-export function computeRequestedSpecializations(allBookings: BookingAnalyticsData[]) {
+export function computeRequestedSpecializations(
+	allBookings: BookingAnalyticsData[],
+) {
 	const specCounts: Record<string, number> = {};
 	for (const b of allBookings) {
 		const subjects = b.teacherService?.teacher?.subjects;

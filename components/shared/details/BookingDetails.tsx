@@ -17,13 +17,13 @@ import {
 	PAYMENT_METHOD_AR,
 	PAYMENT_STATUS_AR,
 } from "@/lib/translations";
+import type { DetailedBooking } from "@/lib/types";
 import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
 import {
 	canSubmitReport,
 	getDetailedSessionState,
 	SessionTimeState,
 } from "@/lib/utils/booking-state";
-import type { DetailedBooking } from "@/lib/types";
 
 interface BookingDetailsProps {
 	booking: DetailedBooking;
@@ -42,7 +42,7 @@ export default function BookingDetails({
 		booking.startTime,
 		booking.duration,
 	);
-	
+
 	const report = booking.report;
 	const review = booking.review;
 	const payment = booking.payment;
@@ -213,9 +213,7 @@ export default function BookingDetails({
 								<div className="flex justify-between">
 									<span>تاريخ تأكيد التحويل:</span>
 									<strong className="text-foreground">
-										{new Date(payment.paidAt).toLocaleDateString(
-											"ar-EG",
-										)}
+										{new Date(payment.paidAt).toLocaleDateString("ar-EG")}
 									</strong>
 								</div>
 							)}
@@ -334,37 +332,34 @@ export default function BookingDetails({
 											: "text-rose-500 font-bold"
 									}
 								>
-									{report.studentAttended
-										? "✓ حضر الجلسة"
-										: "✗ غاب عن الجلسة"}
+									{report.studentAttended ? "✓ حضر الجلسة" : "✗ غاب عن الجلسة"}
 								</strong>
 							</div>
-							{report.studentAttended &&
-								report.studentPerformance && (
-									<div className="text-left">
-										<span className="text-muted-foreground block text-[10px]">
-											تقييم أداء الطالب:
-										</span>
-										<div className="flex justify-end items-center gap-0.5 mt-0.5">
-											{[1, 2, 3, 4, 5].map((s: number) => (
-												<Star
-													key={s}
-													size={12}
-													fill={
-														s <= report.studentPerformance!
-															? "currentColor"
-															: "none"
-													}
-													className={
-														s <= report.studentPerformance!
-															? "text-violet-500"
-															: "text-muted-foreground/35"
-													}
-												/>
-											))}
-										</div>
+							{report.studentAttended && report.studentPerformance && (
+								<div className="text-left">
+									<span className="text-muted-foreground block text-[10px]">
+										تقييم أداء الطالب:
+									</span>
+									<div className="flex justify-end items-center gap-0.5 mt-0.5">
+										{[1, 2, 3, 4, 5].map((s: number) => (
+											<Star
+												key={s}
+												size={12}
+												fill={
+													s <= report.studentPerformance!
+														? "currentColor"
+														: "none"
+												}
+												className={
+													s <= report.studentPerformance!
+														? "text-violet-500"
+														: "text-muted-foreground/35"
+												}
+											/>
+										))}
 									</div>
-								)}
+								</div>
+							)}
 						</div>
 
 						<div>

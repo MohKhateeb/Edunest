@@ -1,6 +1,6 @@
 "use client";
 
-import { Save, AlertCircle } from "lucide-react";
+import { AlertCircle, Save } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -37,7 +37,9 @@ export default function HomepageSettingsManager({ initialLayoutJson }: Props) {
 		return defaultHomepageContent;
 	});
 
-	const [activeTab, setActiveTab] = useState<keyof HomepageContent | "announcementBanner">("announcementBanner");
+	const [activeTab, setActiveTab] = useState<
+		keyof HomepageContent | "announcementBanner"
+	>("announcementBanner");
 
 	const handleSave = async () => {
 		setIsLoading(true);
@@ -110,7 +112,9 @@ export default function HomepageSettingsManager({ initialLayoutJson }: Props) {
 					{activeTab === "announcementBanner" && (
 						<AnnouncementEditor
 							content={content.announcementBanner}
-							onChange={(val) => setContent({ ...content, announcementBanner: val })}
+							onChange={(val) =>
+								setContent({ ...content, announcementBanner: val })
+							}
 						/>
 					)}
 					{activeTab === "hero" && (
@@ -149,7 +153,8 @@ export default function HomepageSettingsManager({ initialLayoutJson }: Props) {
 			<div className="flex items-start gap-2 p-4 bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 rounded-xl text-xs">
 				<AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
 				<p className="font-medium leading-relaxed">
-					التعديلات التي تقوم بحفظها ستظهر مباشرة على الصفحة الرئيسية للزوار. تأكد من مراجعة النصوص والروابط قبل الحفظ.
+					التعديلات التي تقوم بحفظها ستظهر مباشرة على الصفحة الرئيسية للزوار.
+					تأكد من مراجعة النصوص والروابط قبل الحفظ.
 				</p>
 			</div>
 		</div>

@@ -1,10 +1,10 @@
 "use client";
 
+import type { Prisma } from "@prisma/client";
 import { FileText } from "lucide-react";
 import React from "react";
-import { formatPrice } from "@/lib/utils";
-import type { Prisma } from "@prisma/client";
 import type { commonPayoutInclude } from "@/lib/types";
+import { formatPrice } from "@/lib/utils";
 
 export type DetailedPayout = Omit<
 	Prisma.TeacherPayoutGetPayload<{ include: typeof commonPayoutInclude }>,

@@ -19,9 +19,7 @@ export default async function AdminServiceTypesPage() {
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-2xl font-extrabold mb-1">
-					أنواع الخدمات والتسعير
-				</h1>
+				<h1 className="text-2xl font-extrabold mb-1">أنواع الخدمات والتسعير</h1>
 				<p className="text-muted-foreground">
 					إدارة وإعداد نسب العمولة ومدة وأسعار الفزعة للخدمات المختلفة
 				</p>

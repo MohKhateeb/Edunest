@@ -4,7 +4,14 @@ import { Plus, Trash2 } from "lucide-react";
 import type { AssuranceSectionContent } from "@/types/homepage";
 
 // Available Lucide icons string array
-const AVAILABLE_ICONS = ["ShieldCheck", "Video", "CreditCard", "MessageCircle", "Star", "Heart"];
+const AVAILABLE_ICONS = [
+	"ShieldCheck",
+	"Video",
+	"CreditCard",
+	"MessageCircle",
+	"Star",
+	"Heart",
+];
 
 interface Props {
 	content: AssuranceSectionContent;
@@ -12,11 +19,18 @@ interface Props {
 }
 
 export default function AssuranceEditor({ content, onChange }: Props) {
-	const updateField = <K extends keyof AssuranceSectionContent>(field: K, value: AssuranceSectionContent[K]) => {
+	const updateField = <K extends keyof AssuranceSectionContent>(
+		field: K,
+		value: AssuranceSectionContent[K],
+	) => {
 		onChange({ ...content, [field]: value });
 	};
 
-	const updateFeature = (index: number, field: "title" | "description" | "iconName", value: string) => {
+	const updateFeature = (
+		index: number,
+		field: "title" | "description" | "iconName",
+		value: string,
+	) => {
 		const newFeatures = [...content.features];
 		newFeatures[index] = { ...newFeatures[index], [field]: value };
 		updateField("features", newFeatures);
@@ -25,7 +39,11 @@ export default function AssuranceEditor({ content, onChange }: Props) {
 	const addFeature = () => {
 		updateField("features", [
 			...content.features,
-			{ iconName: "ShieldCheck", title: "ميزة جديدة", description: "الوصف هنا." },
+			{
+				iconName: "ShieldCheck",
+				title: "ميزة جديدة",
+				description: "الوصف هنا.",
+			},
 		]);
 	};
 
@@ -65,7 +83,9 @@ export default function AssuranceEditor({ content, onChange }: Props) {
 
 			<div className="border-t border-border pt-4 space-y-4">
 				<div className="flex justify-between items-center">
-					<h4 className="text-xs font-bold text-foreground">قائمة المميزات (الضمانات)</h4>
+					<h4 className="text-xs font-bold text-foreground">
+						قائمة المميزات (الضمانات)
+					</h4>
 					<button
 						onClick={addFeature}
 						className="bg-primary/10 text-primary hover:bg-primary/20 text-[10px] px-3 py-1.5 rounded-lg flex items-center gap-1 font-bold transition-all"
@@ -86,7 +106,9 @@ export default function AssuranceEditor({ content, onChange }: Props) {
 									</label>
 									<select
 										value={feature.iconName}
-										onChange={(e) => updateFeature(idx, "iconName", e.target.value)}
+										onChange={(e) =>
+											updateFeature(idx, "iconName", e.target.value)
+										}
 										className="w-full premium-input text-xs"
 									>
 										{AVAILABLE_ICONS.map((ic) => (
@@ -103,7 +125,9 @@ export default function AssuranceEditor({ content, onChange }: Props) {
 									<input
 										type="text"
 										value={feature.title}
-										onChange={(e) => updateFeature(idx, "title", e.target.value)}
+										onChange={(e) =>
+											updateFeature(idx, "title", e.target.value)
+										}
 										className="w-full premium-input text-xs font-bold"
 									/>
 								</div>
@@ -115,7 +139,9 @@ export default function AssuranceEditor({ content, onChange }: Props) {
 								<textarea
 									rows={2}
 									value={feature.description}
-									onChange={(e) => updateFeature(idx, "description", e.target.value)}
+									onChange={(e) =>
+										updateFeature(idx, "description", e.target.value)
+									}
 									className="w-full premium-input text-xs leading-relaxed resize-none"
 								/>
 							</div>

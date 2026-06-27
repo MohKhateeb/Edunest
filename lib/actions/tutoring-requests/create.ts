@@ -107,7 +107,8 @@ export async function createTutoringRequest(
 	} catch (error: unknown) {
 		return {
 			success: false,
-			error: error instanceof Error ? error.message : "حدث خطأ أثناء إنشاء الطلب",
+			error:
+				error instanceof Error ? error.message : "حدث خطأ أثناء إنشاء الطلب",
 		};
 	}
 }

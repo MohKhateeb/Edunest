@@ -1,10 +1,16 @@
 "use client";
 
+import {
+	AlertTriangle,
+	CheckCircle2,
+	Clock,
+	FileText,
+	ShieldAlert,
+} from "lucide-react";
 import { useState } from "react";
-import { AlertTriangle, Clock, ShieldAlert, FileText, CheckCircle2 } from "lucide-react";
+import ReportModal from "@/components/shared/ReportModal";
 import type { DetailedBooking } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
-import ReportModal from "@/components/shared/ReportModal";
 
 export default function PendingReportsClient({
 	initialBookings,
@@ -26,8 +32,12 @@ export default function PendingReportsClient({
 			{bookings.length === 0 ? (
 				<div className="bg-card border border-border rounded-3xl p-12 text-center text-muted-foreground">
 					<CheckCircle2 className="h-12 w-12 mx-auto text-green-500 mb-4 opacity-75" />
-					<h3 className="font-bold text-lg text-foreground mb-1">عمل رائع! 🏆</h3>
-					<p className="text-sm">لا توجد لديك أي جلسات معلقة أو تقارير متأخرة حالياً.</p>
+					<h3 className="font-bold text-lg text-foreground mb-1">
+						عمل رائع! 🏆
+					</h3>
+					<p className="text-sm">
+						لا توجد لديك أي جلسات معلقة أو تقارير متأخرة حالياً.
+					</p>
 				</div>
 			) : (
 				<div className="grid gap-4">
@@ -36,16 +46,19 @@ export default function PendingReportsClient({
 						const isWarned = booking.reportWarningLevel === 1;
 
 						let statusText = "في فترة السماح (أقل من 24 ساعة)";
-						let statusClass = "bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800";
+						let statusClass =
+							"bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:border-blue-800";
 						let Icon = Clock;
 
 						if (isFrozen) {
 							statusText = "الرصيد مجمد - تحذير نهائي!";
-							statusClass = "bg-red-50 text-red-700 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800";
+							statusClass =
+								"bg-red-50 text-red-700 border-red-100 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800";
 							Icon = ShieldAlert;
 						} else if (isWarned) {
 							statusText = "تحذير: تقرير متأخر (> 24 ساعة)";
-							statusClass = "bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800";
+							statusClass =
+								"bg-orange-50 text-orange-700 border-orange-100 dark:bg-orange-900/20 dark:text-orange-400 dark:border-orange-800";
 							Icon = AlertTriangle;
 						}
 
@@ -56,8 +69,8 @@ export default function PendingReportsClient({
 									isFrozen
 										? "border-red-200 dark:border-red-900/40"
 										: isWarned
-										? "border-orange-200 dark:border-orange-900/40"
-										: "border-border"
+											? "border-orange-200 dark:border-orange-900/40"
+											: "border-border"
 								}`}
 							>
 								<div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
@@ -66,22 +79,30 @@ export default function PendingReportsClient({
 											<span className="font-black text-sm bg-primary/10 text-primary px-3 py-1 rounded-full">
 												جلسة {booking.student.name}
 											</span>
-											<div className={`flex items-center gap-1 border px-2.5 py-0.5 rounded-full text-xs font-bold ${statusClass}`}>
+											<div
+												className={`flex items-center gap-1 border px-2.5 py-0.5 rounded-full text-xs font-bold ${statusClass}`}
+											>
 												<Icon className="h-3.5 w-3.5" />
 												<span>{statusText}</span>
 											</div>
 										</div>
 										<div className="text-xs text-muted-foreground space-y-1">
 											<p>
-												<span className="font-semibold text-foreground">المادة/الخدمة:</span>{" "}
+												<span className="font-semibold text-foreground">
+													المادة/الخدمة:
+												</span>{" "}
 												{booking.teacherService.serviceType.name}
 											</p>
 											<p>
-												<span className="font-semibold text-foreground">تاريخ الجلسة:</span>{" "}
+												<span className="font-semibold text-foreground">
+													تاريخ الجلسة:
+												</span>{" "}
 												{new Date(booking.startTime).toLocaleString("ar-EG")}
 											</p>
 											<p>
-												<span className="font-semibold text-foreground">قيمة الجلسة:</span>{" "}
+												<span className="font-semibold text-foreground">
+													قيمة الجلسة:
+												</span>{" "}
 												{formatPrice(Number(booking.price))}
 											</p>
 										</div>

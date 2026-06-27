@@ -8,7 +8,11 @@ import HakeemCharacter from "@/components/shared/HakeemCharacter";
 import NajeebCharacter from "@/components/shared/NajeebCharacter";
 import type { HeroSectionContent } from "@/types/homepage";
 
-export default function HeroSection({ content }: { content: HeroSectionContent }) {
+export default function HeroSection({
+	content,
+}: {
+	content: HeroSectionContent;
+}) {
 	return (
 		<section className="relative overflow-hidden bg-gradient-to-br from-blue-50/50 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 pt-20 pb-32">
 			<div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay pointer-events-none"></div>

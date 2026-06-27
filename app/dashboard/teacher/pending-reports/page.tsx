@@ -1,11 +1,11 @@
-import { requireAuth } from "@/lib/require-auth";
 import { UserType } from "@prisma/client";
-import { auth } from "@/lib/auth";
+import { FileText } from "lucide-react";
 import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { requireAuth } from "@/lib/require-auth";
 import { BookingService } from "@/lib/services/domain/booking-service";
 import { sanitizePrismaData } from "@/lib/utils";
 import PendingReportsClient from "./_components/PendingReportsClient";
-import { FileText } from "lucide-react";
 
 export default async function TeacherPendingReportsPage() {
 	const session = await auth();
@@ -13,7 +13,9 @@ export default async function TeacherPendingReportsPage() {
 
 	if (!session) redirect("/login");
 
-	const pendingBookings = await BookingService.getTeacherPendingReports(session.user.id);
+	const pendingBookings = await BookingService.getTeacherPendingReports(
+		session.user.id,
+	);
 	const sanitizedBookings = sanitizePrismaData(pendingBookings);
 
 	return (

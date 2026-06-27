@@ -1,6 +1,6 @@
+import { UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
-import { UserType } from "@prisma/client";
 
 export class UserService {
 	static async getUserProfile(userId: string) {
@@ -60,7 +60,7 @@ export class UserService {
 						? Number(teacher.defaultHourlyRate)
 						: 50,
 					profileImageUrl: teacher.profileImageUrl || null,
-			  }
+				}
 			: null;
 
 		return { teacher, subjects, initialData };
@@ -112,7 +112,9 @@ export class UserService {
 				subjects: { include: { subject: true } },
 				services: {
 					where: { isActive: true, serviceType: { isActive: true } },
-					include: { serviceType: { select: { name: true, defaultDuration: true } } },
+					include: {
+						serviceType: { select: { name: true, defaultDuration: true } },
+					},
 					orderBy: { price: "asc" },
 				},
 				availability: {
@@ -136,7 +138,11 @@ export class UserService {
 		});
 	}
 
-	static async searchTeachers(params: { subject?: string; city?: string; page?: string }) {
+	static async searchTeachers(params: {
+		subject?: string;
+		city?: string;
+		page?: string;
+	}) {
 		const page = Math.max(1, parseInt(params.page ?? "1", 10));
 		const PAGE_SIZE = 12;
 
@@ -150,7 +156,8 @@ export class UserService {
 					subject: { name: { contains: params.subject, mode: "insensitive" } },
 				},
 			};
-		if (params.city) where.city = { contains: params.city, mode: "insensitive" };
+		if (params.city)
+			where.city = { contains: params.city, mode: "insensitive" };
 
 		const [teachers, total] = await Promise.all([
 			prisma.teacher.findMany({

@@ -8,7 +8,10 @@ interface Props {
 }
 
 export default function PersuasionEditor({ content, onChange }: Props) {
-	const updateField = (field: keyof PersuasionSectionContent, value: string) => {
+	const updateField = (
+		field: keyof PersuasionSectionContent,
+		value: string,
+	) => {
 		onChange({ ...content, [field]: value });
 	};
 

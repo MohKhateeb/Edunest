@@ -1,5 +1,6 @@
 "use client";
 
+import type { Prisma } from "@prisma/client";
 import {
 	Calendar,
 	Clock,
@@ -11,13 +12,12 @@ import {
 } from "lucide-react";
 import React from "react";
 import { BOOKING_STATUS_AR } from "@/lib/translations";
-import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
-import type { Prisma } from "@prisma/client";
 import type { commonStudentInclude } from "@/lib/types";
+import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
 
 export type DetailedStudent = Prisma.StudentGetPayload<{
 	include: typeof commonStudentInclude;
-}> & { 
+}> & {
 	calculatedAvgPerformance: string | null;
 	calculatedReportsCount: number;
 };

@@ -1,8 +1,7 @@
+import { type Prisma, UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
-import { UserType, Prisma } from "@prisma/client";
 import { bookingDetailsInclude, type DetailedBooking } from "@/lib/types";
-import { calculateEarnings } from "@/lib/utils/financial";
 import {
 	computeBookingStatuses,
 	computeFinancialKPIs,
@@ -10,6 +9,7 @@ import {
 	computeRevenueTrends,
 	computeSessionTypes,
 } from "@/lib/utils/admin-analytics";
+import { calculateEarnings } from "@/lib/utils/financial";
 
 export type AdminDashboardOverview = {
 	pendingVerifications: number;
@@ -98,7 +98,9 @@ export async function getAdminDashboardOverview(): Promise<AdminDashboardOvervie
 }
 
 export type TeacherDashboardOverview = {
-	teacher: Prisma.TeacherGetPayload<{ include: { user: { select: { name: true } } } }>;
+	teacher: Prisma.TeacherGetPayload<{
+		include: { user: { select: { name: true } } };
+	}>;
 	upcomingCount: number;
 	pendingRequests: DetailedBooking[];
 	pendingEarnings: number;
@@ -106,7 +108,9 @@ export type TeacherDashboardOverview = {
 	chartData: { date: string; earnings: number; sessions: number }[];
 	nextSession: DetailedBooking | null;
 	liveSession: DetailedBooking | null;
-	openDisputes: Prisma.DisputeGetPayload<{ include: { booking: { include: { student: true } } } }>[];
+	openDisputes: Prisma.DisputeGetPayload<{
+		include: { booking: { include: { student: true } } };
+	}>[];
 	urgentAlerts: {
 		id: string;
 		type: "WARNING_1" | "WARNING_2_FROZEN";
@@ -115,7 +119,9 @@ export type TeacherDashboardOverview = {
 	}[];
 };
 
-export async function getTeacherDashboardOverview(userId: string): Promise<TeacherDashboardOverview | null> {
+export async function getTeacherDashboardOverview(
+	userId: string,
+): Promise<TeacherDashboardOverview | null> {
 	await requireAuth([UserType.TEACHER]);
 
 	const teacher = await prisma.teacher.findUnique({
@@ -173,7 +179,8 @@ export async function getTeacherDashboardOverview(userId: string): Promise<Teach
 		_sum: { netAmount: true },
 	});
 
-	const totalEarnings = pendingEarnings + Number(paidPayoutsSum._sum.netAmount || 0);
+	const totalEarnings =
+		pendingEarnings + Number(paidPayoutsSum._sum.netAmount || 0);
 
 	const last7Days = Array.from({ length: 7 }).map((_, i) => {
 		const d = new Date();
@@ -270,10 +277,12 @@ export async function getTeacherDashboardOverview(userId: string): Promise<Teach
 	const urgentAlerts = ghostBookings.map((b) => ({
 		id: `alert-${b.id}`,
 		bookingId: b.id,
-		type: b.reportWarningLevel === 1 ? "WARNING_1" : "WARNING_2_FROZEN" as const,
-		message: b.reportWarningLevel === 1 
-			? "تحذير: توجد جلسة مر على انتهائها أكثر من 24 ساعة ولم تكتب التقرير. يرجى كتابته فوراً لتجنب تجميد الأرباح."
-			: "تحذير أخير: أرباح جلسة سابقة أصبحت مجمدة نظراً لعدم كتابتك التقرير. الجلسة مهددة بالمصادرة إذا لم تقم بكتابة التقرير.",
+		type:
+			b.reportWarningLevel === 1 ? ("WARNING_1" as const) : ("WARNING_2_FROZEN" as const),
+		message:
+			b.reportWarningLevel === 1
+				? "تحذير: توجد جلسة مر على انتهائها أكثر من 24 ساعة ولم تكتب التقرير. يرجى كتابته فوراً لتجنب تجميد الأرباح."
+				: "تحذير أخير: أرباح جلسة سابقة أصبحت مجمدة نظراً لعدم كتابتك التقرير. الجلسة مهددة بالمصادرة إذا لم تقم بكتابة التقرير.",
 	}));
 
 	return {

@@ -259,7 +259,9 @@ export default function AdminSettingsForm({
 										};
 										const Icon = config.icon;
 										const isToggle = config.type === "boolean";
-										const currentValue = getLatestSettingValue(setting.settingKey);
+										const currentValue = getLatestSettingValue(
+											setting.settingKey,
+										);
 
 										return (
 											<div
@@ -299,9 +301,7 @@ export default function AdminSettingsForm({
 																	: "text-slate-400",
 															)}
 														>
-															{currentValue === "true"
-																? "مفعل نشط"
-																: "معطل"}
+															{currentValue === "true" ? "مفعل نشط" : "معطل"}
 														</span>
 													</div>
 												) : (

@@ -1,13 +1,13 @@
-import { requireAuth } from "@/lib/require-auth";
 import { UserType } from "@prisma/client";
+import { AlertCircle, CheckCircle2, ShieldAlert } from "lucide-react";
+import Link from "next/link";
+import { requireAuth } from "@/lib/require-auth";
+import { getAllEscrows } from "@/lib/services/domain/admin-escrow-service";
 import { formatPrice } from "@/lib/utils";
 import { EscrowActions } from "./escrow-actions";
-import { ShieldAlert, AlertCircle, CheckCircle2 } from "lucide-react";
-import Link from "next/link";
-import { getAllEscrows } from "@/lib/services/domain/admin-escrow-service";
 
 export default async function AdminEscrowPage() {
-	await requireAuth([UserType.ADMIN, UserType.SUPER_ADMIN]);
+	await requireAuth([UserType.ADMIN]);
 
 	const escrows = await getAllEscrows();
 
@@ -59,18 +59,31 @@ export default async function AdminEscrowPage() {
 												</div>
 												<div className="text-sm text-foreground space-y-1">
 													<p>
-														<span className="text-muted-foreground">المعلم:</span>{" "}
-														<Link href={`/teachers/${escrow.booking.teacherService.teacher.slug}`} className="font-semibold text-primary hover:underline">
+														<span className="text-muted-foreground">
+															المعلم:
+														</span>{" "}
+														<Link
+															href={`/teachers/${escrow.booking.teacherService.teacher.slug}`}
+															className="font-semibold text-primary hover:underline"
+														>
 															{escrow.booking.teacherService.teacher.user.name}
 														</Link>
 													</p>
 													<p>
-														<span className="text-muted-foreground">الطالب:</span>{" "}
-														<span className="font-semibold">{escrow.booking.student.name}</span>
+														<span className="text-muted-foreground">
+															الطالب:
+														</span>{" "}
+														<span className="font-semibold">
+															{escrow.booking.student.name}
+														</span>
 													</p>
 													<p>
-														<span className="text-muted-foreground">تاريخ الجلسة:</span>{" "}
-														{new Date(escrow.booking.startTime).toLocaleDateString("ar-EG")}
+														<span className="text-muted-foreground">
+															تاريخ الجلسة:
+														</span>{" "}
+														{new Date(
+															escrow.booking.startTime,
+														).toLocaleDateString("ar-EG")}
 													</p>
 													<p className="text-xs text-muted-foreground mt-2">
 														السبب: {escrow.reason}
@@ -107,14 +120,20 @@ export default async function AdminEscrowPage() {
 												<p className="text-sm text-muted-foreground mt-1">
 													تم تحويل {formatPrice(Number(escrow.amount))} إلى:{" "}
 													<span className="font-bold text-foreground">
-														{escrow.status === "REFUNDED_TO_PARENT" && "رصيد ولي الأمر"}
-														{escrow.status === "PAID_TO_TEACHER" && "حساب المعلم"}
-														{escrow.status === "PLATFORM_PROFIT" && "أرباح المنصة"}
+														{escrow.status === "REFUNDED_TO_PARENT" &&
+															"رصيد ولي الأمر"}
+														{escrow.status === "PAID_TO_TEACHER" &&
+															"حساب المعلم"}
+														{escrow.status === "PLATFORM_PROFIT" &&
+															"أرباح المنصة"}
 													</span>
 												</p>
 											</div>
 											<div className="text-xs text-muted-foreground text-left">
-												<p>تم الحسم في: {escrow.resolvedAt?.toLocaleDateString("ar-EG")}</p>
+												<p>
+													تم الحسم في:{" "}
+													{escrow.resolvedAt?.toLocaleDateString("ar-EG")}
+												</p>
 											</div>
 										</div>
 									</div>

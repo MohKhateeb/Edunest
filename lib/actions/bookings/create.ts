@@ -117,7 +117,13 @@ export const createBooking = withAuthAction(
 				parentUser.hasUsedFreeTrial,
 			);
 		} catch (err: unknown) {
-			return { success: false, error: err instanceof Error ? err.message : "حدث خطأ أثناء حساب التكاليف المالية" };
+			return {
+				success: false,
+				error:
+					err instanceof Error
+						? err.message
+						: "حدث خطأ أثناء حساب التكاليف المالية",
+			};
 		}
 
 		const { duration, price, appliedCommissionRate, trialCostToPlatform } =

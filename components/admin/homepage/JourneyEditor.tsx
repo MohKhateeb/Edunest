@@ -9,11 +9,18 @@ interface Props {
 }
 
 export default function JourneyEditor({ content, onChange }: Props) {
-	const updateField = <K extends keyof JourneyPathContent>(field: K, value: JourneyPathContent[K]) => {
+	const updateField = <K extends keyof JourneyPathContent>(
+		field: K,
+		value: JourneyPathContent[K],
+	) => {
 		onChange({ ...content, [field]: value });
 	};
 
-	const updateStep = (index: number, field: "title" | "description", value: string) => {
+	const updateStep = (
+		index: number,
+		field: "title" | "description",
+		value: string,
+	) => {
 		const newSteps = [...content.steps];
 		newSteps[index] = { ...newSteps[index], [field]: value };
 		updateField("steps", newSteps);
@@ -94,7 +101,9 @@ export default function JourneyEditor({ content, onChange }: Props) {
 								<textarea
 									rows={2}
 									value={step.description}
-									onChange={(e) => updateStep(idx, "description", e.target.value)}
+									onChange={(e) =>
+										updateStep(idx, "description", e.target.value)
+									}
 									className="w-full premium-input text-xs leading-relaxed resize-none"
 								/>
 							</div>

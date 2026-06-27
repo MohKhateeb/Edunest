@@ -1,6 +1,6 @@
+import { UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
-import { UserType } from "@prisma/client";
 
 export class SessionService {
 	static async getParentLiveRadarData(parentId: string) {

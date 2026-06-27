@@ -1,9 +1,18 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ShieldCheck, Video, CreditCard, MessageCircle, Star, Heart, type LucideIcon } from "lucide-react";
+import {
+	CreditCard,
+	Heart,
+	type LucideIcon,
+	MessageCircle,
+	ShieldCheck,
+	Star,
+	Video,
+} from "lucide-react";
 import React from "react";
 import HakeemCharacter from "@/components/shared/HakeemCharacter";
+import SectionHeader from "@/components/shared/SectionHeader";
 import type { AssuranceSectionContent } from "@/types/homepage";
 
 const ICON_MAP: Record<string, LucideIcon> = {
@@ -15,29 +24,15 @@ const ICON_MAP: Record<string, LucideIcon> = {
 	Heart,
 };
 
-export default function AssuranceSection({ content }: { content: AssuranceSectionContent }) {
+export default function AssuranceSection({
+	content,
+}: {
+	content: AssuranceSectionContent;
+}) {
 	return (
 		<section className="py-24 bg-white dark:bg-slate-950">
 			<div className="max-w-6xl mx-auto px-6" dir="rtl">
-				<div className="text-center mb-16 space-y-4">
-					<motion.h2
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-						className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white"
-					>
-						{content.title}
-					</motion.h2>
-					<motion.p
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-						transition={{ delay: 0.1 }}
-						className="text-slate-500 dark:text-slate-400 font-medium"
-					>
-						{content.subtitle}
-					</motion.p>
-				</div>
+				<SectionHeader title={content.title} subtitle={content.subtitle} />
 
 				<div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 rounded-[3rem] p-8 md:p-12 shadow-premium relative overflow-hidden">
 					{/* Background decorative elements */}

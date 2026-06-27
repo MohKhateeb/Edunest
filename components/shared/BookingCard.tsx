@@ -41,9 +41,9 @@ import {
 import { submitReview } from "@/lib/actions/review";
 import {
 	BOOKING_STATUS_AR,
+	BOOKING_STATUS_STYLES,
 	PAYMENT_METHOD_AR,
 	PAYMENT_STATUS_AR,
-	BOOKING_STATUS_STYLES,
 	PAYMENT_STATUS_STYLES,
 } from "@/lib/translations";
 import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
@@ -93,8 +93,6 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 		? "تجريبية مجانية"
 		: formatPrice(Number(booking.price));
 
-
-
 	// Actions
 	const handleAccept = async () => {
 		setLoading(true);
@@ -136,8 +134,6 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 			toast.error("فشل إلغاء الحجز", { description: res.error });
 		}
 	};
-
-
 
 	const handleReviewSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -202,7 +198,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 							{BOOKING_STATUS_AR[booking.status]}
 						</span>
 						{booking.status === "CONFIRMED" &&
-							sessionTimeState.status === "ghost" && (
+							(sessionTimeState.status === "warning_2_frozen" || sessionTimeState.status === "closed_escrow") && (
 								<span className="flex items-center gap-1 text-[10px] font-bold px-2 py-1.5 rounded-full bg-rose-100 text-rose-700 border border-rose-300 dark:bg-rose-900/40 dark:text-rose-400">
 									<AlertTriangle className="h-3 w-3" />
 									متأخرة الإغلاق

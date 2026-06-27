@@ -109,7 +109,10 @@ export default function NewBookingForm({
 		(s) => s.id === formData.selectedServiceId,
 	);
 
-	const handleCustomChange = (name: string, value: string | boolean | number | Date | null) => {
+	const handleCustomChange = (
+		name: string,
+		value: string | boolean | number | Date | null,
+	) => {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
 

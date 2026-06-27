@@ -49,7 +49,10 @@ export const authOptions: NextAuthOptions = {
 	callbacks: {
 		async jwt({ token, user }) {
 			if (user) {
-				const u = user as typeof user & { userType: string; image?: string | null };
+				const u = user as typeof user & {
+					userType: string;
+					image?: string | null;
+				};
 				token.userType = u.userType;
 				token.sub = u.id;
 				token.picture = u.image;

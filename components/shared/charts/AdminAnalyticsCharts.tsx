@@ -53,7 +53,11 @@ const STATUS_COLORS: Record<string, string> = {
 
 const PIE_COLORS = ["#0d9488", "#0284c7", "#8b5cf6", "#f59e0b", "#ec4899"];
 
-const CustomRevenueTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+const CustomRevenueTooltip = ({
+	active,
+	payload,
+	label,
+}: CustomTooltipProps) => {
 	if (active && payload && payload.length) {
 		return (
 			<div className="bg-card border border-border p-3 rounded-lg shadow-lg">

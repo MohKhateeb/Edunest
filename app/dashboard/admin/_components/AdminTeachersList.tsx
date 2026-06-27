@@ -124,6 +124,7 @@ export default function AdminTeachersList({
 										</div>
 									</div>
 									<button
+										type="button"
 										onClick={() => setSelectedTeacherId(t.id)}
 										className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"
 										title="عرض الملف التعريفي الكامل"
@@ -165,15 +166,9 @@ export default function AdminTeachersList({
 										}
 										className="premium-input text-xs w-36 cursor-pointer"
 									>
-										<option value={"NONE"}>
-											غير موثق (NONE)
-										</option>
-										<option value={"BRONZE"}>
-											برونزي (BRONZE)
-										</option>
-										<option value={"SILVER"}>
-											فضي (SILVER)
-										</option>
+										<option value={"NONE"}>غير موثق (NONE)</option>
+										<option value={"BRONZE"}>برونزي (BRONZE)</option>
+										<option value={"SILVER"}>فضي (SILVER)</option>
 										<option value={"GOLD"}>ذهبي (GOLD)</option>
 									</select>
 								)}

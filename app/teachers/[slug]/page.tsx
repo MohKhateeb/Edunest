@@ -7,7 +7,6 @@ import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 import StarRating from "@/components/shared/StarRating";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { UserService } from "@/lib/services/domain/user-service";
 
 const GRADE_LABELS: Record<number, string> = {

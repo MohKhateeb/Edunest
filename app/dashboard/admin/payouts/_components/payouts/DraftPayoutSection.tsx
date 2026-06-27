@@ -143,7 +143,9 @@ export function DraftPayoutSection({
 									</span>
 								</div>
 								<div className="flex justify-between items-center text-sm">
-									<span className="text-muted-foreground">عمولة المنصة (-):</span>
+									<span className="text-muted-foreground">
+										عمولة المنصة (-):
+									</span>
 									<span className="font-bold text-rose-600 dark:text-rose-400">
 										-{formatPrice(draftResult.commissionAmount)}
 									</span>

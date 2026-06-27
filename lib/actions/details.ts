@@ -20,22 +20,25 @@ function successResponse<T>(data: T): ActionResponse<T> {
 
 function withCalculatedPerformance<T extends { bookings: any[] }>(student: T) {
 	const completedReports = student.bookings
-		.filter((b: any) => b.status === "COMPLETED" && b.report?.studentPerformance)
+		.filter(
+			(b: any) => b.status === "COMPLETED" && b.report?.studentPerformance,
+		)
 		.map((b: any) => b.report.studentPerformance);
 
 	const calculatedAvgPerformance =
 		completedReports.length > 0
-			? (completedReports.reduce((a: number, b: number) => a + b, 0) / completedReports.length).toFixed(1)
+			? (
+					completedReports.reduce((a: number, b: number) => a + b, 0) /
+					completedReports.length
+				).toFixed(1)
 			: null;
 
-	return { 
-		...student, 
+	return {
+		...student,
 		calculatedAvgPerformance,
-		calculatedReportsCount: completedReports.length
+		calculatedReportsCount: completedReports.length,
 	};
 }
-
-
 
 async function getStudentDetails(
 	entityId: string,
@@ -91,8 +94,6 @@ async function getStudentDetails(
 
 	return { success: false, error: "نوع الحساب غير مصرح له بالوصول." };
 }
-
-
 
 async function getTeacherDetails(
 	entityId: string,
@@ -167,8 +168,6 @@ async function getBookingDetails(
 	return { success: false, error: "غير مصرح لك بمشاهدة تفاصيل هذا الحجز." };
 }
 
-
-
 async function getPayoutDetails(
 	entityId: string,
 	userId: string,
@@ -199,7 +198,7 @@ async function getPayoutDetails(
 			Number(b.price),
 			Number(b.appliedCommissionRate),
 			b.isTrial,
-			Number(b.trialCostToPlatform)
+			Number(b.trialCostToPlatform),
 		);
 		return {
 			...b,

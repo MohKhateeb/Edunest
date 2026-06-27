@@ -2,8 +2,8 @@ import { UserType } from "@prisma/client";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { DisputeChat } from "@/components/shared/DisputeChat";
-import { requireAuth } from "@/lib/require-auth";
 import { getSecureDisputeDetails } from "@/lib/actions/disputes";
+import { requireAuth } from "@/lib/require-auth";
 
 export const metadata = {
 	title: "تفاصيل النزاع | EduNest",

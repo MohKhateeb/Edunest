@@ -1,6 +1,6 @@
+import { type Prisma, UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
-import { UserType, Prisma } from "@prisma/client";
 import { calculateEarnings } from "@/lib/utils/financial";
 
 export type AdminFinancialStats = {
@@ -45,7 +45,6 @@ export async function getAdminFinancialStats(): Promise<AdminFinancialStats> {
 	};
 }
 
-
 export async function getAdminOpenDisputes() {
 	await requireAuth([UserType.ADMIN]);
 	return prisma.dispute.findMany({
@@ -74,21 +73,23 @@ export async function getAdminPendingPayouts() {
 	});
 }
 
-
-export type ParentFinancialBooking = Omit<Prisma.BookingGetPayload<{
-	include: {
-		teacherService: {
-			include: {
-				teacher: { include: { user: true } };
-				serviceType: true;
+export type ParentFinancialBooking = Omit<
+	Prisma.BookingGetPayload<{
+		include: {
+			teacherService: {
+				include: {
+					teacher: { include: { user: true } };
+					serviceType: true;
+				};
 			};
+			student: true;
+			payment: true;
+			dispute: true;
+			parentRefund: true;
 		};
-		student: true;
-		payment: true;
-		dispute: true;
-		parentRefund: true;
-	};
-}>, "price"> & { price: number; canDispute: boolean; };
+	}>,
+	"price"
+> & { price: number; canDispute: boolean };
 
 export type ParentFinancialStats = {
 	bookings: ParentFinancialBooking[];
@@ -159,7 +160,9 @@ export async function getParentFinancials(
 	twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
 
 	const formattedBookings = bookings.map((b) => {
-		const isUnder24h = b.completedAt ? b.completedAt > twentyFourHoursAgo : false;
+		const isUnder24h = b.completedAt
+			? b.completedAt > twentyFourHoursAgo
+			: false;
 		const canDispute = b.status === "COMPLETED" && isUnder24h && !b.payoutId;
 
 		return {
@@ -177,14 +180,16 @@ export async function getParentFinancials(
 	};
 }
 
-
-export type TeacherFinancialBooking = Omit<Prisma.BookingGetPayload<{
-	include: {
-		dispute: true;
-		student: true;
-		teacherService: { include: { serviceType: true } };
-	};
-}>, "price" | "appliedCommissionRate" | "trialCostToPlatform"> & {
+export type TeacherFinancialBooking = Omit<
+	Prisma.BookingGetPayload<{
+		include: {
+			dispute: true;
+			student: true;
+			teacherService: { include: { serviceType: true } };
+		};
+	}>,
+	"price" | "appliedCommissionRate" | "trialCostToPlatform"
+> & {
 	price: number;
 	appliedCommissionRate: number;
 	trialCostToPlatform: number;
@@ -267,7 +272,9 @@ export async function getTeacherEarningsWallet(
 		);
 		const net = earnings.teacherTotalEarnings;
 
-		const isUnder24h = b.completedAt ? b.completedAt > twentyFourHoursAgo : false;
+		const isUnder24h = b.completedAt
+			? b.completedAt > twentyFourHoursAgo
+			: false;
 		const isCleared = !isUnder24h && !b.dispute; // Basic clearance flag
 
 		const formattedBooking = {
@@ -321,7 +328,6 @@ export async function getTeacherEarningsWallet(
 		openDisputesCount,
 	};
 }
-
 
 export type AdminPayoutsData = {
 	teacherGroups: {
@@ -401,8 +407,9 @@ export async function getAdminPayoutsData(): Promise<AdminPayoutsData> {
 
 	const groups: Record<string, AdminPayoutsData["teacherGroups"][0]> = {};
 
-	const unpaidBookingsList = unpaidBookingsRaw
-		.filter((b) => !b.dispute || b.dispute.status === "RESOLVED_IN_FAVOR_OF_TEACHER");
+	const unpaidBookingsList = unpaidBookingsRaw.filter(
+		(b) => !b.dispute || b.dispute.status === "RESOLVED_IN_FAVOR_OF_TEACHER",
+	);
 
 	for (const b of unpaidBookingsList) {
 		const price = Number(b.price);
@@ -450,7 +457,9 @@ export async function getAdminPayoutsData(): Promise<AdminPayoutsData> {
 		groups[teacherId].totalNet += netEarnings;
 	}
 
-	const teacherGroups = Object.values(groups).sort((a, b) => b.totalNet - a.totalNet);
+	const teacherGroups = Object.values(groups).sort(
+		(a, b) => b.totalNet - a.totalNet,
+	);
 
 	const payouts = await prisma.teacherPayout.findMany({
 		take: 50,

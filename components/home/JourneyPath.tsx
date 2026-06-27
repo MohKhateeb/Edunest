@@ -1,7 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CalendarCheck, Rocket, Search, Star, BookOpen, GraduationCap } from "lucide-react";
+import {
+	BookOpen,
+	CalendarCheck,
+	GraduationCap,
+	Rocket,
+	Search,
+	Star,
+} from "lucide-react";
 import React from "react";
 import NajeebCharacter from "@/components/shared/NajeebCharacter";
 import type { JourneyPathContent } from "@/types/homepage";
@@ -15,7 +22,11 @@ const GRADIENTS = [
 	"from-rose-500 to-pink-400",
 ];
 
-export default function JourneyPath({ content }: { content: JourneyPathContent }) {
+export default function JourneyPath({
+	content,
+}: {
+	content: JourneyPathContent;
+}) {
 	return (
 		<section className="py-24 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
 			{/* Decorative path line in background */}

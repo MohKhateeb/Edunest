@@ -173,6 +173,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 								<td className="p-4 text-center">
 									{u.userType === "PARENT" || u.userType === "TEACHER" ? (
 										<button
+											type="button"
 											onClick={() => toggleExpand(u.id)}
 											className="p-1 rounded-lg hover:bg-accent text-muted-foreground transition-colors cursor-pointer"
 											title="عرض تفاصيل إضافية"
@@ -258,6 +259,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 										<div className="inline-flex items-center gap-2">
 											{u.isActive ? (
 												<button
+													type="button"
 													onClick={() => handleToggleStatus(u.id, u.isActive)}
 													className="text-xs font-bold text-rose-600 hover:text-white border border-rose-600/20 hover:bg-rose-600 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
 													title="حظر الحساب ومنع تسجيل الدخول"
@@ -267,6 +269,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 												</button>
 											) : (
 												<button
+													type="button"
 													onClick={() => handleToggleStatus(u.id, u.isActive)}
 													className="text-xs font-bold text-emerald-600 hover:text-white border border-emerald-600/20 hover:bg-emerald-600 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
 													title="تفعيل وتنشيط الحساب"

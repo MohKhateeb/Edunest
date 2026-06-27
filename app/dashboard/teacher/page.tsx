@@ -15,9 +15,9 @@ import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import TeacherOnlineToggle from "@/components/shared/TeacherOnlineToggle";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
-import { type DetailedBooking } from "@/lib/types";
-import { formatPrice, sanitizePrismaData } from "@/lib/utils";
 import { getTeacherDashboardOverview } from "@/lib/services/domain/analytics-service";
+import type { DetailedBooking } from "@/lib/types";
+import { formatPrice, sanitizePrismaData } from "@/lib/utils";
 
 export default async function TeacherDashboard() {
 	await requireAuth([UserType.TEACHER]);
@@ -34,8 +34,8 @@ export default async function TeacherDashboard() {
 				<AlertCircle className="h-12 w-12 text-yellow-500 mx-auto" />
 				<h2 className="text-xl font-bold">حساب غير مكتمل</h2>
 				<p className="text-muted-foreground text-sm">
-					يبدو أن ملفك كمعلم غير مكتمل بعد. يرجى إكمال إعداد ملفك الشخصي
-					لتتمكن من الوصول إلى لوحة القيادة واستقبال طلبات الحجز.
+					يبدو أن ملفك كمعلم غير مكتمل بعد. يرجى إكمال إعداد ملفك الشخصي لتتمكن
+					من الوصول إلى لوحة القيادة واستقبال طلبات الحجز.
 				</p>
 				<Link
 					href="/dashboard/teacher/profile"
@@ -95,7 +95,9 @@ export default async function TeacherDashboard() {
 			</div>
 
 			{/* Urgent Matters Section */}
-			{(openDisputes.length > 0 || !teacher.isVerified || urgentAlerts.length > 0) && (
+			{(openDisputes.length > 0 ||
+				!teacher.isVerified ||
+				urgentAlerts.length > 0) && (
 				<div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-3xl p-6 shadow-sm">
 					<h2 className="font-black text-lg text-red-700 dark:text-red-400 flex items-center gap-2 mb-4">
 						<AlertCircle className="h-6 w-6" />
@@ -109,8 +111,8 @@ export default async function TeacherDashboard() {
 										ملفك الشخصي غير موثق بعد
 									</h3>
 									<p className="text-xs text-muted-foreground mt-1">
-										لا يمكنك استقبال حجوزات جديدة أو الظهور في نتائج البحث
-										حتى يتم توثيق ملفك.
+										لا يمكنك استقبال حجوزات جديدة أو الظهور في نتائج البحث حتى
+										يتم توثيق ملفك.
 									</p>
 								</div>
 								<Link
@@ -131,8 +133,8 @@ export default async function TeacherDashboard() {
 										نزاع مفتوح: جلسة {dispute.booking.student.name}
 									</h3>
 									<p className="text-xs text-muted-foreground mt-1">
-										قام ولي الأمر بفتح نزاع حول الجلسة. يرجى الرد والتواصل
-										مع الإدارة.
+										قام ولي الأمر بفتح نزاع حول الجلسة. يرجى الرد والتواصل مع
+										الإدارة.
 									</p>
 								</div>
 								<Link
@@ -149,8 +151,12 @@ export default async function TeacherDashboard() {
 								className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between bg-white dark:bg-card p-4 rounded-2xl border border-orange-200 dark:border-orange-900/50"
 							>
 								<div>
-									<h3 className={`font-bold text-sm ${alert.type === 'WARNING_2_FROZEN' ? 'text-red-600 dark:text-red-400' : 'text-orange-600 dark:text-orange-400'}`}>
-										{alert.type === 'WARNING_2_FROZEN' ? 'تجميد رصيد - تحذير نهائي!' : 'تحذير تقرير متأخر'}
+									<h3
+										className={`font-bold text-sm ${alert.type === "WARNING_2_FROZEN" ? "text-red-600 dark:text-red-400" : "text-orange-600 dark:text-orange-400"}`}
+									>
+										{alert.type === "WARNING_2_FROZEN"
+											? "تجميد رصيد - تحذير نهائي!"
+											: "تحذير تقرير متأخر"}
 									</h3>
 									<p className="text-xs text-muted-foreground mt-1 font-semibold">
 										{alert.message}

@@ -16,9 +16,9 @@ export default async function TeacherBookingsPage() {
 	// To clean up stale bookings, we need the teacher ID.
 	// Since we are cleaning up, we can fetch it via BookingService or a helper.
 	const bookings = await BookingService.getTeacherBookings(session.user.id);
-	
+
 	// For stale bookings cancellation, we can just run it using the teacher id derived from the first booking
-	// or we can just fetch the teacher ID quickly. Since we already removed the raw prisma call, 
+	// or we can just fetch the teacher ID quickly. Since we already removed the raw prisma call,
 	// let's assume we don't need `cancelledCount` displayed if we abstract it inside the service.
 	// For now, let's keep it simple:
 	const cancelledCount = 0; // Or move processStaleBookingsCancellation to BookingService

@@ -23,10 +23,7 @@ export default async function TeacherProfilePage() {
 					slugUpdated={teacher.slugUpdated}
 				/>
 			)}
-			<TeacherProfileForm
-				initialData={initialData!}
-				subjects={subjects}
-			/>
+			<TeacherProfileForm initialData={initialData!} subjects={subjects} />
 		</div>
 	);
 }

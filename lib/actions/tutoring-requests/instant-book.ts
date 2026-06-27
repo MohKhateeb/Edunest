@@ -16,7 +16,6 @@ import { requireAuth } from "@/lib/require-auth";
 import { getSettingNumber } from "@/lib/settings";
 import type { ActionResponse } from "@/lib/types";
 
-
 /**
  * دالة عبقرية: المعلم يلتقط الطلب الفوري ويتحول فوراً إلى حجز مؤكد (Live Radar V2)
  */
@@ -183,7 +182,8 @@ export async function claimLiveRequest(
 	} catch (error: unknown) {
 		return {
 			success: false,
-			error: error instanceof Error ? error.message : "حدث خطأ أثناء التقاط الطلب",
+			error:
+				error instanceof Error ? error.message : "حدث خطأ أثناء التقاط الطلب",
 		};
 	}
 }

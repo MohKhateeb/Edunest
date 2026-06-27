@@ -8,7 +8,10 @@ interface Props {
 }
 
 export default function AnnouncementEditor({ content, onChange }: Props) {
-	const updateField = <K extends keyof AnnouncementBannerContent>(field: K, value: AnnouncementBannerContent[K]) => {
+	const updateField = <K extends keyof AnnouncementBannerContent>(
+		field: K,
+		value: AnnouncementBannerContent[K],
+	) => {
 		onChange({ ...content, [field]: value });
 	};
 

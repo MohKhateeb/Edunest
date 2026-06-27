@@ -2,13 +2,17 @@
 
 import { EscrowResolution, PaymentStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
-import { requireAuth } from "@/lib/require-auth";
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/require-auth";
 
-export async function resolveEscrow(escrowId: string, resolution: EscrowResolution, notes?: string) {
-	const user = await requireAuth();
+export async function resolveEscrow(
+	escrowId: string,
+	resolution: EscrowResolution,
+	notes?: string,
+) {
+	const user = await requireAuth(["ADMIN"]);
 
-	if (user.role !== "ADMIN" && user.role !== "SUPER_ADMIN") {
+	if (user.userType !== "ADMIN") {
 		throw new Error("Unauthorized");
 	}
 
@@ -36,7 +40,7 @@ export async function resolveEscrow(escrowId: string, resolution: EscrowResoluti
 			data: {
 				status: resolution,
 				resolvedAt: new Date(),
-				resolvedBy: user.id,
+				resolvedBy: user.userId,
 				notes,
 			},
 		});
@@ -48,7 +52,7 @@ export async function resolveEscrow(escrowId: string, resolution: EscrowResoluti
 				data: {
 					bookingId: escrow.bookingId,
 					amount: escrow.amount,
-					isPaid: false, 
+					isPaid: false,
 				},
 			});
 			// Booking was already cancelled by cron, payment status was set to REFUNDED.
@@ -70,7 +74,6 @@ export async function resolveEscrow(escrowId: string, resolution: EscrowResoluti
 				where: { bookingId: escrow.bookingId },
 				data: { isPaid: true },
 			});
-			
 		} else if (resolution === EscrowResolution.PLATFORM_PROFIT) {
 			// No action needed for parent or teacher. The platform keeps the money.
 			// Booking remains Cancelled, PaymentStatus is considered 'Platform Profit' or we leave it.

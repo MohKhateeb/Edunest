@@ -37,7 +37,10 @@ export default async function TeacherBookingDetailsPage({
 	const { userId } = await requireAuth([UserType.TEACHER]);
 	const resolvedParams = await params;
 
-	const booking = await BookingService.getTeacherBookingDetails(resolvedParams.id, userId);
+	const booking = await BookingService.getTeacherBookingDetails(
+		resolvedParams.id,
+		userId,
+	);
 
 	if (!booking) {
 		notFound();
@@ -46,12 +49,13 @@ export default async function TeacherBookingDetailsPage({
 	const price = Number(booking.price);
 	const commissionRate = Number(booking.appliedCommissionRate);
 
-	const { commissionAmount, teacherTotalEarnings: netProfit } = calculateEarnings(
-		price,
-		commissionRate,
-		booking.isTrial,
-		Number(booking.trialCostToPlatform)
-	);
+	const { commissionAmount, teacherTotalEarnings: netProfit } =
+		calculateEarnings(
+			price,
+			commissionRate,
+			booking.isTrial,
+			Number(booking.trialCostToPlatform),
+		);
 
 	const endTime = new Date(
 		booking.startTime.getTime() + booking.duration * 60000,

@@ -14,7 +14,9 @@ export function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 					<p className="text-sm text-gray-500 mt-1">منصة التعليم الرائدة</p>
 				</div>
 				<div className="text-left">
-					<h2 className="text-2xl font-bold text-gray-700">فاتورة تسوية مستحقات</h2>
+					<h2 className="text-2xl font-bold text-gray-700">
+						فاتورة تسوية مستحقات
+					</h2>
 					<p className="text-sm font-medium text-gray-500 mt-2">
 						التاريخ: {new Date().toLocaleDateString("ar-EG")}
 					</p>
@@ -38,8 +40,8 @@ export function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 					<div>
 						<p className="text-sm text-gray-500 mb-1">فترة التسوية</p>
 						<p className="font-bold text-gray-800 text-lg">
-							{new Date(payoutToPrint.periodStart).toLocaleDateString("ar-EG")} -{" "}
-							{new Date(payoutToPrint.periodEnd).toLocaleDateString("ar-EG")}
+							{new Date(payoutToPrint.periodStart).toLocaleDateString("ar-EG")}{" "}
+							- {new Date(payoutToPrint.periodEnd).toLocaleDateString("ar-EG")}
 						</p>
 					</div>
 				</div>
@@ -48,7 +50,9 @@ export function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 			<table className="w-full text-right border-collapse mb-8 border border-gray-300">
 				<thead>
 					<tr className="bg-gray-100">
-						<th className="p-4 border-b border-gray-300 font-bold text-gray-700">البيان</th>
+						<th className="p-4 border-b border-gray-300 font-bold text-gray-700">
+							البيان
+						</th>
 						<th className="p-4 border-b border-gray-300 font-bold text-left text-gray-700">
 							المبلغ
 						</th>

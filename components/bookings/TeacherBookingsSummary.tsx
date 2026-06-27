@@ -32,7 +32,7 @@ export function TeacherBookingsSummary({
 			// Ghost (Confirmed but expired > 24h)
 			if (b.status === "CONFIRMED") {
 				const state = getDetailedSessionState(b.startTime, b.duration);
-				if (state.status === "ghost") ghostCount++;
+				if (state.status === "warning_2_frozen" || state.status === "closed_escrow") ghostCount++;
 			}
 
 			// Completed this month

@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
-import { prisma } from "@/lib/prisma";
 import { UserService } from "@/lib/services/domain/user-service";
 
 export const metadata = {

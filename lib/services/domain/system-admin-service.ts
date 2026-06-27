@@ -1,6 +1,6 @@
+import { UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
-import { UserType } from "@prisma/client";
 
 export class SystemAdminService {
 	static async getAdminDisputes() {
@@ -11,7 +11,9 @@ export class SystemAdminService {
 					include: {
 						student: { select: { name: true } },
 						teacherService: {
-							include: { teacher: { include: { user: { select: { name: true } } } } },
+							include: {
+								teacher: { include: { user: { select: { name: true } } } },
+							},
 						},
 						parent: { select: { name: true } },
 					},

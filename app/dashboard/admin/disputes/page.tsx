@@ -1,4 +1,4 @@
-import { DisputeStatus, Prisma, UserType } from "@prisma/client";
+import { type DisputeStatus, type Prisma, UserType } from "@prisma/client";
 import { CheckCircle2, ChevronLeft, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { requireAuth } from "@/lib/require-auth";
@@ -12,10 +12,14 @@ export const metadata = {
 const renderDisputeStatus = (status: DisputeStatus) => {
 	const label = DISPUTE_STATUS_AR[status];
 	const style = DISPUTE_STATUS_STYLES[status];
-	
+
 	return (
-		<span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border ${style}`}>
-			{status === "OPEN" && <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span>}
+		<span
+			className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border ${style}`}
+		>
+			{status === "OPEN" && (
+				<span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span>
+			)}
 			{label}
 		</span>
 	);
@@ -66,8 +70,12 @@ export default async function AdminDisputesPage({
 						>
 							<option value="">جميع الحالات</option>
 							<option value="OPEN">{DISPUTE_STATUS_AR.OPEN}</option>
-							<option value="RESOLVED_IN_FAVOR_OF_PARENT">{DISPUTE_STATUS_AR.RESOLVED_IN_FAVOR_OF_PARENT}</option>
-							<option value="RESOLVED_IN_FAVOR_OF_TEACHER">{DISPUTE_STATUS_AR.RESOLVED_IN_FAVOR_OF_TEACHER}</option>
+							<option value="RESOLVED_IN_FAVOR_OF_PARENT">
+								{DISPUTE_STATUS_AR.RESOLVED_IN_FAVOR_OF_PARENT}
+							</option>
+							<option value="RESOLVED_IN_FAVOR_OF_TEACHER">
+								{DISPUTE_STATUS_AR.RESOLVED_IN_FAVOR_OF_TEACHER}
+							</option>
 						</select>
 					</div>
 					<div className="flex items-center gap-3 w-full sm:w-auto">

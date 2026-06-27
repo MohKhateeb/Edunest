@@ -9,57 +9,6 @@ import type { ActionResponse } from "@/lib/types";
 import { calculateEarnings } from "@/lib/utils/financial";
 import { createPayoutSchema, payoutIdSchema } from "@/lib/validations/payout";
 
-export async function getPendingPayoutBookingsForTeacher(teacherId: string) {
-	try {
-		const { userId, userType } = await requireAuth([
-			UserType.ADMIN,
-			UserType.TEACHER,
-		]);
-
-		// Security Check: IDOR prevention
-		if (userType === "TEACHER") {
-			const teacherProfile = await prisma.teacher.findUnique({
-				where: { userId },
-			});
-			if (!teacherProfile || teacherProfile.id !== teacherId) {
-				throw new Error("غير مصرح لك باستعراض بيانات معلم آخر");
-			}
-		}
-
-		const twentyFourHoursAgo = new Date();
-		twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
-
-		const bookings = await prisma.booking.findMany({
-			where: {
-				teacherService: { teacherId },
-				status: "COMPLETED",
-				payoutId: null,
-				completedAt: { lte: twentyFourHoursAgo },
-				OR: [{ paymentStatus: "PAID" }, { isTrial: true }],
-			},
-			include: {
-				dispute: true,
-				student: { select: { name: true } },
-				teacherService: {
-					include: { serviceType: { select: { name: true } } },
-				},
-			},
-			orderBy: { startTime: "asc" },
-		});
-
-		const filteredBookings = bookings.filter((b) => {
-			if (!b.dispute) return true;
-			if (b.dispute.status === "RESOLVED_IN_FAVOR_OF_TEACHER") return true;
-			return false;
-		});
-
-		return { success: true, data: filteredBookings };
-	} catch (err: unknown) {
-		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء جلب الجلسات المستحقة" };
-	}
-}
-
 export async function createTeacherPayout(data: {
 	teacherId: string;
 	bookingIds: string[];

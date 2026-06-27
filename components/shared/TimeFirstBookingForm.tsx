@@ -103,7 +103,10 @@ export default function TimeFirstBookingForm({
 		setSearchQuery((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const handleBookingChange = (name: string, value: string | boolean | number | null) => {
+	const handleBookingChange = (
+		name: string,
+		value: string | boolean | number | null,
+	) => {
 		setBookingDetails((prev) => ({ ...prev, [name]: value }));
 	};
 

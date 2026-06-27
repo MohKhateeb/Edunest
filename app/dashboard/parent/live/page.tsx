@@ -14,7 +14,8 @@ export default async function ParentLiveRadarPage() {
 		redirect("/login");
 	}
 
-	const { students, serviceTypes, subjects } = await SessionService.getParentLiveRadarData(session.user.id);
+	const { students, serviceTypes, subjects } =
+		await SessionService.getParentLiveRadarData(session.user.id);
 
 	if (students.length === 0) {
 		redirect("/dashboard/profile");

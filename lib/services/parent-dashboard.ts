@@ -1,8 +1,8 @@
+import type { Notification } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { DetailedBooking } from "@/lib/types";
 import { bookingDetailsInclude } from "@/lib/types";
 import { sanitizePrismaData } from "@/lib/utils";
-import type { Notification } from "@prisma/client";
 
 export type DashboardInsights = {
 	hakeemMessage: string;

@@ -42,7 +42,9 @@ export function sanitizePrismaData<T>(obj: T): T {
 				obj.constructor.name === "d" ||
 				typeof (obj as { toNumber?: () => number }).toNumber === "function")
 		) {
-			return (obj as unknown as { toNumber: () => number }).toNumber() as unknown as T;
+			return (
+				obj as unknown as { toNumber: () => number }
+			).toNumber() as unknown as T;
 		}
 
 		return Object.fromEntries(

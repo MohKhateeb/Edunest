@@ -22,9 +22,9 @@ import Portal from "@/components/shared/Portal";
 import { cancelBooking } from "@/lib/actions/booking";
 import {
 	BOOKING_STATUS_AR,
+	BOOKING_STATUS_STYLES,
 	PAYMENT_METHOD_AR,
 	PAYMENT_STATUS_AR,
-	BOOKING_STATUS_STYLES,
 } from "@/lib/translations";
 import type { DetailedBooking } from "@/lib/types";
 import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
@@ -53,7 +53,9 @@ export default function AdminBookingsList({
 	const [cancelReason, setCancelReason] = useState("");
 
 	const [showReportModal, setShowReportModal] = useState(false);
-	const [selectedReport, setSelectedReport] = useState<DetailedBooking["report"] | null>(null);
+	const [selectedReport, setSelectedReport] = useState<
+		DetailedBooking["report"] | null
+	>(null);
 
 	const [selectedDetailsId, setSelectedDetailsId] = useState<string | null>(
 		null,
@@ -110,8 +112,6 @@ export default function AdminBookingsList({
 			toast.error("فشل الإلغاء", { description: res.error });
 		}
 	};
-
-
 
 	return (
 		<div className="space-y-4">

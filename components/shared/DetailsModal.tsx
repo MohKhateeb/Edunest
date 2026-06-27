@@ -10,13 +10,12 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import type { EntityType } from "@/lib/types";
 import { getEntityDetails } from "@/lib/actions/details";
-import StudentDetails, { type DetailedStudent } from "./details/StudentDetails";
-import TeacherDetails, { type DetailedTeacher } from "./details/TeacherDetails";
-import type { DetailedBooking } from "@/lib/types";
+import type { DetailedBooking, EntityType } from "@/lib/types";
 import BookingDetails from "./details/BookingDetails";
 import PayoutDetails, { type DetailedPayout } from "./details/PayoutDetails";
+import StudentDetails, { type DetailedStudent } from "./details/StudentDetails";
+import TeacherDetails, { type DetailedTeacher } from "./details/TeacherDetails";
 import Portal from "./Portal";
 
 interface DetailsModalProps {
@@ -60,7 +59,7 @@ export default function DetailsModal({
 							| DetailedStudent
 							| DetailedTeacher
 							| DetailedBooking
-							| DetailedPayout
+							| DetailedPayout,
 					);
 					// Set default tabs based on entity type
 					if (entityType === "student") setActiveTab("info");
@@ -177,7 +176,9 @@ export default function DetailsModal({
 								)}
 
 								{/* 4. PAYOUT DETAILS RENDER */}
-								{entityType === "payout" && <PayoutDetails payout={data as DetailedPayout} />}
+								{entityType === "payout" && (
+									<PayoutDetails payout={data as DetailedPayout} />
+								)}
 							</>
 						)}
 					</div>

@@ -25,7 +25,10 @@ export default function JitsiMeetingRoom({
 	durationMinutes,
 }: JitsiMeetingRoomProps) {
 	const router = useRouter();
-	const [api, setApi] = useState<{ executeCommand: (cmd: string) => void; dispose: () => void } | null>(null);
+	const [api, setApi] = useState<{
+		executeCommand: (cmd: string) => void;
+		dispose: () => void;
+	} | null>(null);
 	const [timeLeft, setTimeLeft] = useState<number | null>(null);
 	const [sessionEnded, setSessionEnded] = useState(false);
 
@@ -70,8 +73,6 @@ export default function JitsiMeetingRoom({
 		const s = seconds % 60;
 		return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
 	};
-
-
 
 	if (sessionEnded) {
 		return (

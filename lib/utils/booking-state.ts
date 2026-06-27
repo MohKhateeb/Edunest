@@ -53,7 +53,7 @@ export function getDetailedSessionState(
 
 	const EARLY_JOIN_MS = 5 * 60_000; // يمكن الانضمام قبل 5 دقائق
 	const LATE_DEPARTURE_MS = 30 * 60_000; // رابط الجلسة يظل متاحاً لـ 30 دقيقة بعد وقت الانتهاء الرسمي لضمان عدم طردهم
-	
+
 	// العقوبات المتدرجة
 	const WARNING_1_MS = 24 * 60 * 60_000; // 24 ساعة
 	const WARNING_2_MS = 48 * 60 * 60_000; // 48 ساعة
@@ -83,7 +83,9 @@ export function canSubmitReport(
 ): boolean {
 	const state = getDetailedSessionState(startTime, durationMinutes);
 	// المعلم لديه الصلاحية حتى 96 ساعة، بعدها يُغلق تماماً ويذهب لصندوق الإدارة
-	return ["grace_period", "warning_1", "warning_2_frozen"].includes(state.status);
+	return ["grace_period", "warning_1", "warning_2_frozen"].includes(
+		state.status,
+	);
 }
 
 export function isBookingInPast(startTime: Date | string): boolean {

@@ -1,8 +1,8 @@
+import { UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
 import { bookingDetailsInclude, type DetailedBooking } from "@/lib/types";
 import { getDetailedSessionState } from "@/lib/utils/booking-state";
-import { UserType } from "@prisma/client";
 
 export class BookingService {
 	static async getParentBookings(parentId: string) {
@@ -24,7 +24,7 @@ export class BookingService {
 			if (b.status === "COMPLETED" && b.report) reportsCount++;
 			if (b.status === "CONFIRMED") {
 				const state = getDetailedSessionState(b.startTime, b.duration);
-				if (state.status === "ghost") ghostCount++;
+				if (state.status === "warning_2_frozen" || state.status === "closed_escrow") ghostCount++;
 			}
 		}
 
@@ -59,7 +59,9 @@ export class BookingService {
 		});
 	}
 
-	static async getTeacherPendingReports(userId: string): Promise<DetailedBooking[]> {
+	static async getTeacherPendingReports(
+		userId: string,
+	): Promise<DetailedBooking[]> {
 		await requireAuth([UserType.TEACHER]);
 		const teacher = await prisma.teacher.findUnique({
 			where: { userId },
@@ -97,7 +99,7 @@ export class BookingService {
 
 	static async getBookByTeacherData(userId: string) {
 		await requireAuth([UserType.PARENT]);
-		
+
 		const students = await prisma.student.findMany({
 			where: { parentUserId: userId, isActive: true },
 			select: { id: true, name: true, grade: true },
@@ -192,7 +194,7 @@ export class BookingService {
 
 	static async getBookByTimeData(userId: string) {
 		await requireAuth([UserType.PARENT]);
-		
+
 		const students = await prisma.student.findMany({
 			where: { parentUserId: userId, isActive: true },
 			select: { id: true, name: true, grade: true },

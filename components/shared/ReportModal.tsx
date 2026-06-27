@@ -14,7 +14,11 @@ interface ReportModalProps {
 	onSuccess?: () => void;
 }
 
-export default function ReportModal({ bookingId, onClose, onSuccess }: ReportModalProps) {
+export default function ReportModal({
+	bookingId,
+	onClose,
+	onSuccess,
+}: ReportModalProps) {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [reportForm, setReportForm] = useState({

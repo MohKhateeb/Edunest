@@ -105,10 +105,7 @@ export default async function ParentDashboard() {
 
 					<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all">
 						{insights.nextSession ? (
-							<BookingCard
-								booking={insights.nextSession}
-								role="PARENT"
-							/>
+							<BookingCard booking={insights.nextSession} role="PARENT" />
 						) : (
 							<div className="py-8 text-center bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-dashed border-border">
 								<p className="text-sm text-muted-foreground font-semibold">

@@ -133,7 +133,7 @@ export async function processGhostBookingsPenalties(): Promise<{
 			duration: true,
 			reportWarningLevel: true,
 			teacherService: {
-				select: { teacher: { select: { userId: true } } }
+				select: { teacher: { select: { userId: true } } },
 			},
 			parentUserId: true,
 			price: true,
@@ -165,16 +165,21 @@ export async function processGhostBookingsPenalties(): Promise<{
 						data: {
 							status: BookingStatus.CANCELLED,
 							reportWarningLevel: 3,
-							cancellationReason: "تخلف المعلم عن كتابة التقرير للمدة القصوى (96 ساعة). تمت المصادرة.",
+							cancellationReason:
+								"تخلف المعلم عن كتابة التقرير للمدة القصوى (96 ساعة). تمت المصادرة.",
 							cancelledAt: new Date(),
-							paymentStatus: booking.paymentStatus === PaymentStatus.PAID && !booking.isTrial
-								? PaymentStatus.REFUNDED
-								: booking.paymentStatus,
+							paymentStatus:
+								booking.paymentStatus === PaymentStatus.PAID && !booking.isTrial
+									? PaymentStatus.REFUNDED
+									: booking.paymentStatus,
 						},
 					});
 
 					// إذا كان مدفوعاً، أرسل المال إلى صندوق الإدارة
-					if (booking.paymentStatus === PaymentStatus.PAID && !booking.isTrial) {
+					if (
+						booking.paymentStatus === PaymentStatus.PAID &&
+						!booking.isTrial
+					) {
 						await tx.adminEscrow.create({
 							data: {
 								bookingId: booking.id,
@@ -182,7 +187,7 @@ export async function processGhostBookingsPenalties(): Promise<{
 								reason: "مصادرة بسبب عدم تسليم تقرير الجلسة خلال 96 ساعة.",
 							},
 						});
-						
+
 						if (booking.payment) {
 							await tx.payment.update({
 								where: { bookingId: booking.id },
@@ -192,53 +197,74 @@ export async function processGhostBookingsPenalties(): Promise<{
 					}
 
 					// إشعار الإلغاء
-					await createNotification({
-						userId: teacherUserId,
-						title: "إلغاء جلسة ومصادرة الأرباح 🔴",
-						message: `تم إغلاق جلستك تلقائياً نظراً لعدم تسليم التقرير لفترة تجاوزت 4 أيام.`,
-					}, tx);
-					
-					await createNotification({
-						userId: booking.parentUserId,
-						title: "إلغاء جلسة لعدم التزام المعلم بالتقرير",
-						message: `نعتذر، لم يقم المعلم بكتابة تقرير الجلسة. تم حفظ حقوقك المالية وتُراجع الإدارة الموضوع الآن.`,
-					}, tx);
+					await createNotification(
+						{
+							userId: teacherUserId,
+							title: "إلغاء جلسة ومصادرة الأرباح 🔴",
+							message: `تم إغلاق جلستك تلقائياً نظراً لعدم تسليم التقرير لفترة تجاوزت 4 أيام.`,
+						},
+						tx,
+					);
+
+					await createNotification(
+						{
+							userId: booking.parentUserId,
+							title: "إلغاء جلسة لعدم التزام المعلم بالتقرير",
+							message: `نعتذر، لم يقم المعلم بكتابة تقرير الجلسة. تم حفظ حقوقك المالية وتُراجع الإدارة الموضوع الآن.`,
+						},
+						tx,
+					);
 
 					escrowedCount++;
 				}
 				// 2. التحذير النهائي وتجميد الرصيد (بعد 48 ساعة)
-				else if (timeSinceEndMs > WARNING_2_MS && booking.reportWarningLevel < 2) {
+				else if (
+					timeSinceEndMs > WARNING_2_MS &&
+					booking.reportWarningLevel < 2
+				) {
 					await tx.booking.update({
 						where: { id: booking.id },
 						data: { reportWarningLevel: 2 },
 					});
 
-					await createNotification({
-						userId: teacherUserId,
-						title: "تحذير نهائي - تجميد أرباح ⚠️",
-						message: `أرباح جلستك محجوزة! أمامك وقت محدود لتقديم التقرير قبل مصادرة الجلسة نهائياً.`,
-					}, tx);
+					await createNotification(
+						{
+							userId: teacherUserId,
+							title: "تحذير نهائي - تجميد أرباح ⚠️",
+							message: `أرباح جلستك محجوزة! أمامك وقت محدود لتقديم التقرير قبل مصادرة الجلسة نهائياً.`,
+						},
+						tx,
+					);
 
 					warningsSent++;
 				}
 				// 3. التحذير الأول (بعد 24 ساعة)
-				else if (timeSinceEndMs > WARNING_1_MS && booking.reportWarningLevel < 1) {
+				else if (
+					timeSinceEndMs > WARNING_1_MS &&
+					booking.reportWarningLevel < 1
+				) {
 					await tx.booking.update({
 						where: { id: booking.id },
 						data: { reportWarningLevel: 1 },
 					});
 
-					await createNotification({
-						userId: teacherUserId,
-						title: "تحذير: تقرير متأخر ⏳",
-						message: `لقد مضى 24 ساعة على انتهاء الجلسة ولم تقم بكتابة التقرير. يرجى كتابته فوراً لتجنب تجميد الأرباح.`,
-					}, tx);
+					await createNotification(
+						{
+							userId: teacherUserId,
+							title: "تحذير: تقرير متأخر ⏳",
+							message: `لقد مضى 24 ساعة على انتهاء الجلسة ولم تقم بكتابة التقرير. يرجى كتابته فوراً لتجنب تجميد الأرباح.`,
+						},
+						tx,
+					);
 
 					warningsSent++;
 				}
 			});
 		} catch (err) {
-			console.error(`Failed to process penalty for booking ${booking.id}:`, err);
+			console.error(
+				`Failed to process penalty for booking ${booking.id}:`,
+				err,
+			);
 		}
 	}
 

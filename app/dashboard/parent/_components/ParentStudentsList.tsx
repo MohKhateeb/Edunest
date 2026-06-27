@@ -14,8 +14,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import DetailsModal from "@/components/shared/DetailsModal";
 import NajeebCharacter from "@/components/shared/NajeebCharacter";
-import { updateStudent } from "@/lib/actions/user";
 import Portal from "@/components/shared/Portal";
+import { updateStudent } from "@/lib/actions/user";
 
 interface ParentStudentsListProps {
 	students: (Student & {

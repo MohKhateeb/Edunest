@@ -15,7 +15,8 @@ export default async function TeacherLiveRadarPage() {
 		redirect("/login");
 	}
 
-	const { teacher, liveRequests } = await SessionService.getTeacherLiveRadarData(session.user.id);
+	const { teacher, liveRequests } =
+		await SessionService.getTeacherLiveRadarData(session.user.id);
 
 	return (
 		<div className="space-y-6" dir="rtl">

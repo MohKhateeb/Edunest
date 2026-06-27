@@ -4,32 +4,19 @@ import { motion } from "framer-motion";
 import React from "react";
 import HakeemCharacter from "@/components/shared/HakeemCharacter";
 import NajeebCharacter from "@/components/shared/NajeebCharacter";
+import SectionHeader from "@/components/shared/SectionHeader";
 import type { PersuasionSectionContent } from "@/types/homepage";
 
-export default function PersuasionSection({ content }: { content: PersuasionSectionContent }) {
+export default function PersuasionSection({
+	content,
+}: {
+	content: PersuasionSectionContent;
+}) {
 	return (
 		<section className="py-24 bg-white dark:bg-slate-950 overflow-hidden">
 			<div className="max-w-5xl mx-auto px-6 relative" dir="rtl">
 				{/* Title */}
-				<div className="text-center mb-16 space-y-4">
-					<motion.h2
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-						className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white"
-					>
-						{content.title}
-					</motion.h2>
-					<motion.p
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-						transition={{ delay: 0.1 }}
-						className="text-slate-500 dark:text-slate-400 font-medium"
-					>
-						{content.subtitle}
-					</motion.p>
-				</div>
+				<SectionHeader title={content.title} subtitle={content.subtitle} />
 
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
 					{/* Hakeem's Side */}

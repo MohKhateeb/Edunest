@@ -146,8 +146,7 @@ export function BookingDetailsStep({
 					>
 						{bookingDetails.selectedTeacher.services.map((s) => (
 							<option key={s.id} value={s.id}>
-								{s.serviceTypeName} (السعر: {s.price} شيكل / {s.duration}{" "}
-								دقيقة)
+								{s.serviceTypeName} (السعر: {s.price} شيكل / {s.duration} دقيقة)
 							</option>
 						))}
 					</select>

@@ -213,10 +213,11 @@ export default function AdminServiceTypesManager({
 												</h4>
 											</div>
 											<div className="space-y-1">
-												<label className="text-xs font-bold text-slate-600 dark:text-slate-400">
+												<label htmlFor={`fazaaPrice-${service.id}`} className="text-xs font-bold text-slate-600 dark:text-slate-400">
 													سعر الفزعة الموحد (شيكل)
 												</label>
 												<input
+													id={`fazaaPrice-${service.id}`}
 													type="number"
 													value={editForm.fazaaPrice || ""}
 													onChange={(e) =>
@@ -230,10 +231,11 @@ export default function AdminServiceTypesManager({
 												/>
 											</div>
 											<div className="space-y-1">
-												<label className="text-xs font-bold text-slate-600 dark:text-slate-400">
+												<label htmlFor={`fazaaDuration-${service.id}`} className="text-xs font-bold text-slate-600 dark:text-slate-400">
 													مدة الفزعة (دقائق)
 												</label>
 												<input
+													id={`fazaaDuration-${service.id}`}
 													type="number"
 													value={editForm.fazaaDuration || ""}
 													onChange={(e) =>
@@ -306,6 +308,7 @@ export default function AdminServiceTypesManager({
 
 								<div className="flex items-center gap-2">
 									<button
+										type="button"
 										onClick={() => startEditing(service)}
 										className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-colors"
 										title="تعديل"
@@ -313,6 +316,7 @@ export default function AdminServiceTypesManager({
 										<Edit3 className="w-5 h-5" />
 									</button>
 									<button
+										type="button"
 										onClick={() => handleToggle(service.id, service.isActive)}
 										disabled={isToggling === service.id}
 										className={cn(

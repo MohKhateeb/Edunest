@@ -1,5 +1,6 @@
 "use client";
 
+import type { Prisma } from "@prisma/client";
 import {
 	Award,
 	BookOpen,
@@ -17,11 +18,12 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import React from "react";
-import { cn, formatPrice } from "@/lib/utils";
-import type { Prisma } from "@prisma/client";
 import type { commonTeacherInclude } from "@/lib/types";
+import { cn, formatPrice } from "@/lib/utils";
 
-export type DetailedTeacher = Prisma.TeacherGetPayload<{ include: typeof commonTeacherInclude }>;
+export type DetailedTeacher = Prisma.TeacherGetPayload<{
+	include: typeof commonTeacherInclude;
+}>;
 
 interface TeacherDetailsProps {
 	teacher: DetailedTeacher;

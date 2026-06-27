@@ -1,10 +1,10 @@
 import React from "react";
+import AnnouncementBanner from "@/components/home/AnnouncementBanner";
 import AssuranceSection from "@/components/home/AssuranceSection";
 import FooterCTA from "@/components/home/FooterCTA";
 import HeroSection from "@/components/home/HeroSection";
 import JourneyPath from "@/components/home/JourneyPath";
 import PersuasionSection from "@/components/home/PersuasionSection";
-import AnnouncementBanner from "@/components/home/AnnouncementBanner";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 import { defaultHomepageContent } from "@/lib/default-homepage-content";

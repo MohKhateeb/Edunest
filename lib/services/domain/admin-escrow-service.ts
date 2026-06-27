@@ -1,9 +1,9 @@
+import { UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
-import { UserType } from "@prisma/client";
 
 export async function getAllEscrows() {
-	await requireAuth([UserType.ADMIN, UserType.SUPER_ADMIN]);
+	await requireAuth([UserType.ADMIN]);
 
 	return await prisma.adminEscrow.findMany({
 		include: {
