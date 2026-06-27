@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 import TimeFirstBookingForm from "@/components/shared/TimeFirstBookingForm";
 import CharacterDialogue from "@/components/shared/booking-journey/CharacterDialogue";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { BookingService } from "@/lib/services/domain/booking-service";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -17,25 +17,7 @@ export default async function BookByTimePage() {
 	if (!session) redirect("/login");
 
 	const userId = session.user.id;
-
-	// 1. Fetch parent's active students list
-	const students = await prisma.student.findMany({
-		where: { parentUserId: userId, isActive: true },
-		select: { id: true, name: true, grade: true },
-		orderBy: { name: "asc" },
-	});
-
-	// 2. Fetch parent user to check free trial status
-	const parentUser = await prisma.user.findUnique({
-		where: { id: userId },
-		select: { hasUsedFreeTrial: true },
-	});
-
-	// 3. Fetch active subjects
-	const subjects = await prisma.subject.findMany({
-		where: { isActive: true },
-		orderBy: { name: "asc" },
-	});
+	const { students, parentUser, subjects } = await BookingService.getBookByTimeData(userId);
 
 	return (
 		<div className="space-y-4 relative min-h-[500px]" dir="rtl">

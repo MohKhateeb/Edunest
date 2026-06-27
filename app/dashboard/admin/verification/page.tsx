@@ -3,8 +3,8 @@ import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import AdminVerificationQueue from "@/app/dashboard/admin/_components/AdminVerificationQueue";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 
 const pendingVerificationInclude = {
 	teacher: {
@@ -30,13 +30,7 @@ export default async function AdminVerificationPage() {
 	await requireAuth([UserType.ADMIN]);
 	if (!session) redirect("/login");
 
-	// Fetch pending verifications
-	const pendingRequests: AdminVerificationRequest[] =
-		await prisma.teacherVerification.findMany({
-			where: { reviewedAt: null },
-			include: pendingVerificationInclude,
-			orderBy: { createdAt: "asc" },
-		});
+	const pendingRequests = await SystemAdminService.getAdminVerifications();
 
 	return (
 		<div className="space-y-6">

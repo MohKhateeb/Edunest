@@ -8,6 +8,7 @@ import Header from "@/components/shared/Header";
 import StarRating from "@/components/shared/StarRating";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { UserService } from "@/lib/services/domain/user-service";
 
 const GRADE_LABELS: Record<number, string> = {
 	1: "الأول",
@@ -31,40 +32,7 @@ const VERIFICATION_LABELS: Record<string, string> = {
 };
 
 async function getTeacher(slug: string) {
-	const teacher = await prisma.teacher.findUnique({
-		where: { slug },
-		include: {
-			user: { select: { name: true, email: true, isActive: true } },
-			subjects: { include: { subject: true } },
-			services: {
-				where: {
-					isActive: true,
-					serviceType: { isActive: true },
-				},
-				include: {
-					serviceType: { select: { name: true, defaultDuration: true } },
-				},
-				orderBy: { price: "asc" },
-			},
-			availability: {
-				where: { isActive: true },
-				orderBy: { dayOfWeek: "asc" },
-			},
-			reviews: {
-				where: { isVisible: true },
-				orderBy: { createdAt: "desc" },
-				take: 10,
-				include: {
-					booking: {
-						select: {
-							parent: { select: { name: true } },
-							student: { select: { name: true, grade: true } },
-						},
-					},
-				},
-			},
-		},
-	});
+	const teacher = await UserService.getTeacherPublicProfile(slug);
 
 	if (!teacher || !teacher.user.isActive) notFound();
 	return teacher;
@@ -76,15 +44,7 @@ export async function generateMetadata({
 	params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
 	const { slug } = await params;
-	const teacher = await prisma.teacher.findUnique({
-		where: { slug },
-		select: {
-			subjects: { include: { subject: true } },
-			bio: true,
-			city: true,
-			user: { select: { name: true, isActive: true } },
-		},
-	});
+	const teacher = await UserService.getTeacherMetadata(slug);
 
 	if (!teacher || !teacher.user.isActive) {
 		return { title: "معلم غير موجود | إديونست" };

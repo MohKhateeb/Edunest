@@ -14,11 +14,10 @@ import TeacherEarningsChart from "@/components/shared/charts/TeacherEarningsChar
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import TeacherOnlineToggle from "@/components/shared/TeacherOnlineToggle";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
-import { bookingDetailsInclude, type DetailedBooking } from "@/lib/types";
+import { type DetailedBooking } from "@/lib/types";
 import { formatPrice, sanitizePrismaData } from "@/lib/utils";
-import { calculateEarnings } from "@/lib/utils/financial";
+import { getTeacherDashboardOverview } from "@/lib/services/domain/analytics-service";
 
 export default async function TeacherDashboard() {
 	await requireAuth([UserType.TEACHER]);
@@ -27,23 +26,16 @@ export default async function TeacherDashboard() {
 
 	if (!session) return null;
 
-	const teacher = await prisma.teacher.findUnique({
-		where: { userId: session.user.id },
-		include: {
-			user: { select: { name: true } },
-		},
-	});
+	const dashboardData = await getTeacherDashboardOverview(session.user.id);
 
-	if (!teacher) {
+	if (!dashboardData) {
 		return (
 			<div className="bg-card border border-border rounded-xl p-8 text-center max-w-md mx-auto space-y-4">
 				<AlertCircle className="h-12 w-12 text-yellow-500 mx-auto" />
-				<h3 className="font-extrabold text-lg">
-					لم تقم بإعداد ملفك الشخصي بعد
-				</h3>
-				<p className="text-xs text-muted-foreground">
-					يرجى إدخال بيانات التخصص والمدن التي تدرس بها وسعر حِصتك الخصوصية
-					لتتمكن من استقبال الحجوزات.
+				<h2 className="text-xl font-bold">حساب غير مكتمل</h2>
+				<p className="text-muted-foreground text-sm">
+					يبدو أن ملفك كمعلم غير مكتمل بعد. يرجى إكمال إعداد ملفك الشخصي
+					لتتمكن من الوصول إلى لوحة القيادة واستقبال طلبات الحجز.
 				</p>
 				<Link
 					href="/dashboard/teacher/profile"
@@ -55,148 +47,17 @@ export default async function TeacherDashboard() {
 		);
 	}
 
-	// Fetch count stats
-	const upcomingCount = await prisma.booking.count({
-		where: {
-			teacherService: { teacherId: teacher.id },
-			status: "CONFIRMED",
-			startTime: { gte: new Date() },
-		},
-	});
-
-	const pendingRequests: DetailedBooking[] = await prisma.booking.findMany({
-		where: {
-			teacherService: { teacherId: teacher.id },
-			status: "PENDING",
-		},
-		include: bookingDetailsInclude,
-		orderBy: { createdAt: "desc" },
-	});
-
-	// Calculate unpaid net earnings + paid payouts
-	const completedUnpaidBookings = await prisma.booking.findMany({
-		take: 500,
-		orderBy: { completedAt: "desc" },
-		where: {
-			teacherService: { teacherId: teacher.id },
-			status: "COMPLETED",
-			payoutId: null,
-			OR: [{ paymentStatus: "PAID" }, { isTrial: true }],
-		},
-	});
-
-	let pendingEarnings = 0;
-	for (const b of completedUnpaidBookings) {
-		const earnings = calculateEarnings(
-			Number(b.price),
-			Number(b.appliedCommissionRate),
-			b.isTrial,
-			Number(b.trialCostToPlatform),
-		);
-		pendingEarnings += earnings.teacherTotalEarnings;
-	}
-
-	const paidPayoutsSum = await prisma.teacherPayout.aggregate({
-		where: { teacherId: teacher.id, isPaid: true },
-		_sum: { netAmount: true },
-	});
-
-	const totalEarnings =
-		pendingEarnings + Number(paidPayoutsSum._sum.netAmount || 0);
-
-	// Compute chart data (last 7 days)
-	const last7Days = Array.from({ length: 7 }).map((_, i) => {
-		const d = new Date();
-		d.setDate(d.getDate() - (6 - i));
-		d.setHours(0, 0, 0, 0);
-		return d;
-	});
-
-	const last7DaysStart = last7Days[0];
-
-	const recentCompletedBookings = await prisma.booking.findMany({
-		where: {
-			teacherService: { teacherId: teacher.id },
-			status: "COMPLETED",
-			startTime: { gte: last7DaysStart },
-		},
-	});
-
-	const chartData = last7Days.map((date) => {
-		const nextDate = new Date(date);
-		nextDate.setDate(date.getDate() + 1);
-
-		const dayBookings = recentCompletedBookings.filter(
-			(b) => b.startTime >= date && b.startTime < nextDate,
-		);
-
-		let earnings = 0;
-		for (const b of dayBookings) {
-			if (b.isTrial) {
-				earnings += Number(b.trialCostToPlatform);
-			} else {
-				const price = Number(b.price);
-				const commRate = Number(b.appliedCommissionRate);
-				earnings += price - (price * commRate) / 100;
-			}
-		}
-
-		return {
-			date: date.toLocaleDateString("ar-EG", { weekday: "short" }),
-			earnings: earnings,
-			sessions: dayBookings.length,
-		};
-	});
-
-	// Fetch next upcoming session
-	const nextSession: DetailedBooking | null = await prisma.booking.findFirst({
-		where: {
-			teacherService: { teacherId: teacher.id },
-			status: "CONFIRMED",
-			startTime: { gte: new Date() },
-		},
-		include: bookingDetailsInclude,
-		orderBy: { startTime: "asc" },
-	});
-
-	// Fetch potentially LIVE session (started in the past but hasn't been completed)
-	const recentStartedSession: DetailedBooking | null =
-		await prisma.booking.findFirst({
-			where: {
-				teacherService: { teacherId: teacher.id },
-				status: "CONFIRMED",
-				startTime: { lte: new Date() },
-			},
-			include: bookingDetailsInclude,
-			orderBy: { startTime: "desc" },
-		});
-
-	let liveSession = null;
-	if (recentStartedSession) {
-		const startMs = recentStartedSession.startTime.getTime();
-		const durationMs = recentStartedSession.duration * 60000;
-		const graceMs = 30 * 60000; // 30 minutes grace period
-		if (Date.now() <= startMs + durationMs + graceMs) {
-			liveSession = recentStartedSession;
-		}
-	}
-
-	// Fetch open disputes involving this teacher
-	const openDisputes = await prisma.dispute.findMany({
-		where: {
-			booking: {
-				teacherService: {
-					teacherId: teacher.id,
-				},
-			},
-			status: "OPEN",
-		},
-		include: {
-			booking: {
-				include: { student: true },
-			},
-		},
-	});
+	const {
+		teacher,
+		upcomingCount,
+		pendingRequests,
+		pendingEarnings,
+		totalEarnings,
+		chartData,
+		nextSession,
+		liveSession,
+		openDisputes,
+	} = dashboardData;
 
 	const sanitizedPendingRequests = sanitizePrismaData(pendingRequests);
 	const sanitizedNextSession = sanitizePrismaData(nextSession);

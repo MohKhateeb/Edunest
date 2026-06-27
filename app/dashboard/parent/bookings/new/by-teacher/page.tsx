@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 import NewBookingForm from "@/components/shared/NewBookingForm";
 import CharacterDialogue from "@/components/shared/booking-journey/CharacterDialogue";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { BookingService } from "@/lib/services/domain/booking-service";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -18,109 +18,7 @@ export default async function BookByTeacherPage() {
 
 	const userId = session.user.id;
 
-	// 1. Fetch parent's active students list
-	const students = await prisma.student.findMany({
-		where: { parentUserId: userId, isActive: true },
-		select: { id: true, name: true, grade: true },
-		orderBy: { name: "asc" },
-	});
-
-	// 2. Fetch parent user to check free trial status
-	const parentUser = await prisma.user.findUnique({
-		where: { id: userId },
-		select: { hasUsedFreeTrial: true },
-	});
-
-	// 3. Fetch active verified teachers with their services, active schedule availability, and scheduled bookings (to prevent overlap)
-	const teachers = await prisma.teacher.findMany({
-		where: {
-			isVerified: true,
-			user: { isActive: true },
-		},
-		select: {
-			id: true,
-			userId: true,
-			slug: true,
-			profileImageUrl: true,
-			user: {
-				select: { name: true },
-			},
-			services: {
-				where: {
-					isActive: true,
-					serviceType: { isActive: true },
-				},
-				select: {
-					id: true,
-					price: true,
-					duration: true,
-					serviceType: {
-						select: {
-							id: true,
-							name: true,
-							nameEnglish: true,
-							defaultDuration: true,
-						},
-					},
-				},
-			},
-			availability: {
-				where: { isActive: true },
-				select: { dayOfWeek: true, startTime: true, endTime: true },
-			},
-			reviews: {
-				select: { rating: true },
-			},
-		},
-		orderBy: { user: { name: "asc" } },
-	});
-
-	// Fetch scheduled bookings for the next 14 days for these teachers to prevent overlaps
-	const fourteenDaysFromNow = new Date();
-	fourteenDaysFromNow.setDate(fourteenDaysFromNow.getDate() + 14);
-
-	const teacherIds = teachers.map((t) => t.id);
-
-	const bookings = await prisma.booking.findMany({
-		where: {
-			status: { in: ["PENDING", "CONFIRMED"] },
-			startTime: { gte: new Date(), lte: fourteenDaysFromNow },
-			teacherService: { teacherId: { in: teacherIds } },
-		},
-		select: {
-			startTime: true,
-			duration: true,
-			teacherService: {
-				select: { teacherId: true },
-			},
-		},
-	});
-
-	// Inject bookings to respective teacher profiles in memory
-	const teachersWithBookings = teachers.map((t) => {
-		const tutorBookings = bookings
-			.filter((b) => b.teacherService.teacherId === t.id)
-			.map((b) => ({
-				startTime: b.startTime,
-				duration: b.duration,
-			}));
-
-		return {
-			id: t.id,
-			userId: t.userId,
-			slug: t.slug,
-			profileImageUrl: t.profileImageUrl,
-			user: { name: t.user.name },
-			services: t.services.map((s) => ({
-				id: s.id,
-				price: Number(s.price),
-				duration: s.duration,
-				serviceType: s.serviceType,
-			})),
-			availability: t.availability,
-			bookings: tutorBookings,
-		};
-	});
+	const { students, parentUser, teachersWithBookings } = await BookingService.getBookByTeacherData(userId);
 
 	return (
 		<div className="space-y-4 relative min-h-[500px]" dir="rtl">

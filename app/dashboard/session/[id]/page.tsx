@@ -2,8 +2,8 @@ import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import SessionLobbyClient from "@/components/shared/SessionLobbyClient";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { SessionService } from "@/lib/services/domain/session-service";
 
 export default async function SessionLobbyPage({
 	params,
@@ -16,19 +16,7 @@ export default async function SessionLobbyPage({
 
 	const { id: bookingId } = await params;
 
-	// Fetch the booking details
-	const booking = await prisma.booking.findUnique({
-		where: { id: bookingId },
-		include: {
-			student: true,
-			teacherService: {
-				include: {
-					teacher: { include: { user: true } },
-					serviceType: true,
-				},
-			},
-		},
-	});
+	const booking = await SessionService.getSessionDetailsData(bookingId);
 
 	if (!booking) {
 		console.log(

@@ -9,9 +9,12 @@ import {
 	ShieldAlert,
 } from "lucide-react";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
-import { getAdminFinancialStats } from "@/lib/services/admin-financial-service";
+import {
+	getAdminFinancialStats,
+	getAdminOpenDisputes,
+	getAdminPendingPayouts,
+} from "@/lib/services/domain/financial-service";
 
 export const metadata = {
 	title: "الإدارة المالية الشاملة | EduNest",
@@ -28,28 +31,10 @@ export default async function AdminFinancialsPage() {
 	} = await getAdminFinancialStats();
 
 	// Fetch Open Disputes
-	const openDisputes = await prisma.dispute.findMany({
-		where: { status: "OPEN" },
-		include: {
-			booking: {
-				include: {
-					teacherService: { include: { teacher: { include: { user: true } } } },
-					student: true,
-					parent: true,
-				},
-			},
-		},
-		orderBy: { createdAt: "asc" },
-		take: 5,
-	});
+	const openDisputes = await getAdminOpenDisputes();
 
 	// Fetch Pending Payouts
-	const pendingPayouts = await prisma.teacherPayout.findMany({
-		where: { isPaid: false },
-		include: { teacher: { include: { user: true } } },
-		orderBy: { createdAt: "asc" },
-		take: 5,
-	});
+	const pendingPayouts = await getAdminPendingPayouts();
 
 	return (
 		<div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">

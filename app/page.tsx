@@ -7,8 +7,8 @@ import PersuasionSection from "@/components/home/PersuasionSection";
 import AnnouncementBanner from "@/components/home/AnnouncementBanner";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
-import { prisma } from "@/lib/prisma";
 import { defaultHomepageContent } from "@/lib/default-homepage-content";
+import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 import type { HomepageContent } from "@/types/homepage";
 
 export const metadata = {
@@ -24,9 +24,7 @@ export default async function HomePage() {
 	// Fetch dynamic content
 	let content: HomepageContent = defaultHomepageContent;
 	try {
-		const layoutSetting = await prisma.systemSetting.findUnique({
-			where: { settingKey: "HomepageLayout" },
-		});
+		const layoutSetting = await SystemAdminService.getHomepageData();
 		if (layoutSetting?.settingValue) {
 			const parsed = JSON.parse(layoutSetting.settingValue);
 			content = { ...defaultHomepageContent, ...parsed };

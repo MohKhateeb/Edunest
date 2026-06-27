@@ -2,41 +2,15 @@ import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import AdminUsersList from "@/app/dashboard/admin/_components/AdminUsersList";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 
 export default async function AdminUsersPage() {
 	const session = await auth();
 	await requireAuth([UserType.ADMIN]);
 	if (!session) redirect("/login");
 
-	// Fetch all users with related students and teacher profile details
-	const users = await prisma.user.findMany({
-		select: {
-			id: true,
-			name: true,
-			email: true,
-			phone: true,
-			userType: true,
-			isActive: true,
-			createdAt: true,
-			students: {
-				select: {
-					id: true,
-					name: true,
-					grade: true,
-					school: true,
-				},
-			},
-			teacher: {
-				select: {
-					id: true,
-					subjects: { include: { subject: true } },
-				},
-			},
-		},
-		orderBy: { createdAt: "desc" },
-	});
+	const users = await SystemAdminService.getAdminUsers();
 
 	return (
 		<div className="space-y-6" dir="rtl">

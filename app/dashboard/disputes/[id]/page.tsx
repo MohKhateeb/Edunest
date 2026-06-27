@@ -2,8 +2,8 @@ import { UserType } from "@prisma/client";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { DisputeChat } from "@/components/shared/DisputeChat";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 
 export const metadata = {
 	title: "تفاصيل النزاع | EduNest",
@@ -21,27 +21,7 @@ export default async function DisputePage({
 	]);
 	const { id } = await params;
 
-	const dispute = await prisma.dispute.findUnique({
-		where: { id },
-		include: {
-			booking: {
-				include: {
-					parent: true,
-					student: true,
-					teacherService: {
-						include: {
-							teacher: { include: { user: true } },
-							serviceType: true,
-						},
-					},
-				},
-			},
-			messages: {
-				include: { sender: true },
-				orderBy: { createdAt: "asc" },
-			},
-		},
-	});
+	const dispute = await SystemAdminService.getDisputeDetails(id);
 
 	if (!dispute) {
 		notFound();

@@ -11,8 +11,8 @@ import {
 	PaymentAction,
 } from "@/components/shared/FinancialActions";
 import { requireAuth } from "@/lib/require-auth";
-import { getParentFinancials } from "@/lib/services/parent-financial-service";
-import type { ParentFinancialBooking } from "@/lib/services/parent-financial-service";
+import { getParentFinancials } from "@/lib/services/domain/financial-service";
+import type { ParentFinancialBooking } from "@/lib/services/domain/financial-service";
 import { hoursUntil } from "@/lib/utils/time";
 
 export const metadata = {

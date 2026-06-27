@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import { requireAuth } from "@/lib/require-auth";
-import { getTeacherEarningsWallet } from "@/lib/services/teacher-financial-service";
+import { getTeacherEarningsWallet } from "@/lib/services/domain/financial-service";
 
 export const metadata = {
 	title: "الأرباح والتسويات | EduNest",

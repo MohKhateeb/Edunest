@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import LiveRadar from "@/components/shared/LiveRadar";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { SessionService } from "@/lib/services/domain/session-service";
 
 export const dynamic = "force-dynamic";
 
@@ -15,53 +15,7 @@ export default async function TeacherLiveRadarPage() {
 		redirect("/login");
 	}
 
-	// Fetch teacher details
-	const teacher = await prisma.teacher.findUnique({
-		where: { userId: session.user.id },
-		select: {
-			id: true,
-			subjects: { select: { subjectId: true } },
-			gradeLevels: true,
-			isAvailableNow: true,
-		},
-	});
-
-	if (!teacher) {
-		redirect("/dashboard/profile");
-	}
-
-	// Fetch only PENDING requests created within the last 15 minutes that match the teacher's specialization and grades
-	const fifteenMinutesAgo = new Date(Date.now() - 15 * 60 * 1000);
-
-	const rawRequests = await prisma.tutoringRequest.findMany({
-		where: {
-			status: "PENDING",
-			createdAt: { gte: fifteenMinutesAgo },
-			subjectId: { in: teacher.subjects.map((s) => s.subjectId) },
-			student: {
-				grade: { in: teacher.gradeLevels },
-			},
-		},
-		include: {
-			student: { select: { name: true, grade: true } },
-			subject: { select: { name: true } },
-		},
-		orderBy: { createdAt: "desc" },
-	});
-
-	// Transform Decimals to numbers for the Client Component
-	const liveRequests = rawRequests.map((req) => ({
-		id: req.id,
-		title: req.title,
-		specialization: req.subject?.name || "غير محدد",
-		price: Number(req.price || 50),
-		duration: req.duration || 30,
-		createdAt: req.createdAt,
-		student: {
-			name: req.student.name,
-			grade: req.student.grade,
-		},
-	}));
+	const { teacher, liveRequests } = await SessionService.getTeacherLiveRadarData(session.user.id);
 
 	return (
 		<div className="space-y-6" dir="rtl">

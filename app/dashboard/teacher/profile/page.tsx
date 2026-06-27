@@ -3,41 +3,17 @@ import { redirect } from "next/navigation";
 import TeacherProfileForm from "@/app/dashboard/teacher/_components/TeacherProfileForm";
 import TeacherSlugForm from "@/app/dashboard/teacher/_components/TeacherSlugForm";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { UserService } from "@/lib/services/domain/user-service";
 
 export default async function TeacherProfilePage() {
 	const session = await auth();
 	await requireAuth([UserType.TEACHER]);
 	if (!session) redirect("/login");
 
-	const userId = session.user.id;
-
-	const teacher = await prisma.teacher.findUnique({
-		where: { userId },
-		include: { subjects: { select: { subjectId: true } } },
-	});
-
-	const subjects = await prisma.subject.findMany({
-		where: { isActive: true },
-		select: { id: true, name: true },
-		orderBy: { name: "asc" },
-	});
-
-	const initialData = {
-		subjectIds: teacher?.subjects.map((s) => s.subjectId) || [],
-		subSpecialization: teacher?.subSpecialization || null,
-		bio: teacher?.bio || null,
-		gradeLevels: teacher?.gradeLevels || [],
-		city: teacher?.city || null,
-		area: teacher?.area || null,
-		education: teacher?.education || null,
-		yearsOfExperience: teacher?.yearsOfExperience ?? 0,
-		defaultHourlyRate: teacher?.defaultHourlyRate
-			? Number(teacher.defaultHourlyRate)
-			: 50,
-		profileImageUrl: teacher?.profileImageUrl || null,
-	};
+	const data = await UserService.getTeacherProfileData(session.user.id);
+	if (!data?.teacher) redirect("/dashboard/profile");
+	const { teacher, subjects, initialData } = data;
 
 	return (
 		<div className="space-y-8">
@@ -47,7 +23,10 @@ export default async function TeacherProfilePage() {
 					slugUpdated={teacher.slugUpdated}
 				/>
 			)}
-			<TeacherProfileForm initialData={initialData} subjects={subjects} />
+			<TeacherProfileForm
+				initialData={initialData!}
+				subjects={subjects}
+			/>
 		</div>
 	);
 }

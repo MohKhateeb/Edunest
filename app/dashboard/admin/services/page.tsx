@@ -2,8 +2,8 @@ import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import AdminServiceTypesManager from "@/app/dashboard/admin/_components/AdminServiceTypesManager";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 
 export const dynamic = "force-dynamic";
 
@@ -14,22 +14,20 @@ export default async function AdminServiceTypesPage() {
 		redirect("/login");
 	}
 
-	const serviceTypes = await prisma.serviceType.findMany({
-		orderBy: { displayOrder: "asc" },
-	});
+	const serviceTypes = await SystemAdminService.getAdminServices();
 
-	// Convert Decimal to numbers for the client component
-	const formattedServices = serviceTypes.map((st) => ({
-		id: st.id,
-		name: st.name,
-		nameEnglish: st.nameEnglish,
-		defaultDuration: st.defaultDuration,
-		commissionRate: Number(st.commissionRate),
-		isRecurring: st.isRecurring,
-		isActive: st.isActive,
-		fazaaPrice: st.fazaaPrice ? Number(st.fazaaPrice) : null,
-		fazaaDuration: st.fazaaDuration,
-	}));
+	return (
+		<div className="space-y-6">
+			<div>
+				<h1 className="text-2xl font-extrabold mb-1">
+					أنواع الخدمات والتسعير
+				</h1>
+				<p className="text-muted-foreground">
+					إدارة وإعداد نسب العمولة ومدة وأسعار الفزعة للخدمات المختلفة
+				</p>
+			</div>
 
-	return <AdminServiceTypesManager initialServices={formattedServices} />;
+			<AdminServiceTypesManager initialServices={serviceTypes} />
+		</div>
+	);
 }

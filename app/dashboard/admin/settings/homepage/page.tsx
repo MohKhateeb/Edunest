@@ -2,17 +2,15 @@ import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import HomepageSettingsManager from "@/components/admin/homepage/HomepageSettingsManager";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 
 export default async function AdminHomepageSettingsPage() {
 	const session = await auth();
 	await requireAuth([UserType.ADMIN]);
 	if (!session) redirect("/login");
 
-	const layoutSetting = await prisma.systemSetting.findUnique({
-		where: { settingKey: "HomepageLayout" },
-	});
+	const layoutSetting = await SystemAdminService.getHomepageSettings();
 
 	return (
 		<div className="space-y-6">

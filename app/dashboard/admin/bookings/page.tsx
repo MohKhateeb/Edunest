@@ -3,9 +3,8 @@ import { Calendar } from "lucide-react";
 import { redirect } from "next/navigation";
 import AdminBookingsList from "@/app/dashboard/admin/_components/AdminBookingsList";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
-import { bookingDetailsInclude, type DetailedBooking } from "@/lib/types";
+import { BookingService } from "@/lib/services/domain/booking-service";
 import { sanitizePrismaData } from "@/lib/utils";
 
 export default async function AdminBookingsPage() {
@@ -13,10 +12,7 @@ export default async function AdminBookingsPage() {
 	await requireAuth([UserType.ADMIN]);
 	if (!session) redirect("/login");
 
-	const bookings: DetailedBooking[] = await prisma.booking.findMany({
-		include: bookingDetailsInclude,
-		orderBy: { createdAt: "desc" },
-	});
+	const bookings = await BookingService.getAdminBookings();
 
 	const sanitizedBookings = sanitizePrismaData(bookings);
 

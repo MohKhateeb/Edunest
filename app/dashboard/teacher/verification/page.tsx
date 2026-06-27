@@ -2,20 +2,15 @@ import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import TeacherVerificationForm from "@/app/dashboard/teacher/_components/TeacherVerificationForm";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { UserService } from "@/lib/services/domain/user-service";
 
 export default async function TeacherVerificationPage() {
 	const session = await auth();
 	await requireAuth([UserType.TEACHER]);
 	if (!session) redirect("/login");
 
-	const userId = session.user.id;
-
-	const teacher = await prisma.teacher.findUnique({
-		where: { userId },
-		include: { verification: true },
-	});
+	const teacher = await UserService.getTeacherVerificationData(session.user.id);
 
 	if (!teacher) {
 		redirect("/dashboard/teacher");

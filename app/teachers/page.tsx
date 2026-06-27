@@ -4,6 +4,7 @@ import Link from "next/link";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 import { prisma } from "@/lib/prisma";
+import { UserService } from "@/lib/services/domain/user-service";
 
 export const metadata = {
 	title: "ابحث عن معلم | إديونست",
@@ -18,57 +19,7 @@ interface SearchParams {
 }
 
 async function getTeachers(params: SearchParams) {
-	const page = Math.max(1, parseInt(params.page ?? "1", 10));
-	const PAGE_SIZE = 12;
-
-	const where: Prisma.TeacherWhereInput = {
-		isVerified: true,
-		user: { isActive: true },
-	};
-	if (params.subject)
-		where.subjects = {
-			some: {
-				subject: { name: { contains: params.subject, mode: "insensitive" } },
-			},
-		};
-	if (params.city) where.city = { contains: params.city, mode: "insensitive" };
-
-	const [teachers, total] = await Promise.all([
-		prisma.teacher.findMany({
-			where,
-			select: {
-				id: true,
-				slug: true,
-				subjects: { include: { subject: true } },
-				subSpecialization: true,
-				city: true,
-				area: true,
-				averageRating: true,
-				totalReviews: true,
-				totalSessions: true,
-				profileImageUrl: true,
-				verificationLevel: true,
-				yearsOfExperience: true,
-				gradeLevels: true,
-				user: { select: { name: true } },
-				services: {
-					where: {
-						isActive: true,
-						serviceType: { isActive: true },
-					},
-					select: { price: true },
-					orderBy: { price: "asc" },
-					take: 1,
-				},
-			},
-			orderBy: [{ averageRating: "desc" }, { totalSessions: "desc" }],
-			skip: (page - 1) * PAGE_SIZE,
-			take: PAGE_SIZE,
-		}),
-		prisma.teacher.count({ where }),
-	]);
-
-	return { teachers, total, page, PAGE_SIZE };
+	return UserService.searchTeachers(params);
 }
 
 const CITIES = [

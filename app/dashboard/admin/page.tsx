@@ -10,16 +10,9 @@ import Link from "next/link";
 import AdminAnalyticsCharts from "@/components/shared/charts/AdminAnalyticsCharts";
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { getAdminDashboardOverview } from "@/lib/services/domain/analytics-service";
 import { formatPrice } from "@/lib/utils";
-import {
-	computeBookingStatuses,
-	computeFinancialKPIs,
-	computeRequestedSpecializations,
-	computeRevenueTrends,
-	computeSessionTypes,
-} from "@/lib/utils/admin-analytics";
 
 export default async function AdminDashboard() {
 	await requireAuth([UserType.ADMIN]);
@@ -27,65 +20,19 @@ export default async function AdminDashboard() {
 	await requireAuth([UserType.ADMIN]);
 
 	if (!session) return null;
-	const pendingVerifications = await prisma.teacherVerification.count({
-		where: { reviewedAt: null },
-	});
-
-	// --- 2. Raw Data Fetches ---
-	const totalBookings = await prisma.booking.count();
-	const totalStudents = await prisma.student.count();
-	const activeTeachers = await prisma.teacher.count({
-		where: { isVerified: true },
-	});
-
-	const allBookings = await prisma.booking.findMany({
-		take: 500,
-		orderBy: { createdAt: "desc" },
-		select: {
-			status: true,
-			price: true,
-			appliedCommissionRate: true,
-			isTrial: true,
-			trialCostToPlatform: true,
-			completedAt: true,
-			teacherService: {
-				select: {
-					serviceType: { select: { name: true } },
-					teacher: { select: { subjects: { include: { subject: true } } } },
-				},
-			},
-		},
-	});
-
-	// --- 3. Compute KPIs ---
-	const completedBookings = allBookings.filter((b) => b.status === "COMPLETED");
-	const { averageOrderValue, completionRate } = computeFinancialKPIs(completedBookings, totalBookings);
-
-	// --- 4. Chart: Booking Statuses ---
-	const bookingStatuses = computeBookingStatuses(allBookings);
-
-	// --- 5. Chart: Platform Revenue Trends (Last 14 Days) ---
-	const revenueData = computeRevenueTrends(completedBookings);
-
-	// --- 6. Chart: Most Requested Specializations ---
-	const requestedSpecializations = computeRequestedSpecializations(allBookings);
-
-	// --- 7. Chart: Most Requested Session Types ---
-	const sessionTypes = computeSessionTypes(allBookings);
-
-	// --- 8. Chart: Most Registered Grades ---
-	const gradeGroups = await prisma.student.groupBy({
-		by: ["grade"],
-		_count: { grade: true },
-	});
-	const registeredGrades = gradeGroups
-		.map((g) => ({
-			name: `الصف ${g.grade}`,
-			count: g._count.grade,
-			grade: g.grade,
-		}))
-		.sort((a, b) => a.grade - b.grade)
-		.map(({ grade, ...rest }) => rest);
+	const {
+		pendingVerifications,
+		totalBookings,
+		totalStudents,
+		activeTeachers,
+		averageOrderValue,
+		completionRate,
+		bookingStatuses,
+		revenueData,
+		requestedSpecializations,
+		sessionTypes,
+		registeredGrades,
+	} = await getAdminDashboardOverview();
 
 	return (
 		<div className="space-y-8 text-right pb-10" dir="rtl">

@@ -5,25 +5,15 @@ import AddStudentForm from "@/app/dashboard/parent/_components/AddStudentForm";
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import ParentStudentsList from "@/app/dashboard/parent/_components/ParentStudentsList";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { UserService } from "@/lib/services/domain/user-service";
 
 export default async function ParentStudentsPage() {
 	const session = await auth();
 	await requireAuth([UserType.PARENT]);
 	if (!session) redirect("/login");
 
-	const userId = session.user.id;
-
-	const students = await prisma.student.findMany({
-		where: { parentUserId: userId, isActive: true },
-		include: {
-			_count: {
-				select: { bookings: true },
-			},
-		},
-		orderBy: { createdAt: "desc" },
-	});
+	const students = await UserService.getParentStudents(session.user.id);
 
 	return (
 		<div className="space-y-8 text-right pb-10" dir="rtl">

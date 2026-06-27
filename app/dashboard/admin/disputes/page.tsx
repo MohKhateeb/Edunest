@@ -1,8 +1,8 @@
 import { DisputeStatus, Prisma, UserType } from "@prisma/client";
 import { CheckCircle2, ChevronLeft, ShieldAlert } from "lucide-react";
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 import { DISPUTE_STATUS_AR, DISPUTE_STATUS_STYLES } from "@/lib/translations";
 
 export const metadata = {
@@ -36,19 +36,7 @@ export default async function AdminDisputesPage({
 		whereClause.status = statusFilter as DisputeStatus;
 	}
 
-	const disputes = await prisma.dispute.findMany({
-		where: whereClause,
-		include: {
-			booking: {
-				include: {
-					teacherService: { include: { teacher: { include: { user: true } } } },
-					student: true,
-					parent: true,
-				},
-			},
-		},
-		orderBy: { createdAt: "desc" },
-	});
+	const disputes = await SystemAdminService.getAdminDisputes();
 
 	return (
 		<div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">

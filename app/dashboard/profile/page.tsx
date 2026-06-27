@@ -3,22 +3,15 @@ import { User } from "lucide-react";
 import { redirect } from "next/navigation";
 import PersonalProfileForm from "@/components/shared/PersonalProfileForm";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { UserService } from "@/lib/services/domain/user-service";
 
 export default async function PersonalProfilePage() {
 	const session = await auth();
 	await requireAuth([UserType.ADMIN, UserType.TEACHER, UserType.PARENT]);
 	if (!session) redirect("/login");
 
-	const user = await prisma.user.findUnique({
-		where: { id: session.user.id },
-		select: {
-			name: true,
-			email: true,
-			phone: true,
-		},
-	});
+	const user = await UserService.getUserProfile(session.user.id);
 
 	if (!user) {
 		redirect("/login");

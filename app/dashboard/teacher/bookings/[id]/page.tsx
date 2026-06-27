@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { BookingService } from "@/lib/services/domain/booking-service";
 import { BOOKING_STATUS_AR, BOOKING_STATUS_STYLES } from "@/lib/translations";
 
 export async function generateMetadata({
@@ -36,26 +36,7 @@ export default async function TeacherBookingDetailsPage({
 	const { userId } = await requireAuth([UserType.TEACHER]);
 	const resolvedParams = await params;
 
-	const teacher = await prisma.teacher.findUnique({
-		where: { userId },
-	});
-
-	if (!teacher) {
-		return <div>حدث خطأ، لا يوجد ملف معلم.</div>;
-	}
-
-	const booking = await prisma.booking.findUnique({
-		where: {
-			id: resolvedParams.id,
-			teacherService: { teacherId: teacher.id },
-		},
-		include: {
-			student: { include: { parent: true } },
-			teacherService: { include: { serviceType: true } },
-			dispute: true,
-			payout: true,
-		},
-	});
+	const booking = await BookingService.getTeacherBookingDetails(resolvedParams.id, userId);
 
 	if (!booking) {
 		notFound();
