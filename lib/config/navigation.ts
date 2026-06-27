@@ -98,6 +98,11 @@ export const adminLinks = [
 		icon: ShieldAlert,
 	},
 	{
+		href: "/dashboard/admin/escrow",
+		label: "الأموال المجمدة",
+		icon: ShieldAlert,
+	},
+	{
 		href: "/dashboard/admin/financials",
 		label: "الإدارة المالية الشاملة",
 		icon: CreditCard,

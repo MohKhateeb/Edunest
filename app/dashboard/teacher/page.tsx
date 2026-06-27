@@ -57,6 +57,7 @@ export default async function TeacherDashboard() {
 		nextSession,
 		liveSession,
 		openDisputes,
+		urgentAlerts,
 	} = dashboardData;
 
 	const sanitizedPendingRequests = sanitizePrismaData(pendingRequests);
@@ -94,43 +95,72 @@ export default async function TeacherDashboard() {
 			</div>
 
 			{/* Urgent Matters Section */}
-			{(openDisputes.length > 0 || !teacher.isVerified) && (
+			{(openDisputes.length > 0 || !teacher.isVerified || urgentAlerts.length > 0) && (
 				<div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-3xl p-6 shadow-sm">
 					<h2 className="font-black text-lg text-red-700 dark:text-red-400 flex items-center gap-2 mb-4">
 						<AlertCircle className="h-6 w-6" />
-						أمور عاجلة تتطلب تدخلك
+						تنبيهات هامة بحاجة لإجراء
 					</h2>
 					<div className="space-y-3">
 						{!teacher.isVerified && (
-							<div className="bg-white dark:bg-slate-900 rounded-2xl p-4 flex items-center justify-between border border-red-100 dark:border-red-900/50">
-								<div className="text-sm font-bold text-slate-800 dark:text-slate-200">
-									حسابك غير موثق حتى الآن! لا يمكنك الظهور في محرك البحث للطلاب.
+							<div className="flex items-center justify-between bg-white dark:bg-card p-4 rounded-2xl border border-red-100 dark:border-red-900/50">
+								<div>
+									<h3 className="font-bold text-sm text-foreground">
+										ملفك الشخصي غير موثق بعد
+									</h3>
+									<p className="text-xs text-muted-foreground mt-1">
+										لا يمكنك استقبال حجوزات جديدة أو الظهور في نتائج البحث
+										حتى يتم توثيق ملفك.
+									</p>
 								</div>
 								<Link
-									href="/dashboard/teacher/verification"
-									className="text-xs bg-red-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-red-700"
+									href="/dashboard/teacher/profile"
+									className="text-xs font-bold text-primary hover:underline whitespace-nowrap mr-4"
 								>
-									وثق حسابك الآن
+									إكمال الملف
 								</Link>
 							</div>
 						)}
 						{openDisputes.map((dispute) => (
 							<div
 								key={dispute.id}
-								className="bg-white dark:bg-slate-900 rounded-2xl p-4 flex items-center justify-between border border-red-100 dark:border-red-900/50"
+								className="flex items-center justify-between bg-white dark:bg-card p-4 rounded-2xl border border-red-100 dark:border-red-900/50"
 							>
-								<div className="text-sm font-bold text-slate-800 dark:text-slate-200">
-									لديك نزاع مفتوح مع الطالب{" "}
-									<span className="text-primary">
-										{dispute.booking.student.name}
-									</span>{" "}
-									بخصوص إحدى الجلسات. الإدارة تنتظر ردك.
+								<div>
+									<h3 className="font-bold text-sm text-foreground">
+										نزاع مفتوح: جلسة {dispute.booking.student.name}
+									</h3>
+									<p className="text-xs text-muted-foreground mt-1">
+										قام ولي الأمر بفتح نزاع حول الجلسة. يرجى الرد والتواصل
+										مع الإدارة.
+									</p>
 								</div>
 								<Link
 									href={`/dashboard/disputes/${dispute.id}`}
-									className="text-xs bg-red-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-red-700"
+									className="text-xs font-bold text-primary hover:underline whitespace-nowrap mr-4"
 								>
 									عرض النزاع والرد
+								</Link>
+							</div>
+						))}
+						{urgentAlerts.map((alert) => (
+							<div
+								key={alert.id}
+								className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between bg-white dark:bg-card p-4 rounded-2xl border border-orange-200 dark:border-orange-900/50"
+							>
+								<div>
+									<h3 className={`font-bold text-sm ${alert.type === 'WARNING_2_FROZEN' ? 'text-red-600 dark:text-red-400' : 'text-orange-600 dark:text-orange-400'}`}>
+										{alert.type === 'WARNING_2_FROZEN' ? 'تجميد رصيد - تحذير نهائي!' : 'تحذير تقرير متأخر'}
+									</h3>
+									<p className="text-xs text-muted-foreground mt-1 font-semibold">
+										{alert.message}
+									</p>
+								</div>
+								<Link
+									href={`/dashboard/teacher/bookings/${alert.bookingId}`}
+									className="shrink-0 text-xs font-bold bg-primary/10 text-primary hover:bg-primary/20 px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
+								>
+									الذهاب لكتابة التقرير
 								</Link>
 							</div>
 						))}

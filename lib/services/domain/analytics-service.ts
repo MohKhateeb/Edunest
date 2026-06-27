@@ -107,6 +107,12 @@ export type TeacherDashboardOverview = {
 	nextSession: DetailedBooking | null;
 	liveSession: DetailedBooking | null;
 	openDisputes: Prisma.DisputeGetPayload<{ include: { booking: { include: { student: true } } } }>[];
+	urgentAlerts: {
+		id: string;
+		type: "WARNING_1" | "WARNING_2_FROZEN";
+		message: string;
+		bookingId: string;
+	}[];
 };
 
 export async function getTeacherDashboardOverview(userId: string): Promise<TeacherDashboardOverview | null> {
@@ -252,6 +258,24 @@ export async function getTeacherDashboardOverview(userId: string): Promise<Teach
 		},
 	});
 
+	const ghostBookings = await prisma.booking.findMany({
+		where: {
+			teacherService: { teacherId: teacher.id },
+			status: "CONFIRMED",
+			reportWarningLevel: { in: [1, 2] },
+		},
+		select: { id: true, reportWarningLevel: true },
+	});
+
+	const urgentAlerts = ghostBookings.map((b) => ({
+		id: `alert-${b.id}`,
+		bookingId: b.id,
+		type: b.reportWarningLevel === 1 ? "WARNING_1" : "WARNING_2_FROZEN" as const,
+		message: b.reportWarningLevel === 1 
+			? "تحذير: توجد جلسة مر على انتهائها أكثر من 24 ساعة ولم تكتب التقرير. يرجى كتابته فوراً لتجنب تجميد الأرباح."
+			: "تحذير أخير: أرباح جلسة سابقة أصبحت مجمدة نظراً لعدم كتابتك التقرير. الجلسة مهددة بالمصادرة إذا لم تقم بكتابة التقرير.",
+	}));
+
 	return {
 		teacher,
 		upcomingCount,
@@ -262,5 +286,6 @@ export async function getTeacherDashboardOverview(userId: string): Promise<Teach
 		nextSession: nextSessionRaw as DetailedBooking | null,
 		liveSession: liveSession as DetailedBooking | null,
 		openDisputes,
+		urgentAlerts,
 	};
 }

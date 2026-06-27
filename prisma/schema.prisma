@@ -272,12 +272,14 @@ model Booking {
   confirmedAt           DateTime?
   completedAt           DateTime?
   cancelledAt           DateTime?
+  reportWarningLevel    Int            @default(0) // 0: None, 1: 1st Warn, 2: 2nd Warn/Frozen, 3: Escrow
   report                SessionReport?
   review                Review?
   payment               Payment?
   cancellingUser        User?          @relation("CancelledByUser", fields: [cancelledBy], references: [id])
   payout                TeacherPayout? @relation("BookingPayout", fields: [payoutId], references: [id])
   dispute               Dispute?
+  adminEscrow           AdminEscrow?
   parentRefund          ParentRefund?
 
   @@index([parentUserId])
@@ -482,4 +484,27 @@ model DisputeMessage {
   createdAt DateTime @default(now())
 
   @@index([disputeId])
+}
+
+// ════════════════════════════════════════════════════
+// صندوق إدارة الأموال المعلقة (Admin Escrow)
+// ════════════════════════════════════════════════════
+enum EscrowResolution {
+  PENDING
+  REFUNDED_TO_PARENT
+  PAID_TO_TEACHER
+  PLATFORM_PROFIT
+}
+
+model AdminEscrow {
+  id          String           @id @default(cuid())
+  bookingId   String           @unique
+  booking     Booking          @relation(fields: [bookingId], references: [id], onDelete: Restrict)
+  amount      Decimal          @db.Decimal(10, 2)
+  reason      String           @db.Text
+  status      EscrowResolution @default(PENDING)
+  createdAt   DateTime         @default(now())
+  resolvedAt  DateTime?
+  resolvedBy  String?          // User ID of the admin who resolved it
+  notes       String?          @db.Text
 }
