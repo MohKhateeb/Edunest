@@ -10,20 +10,38 @@ export type AdminFinancialStats = {
 	totalCommission: number;
 };
 
-export async function getAdminFinancialStats(): Promise<AdminFinancialStats> {
+export async function getAdminFinancialStats(startDate?: string, endDate?: string): Promise<AdminFinancialStats> {
 	await requireAuth([UserType.ADMIN]);
 
+	const dateFilter: any = {};
+	if (startDate) dateFilter.gte = new Date(startDate);
+	if (endDate) {
+		const end = new Date(endDate);
+		end.setHours(23, 59, 59, 999);
+		dateFilter.lte = end;
+	}
+
+	const hasDateFilter = Object.keys(dateFilter).length > 0;
+
+	const disputesWhere: Prisma.DisputeWhereInput = { status: "OPEN" };
+	if (hasDateFilter) disputesWhere.createdAt = dateFilter;
+
 	const openDisputesCount = await prisma.dispute.count({
-		where: { status: "OPEN" },
+		where: disputesWhere,
 	});
+
+	const payoutsWhere: Prisma.TeacherPayoutWhereInput = { isPaid: false };
+	if (hasDateFilter) payoutsWhere.createdAt = dateFilter;
 
 	const pendingPayoutsCount = await prisma.teacherPayout.count({
-		where: { isPaid: false },
+		where: payoutsWhere,
 	});
 
-	// Fetch only necessary fields to calculate revenue and commission
+	const bookingsWhere: Prisma.BookingWhereInput = { status: "COMPLETED" };
+	if (hasDateFilter) bookingsWhere.completedAt = dateFilter;
+
 	const completedBookings = await prisma.booking.findMany({
-		where: { status: "COMPLETED" },
+		where: bookingsWhere,
 		select: { price: true, appliedCommissionRate: true },
 	});
 
@@ -37,12 +55,111 @@ export async function getAdminFinancialStats(): Promise<AdminFinancialStats> {
 		totalCommission += (price * rate) / 100;
 	}
 
+	// Also add confiscated escrow funds to totalCommission
+	const escrowWhere: Prisma.AdminEscrowWhereInput = { status: "PLATFORM_PROFIT" };
+	if (hasDateFilter) escrowWhere.resolvedAt = dateFilter;
+	
+	const confiscatedEscrows = await prisma.adminEscrow.findMany({
+		where: escrowWhere,
+		select: { amount: true },
+	});
+
+	for (const escrow of confiscatedEscrows) {
+		totalCommission += Number(escrow.amount);
+		totalRevenue += Number(escrow.amount);
+	}
+
 	return {
 		openDisputesCount,
 		pendingPayoutsCount,
 		totalRevenue,
 		totalCommission,
 	};
+}
+
+export type PlatformRevenueTransaction = {
+	id: string;
+	date: Date;
+	type: "COMMISSION" | "CONFISCATED_ESCROW";
+	amount: number;
+	bookingId: string;
+	description: string;
+};
+
+export async function getPlatformRevenueDetails(startDate?: string, endDate?: string): Promise<PlatformRevenueTransaction[]> {
+	await requireAuth([UserType.ADMIN]);
+
+	const dateFilter: any = {};
+	if (startDate) dateFilter.gte = new Date(startDate);
+	if (endDate) {
+		const end = new Date(endDate);
+		end.setHours(23, 59, 59, 999);
+		dateFilter.lte = end;
+	}
+	const hasDateFilter = Object.keys(dateFilter).length > 0;
+
+	const bookingsWhere: Prisma.BookingWhereInput = { status: "COMPLETED" };
+	if (hasDateFilter) bookingsWhere.completedAt = dateFilter;
+
+	const completedBookings = await prisma.booking.findMany({
+		where: bookingsWhere,
+		select: {
+			id: true,
+			completedAt: true,
+			price: true,
+			appliedCommissionRate: true,
+			teacherService: { select: { teacher: { select: { user: { select: { name: true } } } } } },
+		},
+		orderBy: { completedAt: "desc" }
+	});
+
+	const escrowWhere: Prisma.AdminEscrowWhereInput = { status: "PLATFORM_PROFIT" };
+	if (hasDateFilter) escrowWhere.resolvedAt = dateFilter;
+
+	const confiscatedEscrows = await prisma.adminEscrow.findMany({
+		where: escrowWhere,
+		select: {
+			id: true,
+			resolvedAt: true,
+			amount: true,
+			bookingId: true,
+			booking: { select: { teacherService: { select: { teacher: { select: { user: { select: { name: true } } } } } } } }
+		},
+		orderBy: { resolvedAt: "desc" }
+	});
+
+	const transactions: PlatformRevenueTransaction[] = [];
+
+	for (const b of completedBookings) {
+		const price = Number(b.price);
+		const rate = Number(b.appliedCommissionRate);
+		const commission = (price * rate) / 100;
+		if (commission > 0) {
+			transactions.push({
+				id: b.id,
+				date: b.completedAt!,
+				type: "COMMISSION",
+				amount: commission,
+				bookingId: b.id,
+				description: `عمولة جلسة - المعلم: ${b.teacherService.teacher.user.name}`
+			});
+		}
+	}
+
+	for (const e of confiscatedEscrows) {
+		transactions.push({
+			id: e.id,
+			date: e.resolvedAt!,
+			type: "CONFISCATED_ESCROW",
+			amount: Number(e.amount),
+			bookingId: e.bookingId,
+			description: `مصادرة رصيد مجمد - المعلم: ${e.booking.teacherService.teacher.user.name}`
+		});
+	}
+
+	transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
+
+	return transactions;
 }
 
 export async function getAdminOpenDisputes() {
@@ -377,19 +494,35 @@ export type AdminPayoutsData = {
 	}[];
 };
 
-export async function getAdminPayoutsData(): Promise<AdminPayoutsData> {
+export async function getAdminPayoutsData(from?: string, to?: string): Promise<AdminPayoutsData> {
 	await requireAuth([UserType.ADMIN]);
 
 	const twentyFourHoursAgo = new Date();
 	twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
 
+	const bookingWhere: Prisma.BookingWhereInput = {
+		status: "COMPLETED",
+		payoutId: null,
+		OR: [{ paymentStatus: "PAID" }, { isTrial: true }],
+	};
+
+	let endDateForBookings = twentyFourHoursAgo;
+	if (to) {
+		const end = new Date(to);
+		end.setHours(23, 59, 59, 999);
+		if (end < twentyFourHoursAgo) {
+			endDateForBookings = end;
+		}
+	}
+	
+	if (from) {
+		bookingWhere.completedAt = { gte: new Date(from), lte: endDateForBookings };
+	} else {
+		bookingWhere.completedAt = { lte: endDateForBookings };
+	}
+
 	const unpaidBookingsRaw = await prisma.booking.findMany({
-		where: {
-			status: "COMPLETED",
-			payoutId: null,
-			completedAt: { lte: twentyFourHoursAgo },
-			OR: [{ paymentStatus: "PAID" }, { isTrial: true }],
-		},
+		where: bookingWhere,
 		include: {
 			teacherService: {
 				include: {
@@ -461,7 +594,16 @@ export async function getAdminPayoutsData(): Promise<AdminPayoutsData> {
 		(a, b) => b.totalNet - a.totalNet,
 	);
 
+	const payoutsWhere: Prisma.TeacherPayoutWhereInput = {};
+	if (from) payoutsWhere.createdAt = { ...payoutsWhere.createdAt as any, gte: new Date(from) };
+	if (to) {
+		const end = new Date(to);
+		end.setHours(23, 59, 59, 999);
+		payoutsWhere.createdAt = { ...payoutsWhere.createdAt as any, lte: end };
+	}
+
 	const payouts = await prisma.teacherPayout.findMany({
+		where: payoutsWhere,
 		take: 50,
 		include: {
 			teacher: {
@@ -487,7 +629,16 @@ export async function getAdminPayoutsData(): Promise<AdminPayoutsData> {
 		teacher: { user: { name: p.teacher.user.name || "غير معروف" } },
 	}));
 
+	const refundsWhere: Prisma.ParentRefundWhereInput = {};
+	if (from) refundsWhere.createdAt = { ...refundsWhere.createdAt as any, gte: new Date(from) };
+	if (to) {
+		const end = new Date(to);
+		end.setHours(23, 59, 59, 999);
+		refundsWhere.createdAt = { ...refundsWhere.createdAt as any, lte: end };
+	}
+
 	const refunds = await prisma.parentRefund.findMany({
+		where: refundsWhere,
 		take: 50,
 		include: {
 			booking: {

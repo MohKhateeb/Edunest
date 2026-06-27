@@ -76,6 +76,7 @@ export default function AdminPayoutsEngine({
 		let totalAmount = 0;
 		let commissionAmount = 0;
 		let trialCompensation = 0;
+		let netAmount = 0;
 		let count = 0;
 
 		for (const b of teacher.bookings) {
@@ -84,6 +85,7 @@ export default function AdminPayoutsEngine({
 				totalAmount += b.totalAmount;
 				commissionAmount += b.commissionAmount;
 				trialCompensation += b.trialCompensation;
+				netAmount += b.netEarnings;
 			}
 		}
 
@@ -92,7 +94,7 @@ export default function AdminPayoutsEngine({
 			totalAmount,
 			commissionAmount,
 			trialCompensation,
-			netAmount: totalAmount - commissionAmount + trialCompensation,
+			netAmount,
 		};
 	}, [selectedTeacherId, groupedByTeacher, selectedBookingIds]);
 

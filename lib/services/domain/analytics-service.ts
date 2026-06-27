@@ -23,6 +23,9 @@ export type AdminDashboardOverview = {
 	requestedSpecializations: { name: string; count: number }[];
 	sessionTypes: { name: string; count: number }[];
 	registeredGrades: { name: string; count: number }[];
+	openDisputesCount: number;
+	pendingPayoutsCount: number;
+	pendingEscrowsCount: number;
 };
 
 export async function getAdminDashboardOverview(): Promise<AdminDashboardOverview> {
@@ -36,6 +39,18 @@ export async function getAdminDashboardOverview(): Promise<AdminDashboardOvervie
 	const totalStudents = await prisma.student.count();
 	const activeTeachers = await prisma.teacher.count({
 		where: { isVerified: true },
+	});
+
+	const openDisputesCount = await prisma.dispute.count({
+		where: { status: "OPEN" },
+	});
+
+	const pendingPayoutsCount = await prisma.teacherPayout.count({
+		where: { isPaid: false },
+	});
+
+	const pendingEscrowsCount = await prisma.adminEscrow.count({
+		where: { status: "PENDING" },
 	});
 
 	const allBookings = await prisma.booking.findMany({
@@ -94,6 +109,9 @@ export async function getAdminDashboardOverview(): Promise<AdminDashboardOvervie
 		requestedSpecializations,
 		sessionTypes,
 		registeredGrades,
+		openDisputesCount,
+		pendingPayoutsCount,
+		pendingEscrowsCount,
 	};
 }
 
