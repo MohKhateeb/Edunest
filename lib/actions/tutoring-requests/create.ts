@@ -104,10 +104,10 @@ export async function createTutoringRequest(
 
 		revalidatePath("/dashboard/parent/live");
 		return { success: true, data: { requestId: request.id } };
-	} catch (error: any) {
+	} catch (error: unknown) {
 		return {
 			success: false,
-			error: error.message || "حدث خطأ أثناء إنشاء الطلب",
+			error: error instanceof Error ? error.message : "حدث خطأ أثناء إنشاء الطلب",
 		};
 	}
 }

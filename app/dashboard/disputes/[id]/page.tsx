@@ -154,7 +154,7 @@ export default async function DisputePage({
 						disputeId={dispute.id}
 						status={dispute.status}
 						allowedTurn={dispute.allowedTurn}
-						messages={dispute.messages as any}
+						messages={dispute.messages}
 						currentUserId={userId}
 						currentUserType={userType}
 					/>

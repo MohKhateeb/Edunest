@@ -3,6 +3,7 @@ import fs from "fs";
 import { type NextRequest, NextResponse } from "next/server";
 import path from "path";
 import { auth } from "@/lib/auth";
+import { type Session } from "next-auth";
 
 function validateUploadRequest(file: File | null, bucketParam: string | null, userType: string): NextResponse | null {
 	if (!file) {
@@ -48,7 +49,7 @@ function validateUploadRequest(file: File | null, bucketParam: string | null, us
 async function uploadToSupabaseFallback(
 	fileUrl: string, 
 	uploadSuccess: boolean, 
-	session: any, 
+	session: Session, 
 	bucket: string, 
 	safeExt: string, 
 	buffer: Buffer

@@ -47,7 +47,7 @@ export async function updateServiceType(
 		revalidatePath("/dashboard/parent/live");
 
 		return { success: true };
-	} catch (error: any) {
+	} catch (error: unknown) {
 		console.error("Update ServiceType Error:", error);
 		return { success: false, error: "حدث خطأ أثناء تحديث الخدمة" };
 	}
@@ -69,7 +69,8 @@ export async function toggleServiceTypeStatus(
 		revalidatePath("/dashboard/parent/live");
 
 		return { success: true };
-	} catch (error: any) {
+	} catch (error: unknown) {
+		console.error("Toggle ServiceType Status Error:", error);
 		return { success: false, error: "حدث خطأ أثناء تحديث حالة الخدمة" };
 	}
 }

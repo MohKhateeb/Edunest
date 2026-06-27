@@ -116,8 +116,8 @@ export const createBooking = withAuthAction(
 				teacherService.duration,
 				parentUser.hasUsedFreeTrial,
 			);
-		} catch (err: any) {
-			return { success: false, error: err.message };
+		} catch (err: unknown) {
+			return { success: false, error: err instanceof Error ? err.message : "حدث خطأ أثناء حساب التكاليف المالية" };
 		}
 
 		const { duration, price, appliedCommissionRate, trialCostToPlatform } =

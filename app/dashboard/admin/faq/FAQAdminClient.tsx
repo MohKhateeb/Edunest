@@ -5,12 +5,7 @@ import { Check, Edit2, Plus, Trash2, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { createFAQ, deleteFAQ, updateFAQ } from "@/lib/actions/faq";
-
-const CATEGORY_LABELS = {
-	PARENT: "ولي الأمر",
-	TEACHER: "المعلم",
-	ADMIN: "الإدارة",
-};
+import { FAQ_CATEGORY_AR } from "@/lib/translations";
 
 export default function FAQAdminClient({
 	initialFaqs,
@@ -133,7 +128,7 @@ export default function FAQAdminClient({
 					className="-mb-px flex space-x-8 space-x-reverse"
 					aria-label="Tabs"
 				>
-					{Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+					{Object.entries(FAQ_CATEGORY_AR).map(([key, label]) => (
 						<button
 							key={key}
 							onClick={() => setActiveTab(key as FAQCategory)}
@@ -303,7 +298,7 @@ export default function FAQAdminClient({
 										}
 										className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
 									>
-										{Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+										{Object.entries(FAQ_CATEGORY_AR).map(([key, label]) => (
 											<option key={key} value={key}>
 												{label}
 											</option>

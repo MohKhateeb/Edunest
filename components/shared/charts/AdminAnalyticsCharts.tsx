@@ -20,6 +20,20 @@ import { formatPrice } from "@/lib/utils";
 type DataItem = { name: string; value?: number; count?: number };
 type RevenueData = { date: string; revenue: number }[];
 
+type TooltipPayloadItem = {
+	value: number | string;
+	name?: string | number;
+	color?: string;
+	dataKey?: string | number;
+	payload?: unknown;
+};
+
+type CustomTooltipProps = {
+	active?: boolean;
+	payload?: TooltipPayloadItem[];
+	label?: string;
+};
+
 interface AdminAnalyticsChartsProps {
 	bookingStatuses: DataItem[];
 	requestedSpecializations: DataItem[];
@@ -39,7 +53,7 @@ const STATUS_COLORS: Record<string, string> = {
 
 const PIE_COLORS = ["#0d9488", "#0284c7", "#8b5cf6", "#f59e0b", "#ec4899"];
 
-const CustomRevenueTooltip = ({ active, payload, label }: any) => {
+const CustomRevenueTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 	if (active && payload && payload.length) {
 		return (
 			<div className="bg-card border border-border p-3 rounded-lg shadow-lg">
@@ -55,7 +69,7 @@ const CustomRevenueTooltip = ({ active, payload, label }: any) => {
 	return null;
 };
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 	if (active && payload && payload.length) {
 		return (
 			<div className="bg-card border border-border p-3 rounded-lg shadow-lg">
@@ -295,8 +309,15 @@ export default function AdminAnalyticsCharts({
 										innerRadius = 0,
 										outerRadius = 0,
 										percent = 0,
-										index = 0,
-									}: any) => {
+									}: {
+										cx?: number;
+										cy?: number;
+										midAngle?: number;
+										innerRadius?: number;
+										outerRadius?: number;
+										percent?: number;
+										index?: number;
+									}) => {
 										const RADIAN = Math.PI / 180;
 										const radius =
 											innerRadius + (outerRadius - innerRadius) * 0.5;

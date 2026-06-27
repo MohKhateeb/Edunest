@@ -33,14 +33,14 @@ export default function ParentStudentsList({
 	);
 
 	// Edit States
-	const [editingStudent, setEditingStudent] = useState<any | null>(null);
+	const [editingStudent, setEditingStudent] = useState<Student | null>(null);
 	const [editName, setEditName] = useState("");
 	const [editGrade, setEditGrade] = useState("1");
 	const [editSchool, setEditSchool] = useState("");
 	const [editLoading, setEditLoading] = useState(false);
 	const [editError, setEditError] = useState<string | null>(null);
 
-	const openEditModal = (student: any) => {
+	const openEditModal = (student: Student) => {
 		setEditingStudent(student);
 		setEditName(student.name);
 		setEditGrade(String(student.grade));

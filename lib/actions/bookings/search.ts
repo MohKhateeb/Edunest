@@ -84,7 +84,7 @@ export async function searchAvailableTeachers(input: {
 				services: {
 					where: {
 						isActive: true,
-						serviceType: { name: { not: "الحقيبة الشهرية" } },
+						serviceType: { isActive: true },
 					},
 					include: {
 						serviceType: {

@@ -20,7 +20,7 @@ type SlotPickerProps = {
 		duration: number;
 	}[];
 	duration: number;
-	onChange: (startTime: Date) => void;
+	onChange: (startTime: Date | null) => void;
 };
 
 export default function TimeSlotPicker({
@@ -205,7 +205,7 @@ export default function TimeSlotPicker({
 									onClick={() => {
 										setSelectedDate(card.dateStr);
 										setSelectedSlotTime(null);
-										onChange(null as any); // reset selection in parent form
+										onChange(null); // reset selection in parent form
 									}}
 									className={cn(
 										"flex-shrink-0 flex flex-col items-center justify-center w-20 py-3 rounded-xl border text-center transition-all cursor-pointer relative overflow-hidden",
@@ -251,7 +251,7 @@ export default function TimeSlotPicker({
 							onChange={(e) => {
 								setSelectedDate(e.target.value);
 								setSelectedSlotTime(null);
-								onChange(null as any); // reset selection
+								onChange(null); // reset selection
 							}}
 							className="w-full premium-input text-xs cursor-pointer"
 						/>

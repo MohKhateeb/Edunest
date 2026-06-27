@@ -14,9 +14,8 @@ interface ParentBookingsListProps {
 export default function ParentBookingsList({
 	bookings,
 }: ParentBookingsListProps) {
-	const [activeTab, setActiveTab] = useState<
-		"UPCOMING" | "PENDING" | "COMPLETED" | "ARCHIVED"
-	>("UPCOMING");
+	type TabType = "UPCOMING" | "PENDING" | "COMPLETED" | "ARCHIVED";
+	const [activeTab, setActiveTab] = useState<TabType>("UPCOMING");
 	const [searchQuery, setSearchQuery] = useState("");
 
 	const upcomingCount = bookings.filter((b) => b.status === "CONFIRMED").length;
@@ -86,7 +85,7 @@ export default function ParentBookingsList({
 					].map((tab) => (
 						<button
 							key={tab.id}
-							onClick={() => setActiveTab(tab.id as any)}
+							onClick={() => setActiveTab(tab.id as TabType)}
 							className={`px-5 py-2.5 text-sm font-bold rounded-xl transition-all whitespace-nowrap cursor-pointer ${
 								activeTab === tab.id
 									? "bg-primary text-white shadow-md"

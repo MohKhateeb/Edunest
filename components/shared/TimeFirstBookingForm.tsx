@@ -103,8 +103,7 @@ export default function TimeFirstBookingForm({
 		setSearchQuery((prev) => ({ ...prev, [name]: value }));
 	};
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const handleBookingChange = (name: string, value: any) => {
+	const handleBookingChange = (name: string, value: string | boolean | number | null) => {
 		setBookingDetails((prev) => ({ ...prev, [name]: value }));
 	};
 

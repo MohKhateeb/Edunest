@@ -1,0 +1,252 @@
+﻿[
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\app\\dashboard\\disputes\\[id]\\page.tsx",
+        "LineNumber":  157,
+        "Line":  "\t\t\t\t\t\tmessages={dispute.messages as any}"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\app\\dashboard\\parent\\page.tsx",
+        "LineNumber":  109,
+        "Line":  "\t\t\t\t\t\t\t\tbooking={insights.nextSession as any}"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\app\\dashboard\\parent\\financials\\page.tsx",
+        "LineNumber":  22,
+        "Line":  "const renderPaymentStatus = (booking: any) =\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\app\\dashboard\\parent\\financials\\page.tsx",
+        "LineNumber":  59,
+        "Line":  "const renderDisputeAction = (booking: any) =\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\app\\dashboard\\parent\\_components\\ParentBookingsList.tsx",
+        "LineNumber":  89,
+        "Line":  "\t\t\t\t\t\t\tonClick={() =\u003e setActiveTab(tab.id as any)}"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\app\\dashboard\\parent\\_components\\ParentStudentsList.tsx",
+        "LineNumber":  36,
+        "Line":  "\tconst [editingStudent, setEditingStudent] = useState\u003cany | null\u003e(null);"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\app\\dashboard\\parent\\_components\\ParentStudentsList.tsx",
+        "LineNumber":  43,
+        "Line":  "\tconst openEditModal = (student: any) =\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\admin\\homepage\\AnnouncementEditor.tsx",
+        "LineNumber":  11,
+        "Line":  "\tconst updateField = (field: keyof AnnouncementBannerContent, value: any) =\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\admin\\homepage\\AssuranceEditor.tsx",
+        "LineNumber":  22,
+        "Line":  "\t\tupdateField(\"features\" as any, newFeatures as any);"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\admin\\homepage\\AssuranceEditor.tsx",
+        "LineNumber":  26,
+        "Line":  "\t\tupdateField(\"features\" as any, ["
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\admin\\homepage\\AssuranceEditor.tsx",
+        "LineNumber":  29,
+        "Line":  "\t\t] as any);"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\admin\\homepage\\AssuranceEditor.tsx",
+        "LineNumber":  34,
+        "Line":  "\t\t\t\"features\" as any,"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\admin\\homepage\\AssuranceEditor.tsx",
+        "LineNumber":  35,
+        "Line":  "\t\t\tcontent.features.filter((_, i) =\u003e i !== index) as any,"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\admin\\homepage\\HomepageSettingsManager.tsx",
+        "LineNumber":  77,
+        "Line":  "\t\t\t\t\t\tonClick={() =\u003e setActiveTab(tab.id as any)}"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\admin\\homepage\\JourneyEditor.tsx",
+        "LineNumber":  12,
+        "Line":  "\tconst updateField = (field: keyof JourneyPathContent, value: any) =\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\home\\AssuranceSection.tsx",
+        "LineNumber":  9,
+        "Line":  "const ICON_MAP: Record\u003cstring, any\u003e = {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\DetailsModal.tsx",
+        "LineNumber":  33,
+        "Line":  "\tconst [data, setData] = useState\u003cany\u003e(null);"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\JitsiMeetingRoom.tsx",
+        "LineNumber":  28,
+        "Line":  "\tconst [api, setApi] = useState\u003cany\u003e(null);"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\NewBookingForm.tsx",
+        "LineNumber":  112,
+        "Line":  "\tconst handleCustomChange = (name: string, value: any) =\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\TimeFirstBookingForm.tsx",
+        "LineNumber":  107,
+        "Line":  "\tconst handleBookingChange = (name: string, value: any) =\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\booking-journey\\BookingDetailsStep.tsx",
+        "LineNumber":  24,
+        "Line":  "\thandleBookingChange: (name: string, value: any) =\u003e void;"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\booking-journey\\CharacterDialogue.tsx",
+        "LineNumber":  43,
+        "Line":  "\t\t\t\t\t\tmode={najeebMode as any}"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\charts\\AdminAnalyticsCharts.tsx",
+        "LineNumber":  42,
+        "Line":  "const CustomRevenueTooltip = ({ active, payload, label }: any) =\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\charts\\AdminAnalyticsCharts.tsx",
+        "LineNumber":  58,
+        "Line":  "const CustomTooltip = ({ active, payload, label }: any) =\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\charts\\AdminAnalyticsCharts.tsx",
+        "LineNumber":  299,
+        "Line":  "\t\t\t\t\t\t\t\t\t}: any) =\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\charts\\TeacherEarningsChart.tsx",
+        "LineNumber":  24,
+        "Line":  "const CustomTooltip = ({ active, payload, label }: any) =\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\BookingDetails.tsx",
+        "LineNumber":  28,
+        "Line":  "\tbooking: any;"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\PayoutDetails.tsx",
+        "LineNumber":  8,
+        "Line":  "\tpayout: any;"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\PayoutDetails.tsx",
+        "LineNumber":  99,
+        "Line":  "\t\t\t\t\t\t\t{payout.bookings.map((booking: any) =\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\StudentDetails.tsx",
+        "LineNumber":  17,
+        "Line":  "\tstudent: any;"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\StudentDetails.tsx",
+        "LineNumber":  19,
+        "Line":  "\tsetActiveTab: (tab: any) =\u003e void;"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\StudentDetails.tsx",
+        "LineNumber":  30,
+        "Line":  "\t\t\t(b: any) =\u003e b.status === \"COMPLETED\" \u0026\u0026 b.report?.studentPerformance,"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\StudentDetails.tsx",
+        "LineNumber":  32,
+        "Line":  "\t\t.map((b: any) =\u003e b.report.studentPerformance);"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\StudentDetails.tsx",
+        "LineNumber":  190,
+        "Line":  "\t\t\t\t\t\t\t{student.bookings.map((booking: any) =\u003e ("
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\TeacherDetails.tsx",
+        "LineNumber":  23,
+        "Line":  "\tteacher: any;"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\TeacherDetails.tsx",
+        "LineNumber":  25,
+        "Line":  "\tsetActiveTab: (tab: any) =\u003e void;"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\TeacherDetails.tsx",
+        "LineNumber":  56,
+        "Line":  "\t\t\t\t\t\t\t\t? teacher.subjects.map((s: any) =\u003e s.subject.name).join(\"، \")"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\TeacherDetails.tsx",
+        "LineNumber":  311,
+        "Line":  "\t\t\t\t\t\t\t{teacher.services.map((srv: any) =\u003e ("
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\components\\shared\\details\\TeacherDetails.tsx",
+        "LineNumber":  350,
+        "Line":  "\t\t\t\t\t\tteacher.reviews.map((rev: any) =\u003e ("
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\lib\\action-wrapper.ts",
+        "LineNumber":  14,
+        "Line":  "export function withAuthAction\u003cArgs extends any[], R = any\u003e("
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\lib\\actions\\details.ts",
+        "LineNumber":  13,
+        "Line":  "function successResponse(data: any): ActionResponse\u003cany\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\lib\\actions\\details.ts",
+        "LineNumber":  38,
+        "Line":  "): Promise\u003cActionResponse\u003cany\u003e\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\lib\\actions\\details.ts",
+        "LineNumber":  93,
+        "Line":  "): Promise\u003cActionResponse\u003cany\u003e\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\lib\\actions\\details.ts",
+        "LineNumber":  135,
+        "Line":  "): Promise\u003cActionResponse\u003cany\u003e\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\lib\\actions\\details.ts",
+        "LineNumber":  185,
+        "Line":  "): Promise\u003cActionResponse\u003cany\u003e\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\lib\\actions\\details.ts",
+        "LineNumber":  225,
+        "Line":  "): Promise\u003cActionResponse\u003cany\u003e\u003e {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\lib\\actions\\admin\\service-types.ts",
+        "LineNumber":  50,
+        "Line":  "\t} catch (error: any) {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\lib\\actions\\admin\\service-types.ts",
+        "LineNumber":  72,
+        "Line":  "\t} catch (error: any) {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\lib\\actions\\bookings\\create.ts",
+        "LineNumber":  119,
+        "Line":  "\t\t} catch (err: any) {"
+    },
+    {
+        "Path":  "D:\\OIC Files\\Personal\\Projects\\EduNest\\lib\\actions\\tutoring-requests\\create.ts",
+        "LineNumber":  107,
+        "Line":  "\t} catch (error: any) {"
+    }
+]

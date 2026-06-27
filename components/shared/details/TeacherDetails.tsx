@@ -18,11 +18,15 @@ import {
 import Image from "next/image";
 import React from "react";
 import { cn, formatPrice } from "@/lib/utils";
+import type { Prisma } from "@prisma/client";
+import type { commonTeacherInclude } from "@/lib/actions/details";
+
+export type DetailedTeacher = Prisma.TeacherGetPayload<{ include: typeof commonTeacherInclude }>;
 
 interface TeacherDetailsProps {
-	teacher: any;
+	teacher: DetailedTeacher;
 	activeTab: string;
-	setActiveTab: (tab: any) => void;
+	setActiveTab: (tab: string) => void;
 }
 
 export default function TeacherDetails({
@@ -53,8 +57,8 @@ export default function TeacherDetails({
 						</h3>
 						<span className="text-xs text-primary font-bold">
 							{teacher.subjects && teacher.subjects.length > 0
-								? teacher.subjects.map((s: any) => s.subject.name).join("، ")
-								: teacher.specialization}
+								? teacher.subjects.map((s) => s.subject.name).join("، ")
+								: teacher.subSpecialization}
 						</span>
 					</div>
 				</div>
@@ -308,7 +312,7 @@ export default function TeacherDetails({
 						</p>
 					) : (
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-							{teacher.services.map((srv: any) => (
+							{teacher.services.map((srv) => (
 								<div
 									key={srv.id}
 									className="p-4 border border-border bg-card rounded-xl text-xs space-y-2 flex flex-col justify-between"
@@ -347,7 +351,7 @@ export default function TeacherDetails({
 							لا توجد تقييمات مكتوبة لهذا المعلم بعد.
 						</p>
 					) : (
-						teacher.reviews.map((rev: any) => (
+						teacher.reviews.map((rev) => (
 							<div
 								key={rev.id}
 								className="p-4 border border-border bg-card rounded-xl text-xs space-y-2"

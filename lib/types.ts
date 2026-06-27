@@ -22,9 +22,10 @@ export const bookingDetailsInclude = {
 			},
 		},
 	},
-	parent: { select: { name: true } },
+	parent: { select: { name: true, phone: true, email: true } },
 	payment: true,
 	report: true,
+	review: true,
 } satisfies Prisma.BookingInclude;
 
 export type DetailedBooking = Prisma.BookingGetPayload<{

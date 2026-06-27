@@ -21,7 +21,7 @@ type BookingDetailsStepProps = {
 		questionDetails: string;
 		questionImageUrl: string;
 	};
-	handleBookingChange: (name: string, value: any) => void;
+	handleBookingChange: (name: string, value: string | boolean) => void;
 	handleBookingSubmit: (e: React.FormEvent) => Promise<void>;
 	setCurrentStep: (step: "search" | "results" | "details") => void;
 	searchQuery: {

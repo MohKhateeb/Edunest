@@ -17,11 +17,25 @@ interface ChartDataPoint {
 	sessions: number;
 }
 
+type TooltipPayloadItem = {
+	value: number | string;
+	name?: string | number;
+	color?: string;
+	dataKey?: string | number;
+	payload?: unknown;
+};
+
+type CustomTooltipProps = {
+	active?: boolean;
+	payload?: TooltipPayloadItem[];
+	label?: string;
+};
+
 interface TeacherEarningsChartProps {
 	data: ChartDataPoint[];
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 	if (active && payload && payload.length) {
 		return (
 			<div className="bg-card border border-border p-3 rounded-lg shadow-lg rtl text-right">

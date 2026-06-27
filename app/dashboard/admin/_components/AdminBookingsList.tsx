@@ -53,7 +53,7 @@ export default function AdminBookingsList({
 	const [cancelReason, setCancelReason] = useState("");
 
 	const [showReportModal, setShowReportModal] = useState(false);
-	const [selectedReport, setSelectedReport] = useState<any>(null);
+	const [selectedReport, setSelectedReport] = useState<DetailedBooking["report"] | null>(null);
 
 	const [selectedDetailsId, setSelectedDetailsId] = useState<string | null>(
 		null,

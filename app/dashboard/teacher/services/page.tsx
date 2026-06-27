@@ -26,7 +26,7 @@ export default async function TeacherServicesPage() {
 			teacherId: teacher.id,
 			isActive: true,
 			serviceType: {
-				name: { not: "الحقيبة الشهرية" },
+				isActive: true,
 			},
 		},
 		select: {
@@ -52,7 +52,7 @@ export default async function TeacherServicesPage() {
 
 	// Fetch active system service types
 	const serviceTypes = await prisma.serviceType.findMany({
-		where: { isActive: true, name: { not: "الحقيبة الشهرية" } },
+		where: { isActive: true },
 		select: { id: true, name: true, defaultDuration: true },
 		orderBy: { displayOrder: "asc" },
 	});

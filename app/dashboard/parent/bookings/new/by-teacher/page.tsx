@@ -48,7 +48,7 @@ export default async function BookByTeacherPage() {
 			services: {
 				where: {
 					isActive: true,
-					serviceType: { name: { not: "الحقيبة الشهرية" } },
+					serviceType: { isActive: true },
 				},
 				select: {
 					id: true,
@@ -147,7 +147,7 @@ export default async function BookByTeacherPage() {
 					<div className="flex-1 max-w-lg">
 						<CharacterDialogue
 							character="najeeb"
-							najeebMode="happy"
+							najeebMode="success"
 							message="اختيار ممتاز! تصفح قائمة المعلمين، واختر من يلبي طموحك، وأكمل تفاصيل الحجز وسنتولى نحن الباقي."
 							align="right"
 						/>

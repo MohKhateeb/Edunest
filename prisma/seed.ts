@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { PrismaPg } from "@prisma/adapter-pg";
 import {
 	BookingSource,
@@ -8,10 +8,15 @@ import {
 	PrismaClient,
 	UserType,
 	VerificationLevel,
+	User,
+	Student,
+	Teacher,
+	TeacherService,
 } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { Pool } from "pg";
+import { SERVICES } from "../lib/translations";
 
 const pool = new Pool({
 	connectionString: process.env.DATABASE_URL,
@@ -88,28 +93,28 @@ async function main() {
 	// 2. Service Types
 	const serviceTypes = [
 		{
-			name: "حصة تعليمية كاملة",
+			name: SERVICES.FULL_SESSION,
 			nameEnglish: "Full Session",
 			defaultDuration: 60,
 			commissionRate: 15,
 			displayOrder: 1,
 		},
 		{
-			name: "شرح مسألة سريعة",
+			name: SERVICES.QUICK_HELP,
 			nameEnglish: "Quick Help",
 			defaultDuration: 15,
 			commissionRate: 20,
 			displayOrder: 2,
 		},
 		{
-			name: "جلسة متوسطة",
+			name: SERVICES.MEDIUM_SESSION,
 			nameEnglish: "Medium Session",
 			defaultDuration: 30,
 			commissionRate: 15,
 			displayOrder: 3,
 		},
 		{
-			name: "الحقيبة الشهرية",
+			name: SERVICES.MONTHLY_PACKAGE,
 			nameEnglish: "Monthly Package",
 			defaultDuration: 480,
 			commissionRate: 12,
@@ -133,12 +138,11 @@ async function main() {
 	}
 	console.log("✅ أنواع الخدمات");
 
-	// Fetch created ServiceTypes
 	const fullSession = await prisma.serviceType.findUnique({
-		where: { name: "حصة تعليمية كاملة" },
+		where: { name: SERVICES.FULL_SESSION },
 	});
 	const quickHelp = await prisma.serviceType.findUnique({
-		where: { name: "شرح مسألة سريعة" },
+		where: { name: SERVICES.QUICK_HELP },
 	});
 
 	if (!fullSession || !quickHelp) throw new Error("Service types missing");
@@ -189,8 +193,8 @@ async function main() {
 		},
 	];
 
-	const parentUsers: any[] = [];
-	const allStudents: any[] = [];
+	const parentUsers: (User & { students: Student[] })[] = [];
+	const allStudents: Student[] = [];
 
 	for (const p of parentsData) {
 		let parent = await prisma.user.findUnique({ where: { email: p.email } });
@@ -214,7 +218,7 @@ async function main() {
 				include: { students: true },
 			});
 		}
-		const parentObj = parent as any;
+		const parentObj = parent as User & { students: Student[] };
 		parentUsers.push(parentObj);
 		allStudents.push(...(parentObj.students || []));
 	}
@@ -279,8 +283,8 @@ async function main() {
 		},
 	];
 
-	const teacherObjects: any[] = [];
-	const teacherServices: any[] = [];
+	const teacherObjects: Teacher[] = [];
+	const teacherServices: TeacherService[] = [];
 
 	for (const t of teachersData) {
 		let tUser = await prisma.user.findUnique({ where: { email: t.email } });
@@ -452,15 +456,15 @@ async function main() {
 				paymentStatus: scenario.paymentStatus,
 				bookingSource: BookingSource.WEB,
 				parentNotes: "ابني ضعيف في الأساسيات، يرجى التركيز عليها.",
-				meetingUrl: [BookingStatus.CONFIRMED, BookingStatus.COMPLETED].includes(
-					scenario.status as any,
+				meetingUrl: ([BookingStatus.CONFIRMED, BookingStatus.COMPLETED] as BookingStatus[]).includes(
+					scenario.status,
 				)
 					? "https://meet.jit.si/edunest-test-meeting"
 					: null,
-				confirmedAt: [
+				confirmedAt: ([
 					BookingStatus.CONFIRMED,
 					BookingStatus.COMPLETED,
-				].includes(scenario.status as any)
+				] as BookingStatus[]).includes(scenario.status)
 					? new Date()
 					: null,
 				completedAt:

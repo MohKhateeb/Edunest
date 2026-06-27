@@ -18,8 +18,15 @@ export const metadata = {
 	title: "السجل المالي | EduNest",
 };
 
+type FinancialBooking = Prisma.BookingGetPayload<{
+	include: {
+		parentRefund: true;
+		dispute: true;
+	};
+}>;
+
 // Helper: Render Payment Status to avoid nested ternaries
-const renderPaymentStatus = (booking: any) => {
+const renderPaymentStatus = (booking: FinancialBooking) => {
 	if (booking.paymentStatus === "PAID") {
 		return (
 			<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 text-xs font-bold">
@@ -56,7 +63,7 @@ const renderPaymentStatus = (booking: any) => {
 };
 
 // Helper: Render Dispute Action to avoid nested ternaries
-const renderDisputeAction = (booking: any) => {
+const renderDisputeAction = (booking: FinancialBooking) => {
 	if (booking.dispute) {
 		return (
 			<div className="flex flex-col gap-2 items-start">

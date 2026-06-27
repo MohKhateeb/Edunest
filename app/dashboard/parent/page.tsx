@@ -106,7 +106,7 @@ export default async function ParentDashboard() {
 					<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all">
 						{insights.nextSession ? (
 							<BookingCard
-								booking={insights.nextSession as any}
+								booking={insights.nextSession}
 								role="PARENT"
 							/>
 						) : (

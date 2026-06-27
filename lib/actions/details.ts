@@ -1,6 +1,6 @@
 "use server";
 
-import { UserType } from "@prisma/client";
+import { Prisma, UserType } from "@prisma/client";
 import { requireTeacherProfile } from "@/lib/actions/auth-helpers";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
@@ -10,11 +10,11 @@ import { sanitizePrismaData } from "@/lib/utils";
 
 export type EntityType = "student" | "teacher" | "booking" | "payout";
 
-function successResponse(data: any): ActionResponse<any> {
-	return { success: true, data: sanitizePrismaData(data) };
+function successResponse<T>(data: T): ActionResponse<T> {
+	return { success: true, data: sanitizePrismaData(data) as T };
 }
 
-const commonStudentInclude = {
+export const commonStudentInclude = {
 	parent: { select: { id: true, name: true, email: true, phone: true } },
 	bookings: {
 		include: {
@@ -35,7 +35,7 @@ async function getStudentDetails(
 	entityId: string,
 	userId: string,
 	userType: UserType,
-): Promise<ActionResponse<any>> {
+): Promise<ActionResponse<unknown>> {
 	if (userType === UserType.PARENT) {
 		const student = await prisma.student.findUnique({
 			where: { id: entityId },
@@ -86,33 +86,35 @@ async function getStudentDetails(
 	return { success: false, error: "نوع الحساب غير مصرح له بالوصول." };
 }
 
+export const commonTeacherInclude = {
+	user: { select: { id: true, name: true, email: true, phone: true } },
+	services: {
+		where: {
+			isActive: true,
+			serviceType: { isActive: true },
+		},
+		include: { serviceType: true },
+	},
+	reviews: {
+		where: { isVisible: true },
+		orderBy: { createdAt: "desc" as const },
+		take: 15,
+		include: {
+			booking: { select: { student: { select: { name: true } } } },
+		},
+	},
+	verification: true,
+	subjects: { include: { subject: true } },
+} satisfies Prisma.TeacherInclude;
+
 async function getTeacherDetails(
 	entityId: string,
 	userId: string,
 	userType: UserType,
-): Promise<ActionResponse<any>> {
+): Promise<ActionResponse<unknown>> {
 	const teacher = await prisma.teacher.findUnique({
 		where: { id: entityId },
-		include: {
-			user: { select: { id: true, name: true, email: true, phone: true } },
-			services: {
-				where: {
-					isActive: true,
-					serviceType: { name: { not: "الحقيبة الشهرية" } },
-				},
-				include: { serviceType: true },
-			},
-			reviews: {
-				where: { isVisible: true },
-				orderBy: { createdAt: "desc" },
-				take: 15,
-				include: {
-					booking: { select: { student: { select: { name: true } } } },
-				},
-			},
-			verification: true,
-			subjects: { include: { subject: true } },
-		},
+		include: commonTeacherInclude,
 	});
 
 	if (!teacher) return { success: false, error: "المعلم المطلوب غير موجود." };
@@ -132,7 +134,7 @@ async function getBookingDetails(
 	entityId: string,
 	userId: string,
 	userType: UserType,
-): Promise<ActionResponse<any>> {
+): Promise<ActionResponse<unknown>> {
 	const booking = await prisma.booking.findUnique({
 		where: { id: entityId },
 		include: {
@@ -178,11 +180,26 @@ async function getBookingDetails(
 	return { success: false, error: "غير مصرح لك بمشاهدة تفاصيل هذا الحجز." };
 }
 
+export const commonPayoutInclude = {
+	teacher: {
+		include: { user: { select: { id: true, name: true, email: true } } },
+	},
+	bookings: {
+		include: {
+			student: { select: { name: true } },
+			teacherService: {
+				include: { serviceType: { select: { name: true } } },
+			},
+		},
+		orderBy: { startTime: "desc" as const },
+	},
+} satisfies Prisma.TeacherPayoutInclude;
+
 async function getPayoutDetails(
 	entityId: string,
 	userId: string,
 	userType: UserType,
-): Promise<ActionResponse<any>> {
+): Promise<ActionResponse<unknown>> {
 	if (userType !== UserType.ADMIN && userType !== UserType.TEACHER) {
 		return {
 			success: false,
@@ -192,20 +209,7 @@ async function getPayoutDetails(
 
 	const payout = await prisma.teacherPayout.findUnique({
 		where: { id: entityId },
-		include: {
-			teacher: {
-				include: { user: { select: { id: true, name: true, email: true } } },
-			},
-			bookings: {
-				include: {
-					student: { select: { name: true } },
-					teacherService: {
-						include: { serviceType: { select: { name: true } } },
-					},
-				},
-				orderBy: { startTime: "desc" },
-			},
-		},
+		include: commonPayoutInclude,
 	});
 
 	if (!payout)
@@ -222,7 +226,7 @@ async function getPayoutDetails(
 export async function getEntityDetails(
 	entityType: EntityType,
 	entityId: string,
-): Promise<ActionResponse<any>> {
+): Promise<ActionResponse<unknown>> {
 	try {
 		const { userId, userType } = await requireAuth([
 			UserType.PARENT,

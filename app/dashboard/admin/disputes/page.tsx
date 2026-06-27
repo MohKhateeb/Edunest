@@ -3,30 +3,20 @@ import { CheckCircle2, ChevronLeft, ShieldAlert } from "lucide-react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { DISPUTE_STATUS_AR, DISPUTE_STATUS_STYLES } from "@/lib/translations";
 
 export const metadata = {
 	title: "إدارة النزاعات | EduNest",
 };
 
 const renderDisputeStatus = (status: DisputeStatus) => {
-	if (status === "OPEN") {
-		return (
-			<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-red-50 text-red-700 border border-red-200 dark:bg-red-900/20 dark:text-red-400 text-xs font-bold">
-				<span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-				مفتوح
-			</span>
-		);
-	}
-	if (status === "RESOLVED_IN_FAVOR_OF_PARENT") {
-		return (
-			<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 text-xs font-bold">
-				لصالح ولي الأمر
-			</span>
-		);
-	}
+	const label = DISPUTE_STATUS_AR[status];
+	const style = DISPUTE_STATUS_STYLES[status];
+	
 	return (
-		<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-100 text-gray-700 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 text-xs font-bold">
-			لصالح المعلم
+		<span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold border ${style}`}>
+			{status === "OPEN" && <span className="w-1.5 h-1.5 rounded-full bg-current animate-pulse"></span>}
+			{label}
 		</span>
 	);
 };
@@ -87,13 +77,9 @@ export default async function AdminDisputesPage({
 							className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-red-500 transition-all"
 						>
 							<option value="">جميع الحالات</option>
-							<option value="OPEN">مفتوح (قيد المراجعة)</option>
-							<option value="RESOLVED_IN_FAVOR_OF_PARENT">
-								مغلق (لصالح ولي الأمر)
-							</option>
-							<option value="RESOLVED_IN_FAVOR_OF_TEACHER">
-								مغلق (لصالح المعلم)
-							</option>
+							<option value="OPEN">{DISPUTE_STATUS_AR.OPEN}</option>
+							<option value="RESOLVED_IN_FAVOR_OF_PARENT">{DISPUTE_STATUS_AR.RESOLVED_IN_FAVOR_OF_PARENT}</option>
+							<option value="RESOLVED_IN_FAVOR_OF_TEACHER">{DISPUTE_STATUS_AR.RESOLVED_IN_FAVOR_OF_TEACHER}</option>
 						</select>
 					</div>
 					<div className="flex items-center gap-3 w-full sm:w-auto">

@@ -11,10 +11,11 @@ import {
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { type EntityType, getEntityDetails } from "@/lib/actions/details";
+import StudentDetails, { type DetailedStudent } from "./details/StudentDetails";
+import TeacherDetails, { type DetailedTeacher } from "./details/TeacherDetails";
+import type { DetailedBooking } from "@/lib/types";
 import BookingDetails from "./details/BookingDetails";
-import PayoutDetails from "./details/PayoutDetails";
-import StudentDetails from "./details/StudentDetails";
-import TeacherDetails from "./details/TeacherDetails";
+import PayoutDetails, { type DetailedPayout } from "./details/PayoutDetails";
 import Portal from "./Portal";
 
 interface DetailsModalProps {
@@ -30,7 +31,9 @@ export default function DetailsModal({
 	entityType,
 	entityId,
 }: DetailsModalProps) {
-	const [data, setData] = useState<any>(null);
+	const [data, setData] = useState<
+		DetailedStudent | DetailedTeacher | DetailedBooking | DetailedPayout | null
+	>(null);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [activeTab, setActiveTab] = useState<
@@ -51,7 +54,13 @@ export default function DetailsModal({
 			try {
 				const res = await getEntityDetails(entityType, entityId);
 				if (res.success) {
-					setData(res.data);
+					setData(
+						res.data as
+							| DetailedStudent
+							| DetailedTeacher
+							| DetailedBooking
+							| DetailedPayout
+					);
 					// Set default tabs based on entity type
 					if (entityType === "student") setActiveTab("info");
 					if (entityType === "teacher") setActiveTab("info");
@@ -139,31 +148,35 @@ export default function DetailsModal({
 								{/* 1. STUDENT DETAILS RENDER */}
 								{entityType === "student" && (
 									<StudentDetails
-										student={data}
+										student={data as DetailedStudent}
 										activeTab={activeTab}
-										setActiveTab={setActiveTab}
+										setActiveTab={(tab: string) =>
+											setActiveTab(tab as typeof activeTab)
+										}
 									/>
 								)}
 
 								{/* 2. TEACHER DETAILS RENDER */}
 								{entityType === "teacher" && (
 									<TeacherDetails
-										teacher={data}
+										teacher={data as DetailedTeacher}
 										activeTab={activeTab}
-										setActiveTab={setActiveTab}
+										setActiveTab={(tab: string) =>
+											setActiveTab(tab as typeof activeTab)
+										}
 									/>
 								)}
 
 								{/* 3. BOOKING DETAILS RENDER */}
 								{entityType === "booking" && (
 									<BookingDetails
-										booking={data}
+										booking={data as DetailedBooking}
 										setPreviewImage={setPreviewImage}
 									/>
 								)}
 
 								{/* 4. PAYOUT DETAILS RENDER */}
-								{entityType === "payout" && <PayoutDetails payout={data} />}
+								{entityType === "payout" && <PayoutDetails payout={data as DetailedPayout} />}
 							</>
 						)}
 					</div>

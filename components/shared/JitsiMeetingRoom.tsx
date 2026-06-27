@@ -25,7 +25,7 @@ export default function JitsiMeetingRoom({
 	durationMinutes,
 }: JitsiMeetingRoomProps) {
 	const router = useRouter();
-	const [api, setApi] = useState<any>(null);
+	const [api, setApi] = useState<{ executeCommand: (cmd: string) => void; dispose: () => void } | null>(null);
 	const [timeLeft, setTimeLeft] = useState<number | null>(null);
 	const [sessionEnded, setSessionEnded] = useState(false);
 

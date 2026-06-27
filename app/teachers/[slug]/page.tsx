@@ -39,7 +39,7 @@ async function getTeacher(slug: string) {
 			services: {
 				where: {
 					isActive: true,
-					serviceType: { name: { not: "الحقيبة الشهرية" } },
+					serviceType: { isActive: true },
 				},
 				include: {
 					serviceType: { select: { name: true, defaultDuration: true } },

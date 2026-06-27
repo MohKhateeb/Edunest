@@ -12,11 +12,15 @@ import {
 import React from "react";
 import { BOOKING_STATUS_AR } from "@/lib/translations";
 import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
+import type { Prisma } from "@prisma/client";
+import type { commonStudentInclude } from "@/lib/actions/details";
+
+export type DetailedStudent = Prisma.StudentGetPayload<{ include: typeof commonStudentInclude }>;
 
 interface StudentDetailsProps {
-	student: any;
+	student: DetailedStudent;
 	activeTab: string;
-	setActiveTab: (tab: any) => void;
+	setActiveTab: (tab: string) => void;
 }
 
 export default function StudentDetails({
@@ -27,9 +31,9 @@ export default function StudentDetails({
 	// Calculate average rating performance from completed reports
 	const completedReports = student.bookings
 		.filter(
-			(b: any) => b.status === "COMPLETED" && b.report?.studentPerformance,
+			(b) => b.status === "COMPLETED" && b.report?.studentPerformance,
 		)
-		.map((b: any) => b.report.studentPerformance);
+		.map((b) => b.report!.studentPerformance!);
 
 	const avgPerformance =
 		completedReports.length > 0
@@ -187,7 +191,7 @@ export default function StudentDetails({
 						</p>
 					) : (
 						<div className="space-y-3 max-h-[40vh] overflow-y-auto pe-1">
-							{student.bookings.map((booking: any) => (
+							{student.bookings.map((booking) => (
 								<div
 									key={booking.id}
 									className="p-4 border border-border bg-card hover:bg-accent/10 rounded-xl transition-colors flex flex-col md:flex-row justify-between gap-3 text-xs"

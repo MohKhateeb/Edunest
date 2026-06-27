@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 type CharacterDialogueProps = {
 	character: "hakeem" | "najeeb";
 	message: React.ReactNode;
-	najeebMode?: "idle" | "happy" | "success" | "welcome" | "thinking";
+	najeebMode?: "welcome" | "study" | "success" | "help";
 	align?: "left" | "right";
 	className?: string;
 	delay?: number;
@@ -40,7 +40,7 @@ export default function CharacterDialogue({
 				) : (
 					<NajeebCharacter
 						size="sm"
-						mode={najeebMode as any}
+						mode={najeebMode}
 						className="w-full h-full object-contain object-bottom"
 					/>
 				)}

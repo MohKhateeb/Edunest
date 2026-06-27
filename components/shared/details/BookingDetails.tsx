@@ -23,9 +23,10 @@ import {
 	getDetailedSessionState,
 	SessionTimeState,
 } from "@/lib/utils/booking-state";
+import type { DetailedBooking } from "@/lib/types";
 
 interface BookingDetailsProps {
-	booking: any;
+	booking: DetailedBooking;
 	setPreviewImage: (url: string) => void;
 }
 
@@ -41,6 +42,10 @@ export default function BookingDetails({
 		booking.startTime,
 		booking.duration,
 	);
+	
+	const report = booking.report;
+	const review = booking.review;
+	const payment = booking.payment;
 
 	return (
 		<div className="space-y-6 text-xs text-muted-foreground">
@@ -182,8 +187,6 @@ export default function BookingDetails({
 									className={cn(
 										"font-bold",
 										booking.paymentStatus === "PAID" && "text-emerald-600",
-										booking.paymentStatus === "PENDING_VERIFICATION" &&
-											"text-indigo-600",
 										booking.paymentStatus === "UNPAID" && "text-rose-600",
 									)}
 								>
@@ -194,62 +197,29 @@ export default function BookingDetails({
 									}
 								</strong>
 							</div>
-							{booking.payment?.method && (
+							{payment?.method && (
 								<div className="flex justify-between">
 									<span>طريقة التحويل:</span>
 									<strong className="text-foreground">
 										{
 											PAYMENT_METHOD_AR[
-												booking.payment.method as keyof typeof PAYMENT_METHOD_AR
+												payment.method as keyof typeof PAYMENT_METHOD_AR
 											]
 										}
 									</strong>
 								</div>
 							)}
-							{booking.payment?.paidAt && (
+							{payment?.paidAt && (
 								<div className="flex justify-between">
 									<span>تاريخ تأكيد التحويل:</span>
 									<strong className="text-foreground">
-										{new Date(booking.payment.paidAt).toLocaleDateString(
+										{new Date(payment.paidAt).toLocaleDateString(
 											"ar-EG",
 										)}
 									</strong>
 								</div>
 							)}
 						</div>
-
-						{/* Receipt Proof (Admin and Parent Only) */}
-						{booking.payment?.bankTransferProofUrl && (
-							<div className="border border-border rounded-xl p-2 bg-accent/10 flex justify-between items-center gap-3">
-								<div className="space-y-1">
-									<span className="font-bold text-[10px] text-foreground block">
-										إيصال التحويل المرفق:
-									</span>
-									<button
-										onClick={() =>
-											setPreviewImage(booking.payment.bankTransferProofUrl)
-										}
-										className="text-[10px] text-primary font-bold hover:underline flex items-center gap-1 cursor-pointer"
-									>
-										<Eye className="h-3.5 w-3.5" />
-										عرض وتكبير الصورة
-									</button>
-								</div>
-								<div
-									onClick={() =>
-										setPreviewImage(booking.payment.bankTransferProofUrl)
-									}
-									className="h-12 w-16 relative border border-border rounded overflow-hidden cursor-zoom-in bg-black/10 flex-shrink-0"
-								>
-									<Image
-										src={booking.payment.bankTransferProofUrl}
-										alt="Receipt thumbnail"
-										fill
-										className="object-cover"
-									/>
-								</div>
-							</div>
-						)}
 					</div>
 				</div>
 			)}
@@ -345,7 +315,7 @@ export default function BookingDetails({
 			)}
 
 			{/* Completed Session Report Details */}
-			{booking.status === "COMPLETED" && booking.report && (
+			{booking.status === "COMPLETED" && report && (
 				<div className="p-5 border border-primary/20 bg-primary/5 rounded-xl space-y-4">
 					<h4 className="font-extrabold text-sm border-b border-primary/10 pb-2 text-primary flex items-center gap-1">
 						<FileText className="h-4.5 w-4.5" />
@@ -359,18 +329,18 @@ export default function BookingDetails({
 								</span>
 								<strong
 									className={
-										booking.report.studentAttended
+										report.studentAttended
 											? "text-emerald-600 font-bold"
 											: "text-rose-500 font-bold"
 									}
 								>
-									{booking.report.studentAttended
+									{report.studentAttended
 										? "✓ حضر الجلسة"
 										: "✗ غاب عن الجلسة"}
 								</strong>
 							</div>
-							{booking.report.studentAttended &&
-								booking.report.studentPerformance && (
+							{report.studentAttended &&
+								report.studentPerformance && (
 									<div className="text-left">
 										<span className="text-muted-foreground block text-[10px]">
 											تقييم أداء الطالب:
@@ -381,12 +351,12 @@ export default function BookingDetails({
 													key={s}
 													size={12}
 													fill={
-														s <= booking.report.studentPerformance
+														s <= report.studentPerformance!
 															? "currentColor"
 															: "none"
 													}
 													className={
-														s <= booking.report.studentPerformance
+														s <= report.studentPerformance!
 															? "text-violet-500"
 															: "text-muted-foreground/35"
 													}
@@ -402,28 +372,28 @@ export default function BookingDetails({
 								المواضيع والدروس التي تم شرحها:
 							</span>
 							<p className="bg-card border border-border p-3 rounded-lg text-foreground/75 leading-relaxed whitespace-pre-wrap">
-								{booking.report.topicsCovered}
+								{report.topicsCovered}
 							</p>
 						</div>
 
-						{booking.report.homeworkAssigned && (
+						{report.homeworkAssigned && (
 							<div>
 								<span className="font-bold text-foreground/80 block mb-1">
 									الواجبات والتدريبات المنزلية المقررة:
 								</span>
 								<p className="bg-card border border-border p-3 rounded-lg text-foreground/75 leading-relaxed whitespace-pre-wrap">
-									{booking.report.homeworkAssigned}
+									{report.homeworkAssigned}
 								</p>
 							</div>
 						)}
 
-						{booking.report.teacherNotes && (
+						{report.teacherNotes && (
 							<div>
 								<span className="font-bold text-foreground/80 block mb-1">
 									توصيات وملاحظات المعلم للأهالي:
 								</span>
 								<p className="bg-card border border-border p-3 rounded-lg text-foreground/75 leading-relaxed whitespace-pre-wrap">
-									{booking.report.teacherNotes}
+									{report.teacherNotes}
 								</p>
 							</div>
 						)}
@@ -432,7 +402,7 @@ export default function BookingDetails({
 			)}
 
 			{/* Review Info */}
-			{booking.status === "COMPLETED" && booking.review && (
+			{booking.status === "COMPLETED" && review && (
 				<div className="p-4 border border-violet-500/20 bg-violet-500/5 rounded-xl space-y-2">
 					<span className="font-bold text-violet-600 dark:text-violet-400 block text-xs">
 						تقييم ولي الأمر للمعلم:
@@ -442,21 +412,21 @@ export default function BookingDetails({
 							<Star
 								key={s}
 								size={14}
-								fill={s <= booking.review.rating ? "currentColor" : "none"}
+								fill={s <= review.rating ? "currentColor" : "none"}
 								className={
-									s <= booking.review.rating
+									s <= review.rating
 										? "text-violet-500"
 										: "text-muted-foreground/35"
 								}
 							/>
 						))}
 						<span className="text-[10px] text-muted-foreground me-2">
-							({booking.review.rating} من 5)
+							({review.rating} من 5)
 						</span>
 					</div>
-					{booking.review.comment && (
+					{review.comment && (
 						<p className="text-foreground/75 italic leading-relaxed pt-1">
-							"{booking.review.comment}"
+							"{review.comment}"
 						</p>
 					)}
 				</div>

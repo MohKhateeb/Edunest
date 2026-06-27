@@ -6,8 +6,9 @@ import Link from "next/link";
 import React from "react";
 import HakeemCharacter from "@/components/shared/HakeemCharacter";
 import NajeebCharacter from "@/components/shared/NajeebCharacter";
+import type { HeroSectionContent } from "@/types/homepage";
 
-export default function HeroSection() {
+export default function HeroSection({ content }: { content: HeroSectionContent }) {
 	return (
 		<section className="relative overflow-hidden bg-gradient-to-br from-blue-50/50 via-white to-amber-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 pt-20 pb-32">
 			<div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay pointer-events-none"></div>
@@ -18,19 +19,21 @@ export default function HeroSection() {
 			>
 				{/* Texts & Call to action */}
 				<div className="lg:col-span-6 flex flex-col space-y-8 text-center lg:text-right">
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.6 }}
-						className="inline-flex items-center gap-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-amber-200/50 dark:border-amber-900/50 rounded-full px-5 py-2 text-sm shadow-sm mx-auto lg:mx-0 w-fit"
-					>
-						<span className="bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 font-bold px-3 py-1 rounded-full text-xs">
-							جديد
-						</span>
-						<span className="text-slate-700 dark:text-slate-300 font-semibold">
-							طريقة جديدة وأمتع للتعلم ✨
-						</span>
-					</motion.div>
+					{content.badge && (
+						<motion.div
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.6 }}
+							className="inline-flex items-center gap-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border border-amber-200/50 dark:border-amber-900/50 rounded-full px-5 py-2 text-sm shadow-sm mx-auto lg:mx-0 w-fit"
+						>
+							<span className="bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 font-bold px-3 py-1 rounded-full text-xs">
+								{content.badge}
+							</span>
+							<span className="text-slate-700 dark:text-slate-300 font-semibold">
+								{content.badgeMessage}
+							</span>
+						</motion.div>
+					)}
 
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
@@ -39,15 +42,13 @@ export default function HeroSection() {
 						className="space-y-4"
 					>
 						<h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-tight text-slate-900 dark:text-white">
-							كل عقل نير، يحتاج إلى{" "}
+							{content.headline}{" "}
 							<span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">
-								دليل مخلص
-							</span>{" "}
-							ليضيء له الطريق.
+								{content.highlightedWord}
+							</span>
 						</h1>
 						<p className="text-base md:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-lg mx-auto lg:mx-0">
-							وهنا في إديونست، جعلنا رحلة البحث عن هذا الدليل أسهل وأمتع. انضم
-							إلينا واكتشف متعة التعلم المخصص.
+							{content.subheadline}
 						</p>
 					</motion.div>
 
@@ -58,17 +59,19 @@ export default function HeroSection() {
 						className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
 					>
 						<Link
-							href="/register"
+							href={content.primaryBtnLink}
 							className="inline-flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-white font-bold rounded-2xl px-8 py-4 text-base transition-all duration-300 hover:-translate-y-1 hover:shadow-lg shadow-primary/30"
 						>
-							ابدأ رحلة التعلم معنا <ArrowLeft className="w-5 h-5" />
+							{content.primaryBtnText} <ArrowLeft className="w-5 h-5" />
 						</Link>
-						<Link
-							href="/teachers"
-							className="inline-flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 font-bold rounded-2xl px-8 py-4 text-base transition-all duration-300 hover:-translate-y-1"
-						>
-							استكشف المعلمين
-						</Link>
+						{content.secondaryBtnText && (
+							<Link
+								href={content.secondaryBtnLink}
+								className="inline-flex items-center justify-center gap-2 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-800 dark:text-white border border-slate-200 dark:border-slate-700 font-bold rounded-2xl px-8 py-4 text-base transition-all duration-300 hover:-translate-y-1"
+							>
+								{content.secondaryBtnText}
+							</Link>
+						)}
 					</motion.div>
 				</div>
 
@@ -83,7 +86,7 @@ export default function HeroSection() {
 						<HakeemCharacter size="lg" className="drop-shadow-2xl" />
 						<div className="absolute -top-12 -right-4 md:-right-8 bg-white dark:bg-slate-800 rounded-2xl rounded-br-none p-4 shadow-xl border border-slate-100 dark:border-slate-700 animate-[bounce_3s_ease-in-out_infinite]">
 							<p className="text-xs font-bold text-slate-700 dark:text-slate-200">
-								التعلم يبدأ هنا!
+								{content.character1Message}
 							</p>
 						</div>
 					</motion.div>
@@ -102,7 +105,7 @@ export default function HeroSection() {
 						/>
 						<div className="absolute -top-16 -left-4 md:-left-8 bg-amber-50 dark:bg-slate-800 rounded-2xl rounded-bl-none p-4 shadow-xl border border-amber-100 dark:border-slate-700 animate-[bounce_3.5s_ease-in-out_infinite]">
 							<p className="text-xs font-bold text-amber-700 dark:text-amber-400">
-								مستعد للتفوق؟ 🚀
+								{content.character2Message}
 							</p>
 						</div>
 					</motion.div>

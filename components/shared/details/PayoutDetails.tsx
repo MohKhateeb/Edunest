@@ -3,9 +3,13 @@
 import { FileText } from "lucide-react";
 import React from "react";
 import { formatPrice } from "@/lib/utils";
+import type { Prisma } from "@prisma/client";
+import type { commonPayoutInclude } from "@/lib/actions/details";
+
+export type DetailedPayout = Prisma.TeacherPayoutGetPayload<{ include: typeof commonPayoutInclude }>;
 
 interface PayoutDetailsProps {
-	payout: any;
+	payout: DetailedPayout;
 }
 
 export default function PayoutDetails({ payout }: PayoutDetailsProps) {
@@ -96,7 +100,7 @@ export default function PayoutDetails({ payout }: PayoutDetailsProps) {
 							</tr>
 						</thead>
 						<tbody>
-							{payout.bookings.map((booking: any) => {
+							{payout.bookings.map((booking) => {
 								const price = Number(booking.price);
 								const isFree = booking.isTrial;
 								const commRate = Number(booking.appliedCommissionRate);

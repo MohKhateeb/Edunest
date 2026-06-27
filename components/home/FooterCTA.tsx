@@ -5,8 +5,9 @@ import Link from "next/link";
 import React from "react";
 import HakeemCharacter from "@/components/shared/HakeemCharacter";
 import NajeebCharacter from "@/components/shared/NajeebCharacter";
+import type { FooterCtaContent } from "@/types/homepage";
 
-export default function FooterCTA() {
+export default function FooterCTA({ content }: { content: FooterCtaContent }) {
 	return (
 		<section className="py-32 relative overflow-hidden bg-gradient-to-br from-primary to-blue-700">
 			<div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.05] mix-blend-overlay"></div>
@@ -34,10 +35,10 @@ export default function FooterCTA() {
 					className="space-y-4"
 				>
 					<h2 className="text-4xl md:text-5xl font-black text-white tracking-tight">
-						نحن بانتظارك لنحتفل بنجاحاتك القادمة!
+						{content.title}
 					</h2>
 					<p className="text-lg text-blue-100 font-medium">
-						انضم لعائلة إديونست اليوم، وابدأ رحلة تعليمية لا تُنسى.
+						{content.subtitle}
 					</p>
 				</motion.div>
 
@@ -48,10 +49,10 @@ export default function FooterCTA() {
 					transition={{ delay: 0.2 }}
 				>
 					<Link
-						href="/register"
+						href={content.btnLink}
 						className="inline-block bg-white text-primary hover:bg-slate-50 font-black rounded-2xl px-12 py-5 text-lg transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 shadow-xl"
 					>
-						سجل حسابك الآن وانضم إلينا 🚀
+						{content.btnText}
 					</Link>
 				</motion.div>
 			</div>

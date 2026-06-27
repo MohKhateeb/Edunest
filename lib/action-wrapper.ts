@@ -11,7 +11,7 @@ import type { ActionResponse } from "@/lib/types";
  * @param handler The actual business logic of the action
  * @returns A wrapped async function ready to be exported as a Server Action
  */
-export function withAuthAction<Args extends any[], R = any>(
+export function withAuthAction<Args extends unknown[], R = unknown>(
 	allowedTypes: UserType[],
 	handler: (
 		auth: { userId: string; userType: UserType },

@@ -9,6 +9,7 @@ import {
 	resolveDispute,
 	sendDisputeMessage,
 } from "@/lib/actions/disputes";
+import { DISPUTE_TURN_AR } from "@/lib/translations";
 
 type Message = {
 	id: string;
@@ -254,7 +255,7 @@ export function DisputeChat({
 										disabled={loading}
 										className={`flex-1 min-w-[120px] py-1.5 rounded-lg text-xs font-bold border transition-all ${allowedTurn === "PARENT" ? "bg-amber-600 text-white border-amber-600" : "bg-white text-amber-600 border-amber-200 hover:bg-amber-50 dark:bg-gray-800 dark:border-gray-700"}`}
 									>
-										انتظار ولي الأمر
+										انتظار {DISPUTE_TURN_AR.PARENT}
 									</button>
 									<button
 										type="button"
@@ -262,7 +263,7 @@ export function DisputeChat({
 										disabled={loading}
 										className={`flex-1 min-w-[120px] py-1.5 rounded-lg text-xs font-bold border transition-all ${allowedTurn === "TEACHER" ? "bg-emerald-600 text-white border-emerald-600" : "bg-white text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:bg-gray-800 dark:border-gray-700"}`}
 									>
-										انتظار المعلم
+										انتظار {DISPUTE_TURN_AR.TEACHER}
 									</button>
 									<button
 										type="button"
@@ -270,7 +271,7 @@ export function DisputeChat({
 										disabled={loading}
 										className={`flex-1 min-w-[120px] py-1.5 rounded-lg text-xs font-bold border transition-all ${allowedTurn === "NONE" ? "bg-red-600 text-white border-red-600" : "bg-white text-red-600 border-red-200 hover:bg-red-50 dark:bg-gray-800 dark:border-gray-700"}`}
 									>
-										قفل على الجميع
+										التحويل إلى {DISPUTE_TURN_AR.NONE}
 									</button>
 								</div>
 							</div>

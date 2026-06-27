@@ -54,7 +54,7 @@ async function getTeachers(params: SearchParams) {
 				services: {
 					where: {
 						isActive: true,
-						serviceType: { name: { not: "الحقيبة الشهرية" } },
+						serviceType: { isActive: true },
 					},
 					select: { price: true },
 					orderBy: { price: "asc" },

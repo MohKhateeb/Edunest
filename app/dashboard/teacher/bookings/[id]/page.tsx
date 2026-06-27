@@ -13,9 +13,9 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { BOOKING_STATUS_AR, BOOKING_STATUS_STYLES } from "@/lib/translations";
 
 export async function generateMetadata({
 	params,
@@ -73,25 +73,6 @@ export default async function TeacherBookingDetailsPage({
 	);
 	const notes = booking.parentNotes || booking.questionDetails;
 
-	// Status mapping
-	const statusLabels: Record<string, string> = {
-		PENDING: "قيد الانتظار",
-		ACCEPTED: "مقبولة",
-		COMPLETED: "مكتملة",
-		CANCELLED: "ملغاة",
-	};
-
-	const statusColors: Record<string, string> = {
-		PENDING:
-			"bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400",
-		ACCEPTED:
-			"bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400",
-		COMPLETED:
-			"bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400",
-		CANCELLED:
-			"bg-red-100 text-red-800 border-red-200 dark:bg-red-900/30 dark:text-red-400",
-	};
-
 	return (
 		<div
 			className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10"
@@ -115,12 +96,12 @@ export default async function TeacherBookingDetailsPage({
 				</div>
 				<div>
 					<span
-						className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold border ${statusColors[booking.status]}`}
+						className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold border ${BOOKING_STATUS_STYLES[booking.status]}`}
 					>
 						{booking.status === "COMPLETED" && (
 							<CheckCircle2 className="w-4 h-4" />
 						)}
-						{statusLabels[booking.status] || booking.status}
+						{BOOKING_STATUS_AR[booking.status] || booking.status}
 					</span>
 				</div>
 			</div>
