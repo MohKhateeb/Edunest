@@ -16,6 +16,7 @@ import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/require-auth";
 import { BookingService } from "@/lib/services/domain/booking-service";
 import { BOOKING_STATUS_AR, BOOKING_STATUS_STYLES } from "@/lib/translations";
+import { calculateEarnings } from "@/lib/utils/financial";
 
 export async function generateMetadata({
 	params,
@@ -44,10 +45,13 @@ export default async function TeacherBookingDetailsPage({
 
 	const price = Number(booking.price);
 	const commissionRate = Number(booking.appliedCommissionRate);
-	const commissionAmount = (price * commissionRate) / 100;
-	const netProfit = booking.isTrial
-		? Number(booking.trialCostToPlatform)
-		: price - commissionAmount;
+
+	const { commissionAmount, teacherTotalEarnings: netProfit } = calculateEarnings(
+		price,
+		commissionRate,
+		booking.isTrial,
+		Number(booking.trialCostToPlatform)
+	);
 
 	const endTime = new Date(
 		booking.startTime.getTime() + booking.duration * 60000,
