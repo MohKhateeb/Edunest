@@ -10,7 +10,7 @@ export default async function AdminSettingsPage() {
 	await requireAuth([UserType.ADMIN]);
 	if (!session) redirect("/login");
 
-	const settings = await SystemAdminService.getSystemSettings();
+	const { rawSettings, groupedSettings } = await SystemAdminService.getSystemSettings();
 
-	return <AdminSettingsForm initialSettings={settings} />;
+	return <AdminSettingsForm initialSettings={rawSettings} groupedSettings={groupedSettings} />;
 }

@@ -75,7 +75,7 @@ export async function getAdminPendingPayouts() {
 }
 
 
-export type ParentFinancialBooking = Prisma.BookingGetPayload<{
+export type ParentFinancialBooking = Omit<Prisma.BookingGetPayload<{
 	include: {
 		teacherService: {
 			include: {
@@ -88,7 +88,7 @@ export type ParentFinancialBooking = Prisma.BookingGetPayload<{
 		dispute: true;
 		parentRefund: true;
 	};
-}>;
+}>, "price"> & { price: number };
 
 export type ParentFinancialStats = {
 	bookings: ParentFinancialBooking[];
@@ -155,8 +155,13 @@ export async function getParentFinancials(
 		select: { id: true, name: true },
 	});
 
+	const formattedBookings = bookings.map((b) => ({
+		...b,
+		price: Number(b.price),
+	})) as ParentFinancialBooking[];
+
 	return {
-		bookings,
+		bookings: formattedBookings,
 		totalSpent,
 		totalRefunded,
 		teachers,
@@ -164,13 +169,18 @@ export async function getParentFinancials(
 }
 
 
-export type TeacherFinancialBooking = Prisma.BookingGetPayload<{
+export type TeacherFinancialBooking = Omit<Prisma.BookingGetPayload<{
 	include: {
 		dispute: true;
 		student: true;
 		teacherService: { include: { serviceType: true } };
 	};
-}>;
+}>, "price" | "appliedCommissionRate" | "trialCostToPlatform"> & {
+	price: number;
+	appliedCommissionRate: number;
+	trialCostToPlatform: number;
+	netEarnings: number;
+};
 
 export type TeacherPayoutWithDetails = Prisma.TeacherPayoutGetPayload<{
 	// Base payout, no complex includes needed here
@@ -185,6 +195,7 @@ export type TeacherEarningsWallet = {
 	heldAmount: number;
 	disputedBookings: TeacherFinancialBooking[];
 	normalBookings: TeacherFinancialBooking[];
+	openDisputesCount: number;
 };
 
 export async function getTeacherEarningsWallet(
@@ -238,14 +249,6 @@ export async function getTeacherEarningsWallet(
 	const normalBookings: TeacherFinancialBooking[] = [];
 
 	for (const b of rawBookings) {
-		if (b.dispute) {
-			disputedBookings.push(b);
-		} else {
-			normalBookings.push(b);
-		}
-
-		if (b.payoutId !== null) continue;
-
 		const earnings = calculateEarnings(
 			Number(b.price),
 			Number(b.appliedCommissionRate),
@@ -253,6 +256,22 @@ export async function getTeacherEarningsWallet(
 			Number(b.trialCostToPlatform),
 		);
 		const net = earnings.teacherTotalEarnings;
+
+		const formattedBooking = {
+			...b,
+			price: Number(b.price),
+			appliedCommissionRate: Number(b.appliedCommissionRate),
+			trialCostToPlatform: Number(b.trialCostToPlatform),
+			netEarnings: net,
+		} as TeacherFinancialBooking;
+
+		if (b.dispute) {
+			disputedBookings.push(formattedBooking);
+		} else {
+			normalBookings.push(formattedBooking);
+		}
+
+		if (b.payoutId !== null) continue;
 
 		if (b.dispute && b.dispute.status !== "RESOLVED_IN_FAVOR_OF_TEACHER") {
 			if (b.dispute.status === "OPEN") heldAmount += net;
@@ -265,6 +284,10 @@ export async function getTeacherEarningsWallet(
 			availableToPayout += net;
 		}
 	}
+
+	const openDisputesCount = disputedBookings.filter(
+		(b) => b.dispute!.status === "OPEN",
+	).length;
 
 	disputedBookings.sort((a, b) => {
 		if (a.dispute!.status === "OPEN" && b.dispute!.status !== "OPEN") return -1;
@@ -281,23 +304,34 @@ export async function getTeacherEarningsWallet(
 		heldAmount,
 		disputedBookings,
 		normalBookings,
+		openDisputesCount,
 	};
 }
 
 
 export type AdminPayoutsData = {
-	unpaidBookings: {
-		id: string;
+	teacherGroups: {
 		teacherId: string;
 		teacherName: string;
-		studentName: string;
-		serviceName: string;
-		startTime: Date;
-		duration: number;
-		price: number;
-		isTrial: boolean;
-		trialCostToPlatform: number;
-		appliedCommissionRate: number;
+		totalNet: number;
+		totalCount: number;
+		bookings: {
+			id: string;
+			teacherId: string;
+			teacherName: string;
+			studentName: string;
+			serviceName: string;
+			startTime: Date;
+			duration: number;
+			price: number;
+			isTrial: boolean;
+			trialCostToPlatform: number;
+			appliedCommissionRate: number;
+			netEarnings: number;
+			totalAmount: number;
+			commissionAmount: number;
+			trialCompensation: number;
+		}[];
 	}[];
 	mappedPayouts: {
 		id: string;
@@ -351,21 +385,58 @@ export async function getAdminPayoutsData(): Promise<AdminPayoutsData> {
 		orderBy: { startTime: "asc" },
 	});
 
-	const unpaidBookings = unpaidBookingsRaw
-		.filter((b) => !b.dispute || b.dispute.status === "RESOLVED_IN_FAVOR_OF_TEACHER")
-		.map((b) => ({
+	const groups: Record<string, AdminPayoutsData["teacherGroups"][0]> = {};
+
+	const unpaidBookingsList = unpaidBookingsRaw
+		.filter((b) => !b.dispute || b.dispute.status === "RESOLVED_IN_FAVOR_OF_TEACHER");
+
+	for (const b of unpaidBookingsList) {
+		const price = Number(b.price);
+		const appliedCommissionRate = Number(b.appliedCommissionRate);
+		const trialCostToPlatform = Number(b.trialCostToPlatform);
+		const teacherId = b.teacherService.teacherId;
+		const teacherName = b.teacherService.teacher.user.name || "غير معروف";
+
+		const earnings = calculateEarnings(
+			price,
+			appliedCommissionRate,
+			b.isTrial,
+			trialCostToPlatform,
+		);
+		const netEarnings = earnings.teacherTotalEarnings;
+
+		if (!groups[teacherId]) {
+			groups[teacherId] = {
+				teacherId,
+				teacherName,
+				totalNet: 0,
+				totalCount: 0,
+				bookings: [],
+			};
+		}
+
+		groups[teacherId].bookings.push({
 			id: b.id,
-			teacherId: b.teacherService.teacherId,
-			teacherName: b.teacherService.teacher.user.name || "غير معروف",
+			teacherId,
+			teacherName,
 			studentName: b.student.name,
 			serviceName: b.teacherService.serviceType.name,
 			startTime: b.startTime,
 			duration: b.duration,
-			price: Number(b.price),
+			price,
 			isTrial: b.isTrial,
-			trialCostToPlatform: Number(b.trialCostToPlatform),
-			appliedCommissionRate: Number(b.appliedCommissionRate),
-		}));
+			trialCostToPlatform,
+			appliedCommissionRate,
+			netEarnings,
+			totalAmount: earnings.totalAmount,
+			commissionAmount: earnings.commissionAmount,
+			trialCompensation: earnings.trialCompensation,
+		});
+		groups[teacherId].totalCount++;
+		groups[teacherId].totalNet += netEarnings;
+	}
+
+	const teacherGroups = Object.values(groups).sort((a, b) => b.totalNet - a.totalNet);
 
 	const payouts = await prisma.teacherPayout.findMany({
 		take: 50,
@@ -414,7 +485,7 @@ export async function getAdminPayoutsData(): Promise<AdminPayoutsData> {
 	}));
 
 	return {
-		unpaidBookings,
+		teacherGroups,
 		mappedPayouts,
 		mappedRefunds,
 	};

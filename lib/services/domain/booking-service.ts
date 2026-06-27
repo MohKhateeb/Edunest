@@ -1,16 +1,48 @@
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
 import { bookingDetailsInclude, type DetailedBooking } from "@/lib/types";
+import { getDetailedSessionState } from "@/lib/utils/booking-state";
 import { UserType } from "@prisma/client";
 
 export class BookingService {
-	static async getParentBookings(parentId: string): Promise<DetailedBooking[]> {
+	static async getParentBookings(parentId: string) {
 		await requireAuth([UserType.PARENT]);
-		return prisma.booking.findMany({
+		const bookings = await prisma.booking.findMany({
 			where: { parentUserId: parentId },
 			include: bookingDetailsInclude,
 			orderBy: { startTime: "asc" },
 		});
+
+		let upcomingCount = 0;
+		let pendingCount = 0;
+		let reportsCount = 0;
+		let ghostCount = 0;
+
+		for (const b of bookings) {
+			if (b.status === "CONFIRMED") upcomingCount++;
+			if (b.status === "PENDING") pendingCount++;
+			if (b.status === "COMPLETED" && b.report) reportsCount++;
+			if (b.status === "CONFIRMED") {
+				const state = getDetailedSessionState(b.startTime, b.duration);
+				if (state.status === "ghost") ghostCount++;
+			}
+		}
+
+		const hakeemMsg =
+			upcomingCount > 0
+				? `ممتاز، لديك ${upcomingCount} جلسة قادمة مؤكدة. المتابعة المستمرة لجدول الجلسات وحضورها في الوقت المحدد هو مفتاح التفوق والتميز لأبنائك.`
+				: "ليس لديك أي جلسات قادمة مؤكدة حالياً. متابعة التقارير للجلسات السابقة يساعدك في تحديد ما يحتاجه أبناؤك في الجلسات القادمة.";
+
+		return {
+			bookings,
+			insights: {
+				hakeemMsg,
+				upcomingCount,
+				pendingCount,
+				reportsCount,
+				ghostCount,
+			},
+		};
 	}
 
 	static async getTeacherBookings(userId: string): Promise<DetailedBooking[]> {

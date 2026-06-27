@@ -6,7 +6,7 @@ import { getAdminPayoutsData } from "@/lib/services/domain/financial-service";
 export default async function AdminPayoutsPage() {
 	await requireAuth([UserType.ADMIN]);
 
-	const { unpaidBookings, mappedPayouts, mappedRefunds } = await getAdminPayoutsData();
+	const { teacherGroups, mappedPayouts, mappedRefunds } = await getAdminPayoutsData();
 
 	return (
 		<div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -21,7 +21,7 @@ export default async function AdminPayoutsPage() {
 			</div>
 
 			<AdminPayoutsEngine
-				unpaidBookings={unpaidBookings}
+				teacherGroups={teacherGroups}
 				existingPayouts={mappedPayouts}
 				parentRefunds={mappedRefunds}
 			/>

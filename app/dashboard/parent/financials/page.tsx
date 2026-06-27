@@ -50,7 +50,7 @@ const renderPaymentStatus = (booking: FinancialBooking) => {
 		);
 	}
 	if (booking.status === "PENDING") {
-		return <PaymentAction bookingId={booking.id} price={Number(booking.price)} />;
+		return <PaymentAction bookingId={booking.id} price={booking.price} />;
 	}
 	return (
 		<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-50 text-gray-700 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 text-xs font-bold">
@@ -289,7 +289,7 @@ export default async function ParentFinancialsPage({
 										</td>
 										<td className="px-6 py-4">
 											<span className="font-extrabold text-gray-900 dark:text-white">
-												{Number(booking.price).toFixed(2)}
+												{booking.price}
 											</span>
 											<span className="text-xs text-gray-500 mr-1">شيكل</span>
 										</td>

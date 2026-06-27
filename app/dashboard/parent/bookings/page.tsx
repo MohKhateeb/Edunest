@@ -11,17 +11,12 @@ export default async function ParentBookingsPage() {
 	const session = await auth();
 	if (!session) redirect("/login");
 
-	const bookings = await BookingService.getParentBookings(session.user.id);
+	const { bookings, insights } = await BookingService.getParentBookings(
+		session.user.id,
+	);
 
 	const sanitizedBookings = sanitizePrismaData(bookings);
-
-	const confirmedCount = bookings.filter(
-		(b) => b.status === "CONFIRMED",
-	).length;
-	const hakeemMsg =
-		confirmedCount > 0
-			? `ممتاز، لديك ${confirmedCount} جلسة قادمة مؤكدة. المتابعة المستمرة لجدول الجلسات وحضورها في الوقت المحدد هو مفتاح التفوق والتميز لأبنائك.`
-			: "ليس لديك أي جلسات قادمة مؤكدة حالياً. متابعة التقارير للجلسات السابقة يساعدك في تحديد ما يحتاجه أبناؤك في الجلسات القادمة.";
+	const hakeemMsg = insights.hakeemMsg;
 
 	return (
 		<div className="space-y-8" dir="rtl">
@@ -38,7 +33,7 @@ export default async function ParentBookingsPage() {
 					سجل الحصص والطلبات
 				</h2>
 
-				<ParentBookingsList bookings={sanitizedBookings} />
+				<ParentBookingsList bookings={sanitizedBookings} insights={insights} />
 			</div>
 		</div>
 	);

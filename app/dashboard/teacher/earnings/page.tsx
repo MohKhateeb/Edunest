@@ -43,6 +43,7 @@ export default async function TeacherEarningsPage({
 		heldAmount,
 		disputedBookings,
 		normalBookings,
+		openDisputesCount,
 	} = wallet;
 
 	const twentyFourHoursAgo = new Date();
@@ -57,8 +58,7 @@ export default async function TeacherEarningsPage({
 			id: "disputes",
 			label: "النزاعات",
 			icon: AlertCircle,
-			badge: disputedBookings.filter((b) => b.dispute!.status === "OPEN")
-				.length,
+			badge: openDisputesCount,
 		},
 	];
 
@@ -224,12 +224,8 @@ export default async function TeacherEarningsPage({
 							</div>
 						) : (
 							normalBookings.map((booking) => {
-								const price = Number(booking.price);
-								const commission =
-									(price * Number(booking.appliedCommissionRate)) / 100;
-								const net = booking.isTrial
-									? Number(booking.trialCostToPlatform)
-									: price - commission;
+								const price = booking.price;
+								const net = booking.netEarnings;
 								const isUnder24h = booking.completedAt
 									? booking.completedAt > twentyFourHoursAgo
 									: false;
@@ -407,12 +403,8 @@ export default async function TeacherEarningsPage({
 							</div>
 						) : (
 							disputedBookings.map((booking) => {
-								const price = Number(booking.price);
-								const commission =
-									(price * Number(booking.appliedCommissionRate)) / 100;
-								const net = booking.isTrial
-									? Number(booking.trialCostToPlatform)
-									: price - commission;
+								const price = booking.price;
+								const net = booking.netEarnings;
 
 								return (
 									<div

@@ -1,34 +1,30 @@
 "use client";
 
 import { HelpCircle, Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import BookingCard from "@/components/shared/BookingCard";
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import type { DetailedBooking } from "@/lib/types";
-import { getDetailedSessionState } from "@/lib/utils/booking-state";
 
 interface ParentBookingsListProps {
 	bookings: DetailedBooking[];
+	insights: {
+		upcomingCount: number;
+		pendingCount: number;
+		reportsCount: number;
+		ghostCount: number;
+	};
 }
 
 export default function ParentBookingsList({
 	bookings,
+	insights,
 }: ParentBookingsListProps) {
 	type TabType = "UPCOMING" | "PENDING" | "COMPLETED" | "ARCHIVED";
 	const [activeTab, setActiveTab] = useState<TabType>("UPCOMING");
 	const [searchQuery, setSearchQuery] = useState("");
 
-	const upcomingCount = bookings.filter((b) => b.status === "CONFIRMED").length;
-	const pendingCount = bookings.filter((b) => b.status === "PENDING").length;
-	const reportsCount = bookings.filter(
-		(b) => b.status === "COMPLETED" && b.report,
-	).length;
-
-	const ghostCount = bookings.filter(
-		(b) =>
-			b.status === "CONFIRMED" &&
-			getDetailedSessionState(b.startTime, b.duration).status === "ghost",
-	).length;
+	const { upcomingCount, pendingCount, reportsCount, ghostCount } = insights;
 
 	// 2. فلترة البيانات حسب التبويب النشط والبحث
 	const getFilteredData = () => {

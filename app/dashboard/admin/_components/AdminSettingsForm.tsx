@@ -30,6 +30,7 @@ type SystemSetting = {
 
 type AdminSettingsFormProps = {
 	initialSettings: SystemSetting[];
+	groupedSettings: Record<string, SystemSetting[]>;
 };
 
 // --------------------------------------------------------
@@ -134,6 +135,7 @@ const CATEGORIES = {
 
 export default function AdminSettingsForm({
 	initialSettings,
+	groupedSettings: initialGroupedSettings,
 }: AdminSettingsFormProps) {
 	const router = useRouter();
 	const [settings, setSettings] = useState<SystemSetting[]>(initialSettings);
@@ -179,21 +181,11 @@ export default function AdminSettingsForm({
 		}
 	};
 
-	// Group settings
-	const groupedSettings = settings.reduce(
-		(acc, current) => {
-			const config = SETTINGS_DICT[current.settingKey] || {
-				label: current.settingKey,
-				type: "text",
-				icon: Settings2,
-				category: "OTHER",
-			};
-			if (!acc[config.category]) acc[config.category] = [];
-			acc[config.category].push({ setting: current, config });
-			return acc;
-		},
-		{} as Record<string, { setting: SystemSetting; config: SettingConfig }[]>,
-	);
+	// The grouped Settings are provided by the Backend DTO
+	// However, we still need to reflect the local edits from `settings` state to the grouped UI
+	const getLatestSettingValue = (key: string) => {
+		return settings.find((s) => s.settingKey === key)?.settingValue || "";
+	};
 
 	return (
 		<div className="space-y-8" dir="rtl">
@@ -225,7 +217,7 @@ export default function AdminSettingsForm({
 			<form onSubmit={handleSubmit} className="space-y-8">
 				{(Object.keys(CATEGORIES) as Array<keyof typeof CATEGORIES>).map(
 					(catKey) => {
-						const catItems = groupedSettings[catKey];
+						const catItems = initialGroupedSettings[catKey];
 						if (!catItems || catItems.length === 0) return null;
 
 						const categoryDef = CATEGORIES[catKey];
@@ -258,9 +250,16 @@ export default function AdminSettingsForm({
 
 								{/* Category Settings Grid */}
 								<div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-									{catItems.map(({ setting, config }) => {
+									{catItems.map((setting) => {
+										const config = SETTINGS_DICT[setting.settingKey] || {
+											label: setting.settingKey,
+											type: "text",
+											icon: Settings2,
+											category: "OTHER",
+										};
 										const Icon = config.icon;
 										const isToggle = config.type === "boolean";
+										const currentValue = getLatestSettingValue(setting.settingKey);
 
 										return (
 											<div
@@ -280,7 +279,7 @@ export default function AdminSettingsForm({
 															<input
 																type="checkbox"
 																className="sr-only peer"
-																checked={setting.settingValue === "true"}
+																checked={currentValue === "true"}
 																onChange={(
 																	e: React.ChangeEvent<HTMLInputElement>,
 																) =>
@@ -295,12 +294,12 @@ export default function AdminSettingsForm({
 														<span
 															className={cn(
 																"text-sm font-bold",
-																setting.settingValue === "true"
+																currentValue === "true"
 																	? "text-emerald-600"
 																	: "text-slate-400",
 															)}
 														>
-															{setting.settingValue === "true"
+															{currentValue === "true"
 																? "مفعل نشط"
 																: "معطل"}
 														</span>
@@ -317,7 +316,7 @@ export default function AdminSettingsForm({
 															}
 															required
 															step="any"
-															value={setting.settingValue}
+															value={currentValue}
 															onChange={(e) =>
 																handleValueChange(
 																	setting.settingKey,

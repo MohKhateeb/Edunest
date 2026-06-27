@@ -8,8 +8,8 @@ import {
 	markParentRefundAsPaid,
 	markPayoutAsPaid,
 } from "@/lib/actions/payout";
-import { calculateEarnings } from "@/lib/utils/financial";
-import type { ParentRefundRecord, PayoutRecord, UnpaidBooking } from "@/types/payout";
+import type { ParentRefundRecord, PayoutRecord } from "@/types/payout";
+import type { AdminPayoutsData } from "@/lib/services/domain/financial-service";
 import { DraftPayoutSection } from "./payouts/DraftPayoutSection";
 import { ParentRefundsList } from "./payouts/ParentRefundsList";
 import { PendingTeachersList } from "./payouts/PendingTeachersList";
@@ -17,13 +17,13 @@ import { PayoutsHistoryList } from "./payouts/PayoutsHistoryList";
 import { PrintInvoice } from "./payouts/PrintInvoice";
 
 type AdminPayoutsEngineProps = {
-	unpaidBookings: UnpaidBooking[];
+	teacherGroups: AdminPayoutsData["teacherGroups"];
 	existingPayouts: PayoutRecord[];
 	parentRefunds: ParentRefundRecord[];
 };
 
 export default function AdminPayoutsEngine({
-	unpaidBookings,
+	teacherGroups,
 	existingPayouts,
 	parentRefunds,
 }: AdminPayoutsEngineProps) {
@@ -43,42 +43,7 @@ export default function AdminPayoutsEngine({
 
 	const [payoutToPrint, setPayoutToPrint] = useState<PayoutRecord | null>(null);
 
-	const groupedByTeacher = useMemo(() => {
-		const groups: Record<
-			string,
-			{
-				teacherId: string;
-				teacherName: string;
-				bookings: UnpaidBooking[];
-				totalNet: number;
-				totalCount: number;
-			}
-		> = {};
-
-		for (const b of unpaidBookings) {
-			if (!groups[b.teacherId]) {
-				groups[b.teacherId] = {
-					teacherId: b.teacherId,
-					teacherName: b.teacherName,
-					bookings: [],
-					totalNet: 0,
-					totalCount: 0,
-				};
-			}
-			groups[b.teacherId].bookings.push(b);
-			groups[b.teacherId].totalCount++;
-
-			const earnings = calculateEarnings(
-				b.price,
-				b.appliedCommissionRate,
-				b.isTrial,
-				b.trialCostToPlatform,
-			);
-			const net = earnings.teacherTotalEarnings;
-			groups[b.teacherId].totalNet += net;
-		}
-		return Object.values(groups).sort((a, b) => b.totalNet - a.totalNet);
-	}, [unpaidBookings]);
+	const groupedByTeacher = teacherGroups;
 
 	const handleSelectTeacher = (teacherId: string) => {
 		setSelectedTeacherId(teacherId);
@@ -116,15 +81,9 @@ export default function AdminPayoutsEngine({
 		for (const b of teacher.bookings) {
 			if (selectedBookingIds.has(b.id)) {
 				count++;
-				const earnings = calculateEarnings(
-					b.price,
-					b.appliedCommissionRate,
-					b.isTrial,
-					b.trialCostToPlatform,
-				);
-				totalAmount += earnings.totalAmount;
-				commissionAmount += earnings.commissionAmount;
-				trialCompensation += earnings.trialCompensation;
+				totalAmount += b.totalAmount;
+				commissionAmount += b.commissionAmount;
+				trialCompensation += b.trialCompensation;
 			}
 		}
 

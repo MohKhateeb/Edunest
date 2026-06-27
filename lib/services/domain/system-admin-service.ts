@@ -67,9 +67,36 @@ export class SystemAdminService {
 
 	static async getSystemSettings() {
 		await requireAuth([UserType.ADMIN]);
-		return prisma.systemSetting.findMany({
+		const settings = await prisma.systemSetting.findMany({
 			orderBy: { settingKey: "asc" },
 		});
+
+		const groupedSettings: Record<string, typeof settings> = {
+			FINANCIAL: [],
+			TRIAL: [],
+			POLICY: [],
+			OTHER: [],
+		};
+
+		for (const setting of settings) {
+			if (
+				setting.settingKey.includes("Commission") ||
+				setting.settingKey.includes("Price")
+			) {
+				groupedSettings.FINANCIAL.push(setting);
+			} else if (setting.settingKey.includes("Trial")) {
+				groupedSettings.TRIAL.push(setting);
+			} else if (
+				setting.settingKey.includes("Refund") ||
+				setting.settingKey.includes("Lead")
+			) {
+				groupedSettings.POLICY.push(setting);
+			} else {
+				groupedSettings.OTHER.push(setting);
+			}
+		}
+
+		return { rawSettings: settings, groupedSettings };
 	}
 
 	static async getAdminTeachers() {
