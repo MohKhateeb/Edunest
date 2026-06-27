@@ -11,9 +11,8 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
-import { calculateEarnings } from "@/lib/utils/financial";
+import { getTeacherEarningsWallet } from "@/lib/services/teacher-financial-service";
 
 export const metadata = {
 	title: "الأرباح والتسويات | EduNest",
@@ -28,88 +27,26 @@ export default async function TeacherEarningsPage({
 	const resolvedParams = await searchParams;
 	const currentTab = (resolvedParams.tab as string) || "overview";
 
-	const teacher = await prisma.teacher.findUnique({
-		where: { userId },
-		include: { user: true },
-	});
-
-	if (!teacher) {
+	let wallet;
+	try {
+		wallet = await getTeacherEarningsWallet(userId);
+	} catch (e) {
 		return <div>حدث خطأ، لا يوجد ملف معلم.</div>;
 	}
 
-	// 1. Calculate Payouts
-	const payouts = await prisma.teacherPayout.findMany({
-		where: { teacherId: teacher.id },
-		orderBy: { createdAt: "desc" },
-	});
+	const {
+		teacher,
+		payouts,
+		totalPaid,
+		totalPendingPayouts,
+		availableToPayout,
+		heldAmount,
+		disputedBookings,
+		normalBookings,
+	} = wallet;
 
-	const totalPaid = payouts
-		.filter((p) => p.isPaid)
-		.reduce((acc, curr) => acc + Number(curr.netAmount), 0);
-	const totalPendingPayouts = payouts
-		.filter((p) => !p.isPaid)
-		.reduce((acc, curr) => acc + Number(curr.netAmount), 0);
-
-	// 2. Calculate Unpayout Bookings
 	const twentyFourHoursAgo = new Date();
 	twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
-
-	const rawBookings = await prisma.booking.findMany({
-		where: {
-			teacherService: { teacherId: teacher.id },
-			status: "COMPLETED",
-			OR: [{ paymentStatus: { in: ["PAID", "REFUNDED"] } }, { isTrial: true }],
-		},
-		include: {
-			dispute: true,
-			student: true,
-			teacherService: { include: { serviceType: true } },
-		},
-		orderBy: { completedAt: "desc" },
-		take: 100, // Limit to 100 for display, can be paginated later
-	});
-
-	let availableToPayout = 0;
-	let heldAmount = 0;
-
-	rawBookings.forEach((b) => {
-		if (b.payoutId !== null) return;
-
-		const earnings = calculateEarnings(
-			Number(b.price),
-			Number(b.appliedCommissionRate),
-			b.isTrial,
-			Number(b.trialCostToPlatform),
-		);
-		const net = earnings.teacherTotalEarnings;
-
-		if (b.dispute && b.dispute.status !== "RESOLVED_IN_FAVOR_OF_TEACHER") {
-			if (b.dispute.status === "OPEN") heldAmount += net;
-			return;
-		}
-
-		if (b.completedAt && b.completedAt > twentyFourHoursAgo) {
-			heldAmount += net;
-		} else {
-			availableToPayout += net;
-		}
-	});
-
-	const disputedBookings = rawBookings
-		.filter((b) => b.dispute)
-		.sort((a, b) => {
-			if (a.dispute!.status === "OPEN" && b.dispute!.status !== "OPEN")
-				return -1;
-			if (b.dispute!.status === "OPEN" && a.dispute!.status !== "OPEN")
-				return 1;
-			return (b.completedAt?.getTime() || 0) - (a.completedAt?.getTime() || 0);
-		});
-
-	const normalBookings = rawBookings
-		.filter((b) => !b.dispute)
-		.sort((a, b) => {
-			return (b.completedAt?.getTime() || 0) - (a.completedAt?.getTime() || 0);
-		});
 
 	// Tab Navigation items
 	const tabs = [

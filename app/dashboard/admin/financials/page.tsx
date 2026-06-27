@@ -11,6 +11,7 @@ import {
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { getAdminFinancialStats } from "@/lib/services/admin-financial-service";
 
 export const metadata = {
 	title: "الإدارة المالية الشاملة | EduNest",
@@ -19,30 +20,14 @@ export const metadata = {
 export default async function AdminFinancialsPage() {
 	await requireAuth([UserType.ADMIN]);
 
-	// 1. Fetch Action Items (To-Dos)
-	const openDisputesCount = await prisma.dispute.count({
-		where: { status: "OPEN" },
-	});
+	const {
+		openDisputesCount,
+		pendingPayoutsCount,
+		totalRevenue,
+		totalCommission,
+	} = await getAdminFinancialStats();
 
-	const pendingPayoutsCount = await prisma.teacherPayout.count({
-		where: { isPaid: false },
-	});
-
-	// 2. Platform Revenue & Stats
-	const completedBookings = await prisma.booking.findMany({
-		where: { status: "COMPLETED" },
-	});
-
-	const totalRevenue = completedBookings.reduce(
-		(acc, b) => acc + Number(b.price),
-		0,
-	);
-	const totalCommission = completedBookings.reduce(
-		(acc, b) => acc + (Number(b.price) * Number(b.appliedCommissionRate)) / 100,
-		0,
-	);
-
-	// 3. Fetch Open Disputes
+	// Fetch Open Disputes
 	const openDisputes = await prisma.dispute.findMany({
 		where: { status: "OPEN" },
 		include: {
@@ -58,7 +43,7 @@ export default async function AdminFinancialsPage() {
 		take: 5,
 	});
 
-	// 4. Fetch Pending Payouts
+	// Fetch Pending Payouts
 	const pendingPayouts = await prisma.teacherPayout.findMany({
 		where: { isPaid: false },
 		include: { teacher: { include: { user: true } } },

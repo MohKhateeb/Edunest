@@ -19,7 +19,7 @@ import Image from "next/image";
 import React from "react";
 import { cn, formatPrice } from "@/lib/utils";
 import type { Prisma } from "@prisma/client";
-import type { commonTeacherInclude } from "@/lib/actions/details";
+import type { commonTeacherInclude } from "@/lib/types";
 
 export type DetailedTeacher = Prisma.TeacherGetPayload<{ include: typeof commonTeacherInclude }>;
 

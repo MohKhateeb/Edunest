@@ -4,7 +4,7 @@ import { FileText } from "lucide-react";
 import React from "react";
 import { formatPrice } from "@/lib/utils";
 import type { Prisma } from "@prisma/client";
-import type { commonPayoutInclude } from "@/lib/actions/details";
+import type { commonPayoutInclude } from "@/lib/types";
 
 export type DetailedPayout = Prisma.TeacherPayoutGetPayload<{ include: typeof commonPayoutInclude }>;
 

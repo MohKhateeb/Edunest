@@ -10,7 +10,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { type EntityType, getEntityDetails } from "@/lib/actions/details";
+import type { EntityType } from "@/lib/types";
+import { getEntityDetails } from "@/lib/actions/details";
 import StudentDetails, { type DetailedStudent } from "./details/StudentDetails";
 import TeacherDetails, { type DetailedTeacher } from "./details/TeacherDetails";
 import type { DetailedBooking } from "@/lib/types";

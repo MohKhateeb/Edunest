@@ -5,31 +5,19 @@ import { requireTeacherProfile } from "@/lib/actions/auth-helpers";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
-import type { ActionResponse } from "@/lib/types";
+import type { ActionResponse, EntityType } from "@/lib/types";
+import {
+	commonPayoutInclude,
+	commonStudentInclude,
+	commonTeacherInclude,
+} from "@/lib/types";
 import { sanitizePrismaData } from "@/lib/utils";
-
-export type EntityType = "student" | "teacher" | "booking" | "payout";
 
 function successResponse<T>(data: T): ActionResponse<T> {
 	return { success: true, data: sanitizePrismaData(data) as T };
 }
 
-export const commonStudentInclude = {
-	parent: { select: { id: true, name: true, email: true, phone: true } },
-	bookings: {
-		include: {
-			teacherService: {
-				include: {
-					serviceType: true,
-					teacher: { include: { user: { select: { name: true } } } },
-				},
-			},
-			report: true,
-			review: true,
-		},
-		orderBy: { startTime: "desc" as const },
-	},
-};
+
 
 async function getStudentDetails(
 	entityId: string,
@@ -86,26 +74,7 @@ async function getStudentDetails(
 	return { success: false, error: "نوع الحساب غير مصرح له بالوصول." };
 }
 
-export const commonTeacherInclude = {
-	user: { select: { id: true, name: true, email: true, phone: true } },
-	services: {
-		where: {
-			isActive: true,
-			serviceType: { isActive: true },
-		},
-		include: { serviceType: true },
-	},
-	reviews: {
-		where: { isVisible: true },
-		orderBy: { createdAt: "desc" as const },
-		take: 15,
-		include: {
-			booking: { select: { student: { select: { name: true } } } },
-		},
-	},
-	verification: true,
-	subjects: { include: { subject: true } },
-} satisfies Prisma.TeacherInclude;
+
 
 async function getTeacherDetails(
 	entityId: string,
@@ -180,20 +149,7 @@ async function getBookingDetails(
 	return { success: false, error: "غير مصرح لك بمشاهدة تفاصيل هذا الحجز." };
 }
 
-export const commonPayoutInclude = {
-	teacher: {
-		include: { user: { select: { id: true, name: true, email: true } } },
-	},
-	bookings: {
-		include: {
-			student: { select: { name: true } },
-			teacherService: {
-				include: { serviceType: { select: { name: true } } },
-			},
-		},
-		orderBy: { startTime: "desc" as const },
-	},
-} satisfies Prisma.TeacherPayoutInclude;
+
 
 async function getPayoutDetails(
 	entityId: string,

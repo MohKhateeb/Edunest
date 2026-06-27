@@ -13,7 +13,7 @@ import React from "react";
 import { BOOKING_STATUS_AR } from "@/lib/translations";
 import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
 import type { Prisma } from "@prisma/client";
-import type { commonStudentInclude } from "@/lib/actions/details";
+import type { commonStudentInclude } from "@/lib/types";
 
 export type DetailedStudent = Prisma.StudentGetPayload<{ include: typeof commonStudentInclude }>;
 

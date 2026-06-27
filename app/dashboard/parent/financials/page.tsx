@@ -10,20 +10,17 @@ import {
 	DisputeAction,
 	PaymentAction,
 } from "@/components/shared/FinancialActions";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { getParentFinancials } from "@/lib/services/parent-financial-service";
+import type { ParentFinancialBooking } from "@/lib/services/parent-financial-service";
 import { hoursUntil } from "@/lib/utils/time";
 
 export const metadata = {
 	title: "السجل المالي | EduNest",
 };
 
-type FinancialBooking = Prisma.BookingGetPayload<{
-	include: {
-		parentRefund: true;
-		dispute: true;
-	};
-}>;
+// Use the exported type from the service
+type FinancialBooking = ParentFinancialBooking;
 
 // Helper: Render Payment Status to avoid nested ternaries
 const renderPaymentStatus = (booking: FinancialBooking) => {
@@ -111,53 +108,8 @@ export default async function ParentFinancialsPage({
 	const dateFilter = resolvedParams.date as string | undefined;
 	const teacherFilter = resolvedParams.teacher as string | undefined;
 
-	const whereClause: Prisma.BookingWhereInput = {
-		parentUserId: userId,
-	};
-
-	if (dateFilter) {
-		const start = new Date(dateFilter);
-		const end = new Date(dateFilter);
-		end.setHours(23, 59, 59, 999);
-		whereClause.createdAt = { gte: start, lte: end };
-	}
-
-	if (teacherFilter) {
-		whereClause.teacherService = {
-			teacher: { userId: teacherFilter },
-		};
-	}
-
-	const bookings = await prisma.booking.findMany({
-		where: whereClause,
-		include: {
-			teacherService: {
-				include: {
-					teacher: { include: { user: true } },
-					serviceType: true,
-				},
-			},
-			student: true,
-			payment: true,
-			dispute: true,
-			parentRefund: true,
-		},
-		orderBy: { createdAt: "desc" },
-	});
-
-	const totalSpent = bookings
-		.filter((b) => b.paymentStatus === "PAID")
-		.reduce((acc, curr) => acc + Number(curr.price), 0);
-
-	const totalRefunded = bookings
-		.filter((b) => b.paymentStatus === "REFUNDED")
-		.reduce((acc, curr) => acc + Number(curr.price), 0);
-
-	// Fetch teachers for the filter
-	const teachers = await prisma.user.findMany({
-		where: { userType: "TEACHER" },
-		select: { id: true, name: true },
-	});
+	const { bookings, totalSpent, totalRefunded, teachers } =
+		await getParentFinancials(userId, dateFilter, teacherFilter);
 
 	return (
 		<div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
