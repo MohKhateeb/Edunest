@@ -59,6 +59,33 @@ export class BookingService {
 		});
 	}
 
+	static async getTeacherPendingReports(userId: string): Promise<DetailedBooking[]> {
+		await requireAuth([UserType.TEACHER]);
+		const teacher = await prisma.teacher.findUnique({
+			where: { userId },
+		});
+		if (!teacher) throw new Error("Teacher not found");
+
+		// Fetch confirmed bookings from the database
+		const bookings = await prisma.booking.findMany({
+			where: {
+				teacherService: { teacherId: teacher.id },
+				status: "CONFIRMED",
+			},
+			include: bookingDetailsInclude,
+			orderBy: { startTime: "asc" },
+		});
+
+		// Filter in memory for sessions that have officially ended and do not have a report
+		const now = Date.now();
+		return bookings.filter((b) => {
+			const startMs = new Date(b.startTime).getTime();
+			const durationMs = b.duration * 60_000;
+			const endMs = startMs + durationMs;
+			return now > endMs && !b.report;
+		});
+	}
+
 	static async getAdminBookings(): Promise<DetailedBooking[]> {
 		await requireAuth([UserType.ADMIN]);
 		return prisma.booking.findMany({

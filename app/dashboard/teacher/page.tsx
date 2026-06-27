@@ -157,10 +157,10 @@ export default async function TeacherDashboard() {
 									</p>
 								</div>
 								<Link
-									href={`/dashboard/teacher/bookings/${alert.bookingId}`}
+									href="/dashboard/teacher/pending-reports"
 									className="shrink-0 text-xs font-bold bg-primary/10 text-primary hover:bg-primary/20 px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
 								>
-									الذهاب لكتابة التقرير
+									الذهاب لكتابة التقارير
 								</Link>
 							</div>
 						))}
