@@ -12,9 +12,27 @@ import {
 	commonTeacherInclude,
 } from "@/lib/types";
 import { sanitizePrismaData } from "@/lib/utils";
+import { calculateEarnings } from "@/lib/utils/financial";
 
 function successResponse<T>(data: T): ActionResponse<T> {
 	return { success: true, data: sanitizePrismaData(data) as T };
+}
+
+function withCalculatedPerformance<T extends { bookings: any[] }>(student: T) {
+	const completedReports = student.bookings
+		.filter((b: any) => b.status === "COMPLETED" && b.report?.studentPerformance)
+		.map((b: any) => b.report.studentPerformance);
+
+	const calculatedAvgPerformance =
+		completedReports.length > 0
+			? (completedReports.reduce((a: number, b: number) => a + b, 0) / completedReports.length).toFixed(1)
+			: null;
+
+	return { 
+		...student, 
+		calculatedAvgPerformance,
+		calculatedReportsCount: completedReports.length
+	};
 }
 
 
@@ -36,7 +54,7 @@ async function getStudentDetails(
 				success: false,
 				error: "غير مصرح لك بمشاهدة تفاصيل هذا الطالب.",
 			};
-		return successResponse(student);
+		return successResponse(withCalculatedPerformance(student));
 	}
 
 	if (userType === UserType.TEACHER) {
@@ -59,7 +77,7 @@ async function getStudentDetails(
 				error:
 					"غير مصرح لك بالاطلاع على هذا الطالب لعدم وجود حجوزات مشتركة بينكما.",
 			};
-		return successResponse(student);
+		return successResponse(withCalculatedPerformance(student));
 	}
 
 	if (userType === UserType.ADMIN) {
@@ -68,7 +86,7 @@ async function getStudentDetails(
 			include: commonStudentInclude,
 		});
 		if (!student) return { success: false, error: "الطالب المطلوب غير موجود." };
-		return successResponse(student);
+		return successResponse(withCalculatedPerformance(student));
 	}
 
 	return { success: false, error: "نوع الحساب غير مصرح له بالوصول." };
@@ -176,7 +194,21 @@ async function getPayoutDetails(
 			error: "غير مصرح لك بالاطلاع على تسوية مالية خاصة بمعلم آخر.",
 		};
 
-	return successResponse(payout);
+	const hydratedBookings = payout.bookings.map((b) => {
+		const earnings = calculateEarnings(
+			Number(b.price),
+			Number(b.appliedCommissionRate),
+			b.isTrial,
+			Number(b.trialCostToPlatform)
+		);
+		return {
+			...b,
+			calculatedCommission: earnings.commissionAmount,
+			calculatedNetAmount: earnings.teacherTotalEarnings,
+		};
+	});
+
+	return successResponse({ ...payout, bookings: hydratedBookings });
 }
 
 export async function getEntityDetails(

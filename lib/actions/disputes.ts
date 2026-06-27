@@ -9,6 +9,51 @@ import { requireAuth } from "@/lib/require-auth";
 import type { ActionResponse } from "@/lib/types";
 import { hoursUntil } from "@/lib/utils/time";
 
+export async function getSecureDisputeDetails(id: string) {
+	const { userId, userType } = await requireAuth([
+		UserType.ADMIN,
+		UserType.PARENT,
+		UserType.TEACHER,
+	]);
+
+	const dispute = await prisma.dispute.findUnique({
+		where: { id },
+		include: {
+			booking: {
+				include: {
+					student: true,
+					parent: true,
+					teacherService: {
+						include: {
+							teacher: { include: { user: true } },
+							serviceType: true,
+						},
+					},
+				},
+			},
+			messages: {
+				include: { sender: true },
+				orderBy: { createdAt: "asc" },
+			},
+		},
+	});
+
+	if (!dispute) return null;
+
+	// Backend Authorization Check
+	if (userType === "PARENT" && dispute.booking.parentUserId !== userId) {
+		return null;
+	}
+	if (
+		userType === "TEACHER" &&
+		dispute.booking.teacherService.teacher.userId !== userId
+	) {
+		return null;
+	}
+
+	return dispute;
+}
+
 const createDisputeSchema = z.object({
 	bookingId: z.string().min(1, "معرف الحجز مطلوب"),
 	reason: z

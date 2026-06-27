@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { DisputeChat } from "@/components/shared/DisputeChat";
 import { requireAuth } from "@/lib/require-auth";
-import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
+import { getSecureDisputeDetails } from "@/lib/actions/disputes";
 
 export const metadata = {
 	title: "تفاصيل النزاع | EduNest",
@@ -21,21 +21,10 @@ export default async function DisputePage({
 	]);
 	const { id } = await params;
 
-	const dispute = await SystemAdminService.getDisputeDetails(id);
+	const dispute = await getSecureDisputeDetails(id);
 
 	if (!dispute) {
 		notFound();
-	}
-
-	// Authorization Check:
-	if (userType === "PARENT" && dispute.booking.parentUserId !== userId) {
-		redirect("/unauthorized");
-	}
-	if (
-		userType === "TEACHER" &&
-		dispute.booking.teacherService.teacher.userId !== userId
-	) {
-		redirect("/unauthorized");
 	}
 
 	// Dynamic back link based on role

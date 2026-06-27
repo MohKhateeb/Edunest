@@ -46,9 +46,6 @@ export default async function TeacherEarningsPage({
 		openDisputesCount,
 	} = wallet;
 
-	const twentyFourHoursAgo = new Date();
-	twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
-
 	// Tab Navigation items
 	const tabs = [
 		{ id: "overview", label: "نظرة عامة", icon: Wallet },
@@ -226,9 +223,7 @@ export default async function TeacherEarningsPage({
 							normalBookings.map((booking) => {
 								const price = booking.price;
 								const net = booking.netEarnings;
-								const isUnder24h = booking.completedAt
-									? booking.completedAt > twentyFourHoursAgo
-									: false;
+								const isUnder24h = !booking.isCleared && !booking.payoutId;
 
 								return (
 									<div

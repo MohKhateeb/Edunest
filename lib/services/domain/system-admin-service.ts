@@ -21,31 +21,6 @@ export class SystemAdminService {
 		});
 	}
 
-	static async getDisputeDetails(id: string) {
-		await requireAuth([UserType.ADMIN]);
-		return prisma.dispute.findUnique({
-			where: { id },
-			include: {
-				booking: {
-					include: {
-						student: true,
-						parent: true,
-						teacherService: {
-							include: {
-								teacher: { include: { user: true } },
-								serviceType: true,
-							},
-						},
-					},
-				},
-				messages: {
-					include: { sender: true },
-					orderBy: { createdAt: "asc" },
-				},
-			},
-		});
-	}
-
 	static async getAdminServices() {
 		await requireAuth([UserType.ADMIN]);
 		const serviceTypes = await prisma.serviceType.findMany({

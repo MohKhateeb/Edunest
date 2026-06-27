@@ -13,7 +13,6 @@ import {
 import { requireAuth } from "@/lib/require-auth";
 import { getParentFinancials } from "@/lib/services/domain/financial-service";
 import type { ParentFinancialBooking } from "@/lib/services/domain/financial-service";
-import { hoursUntil } from "@/lib/utils/time";
 
 export const metadata = {
 	title: "السجل المالي | EduNest",
@@ -82,12 +81,7 @@ const renderDisputeAction = (booking: FinancialBooking) => {
 			</div>
 		);
 	}
-	if (
-		booking.status === "COMPLETED" &&
-		booking.completedAt &&
-		hoursUntil(booking.completedAt) >= -24 &&
-		!booking.payoutId
-	) {
+	if (booking.canDispute) {
 		return <DisputeAction bookingId={booking.id} />;
 	}
 	return (

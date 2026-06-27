@@ -88,7 +88,7 @@ export type ParentFinancialBooking = Omit<Prisma.BookingGetPayload<{
 		dispute: true;
 		parentRefund: true;
 	};
-}>, "price"> & { price: number };
+}>, "price"> & { price: number; canDispute: boolean; };
 
 export type ParentFinancialStats = {
 	bookings: ParentFinancialBooking[];
@@ -155,10 +155,19 @@ export async function getParentFinancials(
 		select: { id: true, name: true },
 	});
 
-	const formattedBookings = bookings.map((b) => ({
-		...b,
-		price: Number(b.price),
-	})) as ParentFinancialBooking[];
+	const twentyFourHoursAgo = new Date();
+	twentyFourHoursAgo.setHours(twentyFourHoursAgo.getHours() - 24);
+
+	const formattedBookings = bookings.map((b) => {
+		const isUnder24h = b.completedAt ? b.completedAt > twentyFourHoursAgo : false;
+		const canDispute = b.status === "COMPLETED" && isUnder24h && !b.payoutId;
+
+		return {
+			...b,
+			price: Number(b.price),
+			canDispute,
+		};
+	}) as ParentFinancialBooking[];
 
 	return {
 		bookings: formattedBookings,
@@ -180,6 +189,7 @@ export type TeacherFinancialBooking = Omit<Prisma.BookingGetPayload<{
 	appliedCommissionRate: number;
 	trialCostToPlatform: number;
 	netEarnings: number;
+	isCleared: boolean;
 };
 
 export type TeacherPayoutWithDetails = Prisma.TeacherPayoutGetPayload<{
@@ -257,12 +267,16 @@ export async function getTeacherEarningsWallet(
 		);
 		const net = earnings.teacherTotalEarnings;
 
+		const isUnder24h = b.completedAt ? b.completedAt > twentyFourHoursAgo : false;
+		const isCleared = !isUnder24h && !b.dispute; // Basic clearance flag
+
 		const formattedBooking = {
 			...b,
 			price: Number(b.price),
 			appliedCommissionRate: Number(b.appliedCommissionRate),
 			trialCostToPlatform: Number(b.trialCostToPlatform),
 			netEarnings: net,
+			isCleared,
 		} as TeacherFinancialBooking;
 
 		if (b.dispute) {

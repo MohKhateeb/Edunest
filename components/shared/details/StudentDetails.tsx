@@ -15,7 +15,12 @@ import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
 import type { Prisma } from "@prisma/client";
 import type { commonStudentInclude } from "@/lib/types";
 
-export type DetailedStudent = Prisma.StudentGetPayload<{ include: typeof commonStudentInclude }>;
+export type DetailedStudent = Prisma.StudentGetPayload<{
+	include: typeof commonStudentInclude;
+}> & { 
+	calculatedAvgPerformance: string | null;
+	calculatedReportsCount: number;
+};
 
 interface StudentDetailsProps {
 	student: DetailedStudent;
@@ -28,20 +33,7 @@ export default function StudentDetails({
 	activeTab,
 	setActiveTab,
 }: StudentDetailsProps) {
-	// Calculate average rating performance from completed reports
-	const completedReports = student.bookings
-		.filter(
-			(b) => b.status === "COMPLETED" && b.report?.studentPerformance,
-		)
-		.map((b) => b.report!.studentPerformance!);
-
-	const avgPerformance =
-		completedReports.length > 0
-			? (
-					completedReports.reduce((a: number, b: number) => a + b, 0) /
-					completedReports.length
-				).toFixed(1)
-			: null;
+	const avgPerformance = student.calculatedAvgPerformance;
 
 	return (
 		<div className="space-y-6">
@@ -80,7 +72,7 @@ export default function StudentDetails({
 								{avgPerformance} / 5.0
 							</span>
 							<span className="text-[10px] text-muted-foreground">
-								({completedReports.length} تقارير)
+								({student.calculatedReportsCount} تقارير)
 							</span>
 						</div>
 					</div>

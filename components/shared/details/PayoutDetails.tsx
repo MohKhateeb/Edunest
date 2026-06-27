@@ -6,7 +6,17 @@ import { formatPrice } from "@/lib/utils";
 import type { Prisma } from "@prisma/client";
 import type { commonPayoutInclude } from "@/lib/types";
 
-export type DetailedPayout = Prisma.TeacherPayoutGetPayload<{ include: typeof commonPayoutInclude }>;
+export type DetailedPayout = Omit<
+	Prisma.TeacherPayoutGetPayload<{ include: typeof commonPayoutInclude }>,
+	"bookings"
+> & {
+	bookings: (Prisma.BookingGetPayload<{
+		include: typeof commonPayoutInclude.bookings.include;
+	}> & {
+		calculatedCommission: number;
+		calculatedNetAmount: number;
+	})[];
+};
 
 interface PayoutDetailsProps {
 	payout: DetailedPayout;
@@ -101,13 +111,9 @@ export default function PayoutDetails({ payout }: PayoutDetailsProps) {
 						</thead>
 						<tbody>
 							{payout.bookings.map((booking) => {
-								const price = Number(booking.price);
 								const isFree = booking.isTrial;
-								const commRate = Number(booking.appliedCommissionRate);
-								const commission = isFree ? 0 : (price * commRate) / 100;
-								const netAmount = isFree
-									? Number(booking.trialCostToPlatform)
-									: price - commission;
+								const commission = booking.calculatedCommission;
+								const netAmount = booking.calculatedNetAmount;
 
 								return (
 									<tr
@@ -137,13 +143,13 @@ export default function PayoutDetails({ payout }: PayoutDetailsProps) {
 													{formatPrice(Number(booking.trialCostToPlatform))})
 												</span>
 											) : (
-												<span>{formatPrice(price)}</span>
+												<span>{formatPrice(Number(booking.price))}</span>
 											)}
 										</td>
 										<td className="p-3 text-rose-600 dark:text-rose-400">
 											{isFree
 												? "-"
-												: `-${formatPrice(commission)} (${commRate}%)`}
+												: `-${formatPrice(commission)} (${Number(booking.appliedCommissionRate)}%)`}
 										</td>
 										<td className="p-3 font-bold text-foreground text-left">
 											{formatPrice(netAmount)}
