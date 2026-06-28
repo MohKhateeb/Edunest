@@ -12,6 +12,8 @@ import { revalidatePath } from "next/cache";
 import type { z } from "zod";
 import { withAuthAction } from "@/lib/action-wrapper";
 import { createNotification } from "@/lib/notifications";
+import { unitOfWork } from "@/lib/repositories/unit-of-work";
+import { bookingRepository } from "@/lib/repositories/prisma/booking.repository";
 import { prisma } from "@/lib/prisma";
 import { getSettingNumber } from "@/lib/settings";
 import { checkTeacherAvailability } from "@/lib/utils/availability";
@@ -153,7 +155,7 @@ export const createBooking = withAuthAction(
 		}
 
 		// 7. Save booking inside a transaction (handling race conditions)
-		const newBooking = await prisma.$transaction(async (tx) => {
+		const newBooking = await unitOfWork.runTransaction(async (tx) => {
 			// Acquire exclusive row locks
 			await tx.$executeRaw`SELECT id FROM "User" WHERE id = ${parentUserId} FOR UPDATE`;
 			await tx.$executeRaw`SELECT id FROM "Teacher" WHERE id = ${teacherId} FOR UPDATE`;
@@ -178,14 +180,12 @@ export const createBooking = withAuthAction(
 			}
 
 			// Check overlapping bookings inside transaction (fully locked)
-			const activeBookings = await tx.booking.findMany({
-				where: {
-					teacherService: { teacherId },
-					status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
-					startTime: { gte: dayStart, lte: dayEnd },
-				},
-				select: { startTime: true, duration: true },
-			});
+			const activeBookings = await bookingRepository.findActiveByTeacherId(
+				teacherId,
+				dayStart,
+				dayEnd,
+				tx
+			);
 
 			for (const b of activeBookings) {
 				const hasOverlap = hasTimeOverlap(
@@ -202,14 +202,12 @@ export const createBooking = withAuthAction(
 			}
 
 			// Check overlapping bookings for the student
-			const studentActiveBookings = await tx.booking.findMany({
-				where: {
-					studentId,
-					status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
-					startTime: { gte: dayStart, lte: dayEnd },
-				},
-				select: { startTime: true, duration: true },
-			});
+			const studentActiveBookings = await bookingRepository.findActiveByStudentId(
+				studentId,
+				dayStart,
+				dayEnd,
+				tx
+			);
 
 			for (const b of studentActiveBookings) {
 				const hasOverlap = hasTimeOverlap(
@@ -226,30 +224,28 @@ export const createBooking = withAuthAction(
 			}
 
 			// Create Booking
-			const booking = await tx.booking.create({
-				data: {
-					parentUserId,
-					studentId,
-					teacherServiceId,
-					startTime,
-					duration,
-					price,
-					appliedCommissionRate,
-					isTrial,
-					trialCostToPlatform,
-					questionTitle,
-					questionDetails,
-					questionImageUrl,
-					parentNotes,
-					status: isTrial ? BookingStatus.CONFIRMED : BookingStatus.PENDING,
-					confirmedAt: isTrial ? new Date() : null,
-					paymentStatus,
-					bookingSource: BookingSource.WEB,
-					meetingUrl: isTrial
-						? `https://meet.jit.si/edunest-${crypto.randomUUID()}`
-						: null,
-				},
-			});
+			const booking = await bookingRepository.create({
+				parentUserId,
+				studentId,
+				teacherServiceId,
+				startTime,
+				duration,
+				price,
+				appliedCommissionRate,
+				isTrial,
+				trialCostToPlatform,
+				questionTitle,
+				questionDetails,
+				questionImageUrl,
+				parentNotes,
+				status: isTrial ? BookingStatus.CONFIRMED : BookingStatus.PENDING,
+				confirmedAt: isTrial ? new Date() : null,
+				paymentStatus,
+				bookingSource: BookingSource.WEB,
+				meetingUrl: isTrial
+					? `https://meet.jit.si/edunest-${crypto.randomUUID()}`
+					: null,
+			}, tx);
 
 			// Create Payment if not trial
 			if (!isTrial) {

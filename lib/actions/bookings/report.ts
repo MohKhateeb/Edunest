@@ -5,7 +5,8 @@ import { revalidatePath } from "next/cache";
 import type { z } from "zod";
 import { withAuthAction } from "@/lib/action-wrapper";
 import { createNotification } from "@/lib/notifications";
-import { prisma } from "@/lib/prisma";
+import { unitOfWork } from "@/lib/repositories/unit-of-work";
+import { bookingRepository } from "@/lib/repositories/prisma/booking.repository";
 import {
 	canSubmitReport,
 	getTransitionError,
@@ -31,14 +32,16 @@ export const submitSessionReport = withAuthAction(
 			teacherNotes,
 		} = validated.data;
 
-		const booking = await prisma.booking.findUnique({
-			where: { id: bookingId },
-			include: {
-				teacherService: {
-					include: { teacher: true },
+		const booking = await bookingRepository.findById(
+			bookingId,
+			{
+				include: {
+					teacherService: {
+						include: { teacher: true },
+					},
 				},
-			},
-		});
+			}
+		);
 
 		if (!booking || booking.teacherService.teacher.userId !== userId) {
 			return { success: false, error: "الحجز غير موجود أو غير تابع لك" };
@@ -59,7 +62,7 @@ export const submitSessionReport = withAuthAction(
 		}
 
 		// Save report and mark booking COMPLETED in transaction
-		await prisma.$transaction(async (tx) => {
+		await unitOfWork.runTransaction(async (tx) => {
 			// 1. Create session report
 			await tx.sessionReport.create({
 				data: {
@@ -73,13 +76,14 @@ export const submitSessionReport = withAuthAction(
 			});
 
 			// 2. Mark booking completed
-			await tx.booking.update({
-				where: { id: bookingId },
-				data: {
+			await bookingRepository.update(
+				bookingId,
+				{
 					status: BookingStatus.COMPLETED,
 					completedAt: new Date(),
 				},
-			});
+				tx
+			);
 
 			// Increment teacher total sessions completed
 			await tx.teacher.update({

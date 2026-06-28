@@ -2,6 +2,7 @@
 
 import { BookingStatus, UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { bookingRepository } from "@/lib/repositories/prisma/booking.repository";
 import { requireAuth } from "@/lib/require-auth";
 import { getSettingNumber } from "@/lib/settings";
 import type { ActionResponse } from "@/lib/types";
@@ -121,20 +122,11 @@ export async function searchAvailableTeachers(input: {
 			const dayEnd = new Date(dateObj);
 			dayEnd.setHours(dayEnd.getHours() + 24);
 
-			const allActiveBookings = await prisma.booking.findMany({
-				where: {
-					teacherService: { teacherId: { in: candidateTeacherIds } },
-					status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
-					startTime: { gte: dayStart, lte: dayEnd },
-				},
-				select: {
-					startTime: true,
-					duration: true,
-					teacherService: {
-						select: { teacherId: true },
-					},
-				},
-			});
+			const allActiveBookings = await bookingRepository.findActiveByTeacherIds(
+				candidateTeacherIds,
+				dayStart,
+				dayEnd
+			);
 
 			// تصنيف الحجوزات حسب المعلم في الذاكرة
 			const bookingsByTeacher = new Map<

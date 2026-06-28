@@ -5,7 +5,8 @@ import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import { withAuthAction } from "@/lib/action-wrapper";
 import { createNotification } from "@/lib/notifications";
-import { prisma } from "@/lib/prisma";
+import { unitOfWork } from "@/lib/repositories/unit-of-work";
+import { bookingRepository } from "@/lib/repositories/prisma/booking.repository";
 import { getAuthorizedBooking } from "@/lib/services/booking-service";
 import {
 	getTransitionError,
@@ -42,19 +43,20 @@ export const acceptBooking = withAuthAction(
 			};
 		}
 
-		await prisma.$transaction(async (tx) => {
+		await unitOfWork.runTransaction(async (tx) => {
 			const meetingUrl =
 				booking.meetingUrl ||
 				`https://meet.jit.si/edunest-${crypto.randomUUID()}`;
 
-			await tx.booking.update({
-				where: { id: bookingId },
-				data: {
+			await bookingRepository.update(
+				bookingId,
+				{
 					status: BookingStatus.CONFIRMED,
 					confirmedAt: new Date(),
 					meetingUrl,
 				},
-			});
+				tx
+			);
 
 			await createNotification(
 				{

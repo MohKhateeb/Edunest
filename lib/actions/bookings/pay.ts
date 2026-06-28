@@ -5,7 +5,8 @@ import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import { withAuthAction } from "@/lib/action-wrapper";
 import { createNotification } from "@/lib/notifications";
-import { prisma } from "@/lib/prisma";
+import { unitOfWork } from "@/lib/repositories/unit-of-work";
+import { bookingRepository } from "@/lib/repositories/prisma/booking.repository";
 import { getAuthorizedBooking } from "@/lib/services/booking-service";
 import {
 	getTransitionError,
@@ -35,7 +36,7 @@ export const processPayment = withAuthAction(
 			};
 		}
 
-		await prisma.$transaction(async (tx) => {
+		await unitOfWork.runTransaction(async (tx) => {
 			// 1. تحديث جدول Payment (إن وجد) أو إنشاؤه إذا لم يكن موجوداً
 			if (booking.payment) {
 				await tx.payment.update({
@@ -58,9 +59,9 @@ export const processPayment = withAuthAction(
 			}
 
 			// 2. تحديث حالة الدفع في جدول الحجز نفسه وتحويله لـ CONFIRMED وتوليد الرابط
-			await tx.booking.update({
-				where: { id: bookingId },
-				data: {
+			await bookingRepository.update(
+				bookingId,
+				{
 					paymentStatus: PaymentStatus.PAID,
 					status: BookingStatus.CONFIRMED,
 					confirmedAt: new Date(),
@@ -68,7 +69,8 @@ export const processPayment = withAuthAction(
 						booking.meetingUrl ||
 						`https://meet.jit.si/edunest-${crypto.randomUUID()}`,
 				},
-			});
+				tx
+			);
 
 			// 3. إرسال إشعار للمعلم بتأكيد الحجز الفوري
 			const isImmediate = booking.startTime <= new Date(Date.now() + 5 * 60000);

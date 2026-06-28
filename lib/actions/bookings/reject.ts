@@ -4,7 +4,8 @@ import { BookingStatus, PaymentStatus, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { withAuthAction } from "@/lib/action-wrapper";
 import { createNotification } from "@/lib/notifications";
-import { prisma } from "@/lib/prisma";
+import { unitOfWork } from "@/lib/repositories/unit-of-work";
+import { bookingRepository } from "@/lib/repositories/prisma/booking.repository";
 import { getAuthorizedBooking } from "@/lib/services/booking-service";
 import {
 	getTransitionError,
@@ -24,20 +25,16 @@ export const rejectBooking = withAuthAction(
 			};
 		}
 
-		await prisma.$transaction(async (tx) => {
-			await tx.booking.update({
-				where: { id: bookingId },
-				data: {
-					status: BookingStatus.REJECTED,
-				},
-			});
+		await unitOfWork.runTransaction(async (tx) => {
+			await bookingRepository.updateStatus(bookingId, BookingStatus.REJECTED, tx);
 
 			// If it was paid, queue for manual admin refund or handle appropriately
 			if (booking.paymentStatus === PaymentStatus.PAID && !booking.isTrial) {
-				await tx.booking.update({
-					where: { id: bookingId },
-					data: { paymentStatus: PaymentStatus.REFUNDED },
-				});
+				await bookingRepository.update(
+					bookingId,
+					{ paymentStatus: PaymentStatus.REFUNDED },
+					tx
+				);
 
 				// Toggle payment status
 				await tx.payment.update({

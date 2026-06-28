@@ -12,11 +12,14 @@ export interface IUserRepository {
 }
 
 export interface IBookingRepository {
-	findById(id: string, tx?: DbClient): Promise<Booking | null>;
-	findByUserId(userId: string, tx?: DbClient): Promise<Booking[]>;
-	create(data: Prisma.BookingCreateInput, tx?: DbClient): Promise<Booking>;
-	update(id: string, data: Prisma.BookingUpdateInput, tx?: DbClient): Promise<Booking>;
-	updateStatus(id: string, status: BookingStatus, tx?: DbClient): Promise<Booking>;
+	findById(id: string, options?: { include?: Prisma.BookingInclude }, tx?: DbClient): Promise<any | null>;
+	findByUserId(userId: string, tx?: DbClient): Promise<any[]>;
+	findActiveByTeacherId(teacherId: string, from: Date, to: Date, tx?: DbClient): Promise<any[]>;
+	findActiveByStudentId(studentId: string, from: Date, to: Date, tx?: DbClient): Promise<any[]>;
+	findActiveByTeacherIds(teacherIds: string[], from: Date, to: Date, tx?: DbClient): Promise<any[]>;
+	create(data: Prisma.BookingUncheckedCreateInput, tx?: DbClient): Promise<any>;
+	update(id: string, data: Prisma.BookingUncheckedUpdateInput, tx?: DbClient): Promise<any>;
+	updateStatus(id: string, status: BookingStatus, tx?: DbClient): Promise<any>;
 }
 
 export interface ITeacherRepository {

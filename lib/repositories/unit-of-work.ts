@@ -8,3 +8,5 @@ export class PrismaUnitOfWork {
 		});
 	}
 }
+
+export const unitOfWork = new PrismaUnitOfWork();
