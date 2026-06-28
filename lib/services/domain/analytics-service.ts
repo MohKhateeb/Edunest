@@ -53,35 +53,81 @@ export async function getAdminDashboardOverview(): Promise<AdminDashboardOvervie
 		where: { status: "PENDING" },
 	});
 
-	const allBookings = await prisma.booking.findMany({
-		take: 500,
-		orderBy: { createdAt: "desc" },
-		select: {
-			status: true,
-			price: true,
-			appliedCommissionRate: true,
-			isTrial: true,
-			trialCostToPlatform: true,
-			completedAt: true,
-			teacherService: {
-				select: {
-					serviceType: { select: { name: true } },
-					teacher: { select: { subjects: { include: { subject: true } } } },
-				},
-			},
-		},
+	const completedCount = await prisma.booking.count({ where: { status: "COMPLETED" } });
+	const completionRate = totalBookings > 0 ? ((completedCount / totalBookings) * 100).toFixed(1) : "0.0";
+
+	const avgAgg = await prisma.booking.aggregate({
+		where: { status: "COMPLETED" },
+		_avg: { price: true },
+	});
+	const averageOrderValue = Number(avgAgg._avg.price || 0);
+
+	const statusGroups = await prisma.booking.groupBy({
+		by: ["status"],
+		_count: { status: true },
+	});
+	const statusMap: Record<string, string> = {
+		COMPLETED: "مكتمل", CONFIRMED: "مؤكد", PENDING: "معلق", CANCELLED: "ملغي", REJECTED: "مرفوض",
+	};
+	const bookingStatuses = statusGroups.map(g => ({
+		name: statusMap[g.status] || g.status,
+		value: g._count.status,
+	}));
+
+	const revenueRaw = await prisma.$queryRaw<{ date: Date, revenue: number }[]>`
+		SELECT 
+			DATE("completedAt") as date,
+			SUM(
+				CASE 
+					WHEN "isTrial" = true THEN -"trialCostToPlatform" 
+					ELSE ("price" * "appliedCommissionRate" / 100) 
+				END
+			) as revenue
+		FROM "Booking"
+		WHERE "status" = 'COMPLETED' AND "completedAt" >= NOW() - INTERVAL '14 days'
+		GROUP BY DATE("completedAt")
+	`;
+	
+	const revenueData = Array.from({ length: 14 }).map((_, i) => {
+		const d = new Date();
+		d.setDate(d.getDate() - (13 - i));
+		d.setHours(0, 0, 0, 0);
+		const dateStr = d.toLocaleDateString("ar-PS", { month: "short", day: "numeric" });
+		
+		const nextD = new Date(d);
+		nextD.setDate(d.getDate() + 1);
+		
+		const found = revenueRaw.find(r => {
+			const rDate = new Date(r.date);
+			return rDate >= d && rDate < nextD;
+		});
+		return { date: dateStr, revenue: Number(found?.revenue || 0) };
 	});
 
-	const completedBookings = allBookings.filter((b) => b.status === "COMPLETED");
-	const { averageOrderValue, completionRate } = computeFinancialKPIs(
-		completedBookings,
-		totalBookings,
-	);
+	const specRaw = await prisma.$queryRaw<{ name: string, count: number }[]>`
+		SELECT 
+			COALESCE(s.name, 'غير محدد') as name,
+			COUNT(b.id)::int as count
+		FROM "Booking" b
+		LEFT JOIN "TeacherService" ts ON b."teacherServiceId" = ts.id
+		LEFT JOIN "TeacherSubject" tsub ON ts."teacherId" = tsub."teacherId"
+		LEFT JOIN "Subject" s ON tsub."subjectId" = s.id
+		GROUP BY COALESCE(s.name, 'غير محدد')
+		ORDER BY count DESC
+	`;
+	const requestedSpecializations = specRaw.map(r => ({ name: r.name, count: Number(r.count) }));
 
-	const bookingStatuses = computeBookingStatuses(allBookings);
-	const revenueData = computeRevenueTrends(completedBookings);
-	const requestedSpecializations = computeRequestedSpecializations(allBookings);
-	const sessionTypes = computeSessionTypes(allBookings);
+	const typeRaw = await prisma.$queryRaw<{ name: string, count: number }[]>`
+		SELECT 
+			COALESCE(st.name, 'غير محدد') as name,
+			COUNT(b.id)::int as count
+		FROM "Booking" b
+		LEFT JOIN "TeacherService" ts ON b."teacherServiceId" = ts.id
+		LEFT JOIN "ServiceType" st ON ts."serviceTypeId" = st.id
+		GROUP BY COALESCE(st.name, 'غير محدد')
+		ORDER BY count DESC
+	`;
+	const sessionTypes = typeRaw.map(r => ({ name: r.name, count: Number(r.count) }));
 
 	const gradeGroups = await prisma.student.groupBy({
 		by: ["grade"],
@@ -170,27 +216,21 @@ export async function getTeacherDashboardOverview(
 		orderBy: { createdAt: "desc" },
 	});
 
-	const completedUnpaidBookings = await prisma.booking.findMany({
-		take: 500,
-		orderBy: { completedAt: "desc" },
-		where: {
-			teacherService: { teacherId: teacher.id },
-			status: "COMPLETED",
-			payoutId: null,
-			OR: [{ paymentStatus: "PAID" }, { isTrial: true }],
-		},
-	});
-
-	let pendingEarnings = 0;
-	for (const b of completedUnpaidBookings) {
-		const earnings = calculateEarnings(
-			Number(b.price),
-			Number(b.appliedCommissionRate),
-			b.isTrial,
-			Number(b.trialCostToPlatform),
-		);
-		pendingEarnings += earnings.teacherTotalEarnings;
-	}
+	const pendingRaw = await prisma.$queryRaw<{ total: number }[]>`
+		SELECT SUM(
+			CASE 
+				WHEN b."isTrial" = true THEN b."trialCostToPlatform" 
+				ELSE b."price" - (b."price" * b."appliedCommissionRate" / 100) 
+			END
+		) as total
+		FROM "Booking" b
+		INNER JOIN "TeacherService" ts ON b."teacherServiceId" = ts.id
+		WHERE ts."teacherId" = ${teacher.id}
+		  AND b."status" = 'COMPLETED'
+		  AND b."payoutId" IS NULL
+		  AND (b."paymentStatus" = 'PAID' OR b."isTrial" = true)
+	`;
+	const pendingEarnings = Number(pendingRaw[0]?.total || 0);
 
 	const paidPayoutsSum = await prisma.teacherPayout.aggregate({
 		where: { teacherId: teacher.id, isPaid: true },
@@ -209,37 +249,37 @@ export async function getTeacherDashboardOverview(
 
 	const last7DaysStart = last7Days[0];
 
-	const recentCompletedBookings = await prisma.booking.findMany({
-		where: {
-			teacherService: { teacherId: teacher.id },
-			status: "COMPLETED",
-			startTime: { gte: last7DaysStart },
-		},
-	});
+	const chartRaw = await prisma.$queryRaw<{ date: Date, earnings: number, sessions: number }[]>`
+		SELECT 
+			DATE(b."startTime") as date,
+			COUNT(b.id)::int as sessions,
+			SUM(
+				CASE 
+					WHEN b."isTrial" = true THEN b."trialCostToPlatform" 
+					ELSE b."price" - (b."price" * b."appliedCommissionRate" / 100) 
+				END
+			) as earnings
+		FROM "Booking" b
+		INNER JOIN "TeacherService" ts ON b."teacherServiceId" = ts.id
+		WHERE ts."teacherId" = ${teacher.id}
+		  AND b."status" = 'COMPLETED'
+		  AND b."startTime" >= ${last7DaysStart}
+		GROUP BY DATE(b."startTime")
+	`;
 
 	const chartData = last7Days.map((date) => {
 		const nextDate = new Date(date);
 		nextDate.setDate(date.getDate() + 1);
 
-		const dayBookings = recentCompletedBookings.filter(
-			(b) => b.startTime >= date && b.startTime < nextDate,
-		);
-
-		let earnings = 0;
-		for (const b of dayBookings) {
-			if (b.isTrial) {
-				earnings += Number(b.trialCostToPlatform);
-			} else {
-				const price = Number(b.price);
-				const commRate = Number(b.appliedCommissionRate);
-				earnings += price - (price * commRate) / 100;
-			}
-		}
+		const dayData = chartRaw.find(r => {
+			const rDate = new Date(r.date);
+			return rDate >= date && rDate < nextDate;
+		});
 
 		return {
 			date: date.toLocaleDateString("ar-EG", { weekday: "short" }),
-			earnings: earnings,
-			sessions: dayBookings.length,
+			earnings: Number(dayData?.earnings || 0),
+			sessions: Number(dayData?.sessions || 0),
 		};
 	});
 

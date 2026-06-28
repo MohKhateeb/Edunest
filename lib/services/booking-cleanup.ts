@@ -2,6 +2,12 @@ import { BookingStatus, PaymentStatus } from "@prisma/client";
 import { createNotification } from "@/lib/notifications";
 import { prisma } from "@/lib/prisma";
 
+const ONE_MINUTE_MS = 60_000;
+const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60_000;
+const FORTY_EIGHT_HOURS_MS = 48 * 60 * 60_000;
+const NINETY_SIX_HOURS_MS = 96 * 60 * 60_000;
+const TEN_DAYS_MS = 10 * 24 * 60 * 60_000;
+
 /**
  * دالة موحدة لتنظيف الجلسات المعلقة التي انتهى وقتها (Stale Bookings).
  * تحافظ على مبدأ DRY لكي نستخدمها في الـ Cron Job وفي التحميل اللحظي JIT.
@@ -113,13 +119,13 @@ export async function processGhostBookingsPenalties(): Promise<{
 	escrowedCount: number;
 }> {
 	const now = new Date();
-	const WARNING_1_MS = 24 * 60 * 60_000;
-	const WARNING_2_MS = 48 * 60 * 60_000;
-	const ESCROW_MS = 96 * 60 * 60_000;
+	const WARNING_1_MS = TWENTY_FOUR_HOURS_MS;
+	const WARNING_2_MS = FORTY_EIGHT_HOURS_MS;
+	const ESCROW_MS = NINETY_SIX_HOURS_MS;
 
 	// لضمان الأداء (Performance)، لا نفحص كل الجلسات في تاريخ المنصة!
 	// دورتنا القصوى هي 96 ساعة (4 أيام)، لذا سنفحص الجلسات في آخر 10 أيام فقط كحد أقصى (هامش أمان)
-	const tenDaysAgo = new Date(now.getTime() - 10 * 24 * 60 * 60_000);
+	const tenDaysAgo = new Date(now.getTime() - TEN_DAYS_MS);
 
 	// البحث عن الجلسات المؤكدة التي مضى وقتها ولم يُكتب تقريرها
 	const confirmedGhostBookings = await prisma.booking.findMany({
@@ -148,7 +154,7 @@ export async function processGhostBookingsPenalties(): Promise<{
 
 	for (const booking of confirmedGhostBookings) {
 		const startMs = new Date(booking.startTime).getTime();
-		const durationMs = booking.duration * 60_000;
+		const durationMs = booking.duration * ONE_MINUTE_MS;
 		const endMs = startMs + durationMs;
 		const timeSinceEndMs = now.getTime() - endMs;
 
