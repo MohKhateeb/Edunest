@@ -183,25 +183,10 @@ export type TeacherDashboardOverview = {
 	}[];
 };
 
-export async function getTeacherDashboardOverview(
-	userId: string,
-): Promise<TeacherDashboardOverview | null> {
-	await requireAuth([UserType.TEACHER]);
-
-	const teacher = await prisma.teacher.findUnique({
-		where: { userId },
-		include: {
-			user: { select: { name: true } },
-		},
-	});
-
-	if (!teacher) {
-		return null;
-	}
-
+async function _fetchTeacherBookingStats(teacherId: string) {
 	const upcomingCount = await prisma.booking.count({
 		where: {
-			teacherService: { teacherId: teacher.id },
+			teacherService: { teacherId },
 			status: "CONFIRMED",
 			startTime: { gte: new Date() },
 		},
@@ -209,13 +194,17 @@ export async function getTeacherDashboardOverview(
 
 	const pendingRequests: DetailedBooking[] = await prisma.booking.findMany({
 		where: {
-			teacherService: { teacherId: teacher.id },
+			teacherService: { teacherId },
 			status: "PENDING",
 		},
 		include: bookingDetailsInclude,
 		orderBy: { createdAt: "desc" },
 	});
 
+	return { upcomingCount, pendingRequests };
+}
+
+async function _calculateTeacherRevenue(teacherId: string) {
 	const pendingRaw = await prisma.$queryRaw<{ total: number }[]>`
 		SELECT SUM(
 			CASE 
@@ -225,7 +214,7 @@ export async function getTeacherDashboardOverview(
 		) as total
 		FROM "Booking" b
 		INNER JOIN "TeacherService" ts ON b."teacherServiceId" = ts.id
-		WHERE ts."teacherId" = ${teacher.id}
+		WHERE ts."teacherId" = ${teacherId}
 		  AND b."status" = 'COMPLETED'
 		  AND b."payoutId" IS NULL
 		  AND (b."paymentStatus" = 'PAID' OR b."isTrial" = true)
@@ -233,7 +222,7 @@ export async function getTeacherDashboardOverview(
 	const pendingEarnings = Number(pendingRaw[0]?.total || 0);
 
 	const paidPayoutsSum = await prisma.teacherPayout.aggregate({
-		where: { teacherId: teacher.id, isPaid: true },
+		where: { teacherId, isPaid: true },
 		_sum: { netAmount: true },
 	});
 
@@ -261,7 +250,7 @@ export async function getTeacherDashboardOverview(
 			) as earnings
 		FROM "Booking" b
 		INNER JOIN "TeacherService" ts ON b."teacherServiceId" = ts.id
-		WHERE ts."teacherId" = ${teacher.id}
+		WHERE ts."teacherId" = ${teacherId}
 		  AND b."status" = 'COMPLETED'
 		  AND b."startTime" >= ${last7DaysStart}
 		GROUP BY DATE(b."startTime")
@@ -283,9 +272,13 @@ export async function getTeacherDashboardOverview(
 		};
 	});
 
+	return { pendingEarnings, totalEarnings, chartData };
+}
+
+async function _fetchTeacherStudentStats(teacherId: string) {
 	const nextSessionRaw = await prisma.booking.findFirst({
 		where: {
-			teacherService: { teacherId: teacher.id },
+			teacherService: { teacherId },
 			status: "CONFIRMED",
 			startTime: { gte: new Date() },
 		},
@@ -295,7 +288,7 @@ export async function getTeacherDashboardOverview(
 
 	const recentStartedSession = await prisma.booking.findFirst({
 		where: {
-			teacherService: { teacherId: teacher.id },
+			teacherService: { teacherId },
 			status: "CONFIRMED",
 			startTime: { lte: new Date() },
 		},
@@ -315,7 +308,7 @@ export async function getTeacherDashboardOverview(
 
 	const openDisputes = await prisma.dispute.findMany({
 		where: {
-			booking: { teacherService: { teacherId: teacher.id } },
+			booking: { teacherService: { teacherId } },
 			status: "OPEN",
 		},
 		include: {
@@ -325,7 +318,7 @@ export async function getTeacherDashboardOverview(
 
 	const ghostBookings = await prisma.booking.findMany({
 		where: {
-			teacherService: { teacherId: teacher.id },
+			teacherService: { teacherId },
 			status: "CONFIRMED",
 			reportWarningLevel: { in: [1, 2] },
 		},
@@ -344,15 +337,39 @@ export async function getTeacherDashboardOverview(
 	}));
 
 	return {
-		teacher,
-		upcomingCount,
-		pendingRequests,
-		pendingEarnings,
-		totalEarnings,
-		chartData,
 		nextSession: nextSessionRaw as DetailedBooking | null,
 		liveSession: liveSession as DetailedBooking | null,
 		openDisputes,
 		urgentAlerts,
+	};
+}
+
+export async function getTeacherDashboardOverview(
+	userId: string,
+): Promise<TeacherDashboardOverview | null> {
+	await requireAuth([UserType.TEACHER]);
+
+	const teacher = await prisma.teacher.findUnique({
+		where: { userId },
+		include: {
+			user: { select: { name: true } },
+		},
+	});
+
+	if (!teacher) {
+		return null;
+	}
+
+	const [bookingStats, revenueStats, studentStats] = await Promise.all([
+		_fetchTeacherBookingStats(teacher.id),
+		_calculateTeacherRevenue(teacher.id),
+		_fetchTeacherStudentStats(teacher.id),
+	]);
+
+	return {
+		teacher,
+		...bookingStats,
+		...revenueStats,
+		...studentStats,
 	};
 }
