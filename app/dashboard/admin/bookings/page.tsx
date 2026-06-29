@@ -12,9 +12,10 @@ export default async function AdminBookingsPage() {
 	await requireAuth([UserType.ADMIN]);
 	if (!session) redirect("/login");
 
-	const bookings = await BookingService.getAdminBookings();
+	const result = await BookingService.getAdminBookings();
+	const sanitizedResult = sanitizePrismaData(result);
 
-	const sanitizedBookings = sanitizePrismaData(bookings);
+	
 
 	return (
 		<div className="space-y-6">
@@ -29,10 +30,10 @@ export default async function AdminBookingsPage() {
 			<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all space-y-4">
 				<h2 className="font-extrabold text-base border-b border-border pb-2.5 flex items-center gap-2">
 					<Calendar className="h-5 w-5 text-primary" />
-					كل الطلبات والحصص ({bookings.length})
+					كل الطلبات والحصص ({result.totalCount ?? result.data.length})
 				</h2>
 
-				<AdminBookingsList bookings={sanitizedBookings} />
+				<AdminBookingsList initialData={sanitizedResult} />
 			</div>
 		</div>
 	);

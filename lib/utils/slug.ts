@@ -13,11 +13,16 @@ export async function generateUniqueSlug(
 		.replace(/-+/g, "-")
 		.replace(/^-|-$/g, "");
 
+	const existingTeachers = await prisma.teacher.findMany({
+		where: { slug: { startsWith: `${base}-` } },
+		select: { slug: true },
+	});
+	const existingSlugs = new Set(existingTeachers.map(t => t.slug));
+
 	for (let attempt = 0; attempt < maxAttempts; attempt++) {
 		const suffix = crypto.randomBytes(3).toString("hex");
 		const slug = `${base}-${suffix}`;
-		const exists = await prisma.teacher.findUnique({ where: { slug } });
-		if (!exists) return slug;
+		if (!existingSlugs.has(slug)) return slug;
 	}
 	throw new Error("فشل توليد slug فريد بعد عدة محاولات");
 }

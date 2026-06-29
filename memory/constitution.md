@@ -1,4 +1,12 @@
 # Constitution
 
-## Architecture & Code Quality
-- يُمنع منعاً باتاً استدعاء prisma مباشرة في أي Server Action (داخل lib/actions) ويجب أن تمر جميع الاستعلامات عبر طبقة الـ Repository و UnitOfWork.
+## قواعد معمارية إلزامية (Non-negotiable Architectural Rules)
+
+1. **قاعدة الوصول للبيانات (Data Access Rule):**
+   يُمنع منعاً باتاً استيراد أو استخدام `prisma` مباشرة في أي ملف داخل `lib/actions` أو `app/`. جميع الاستعلامات والعمليات على قاعدة البيانات يجب أن تمر عبر الـ Repositories الموجودة حصراً في مجلد `lib/repositories`.
+
+2. **قاعدة المعاملات (Transactions Rule):**
+   أي عملية تتطلب التعديل أو الإدراج في أكثر من جدول في نفس الوقت (مثل إنشاء مستخدم جديد بالإضافة إلى ملف معلم مرتبط به) يجب أن تتم عبر `UnitOfWork.runTransaction` لضمان تكامل البيانات (Data Integrity) ومنع أي بيانات غير مكتملة في حال حدوث خطأ.
+
+3. **قاعدة التحليلات والأداء (Analytics & Performance Rule):**
+   يُمنع منعاً باتاً جلب البيانات الخام (Raw Data) بكميات كبيرة من قاعدة البيانات وحساب الإحصائيات (مثل المجموع، المتوسط، وغيرها) في الذاكرة (Memory) باستخدام حلقات (Loops) في JavaScript/TypeScript. يجب الاستعاضة عن ذلك باستخدام استعلامات التحليل المباشرة داخل مستودع التحليلات (`analytics-repository.ts`) عبر استدعاء `$queryRaw` أو `aggregate` و `groupBy` لجعل قاعدة البيانات هي المسؤولة عن الحوسبة.

@@ -27,16 +27,28 @@ import {
 	PAYMENT_STATUS_AR,
 } from "@/lib/translations";
 import type { DetailedBooking } from "@/lib/types";
+import { BookingStatus } from "@prisma/client";
+import { loadMoreAdminBookings } from "@/lib/actions/admin";
 import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
 
 interface AdminBookingsListProps {
-	bookings: DetailedBooking[];
+	initialData: {
+		data: DetailedBooking[];
+		nextCursor?: string;
+		hasMore: boolean;
+		totalCount?: number;
+	};
 }
 
 export default function AdminBookingsList({
-	bookings,
+	initialData,
 }: AdminBookingsListProps) {
 	const router = useRouter();
+	const [bookings, setBookings] = useState<DetailedBooking[]>(initialData.data);
+	const [hasMore, setHasMore] = useState(initialData.hasMore);
+	const [nextCursor, setNextCursor] = useState(initialData.nextCursor);
+	const [isLoadingMore, setIsLoadingMore] = useState(false);
+
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState("ALL");
 	const [currentPage, setCurrentPage] = useState(1);
@@ -75,17 +87,6 @@ export default function AdminBookingsList({
 		return matchesSearch && matchesStatus;
 	});
 
-	// Pagination
-	const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
-	const currentData = filteredBookings.slice(
-		(currentPage - 1) * itemsPerPage,
-		currentPage * itemsPerPage,
-	);
-
-	const handlePageChange = (newPage: number) => {
-		if (newPage > 0 && newPage <= totalPages) setCurrentPage(newPage);
-	};
-
 	// Handlers
 	const handleCancelSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -116,7 +117,7 @@ export default function AdminBookingsList({
 	return (
 		<div className="space-y-4">
 			<DataTable
-				data={currentData}
+				data={filteredBookings}
 				headers={[
 					"معلومات الجلسة",
 					"المعلم والخدمة",
@@ -142,7 +143,7 @@ export default function AdminBookingsList({
 								setCurrentPage(1);
 							}}
 						>
-							<option value="ALL">كل الحالات ({bookings.length})</option>
+							<option value="ALL">كل الحالات ({initialData.totalCount ?? bookings.length})</option>
 							<option value="PENDING">معلق</option>
 							<option value="CONFIRMED">مؤكد</option>
 							<option value="COMPLETED">مكتمل</option>
@@ -151,12 +152,6 @@ export default function AdminBookingsList({
 					</div>
 				}
 				emptyMessage="لا توجد حجوزات مطابقة لمعايير البحث الحالية."
-				currentPage={currentPage}
-				totalPages={totalPages}
-				totalItems={filteredBookings.length}
-				itemsPerPage={itemsPerPage}
-				onPageChange={handlePageChange}
-				paginationLabel="حجز"
 				renderRow={(booking) => (
 					<tr key={booking.id} className="hover:bg-muted/30 transition-colors">
 						{/* Date & Time */}
@@ -319,6 +314,34 @@ export default function AdminBookingsList({
 					</tr>
 				)}
 			/>
+
+			{hasMore && (
+				<div className="flex justify-center p-4 mt-4">
+					<button
+						onClick={async () => {
+							if (isLoadingMore || !nextCursor) return;
+							setIsLoadingMore(true);
+							try {
+								const res = await loadMoreAdminBookings({
+									cursor: nextCursor,
+									filters: statusFilter !== "ALL" ? { status: statusFilter as BookingStatus } : undefined
+								});
+								setBookings(prev => [...prev, ...res.data]);
+								setHasMore(res.hasMore);
+								setNextCursor(res.nextCursor);
+							} catch (err) {
+								toast.error("حدث خطأ أثناء تحميل المزيد");
+							} finally {
+								setIsLoadingMore(false);
+							}
+						}}
+						disabled={isLoadingMore}
+						className="px-6 py-2.5 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl font-bold transition-all disabled:opacity-50 cursor-pointer shadow-sm"
+					>
+						{isLoadingMore ? "جاري التحميل..." : "تحميل المزيد"}
+					</button>
+				</div>
+			)}
 
 			{/* Cancel Modal */}
 			{showCancelModal && (

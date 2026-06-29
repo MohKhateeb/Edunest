@@ -3,11 +3,10 @@
 import { BookingStatus, DisputeStatus, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { createNotification } from "@/lib/notifications";
-import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
 import type { ActionResponse } from "@/lib/types";
 import { hoursUntil } from "@/lib/utils/time";
+import { disputeRepository } from "@/lib/repositories/disputeRepository";
 
 export async function getSecureDisputeDetails(id: string) {
 	const { userId, userType } = await requireAuth([
@@ -16,27 +15,7 @@ export async function getSecureDisputeDetails(id: string) {
 		UserType.TEACHER,
 	]);
 
-	const dispute = await prisma.dispute.findUnique({
-		where: { id },
-		include: {
-			booking: {
-				include: {
-					student: true,
-					parent: true,
-					teacherService: {
-						include: {
-							teacher: { include: { user: true } },
-							serviceType: true,
-						},
-					},
-				},
-			},
-			messages: {
-				include: { sender: true },
-				orderBy: { createdAt: "asc" },
-			},
-		},
-	});
+	const dispute = await disputeRepository.findByIdWithFullDetails(id);
 
 	if (!dispute) return null;
 
@@ -92,15 +71,7 @@ export async function createDispute(
 		const { bookingId, reason } = validated.data;
 
 		// 1. Verify booking ownership and status
-		const booking = await prisma.booking.findUnique({
-			where: { id: bookingId },
-			include: {
-				dispute: true,
-				teacherService: {
-					include: { teacher: true },
-				},
-			},
-		});
+		const booking = await disputeRepository.findBookingWithDisputeAndTeacher(bookingId);
 
 		if (!booking || booking.parentUserId !== userId) {
 			return {
@@ -144,34 +115,11 @@ export async function createDispute(
 		}
 
 		// 3. Create Dispute and first message
-		await prisma.$transaction(async (tx) => {
-			const dispute = await tx.dispute.create({
-				data: {
-					bookingId,
-					parentUserId: userId,
-					reason,
-					status: DisputeStatus.OPEN,
-				},
-			});
-
-			await tx.disputeMessage.create({
-				data: {
-					disputeId: dispute.id,
-					senderId: userId,
-					message: `[رسالة النظام - فتح الاعتراض]: ${reason}`,
-				},
-			});
-
-			// Send notifications to Admin and Teacher
-			await createNotification(
-				{
-					userId: booking.teacherService.teacher.userId,
-					title: "اعتراض جديد ⚠️",
-					message:
-						"قام ولي الأمر برفع اعتراض على جلستك الأخيرة. تم تجميد مستحقات الجلسة مؤقتاً.",
-				},
-				tx,
-			);
+		await disputeRepository.createWithInitialMessage({
+			bookingId,
+			parentUserId: userId,
+			reason,
+			teacherUserId: booking.teacherService.teacher.userId,
 		});
 
 		revalidatePath("/dashboard/parent/financials");
@@ -201,16 +149,7 @@ export async function sendDisputeMessage(
 		]);
 		const { disputeId, message } = validated.data;
 
-		const dispute = await prisma.dispute.findUnique({
-			where: { id: disputeId },
-			include: {
-				booking: {
-					include: {
-						teacherService: { include: { teacher: true } },
-					},
-				},
-			},
-		});
+		const dispute = await disputeRepository.findByIdWithBookingAccess(disputeId);
 
 		if (!dispute) {
 			return { success: false, error: "النزاع غير موجود." };
@@ -256,13 +195,7 @@ export async function sendDisputeMessage(
 			}
 		}
 
-		await prisma.disputeMessage.create({
-			data: {
-				disputeId,
-				senderId: userId,
-				message,
-			},
-		});
+		await disputeRepository.addMessage(disputeId, userId, message);
 
 		revalidatePath(`/dashboard/admin/disputes/${disputeId}`);
 
@@ -280,9 +213,7 @@ export async function changeDisputeTurn(
 	try {
 		await requireAuth([UserType.ADMIN]);
 
-		const dispute = await prisma.dispute.findUnique({
-			where: { id: disputeId },
-		});
+		const dispute = await disputeRepository.findById(disputeId);
 
 		if (!dispute) {
 			return { success: false, error: "النزاع غير موجود." };
@@ -295,10 +226,7 @@ export async function changeDisputeTurn(
 			};
 		}
 
-		await prisma.dispute.update({
-			where: { id: disputeId },
-			data: { allowedTurn: turn },
-		});
+		await disputeRepository.updateTurn(disputeId, turn);
 
 		revalidatePath(`/dashboard/disputes/${disputeId}`);
 
@@ -321,17 +249,7 @@ export async function resolveDispute(
 		const { userId } = await requireAuth([UserType.ADMIN]);
 		const { disputeId, decision, adminNotes } = validated.data;
 
-		const dispute = await prisma.dispute.findUnique({
-			where: { id: disputeId },
-			include: {
-				booking: {
-					include: {
-						payment: true,
-						teacherService: { include: { teacher: true } },
-					},
-				},
-			},
-		});
+		const dispute = await disputeRepository.findByIdForResolution(disputeId);
 
 		if (!dispute) {
 			return { success: false, error: "النزاع غير موجود." };
@@ -341,68 +259,15 @@ export async function resolveDispute(
 			return { success: false, error: "تم البت في هذا النزاع مسبقاً." };
 		}
 
-		await prisma.$transaction(async (tx) => {
-			// 1. Update dispute status
-			await tx.dispute.update({
-				where: { id: disputeId },
-				data: {
-					status: decision as DisputeStatus,
-					resolvedAt: new Date(),
-					resolvedBy: userId,
-					adminNotes,
-				},
-			});
-
-			// 2. Log message
-			await tx.disputeMessage.create({
-				data: {
-					disputeId,
-					senderId: userId,
-					message: `[رسالة إدارية - إغلاق النزاع]: تم إغلاق النزاع وحله بناءً على القرار الإداري.\nملاحظات الإدارة: ${adminNotes || "لا يوجد"}`,
-				},
-			});
-
-			// 3. Update payment logic if resolved in favor of parent
-			if (decision === "RESOLVED_IN_FAVOR_OF_PARENT") {
-				await tx.booking.update({
-					where: { id: dispute.bookingId },
-					data: { paymentStatus: "REFUNDED" },
-				});
-
-				// Create ParentRefund pending transfer
-				await tx.parentRefund.create({
-					data: {
-						bookingId: dispute.bookingId,
-						amount: dispute.booking.price,
-						isPaid: false,
-					},
-				});
-			}
-
-			// Notifications
-			await createNotification(
-				{
-					userId: dispute.parentUserId,
-					title: "قرار بشأن اعتراضك",
-					message:
-						decision === "RESOLVED_IN_FAVOR_OF_PARENT"
-							? "تم حل الاعتراض لصالحك وجاري إرجاع المبلغ."
-							: "تم رفض الاعتراض بعد المراجعة. راجع المحادثة للتفاصيل.",
-				},
-				tx,
-			);
-
-			await createNotification(
-				{
-					userId: dispute.booking.teacherService.teacher.userId,
-					title: "إغلاق النزاع المالي",
-					message:
-						decision === "RESOLVED_IN_FAVOR_OF_TEACHER"
-							? "تم الحكم بصالحك في النزاع الأخير، وسيضاف الرصيد لدفعاتك القادمة."
-							: "تم قبول اعتراض ولي الأمر واسترداد مبلغ الجلسة.",
-				},
-				tx,
-			);
+		await disputeRepository.resolveWithTransaction({
+			disputeId,
+			bookingId: dispute.bookingId,
+			decision: decision as "RESOLVED_IN_FAVOR_OF_PARENT" | "RESOLVED_IN_FAVOR_OF_TEACHER",
+			adminUserId: userId,
+			adminNotes,
+			bookingPrice: dispute.booking.price as any,
+			parentUserId: dispute.parentUserId,
+			teacherUserId: dispute.booking.teacherService.teacher.userId,
 		});
 
 		revalidatePath(`/dashboard/admin/disputes/${disputeId}`);

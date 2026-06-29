@@ -18,6 +18,8 @@ model SystemSetting {
   description  String?
   updatedAt    DateTime @updatedAt
   updatedBy    String?
+
+  @@map("system_settings")
 }
 
 // ════════════════════════════════════════════════════
@@ -52,6 +54,7 @@ model User {
   disputes              Dispute[]
 
   @@index([userType])
+  @@map("users")
 }
 
 // ════════════════════════════════════════════════════
@@ -97,6 +100,7 @@ model Teacher {
   @@index([isAvailableNow, isVerified])
   @@index([verificationLevel])
   @@index([averageRating(sort: Desc)])
+  @@map("teachers")
 }
 
 // ════════════════════════════════════════════════════
@@ -114,6 +118,7 @@ model Subject {
   tutoringRequests TutoringRequest[] @relation("SubjectRequests")
 
   @@index([isActive])
+  @@map("subjects")
 }
 
 model TeacherSubject {
@@ -125,6 +130,7 @@ model TeacherSubject {
   @@id([teacherId, subjectId])
   @@index([teacherId])
   @@index([subjectId])
+  @@map("teacher_subjects")
 }
 
 model TeacherVerification {
@@ -139,7 +145,9 @@ model TeacherVerification {
   rejectionReason   String?
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
-  reviewer          User?     @relation("ReviewedByUser", fields: [reviewedBy], references: [id])
+  reviewer          User?     @relation("ReviewedByUser", fields: [reviewedBy], references: [id], onDelete: SetNull)
+
+  @@map("teacher_verifications")
 }
 
 // ════════════════════════════════════════════════════
@@ -157,6 +165,7 @@ model TeacherAvailability {
   updatedAt DateTime @updatedAt
 
   @@index([teacherId, dayOfWeek])
+  @@map("teacher_availabilities")
 }
 
 // ════════════════════════════════════════════════════
@@ -175,6 +184,7 @@ model Student {
   tutoringRequests TutoringRequest[] @relation("StudentRequests")
 
   @@index([parentUserId])
+  @@map("students")
 }
 
 // ════════════════════════════════════════════════════
@@ -197,6 +207,7 @@ model ServiceType {
   tutoringRequests TutoringRequest[] @relation("ServiceTypeRequests")
 
   @@index([isActive])
+  @@map("service_types")
 }
 
 model TeacherService {
@@ -204,7 +215,7 @@ model TeacherService {
   teacherId         String
   teacher           Teacher     @relation(fields: [teacherId], references: [id], onDelete: Cascade)
   serviceTypeId     String
-  serviceType       ServiceType @relation(fields: [serviceTypeId], references: [id])
+  serviceType       ServiceType @relation(fields: [serviceTypeId], references: [id], onDelete: Restrict)
   price             Decimal     @db.Decimal(10, 2)
   duration          Int
   customDescription String?
@@ -213,6 +224,7 @@ model TeacherService {
   bookings          Booking[]
 
   @@index([teacherId])
+  @@map("teacher_services")
 }
 
 // ════════════════════════════════════════════════════
@@ -276,8 +288,8 @@ model Booking {
   report                SessionReport?
   review                Review?
   payment               Payment?
-  cancellingUser        User?          @relation("CancelledByUser", fields: [cancelledBy], references: [id])
-  payout                TeacherPayout? @relation("BookingPayout", fields: [payoutId], references: [id])
+  cancellingUser        User?          @relation("CancelledByUser", fields: [cancelledBy], references: [id], onDelete: SetNull)
+  payout                TeacherPayout? @relation("BookingPayout", fields: [payoutId], references: [id], onDelete: SetNull)
   dispute               Dispute?
   adminEscrow           AdminEscrow?
   parentRefund          ParentRefund?
@@ -289,6 +301,7 @@ model Booking {
   @@index([startTime])
   @@index([paymentStatus])
   @@index([payoutId])
+  @@map("bookings")
 }
 
 // ════════════════════════════════════════════════════
@@ -304,6 +317,8 @@ model SessionReport {
   homeworkAssigned   String?
   teacherNotes       String?
   createdAt          DateTime @default(now())
+
+  @@map("session_reports")
 }
 
 model Review {
@@ -311,13 +326,14 @@ model Review {
   bookingId String   @unique
   booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Restrict)
   teacherId String
-  teacher   Teacher  @relation(fields: [teacherId], references: [id])
+  teacher   Teacher  @relation(fields: [teacherId], references: [id], onDelete: Restrict)
   rating    Int
   comment   String?
   isVisible Boolean  @default(true)
   createdAt DateTime @default(now())
 
   @@index([teacherId])
+  @@map("reviews")
 }
 
 // ════════════════════════════════════════════════════
@@ -332,12 +348,14 @@ model Payment {
   isPaid    Boolean       @default(false)
   paidAt    DateTime?
   createdAt DateTime      @default(now())
+
+  @@map("payments")
 }
 
 model TeacherPayout {
   id                String    @id @default(cuid())
   teacherId         String
-  teacher           Teacher   @relation(fields: [teacherId], references: [id])
+  teacher           Teacher   @relation(fields: [teacherId], references: [id], onDelete: Restrict)
   totalAmount       Decimal   @db.Decimal(10, 2)
   commissionAmount  Decimal   @db.Decimal(10, 2)
   trialCompensation Decimal   @default(0) @db.Decimal(10, 2)
@@ -350,18 +368,20 @@ model TeacherPayout {
   bookings          Booking[] @relation("BookingPayout") // ⭐ الحجوزات المشمولة في التسوية
 
   @@index([teacherId])
+  @@map("teacher_payouts")
 }
 
 model ParentRefund {
   id        String    @id @default(cuid())
   bookingId String    @unique
-  booking   Booking   @relation(fields: [bookingId], references: [id])
+  booking   Booking   @relation(fields: [bookingId], references: [id], onDelete: Restrict)
   amount    Decimal   @db.Decimal(10, 2)
   isPaid    Boolean   @default(false)
   paidAt    DateTime?
   createdAt DateTime  @default(now())
 
   @@index([bookingId])
+  @@map("parent_refunds")
 }
 
 // ════════════════════════════════════════════════════
@@ -378,6 +398,7 @@ model Notification {
   createdAt DateTime @default(now())
 
   @@index([userId, isRead])
+  @@map("notifications")
 }
 
 // ════════════════════════════════════════════════════
@@ -400,6 +421,7 @@ model FAQ {
   updatedAt DateTime    @updatedAt
 
   @@index([category])
+  @@map("faqs")
 }
 
 // ════════════════════════════════════════════════════
@@ -414,29 +436,30 @@ enum RequestStatus {
 }
 
 model TutoringRequest {
-  id             String          @id @default(cuid())
-  parentId       String
-  parent         User            @relation("ParentRequests", fields: [parentId], references: [id], onDelete: Cascade)
-  studentId      String
-  student        Student         @relation("StudentRequests", fields: [studentId], references: [id], onDelete: Cascade)
-  subjectId      String? // المادة المطلوبة (Lookup)
-  subject        Subject?        @relation("SubjectRequests", fields: [subjectId], references: [id])
-  serviceTypeId  String // نوع الخدمة المطلوبة (مثل: شرح مسألة سريعة)
-  serviceType    ServiceType     @relation("ServiceTypeRequests", fields: [serviceTypeId], references: [id])
-  title          String // عنوان الطلب
-  details        String?         @db.Text
-  imageUrl       String? // رابط صورة السؤال المرفوعة
-  startTime      DateTime // الوقت المطلوب لبدء الجلسة (UTC)
-  duration       Int? // مدة الجلسة بالدقائق
-  price          Decimal?        @db.Decimal(10, 2) // السعر/الميزانية المقترحة من ولي الأمر
-  status         RequestStatus   @default(PENDING)
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id            String        @id @default(cuid())
+  parentId      String
+  parent        User          @relation("ParentRequests", fields: [parentId], references: [id], onDelete: Cascade)
+  studentId     String
+  student       Student       @relation("StudentRequests", fields: [studentId], references: [id], onDelete: Cascade)
+  subjectId     String? // المادة المطلوبة (Lookup)
+  subject       Subject?      @relation("SubjectRequests", fields: [subjectId], references: [id], onDelete: SetNull)
+  serviceTypeId String // نوع الخدمة المطلوبة (مثل: شرح مسألة سريعة)
+  serviceType   ServiceType   @relation("ServiceTypeRequests", fields: [serviceTypeId], references: [id], onDelete: Restrict)
+  title         String // عنوان الطلب
+  details       String?       @db.Text
+  imageUrl      String? // رابط صورة السؤال المرفوعة
+  startTime     DateTime // الوقت المطلوب لبدء الجلسة (UTC)
+  duration      Int? // مدة الجلسة بالدقائق
+  price         Decimal?      @db.Decimal(10, 2) // السعر/الميزانية المقترحة من ولي الأمر
+  status        RequestStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   @@index([parentId])
   @@index([studentId])
   @@index([subjectId])
   @@index([status])
+  @@map("tutoring_requests")
 }
 
 // ════════════════════════════════════════════════════
@@ -461,7 +484,7 @@ model Dispute {
   bookingId    String           @unique
   booking      Booking          @relation(fields: [bookingId], references: [id], onDelete: Restrict)
   parentUserId String
-  parent       User             @relation(fields: [parentUserId], references: [id])
+  parent       User             @relation(fields: [parentUserId], references: [id], onDelete: Restrict)
   reason       String           @db.Text
   status       DisputeStatus    @default(OPEN)
   allowedTurn  DisputeTurn      @default(TEACHER) // Default to waiting for Teacher since Parent opened it
@@ -472,6 +495,7 @@ model Dispute {
   messages     DisputeMessage[]
 
   @@index([parentUserId])
+  @@map("disputes")
 }
 
 model DisputeMessage {
@@ -479,11 +503,12 @@ model DisputeMessage {
   disputeId String
   dispute   Dispute  @relation(fields: [disputeId], references: [id], onDelete: Cascade)
   senderId  String
-  sender    User     @relation(fields: [senderId], references: [id])
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Restrict)
   message   String   @db.Text
   createdAt DateTime @default(now())
 
   @@index([disputeId])
+  @@map("dispute_messages")
 }
 
 // ════════════════════════════════════════════════════
@@ -497,14 +522,16 @@ enum EscrowResolution {
 }
 
 model AdminEscrow {
-  id          String           @id @default(cuid())
-  bookingId   String           @unique
-  booking     Booking          @relation(fields: [bookingId], references: [id], onDelete: Restrict)
-  amount      Decimal          @db.Decimal(10, 2)
-  reason      String           @db.Text
-  status      EscrowResolution @default(PENDING)
-  createdAt   DateTime         @default(now())
-  resolvedAt  DateTime?
-  resolvedBy  String?          // User ID of the admin who resolved it
-  notes       String?          @db.Text
+  id         String           @id @default(cuid())
+  bookingId  String           @unique
+  booking    Booking          @relation(fields: [bookingId], references: [id], onDelete: Restrict)
+  amount     Decimal          @db.Decimal(10, 2)
+  reason     String           @db.Text
+  status     EscrowResolution @default(PENDING)
+  createdAt  DateTime         @default(now())
+  resolvedAt DateTime?
+  resolvedBy String? // User ID of the admin who resolved it
+  notes      String?          @db.Text
+
+  @@map("admin_escrows")
 }

@@ -46,3 +46,12 @@ export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 if (process.env.NODE_ENV !== "production") {
 	globalForPrisma.prisma = prisma;
 }
+
+if (process.env.NODE_ENV === 'development') {
+	// @ts-ignore - necessary if emit: 'event' is not set in log config
+	prisma.$on('query', (e: any) => {
+		if (e.duration > 50) {
+			console.warn(`[SLOW QUERY ${e.duration}ms]`, e.query.substring(0, 120))
+		}
+	})
+}

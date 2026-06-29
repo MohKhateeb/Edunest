@@ -1,4 +1,4 @@
-import { BookingStatus, PaymentStatus } from "@prisma/client";
+import { BookingStatus, PaymentStatus, Prisma } from "@prisma/client";
 import { createNotification } from "@/lib/notifications";
 import { prisma } from "@/lib/prisma";
 
@@ -26,10 +26,10 @@ export type BookingWithDetails = {
 	_warning?: boolean;
 };
 
-export type CleanupHandler = (booking: BookingWithDetails) => Promise<void>;
+export type CleanupHandler = (booking: BookingWithDetails, tx?: Prisma.TransactionClient) => Promise<void>;
 
-const handlePendingBooking: CleanupHandler = async (booking) => {
-	await prisma.$transaction(async (tx) => {
+const handlePendingBooking: CleanupHandler = async (booking, externalTx) => {
+	const logic = async (tx: Prisma.TransactionClient) => {
 		const isPaid = booking.paymentStatus === PaymentStatus.PAID && !booking.isTrial;
 
 		await tx.booking.update({
@@ -69,10 +69,13 @@ const handlePendingBooking: CleanupHandler = async (booking) => {
 			},
 			tx,
 		);
-	});
+	};
+
+	if (externalTx) await logic(externalTx);
+	else await prisma.$transaction(logic);
 };
 
-const handleConfirmedBooking: CleanupHandler = async (booking) => {
+const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 	const now = new Date();
 	const WARNING_1_MS = TWENTY_FOUR_HOURS_MS;
 	const WARNING_2_MS = FORTY_EIGHT_HOURS_MS;
@@ -85,7 +88,7 @@ const handleConfirmedBooking: CleanupHandler = async (booking) => {
 
 	if (timeSinceEndMs <= WARNING_1_MS) return;
 
-	await prisma.$transaction(async (tx) => {
+	const logic = async (tx: Prisma.TransactionClient) => {
 		const teacherUserId = booking.teacherService!.teacher.userId;
 
 		if (timeSinceEndMs > ESCROW_MS && booking.reportWarningLevel! < 3) {
@@ -172,7 +175,10 @@ const handleConfirmedBooking: CleanupHandler = async (booking) => {
 
 			booking._warning = true;
 		}
-	});
+	};
+
+	if (externalTx) await logic(externalTx);
+	else await prisma.$transaction(logic);
 };
 
 export const CLEANUP_HANDLERS: Partial<Record<BookingStatus, CleanupHandler>> = {
@@ -216,14 +222,18 @@ export async function processStaleBookingsCancellation(
 
 	let cancelledCount = 0;
 
-	for (const booking of staleBookings) {
-		try {
-			await CLEANUP_HANDLERS[booking.status as BookingStatus]?.(booking as any);
-			cancelledCount++;
-		} catch (err) {
-			console.error(`Failed to cancel stale booking ${booking.id}:`, err);
-		}
-	}
+	await prisma.$transaction(async (tx) => {
+		await Promise.all(
+			staleBookings.map(async (booking) => {
+				try {
+					await CLEANUP_HANDLERS[booking.status as BookingStatus]?.(booking as any, tx);
+					cancelledCount++;
+				} catch (err) {
+					console.error(`Failed to cancel stale booking ${booking.id}:`, err);
+				}
+			})
+		);
+	});
 
 	return cancelledCount;
 }
@@ -263,17 +273,21 @@ export async function processGhostBookingsPenalties(): Promise<{
 	let warningsSent = 0;
 	let escrowedCount = 0;
 
-	for (const booking of confirmedGhostBookings) {
-		try {
-			const b = booking as any;
-			await CLEANUP_HANDLERS[b.status as BookingStatus]?.(b);
-			
-			if (b._escrowed) escrowedCount++;
-			if (b._warning) warningsSent++;
-		} catch (err) {
-			console.error(`Failed to process penalty for booking ${booking.id}:`, err);
-		}
-	}
+	await prisma.$transaction(async (tx) => {
+		await Promise.all(
+			confirmedGhostBookings.map(async (booking) => {
+				try {
+					const b = booking as any;
+					await CLEANUP_HANDLERS[b.status as BookingStatus]?.(b, tx);
+					
+					if (b._escrowed) escrowedCount++;
+					if (b._warning) warningsSent++;
+				} catch (err) {
+					console.error(`Failed to process penalty for booking ${booking.id}:`, err);
+				}
+			})
+		);
+	});
 
 	return { warningsSent, escrowedCount };
 }

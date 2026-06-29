@@ -15,6 +15,8 @@ import { teacherRepository } from "@/lib/repositories/prisma/teacher.repository"
 import { userRepository } from "@/lib/repositories/prisma/user.repository";
 import { unitOfWork } from "@/lib/repositories/unit-of-work";
 import { requireAuth } from "@/lib/require-auth";
+import { BookingService, type BookingListParams } from "@/lib/services/domain/booking-service";
+import { sanitizePrismaData } from "@/lib/utils";
 import type { ActionResponse } from "@/lib/types";
 import {
 	confirmPaymentSchema,
@@ -129,12 +131,18 @@ export async function updateSystemSettings(
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
 
 		await unitOfWork.runTransaction(async (tx) => {
-			for (const s of settings) {
-				await systemSettingRepository.update(s.settingKey, {
-					settingValue: s.settingValue,
-					updatedBy: adminUserId,
-				}, tx);
-			}
+			await Promise.all(
+				settings.map((s) =>
+					systemSettingRepository.update(
+						s.settingKey,
+						{
+							settingValue: s.settingValue,
+							updatedBy: adminUserId,
+						},
+						tx,
+					),
+				),
+			);
 		});
 
 		revalidatePath("/dashboard/admin/settings");
@@ -210,4 +218,9 @@ export async function updateHomepageLayout(
 			error: "حدث خطأ أثناء تحديث تخطيط الصفحة الرئيسية",
 		};
 	}
+}
+
+export async function loadMoreAdminBookings(params: BookingListParams) {
+	const res = await BookingService.getAdminBookings(params);
+	return sanitizePrismaData(res);
 }

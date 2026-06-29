@@ -1,8 +1,21 @@
-import { UserType } from "@prisma/client";
+import { UserType, BookingStatus, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
 import { bookingDetailsInclude, type DetailedBooking } from "@/lib/types";
 import { getDetailedSessionState } from "@/lib/utils/booking-state";
+
+export interface BookingListParams {
+	cursor?: string;
+	take?: number;
+	filters?: { status?: BookingStatus; userId?: string };
+}
+
+export interface BookingListResult {
+	data: DetailedBooking[];
+	nextCursor: string | undefined;
+	hasMore: boolean;
+	totalCount?: number;
+}
 
 export class BookingService {
 	static async getParentBookings(parentId: string) {
@@ -88,13 +101,45 @@ export class BookingService {
 		});
 	}
 
-	static async getAdminBookings(): Promise<DetailedBooking[]> {
+	static async getAdminBookings(
+		params: BookingListParams = {}
+	): Promise<BookingListResult> {
 		await requireAuth([UserType.ADMIN]);
-		return prisma.booking.findMany({
-			take: 200,
-			orderBy: { createdAt: "desc" },
-			include: bookingDetailsInclude,
-		});
+		const take = params.take ?? 50;
+		const where: Prisma.BookingWhereInput = {};
+
+		if (params.filters?.status) {
+			where.status = params.filters.status;
+		}
+		if (params.filters?.userId) {
+			where.OR = [
+				{ student: { parentUserId: params.filters.userId } },
+				{ teacherService: { teacher: { userId: params.filters.userId } } },
+			];
+		}
+
+		const [bookings, totalCount] = await Promise.all([
+			prisma.booking.findMany({
+				take: take + 1,
+				skip: params.cursor ? 1 : 0,
+				cursor: params.cursor ? { id: params.cursor } : undefined,
+				where,
+				orderBy: { createdAt: "desc" },
+				include: bookingDetailsInclude,
+			}),
+			!params.cursor ? prisma.booking.count({ where }) : Promise.resolve(undefined),
+		]);
+
+		const hasMore = bookings.length > take;
+		const data = hasMore ? bookings.slice(0, -1) : bookings;
+		const nextCursor = hasMore ? data[data.length - 1].id : undefined;
+
+		return {
+			data: data as DetailedBooking[],
+			nextCursor,
+			hasMore,
+			totalCount,
+		};
 	}
 
 	static async getBookByTeacherData(userId: string) {
