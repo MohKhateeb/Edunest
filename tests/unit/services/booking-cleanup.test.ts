@@ -60,7 +60,7 @@ describe('Booking Cleanup Service Tests (OCP Strategy Map)', () => {
 
 		// Call the handler directly on the strategy map with unknown status
 		await expect(
-			CLEANUP_HANDLERS[mockUnknownBooking.status]?.(mockUnknownBooking as any)
+			(CLEANUP_HANDLERS as any)[mockUnknownBooking.status]?.(mockUnknownBooking as any)
 		).toBeUndefined(); // Map should return undefined and do nothing safely
 	});
 

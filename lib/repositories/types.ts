@@ -24,6 +24,11 @@ export interface IBookingRepository {
 
 export interface ITeacherRepository {
 	create(data: Prisma.TeacherUncheckedCreateInput, tx?: DbClient): Promise<any>;
+	upsert(where: Prisma.TeacherWhereUniqueInput, create: Prisma.TeacherUncheckedCreateInput | Prisma.TeacherCreateInput, update: Prisma.TeacherUncheckedUpdateInput | Prisma.TeacherUpdateInput, tx?: DbClient): Promise<any>;
+	findBySlug(slug: string, options?: { include?: Prisma.TeacherInclude }, tx?: DbClient): Promise<any | null>;
+	findByUserId(userId: string, options?: { include?: Prisma.TeacherInclude }, tx?: DbClient): Promise<any | null>;
+	update(id: string, data: Prisma.TeacherUncheckedUpdateInput | Prisma.TeacherUpdateInput, tx?: DbClient): Promise<any>;
+	updateAvailability(id: string, isAvailableNow: boolean, tx?: DbClient): Promise<any>;
 }
 
 export interface IStudentRepository {

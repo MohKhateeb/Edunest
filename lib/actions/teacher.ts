@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import type { z } from "zod";
 import { requireTeacherProfile } from "@/lib/actions/auth-helpers";
 import { prisma } from "@/lib/prisma";
+import { teacherRepository } from "@/lib/repositories/prisma/teacher.repository";
 import { requireAuth } from "@/lib/require-auth";
 import type { ActionResponse } from "@/lib/types";
 import { generateUniqueSlug } from "@/lib/utils/slug";
@@ -38,25 +39,9 @@ export async function updateTeacherProfile(
 			slug = await generateUniqueSlug(user.name);
 		}
 
-		await prisma.teacher.upsert({
-			where: { userId },
-			update: {
-				subjects: {
-					deleteMany: {},
-					create: validated.data.subjectIds.map((id) => ({ subjectId: id })),
-				},
-				subSpecialization: validated.data.subSpecialization,
-				bio: validated.data.bio,
-				gradeLevels: validated.data.gradeLevels,
-				city: validated.data.city,
-				area: validated.data.area,
-				education: validated.data.education,
-				yearsOfExperience: validated.data.yearsOfExperience,
-				defaultHourlyRate: validated.data.defaultHourlyRate,
-				profileImageUrl: validated.data.profileImageUrl,
-				slug,
-			},
-			create: {
+		await teacherRepository.upsert(
+			{ userId },
+			{
 				userId,
 				subjects: {
 					create: validated.data.subjectIds.map((id) => ({ subjectId: id })),
@@ -72,7 +57,23 @@ export async function updateTeacherProfile(
 				profileImageUrl: validated.data.profileImageUrl,
 				slug,
 			},
-		});
+			{
+				subjects: {
+					deleteMany: {},
+					create: validated.data.subjectIds.map((id) => ({ subjectId: id })),
+				},
+				subSpecialization: validated.data.subSpecialization,
+				bio: validated.data.bio,
+				gradeLevels: validated.data.gradeLevels,
+				city: validated.data.city,
+				area: validated.data.area,
+				education: validated.data.education,
+				yearsOfExperience: validated.data.yearsOfExperience,
+				defaultHourlyRate: validated.data.defaultHourlyRate,
+				profileImageUrl: validated.data.profileImageUrl,
+				slug,
+			}
+		);
 
 		revalidatePath(`/teachers/${slug}`);
 		revalidatePath("/dashboard/teacher/profile");
@@ -207,9 +208,7 @@ export async function updateTeacherSlug(
 		}
 
 		// Check if slug is unique
-		const existingSlug = await prisma.teacher.findUnique({
-			where: { slug: newSlug },
-		});
+		const existingSlug = await teacherRepository.findBySlug(newSlug);
 
 		if (existingSlug && existingSlug.id !== teacher.id) {
 			return {
@@ -218,13 +217,13 @@ export async function updateTeacherSlug(
 			};
 		}
 
-		await prisma.teacher.update({
-			where: { id: teacher.id },
-			data: {
+		await teacherRepository.update(
+			teacher.id,
+			{
 				slug: newSlug,
 				slugUpdated: true,
-			},
-		});
+			}
+		);
 
 		revalidatePath(`/teachers/${newSlug}`);
 		revalidatePath("/dashboard/teacher/profile");
@@ -247,10 +246,7 @@ export async function toggleTeacherAvailability(
 
 		const teacher = await requireTeacherProfile(userId);
 
-		await prisma.teacher.update({
-			where: { id: teacher.id },
-			data: { isAvailableNow },
-		});
+		await teacherRepository.updateAvailability(teacher.id, isAvailableNow);
 
 		revalidatePath("/dashboard/teacher");
 		revalidatePath(`/teachers/${teacher.slug}`);
