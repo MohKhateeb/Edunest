@@ -15,7 +15,7 @@ import AdminAnalyticsCharts from "@/components/shared/charts/AdminAnalyticsChart
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
-import { getAdminDashboardOverview } from "@/lib/services/domain/analytics-service";
+import { analyticsRepository } from "@/lib/repositories/analytics-repository";
 import { formatPrice } from "@/lib/utils";
 
 export default async function AdminDashboard() {
@@ -23,6 +23,11 @@ export default async function AdminDashboard() {
 	const session = await auth();
 
 	if (!session) return null;
+
+	const end = new Date();
+	const start = new Date();
+	start.setDate(end.getDate() - 30);
+
 	const {
 		pendingVerifications,
 		totalBookings,
@@ -38,7 +43,7 @@ export default async function AdminDashboard() {
 		openDisputesCount,
 		pendingPayoutsCount,
 		pendingEscrowsCount,
-	} = await getAdminDashboardOverview();
+	} = await analyticsRepository.getAdminDashboardStats(start, end);
 
 	const hasUrgentMatters =
 		pendingVerifications > 0 ||

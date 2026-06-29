@@ -15,18 +15,25 @@ import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import TeacherOnlineToggle from "@/components/shared/TeacherOnlineToggle";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
-import { getTeacherDashboardOverview } from "@/lib/services/domain/analytics-service";
+import { analyticsRepository } from "@/lib/repositories/analytics-repository";
+import { teacherRepository } from "@/lib/repositories/prisma/teacher.repository";
 import type { DetailedBooking } from "@/lib/types";
 import { formatPrice, sanitizePrismaData } from "@/lib/utils";
 
 export default async function TeacherDashboard() {
 	await requireAuth([UserType.TEACHER]);
 	const session = await auth();
-	await requireAuth([UserType.TEACHER]);
 
 	if (!session) return null;
 
-	const dashboardData = await getTeacherDashboardOverview(session.user.id);
+	const teacher = await teacherRepository.findByUserId(session.user.id);
+	let dashboardData = null;
+	if (teacher) {
+		const end = new Date();
+		const start = new Date();
+		start.setDate(end.getDate() - 30);
+		dashboardData = await analyticsRepository.getTeacherDashboardOverview(teacher.id, start, end);
+	}
 
 	if (!dashboardData) {
 		return (

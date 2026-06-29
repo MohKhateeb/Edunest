@@ -9,7 +9,11 @@ import {
 import crypto from "crypto";
 import { revalidatePath, updateTag } from "next/cache";
 import { createNotification } from "@/lib/notifications";
-import { prisma } from "@/lib/prisma";
+import { systemSettingRepository } from "@/lib/repositories/prisma/system-setting.repository";
+import { teacherVerificationRepository } from "@/lib/repositories/prisma/teacher-verification.repository";
+import { teacherRepository } from "@/lib/repositories/prisma/teacher.repository";
+import { userRepository } from "@/lib/repositories/prisma/user.repository";
+import { unitOfWork } from "@/lib/repositories/unit-of-work";
 import { requireAuth } from "@/lib/require-auth";
 import type { ActionResponse } from "@/lib/types";
 import {
@@ -32,31 +36,19 @@ export async function verifyTeacher(
 
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
 
-		await prisma.$transaction(async (tx) => {
+		await unitOfWork.runTransaction(async (tx) => {
 			// Update verification request status
-			await tx.teacherVerification.update({
-				where: { teacherId },
-				data: {
-					reviewedBy: adminUserId,
-					reviewedAt: new Date(),
-					rejectionReason: null,
-				},
-			});
+			await teacherVerificationRepository.update(teacherId, {
+				reviewedBy: adminUserId,
+				reviewedAt: new Date(),
+				rejectionReason: null,
+			}, tx);
 
 			// Update teacher profile verification status
-			await tx.teacher.update({
-				where: { id: teacherId },
-				data: {
-					isVerified: true,
-					verificationLevel: level,
-				},
-			});
-
-			// Fetch teacher info to send notification
-			const teacherProfile = await tx.teacher.findUnique({
-				where: { id: teacherId },
-				select: { userId: true, user: { select: { name: true } } },
-			});
+			const teacherProfile = await teacherRepository.update(teacherId, {
+				isVerified: true,
+				verificationLevel: level,
+			}, tx);
 
 			if (teacherProfile) {
 				await createNotification(
@@ -92,28 +84,17 @@ export async function rejectTeacher(
 
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
 
-		await prisma.$transaction(async (tx) => {
-			await tx.teacherVerification.update({
-				where: { teacherId },
-				data: {
-					reviewedBy: adminUserId,
-					reviewedAt: new Date(),
-					rejectionReason: reason,
-				},
-			});
+		await unitOfWork.runTransaction(async (tx) => {
+			await teacherVerificationRepository.update(teacherId, {
+				reviewedBy: adminUserId,
+				reviewedAt: new Date(),
+				rejectionReason: reason,
+			}, tx);
 
-			await tx.teacher.update({
-				where: { id: teacherId },
-				data: {
-					isVerified: false,
-					verificationLevel: VerificationLevel.NONE,
-				},
-			});
-
-			const teacherProfile = await tx.teacher.findUnique({
-				where: { id: teacherId },
-				select: { userId: true },
-			});
+			const teacherProfile = await teacherRepository.update(teacherId, {
+				isVerified: false,
+				verificationLevel: VerificationLevel.NONE,
+			}, tx);
 
 			if (teacherProfile) {
 				await createNotification(
@@ -147,15 +128,12 @@ export async function updateSystemSettings(
 
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
 
-		await prisma.$transaction(async (tx) => {
+		await unitOfWork.runTransaction(async (tx) => {
 			for (const s of settings) {
-				await tx.systemSetting.update({
-					where: { settingKey: s.settingKey },
-					data: {
-						settingValue: s.settingValue,
-						updatedBy: adminUserId,
-					},
-				});
+				await systemSettingRepository.update(s.settingKey, {
+					settingValue: s.settingValue,
+					updatedBy: adminUserId,
+				}, tx);
 			}
 		});
 
@@ -187,10 +165,7 @@ export async function toggleUserActive(
 			return { success: false, error: "لا يمكنك حظر حسابك الشخصي" };
 		}
 
-		await prisma.user.update({
-			where: { id: targetUserId },
-			data: { isActive },
-		});
+		await userRepository.update(targetUserId, { isActive });
 
 		revalidatePath("/dashboard/admin/users");
 
@@ -217,19 +192,12 @@ export async function updateHomepageLayout(
 			};
 		}
 
-		await prisma.systemSetting.upsert({
-			where: { settingKey: "HomepageLayout" },
-			update: {
-				settingValue: layoutJson,
-				updatedBy: adminUserId,
-			},
-			create: {
-				settingKey: "HomepageLayout",
-				settingValue: layoutJson,
-				description: "تخطيط ومحتوى الصفحة الرئيسية بتنسيق JSON الديناميكي",
-				updatedBy: adminUserId,
-			},
-		});
+		await systemSettingRepository.upsert(
+			"HomepageLayout",
+			layoutJson,
+			"تخطيط ومحتوى الصفحة الرئيسية بتنسيق JSON الديناميكي",
+			adminUserId
+		);
 
 		revalidatePath("/");
 		revalidatePath("/dashboard/admin/settings/homepage");

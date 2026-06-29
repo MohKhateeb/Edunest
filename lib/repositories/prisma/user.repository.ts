@@ -37,3 +37,5 @@ export class PrismaUserRepository implements IUserRepository {
 		return this.getClient(tx).user.delete({ where: { id } });
 	}
 }
+
+export const userRepository = new PrismaUserRepository();

@@ -36,3 +36,14 @@ export interface IStudentRepository {
 	findById(id: string, options?: { include?: Prisma.StudentInclude }, tx?: DbClient): Promise<any | null>;
 	update(id: string, data: Prisma.StudentUpdateInput, tx?: DbClient): Promise<any>;
 }
+
+export interface ISystemSettingRepository {
+	upsert(key: string, value: any, description?: string, updatedBy?: string, tx?: DbClient): Promise<any>;
+	findByKey(key: string, tx?: DbClient): Promise<any | null>;
+	update(key: string, value: any, tx?: DbClient): Promise<any>;
+}
+
+export interface ITeacherVerificationRepository {
+	update(teacherId: string, data: any, tx?: DbClient): Promise<any>;
+	findByTeacherId(teacherId: string, tx?: DbClient): Promise<any | null>;
+}
