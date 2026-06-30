@@ -238,7 +238,7 @@ export const createBooking = withAuthAction(
 				questionDetails,
 				questionImageUrl,
 				parentNotes,
-				status: isTrial ? BookingStatus.CONFIRMED : BookingStatus.PENDING,
+				status: isTrial ? BookingStatus.CONFIRMED : BookingStatus.PENDING_APPROVAL,
 				confirmedAt: isTrial ? new Date() : null,
 				paymentStatus,
 				bookingSource: BookingSource.WEB,

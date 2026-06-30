@@ -183,6 +183,8 @@ const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 
 export const CLEANUP_HANDLERS: Partial<Record<BookingStatus, CleanupHandler>> = {
 	[BookingStatus.PENDING]: handlePendingBooking,
+	[BookingStatus.PENDING_APPROVAL]: handlePendingBooking,
+	[BookingStatus.AWAITING_PAYMENT]: handlePendingBooking,
 	[BookingStatus.CONFIRMED]: handleConfirmedBooking,
 };
 
@@ -199,7 +201,7 @@ export async function processStaleBookingsCancellation(
 
 	const staleBookings = await prisma.booking.findMany({
 		where: {
-			status: BookingStatus.PENDING,
+			status: { in: [BookingStatus.PENDING, BookingStatus.PENDING_APPROVAL, BookingStatus.AWAITING_PAYMENT] },
 			startTime: { lt: now },
 			...(teacherId && {
 				teacherService: {

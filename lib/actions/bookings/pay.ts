@@ -20,8 +20,8 @@ export const processPayment = withAuthAction(
 	async ({ userId, userType }, bookingId: string) => {
 		const booking = await getAuthorizedBooking(bookingId, userId, userType);
 
-		if (booking.status !== BookingStatus.PENDING) {
-			return { success: false, error: "لا يمكن الدفع لحجز غير معلق" };
+		if (booking.status !== BookingStatus.PENDING && booking.status !== BookingStatus.AWAITING_PAYMENT) {
+			return { success: false, error: "لا يمكن الدفع لحجز في هذه الحالة" };
 		}
 
 		if (booking.paymentStatus !== PaymentStatus.UNPAID) {

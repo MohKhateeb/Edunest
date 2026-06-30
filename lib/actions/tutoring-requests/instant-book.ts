@@ -69,7 +69,7 @@ export async function claimLiveRequest(
 			const activeBookings = await tx.booking.findMany({
 				where: {
 					teacherService: { teacherId: teacher.id },
-					status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
+					status: { in: [BookingStatus.PENDING, BookingStatus.PENDING_APPROVAL, BookingStatus.AWAITING_PAYMENT, BookingStatus.CONFIRMED] },
 					startTime: { gte: dayStart, lte: dayEnd },
 				},
 				select: { startTime: true, duration: true },
@@ -134,7 +134,7 @@ export async function claimLiveRequest(
 					duration: duration,
 					price: price,
 					appliedCommissionRate: commissionRate,
-					status: BookingStatus.PENDING,
+					status: BookingStatus.AWAITING_PAYMENT,
 					paymentStatus: PaymentStatus.UNPAID,
 					bookingSource: BookingSource.WEB,
 					meetingUrl: null, // سيتم توليده بعد الدفع

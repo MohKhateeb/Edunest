@@ -38,7 +38,7 @@ export class PrismaBookingRepository implements IBookingRepository {
 		return client.booking.findMany({
 			where: {
 				teacherService: { teacherId },
-				status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
+				status: { in: [BookingStatus.PENDING, BookingStatus.PENDING_APPROVAL, BookingStatus.AWAITING_PAYMENT, BookingStatus.CONFIRMED] },
 				startTime: { gte: from, lte: to },
 			},
 			select: { startTime: true, duration: true },
@@ -55,7 +55,7 @@ export class PrismaBookingRepository implements IBookingRepository {
 		return client.booking.findMany({
 			where: {
 				studentId,
-				status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
+				status: { in: [BookingStatus.PENDING, BookingStatus.PENDING_APPROVAL, BookingStatus.AWAITING_PAYMENT, BookingStatus.CONFIRMED] },
 				startTime: { gte: from, lte: to },
 			},
 			select: { startTime: true, duration: true },
@@ -72,7 +72,7 @@ export class PrismaBookingRepository implements IBookingRepository {
 		return client.booking.findMany({
 			where: {
 				teacherService: { teacherId: { in: teacherIds } },
-				status: { in: [BookingStatus.PENDING, BookingStatus.CONFIRMED] },
+				status: { in: [BookingStatus.PENDING, BookingStatus.PENDING_APPROVAL, BookingStatus.AWAITING_PAYMENT, BookingStatus.CONFIRMED] },
 				startTime: { gte: from, lte: to },
 			},
 			select: {
