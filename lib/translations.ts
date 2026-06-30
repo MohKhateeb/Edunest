@@ -84,7 +84,7 @@ export const BOOKING_STATUS_STYLES: Record<string, string> = {
 	PENDING_APPROVAL:
 		"bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900",
 	AWAITING_PAYMENT:
-		"bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/30 dark:text-sky-400 dark:border-sky-900",
+		"bg-orange-50 text-orange-700 border-orange-200 dark:bg-orange-950/30 dark:text-orange-400 dark:border-orange-900",
 	CONFIRMED:
 		"bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-900",
 	COMPLETED:

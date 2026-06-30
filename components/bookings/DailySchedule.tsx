@@ -102,7 +102,7 @@ export function DailySchedule({
 								b.status === "PENDING" || b.status === "PENDING_APPROVAL"
 									? "border-amber-200/60 dark:border-amber-900/40 bg-amber-50/20 dark:bg-amber-950/10"
 									: b.status === "AWAITING_PAYMENT"
-										? "border-sky-200/60 dark:border-sky-900/40 bg-sky-50/20 dark:bg-sky-950/10"
+										? "border-orange-200/60 dark:border-orange-900/40 bg-orange-50/20 dark:bg-orange-950/10"
 										: b.status === "CONFIRMED"
 											? "border-emerald-200/60 dark:border-emerald-900/40 bg-emerald-50/20 dark:bg-emerald-950/10"
 											: b.status === "COMPLETED"
