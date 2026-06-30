@@ -263,7 +263,7 @@ export default function AdminBookingsList({
 										className="fixed inset-0 z-10"
 										onClick={() => setActiveDropdown(null)}
 									/>
-									<div className="absolute start-6 top-10 z-20 w-48 bg-card border border-border rounded-xl shadow-lg py-1 text-right overflow-hidden animate-in fade-in slide-in-from-top-2">
+									<div className="absolute end-8 top-10 z-20 w-48 bg-card border border-border rounded-xl shadow-lg py-1 text-right overflow-hidden animate-in fade-in slide-in-from-top-2">
 										<button
 											onClick={() => {
 												setSelectedDetailsId(booking.id);
