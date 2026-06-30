@@ -91,7 +91,7 @@ export class SystemAdminService {
 		params: { cursor?: string; take?: number } = {},
 	) {
 		await requireAuth([UserType.ADMIN]);
-		const PAGE_SIZE = 20;
+		const PAGE_SIZE = 100;
 		const items = await prisma.teacher.findMany({
 			take: (params.take ?? PAGE_SIZE) + 1,
 			...(params.cursor && { cursor: { id: params.cursor }, skip: 1 }),
@@ -112,6 +112,7 @@ export class SystemAdminService {
 				specialization:
 					t.subjects?.map((s) => s.subject.name).join(", ") || "غير محدد",
 				averageRating: Number(t.averageRating),
+				defaultHourlyRate: Number(t.defaultHourlyRate),
 			})),
 			nextCursor,
 		};
