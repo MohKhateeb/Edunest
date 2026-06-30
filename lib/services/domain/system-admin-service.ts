@@ -3,9 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
 
 export class SystemAdminService {
-	static async getAdminDisputes(params: { cursor?: string; take?: number } = {}) {
+	static async getAdminDisputes(
+		params: { cursor?: string; take?: number } = {},
+	) {
 		await requireAuth([UserType.ADMIN]);
-		const PAGE_SIZE = 20;
+		const PAGE_SIZE = 100;
 		const items = await prisma.dispute.findMany({
 			take: (params.take ?? PAGE_SIZE) + 1,
 			...(params.cursor && { cursor: { id: params.cursor }, skip: 1 }),
@@ -85,7 +87,9 @@ export class SystemAdminService {
 		return { rawSettings: settings, groupedSettings };
 	}
 
-	static async getAdminTeachers(params: { cursor?: string; take?: number } = {}) {
+	static async getAdminTeachers(
+		params: { cursor?: string; take?: number } = {},
+	) {
 		await requireAuth([UserType.ADMIN]);
 		const PAGE_SIZE = 20;
 		const items = await prisma.teacher.findMany({
@@ -109,7 +113,7 @@ export class SystemAdminService {
 					t.subjects?.map((s) => s.subject.name).join(", ") || "غير محدد",
 				averageRating: Number(t.averageRating),
 			})),
-			nextCursor
+			nextCursor,
 		};
 	}
 
@@ -152,7 +156,9 @@ export class SystemAdminService {
 		return { items: data, nextCursor };
 	}
 
-	static async getAdminVerifications(params: { cursor?: string; take?: number } = {}) {
+	static async getAdminVerifications(
+		params: { cursor?: string; take?: number } = {},
+	) {
 		await requireAuth([UserType.ADMIN]);
 		const PAGE_SIZE = 20;
 		const items = await prisma.teacherVerification.findMany({
