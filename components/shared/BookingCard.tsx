@@ -29,7 +29,6 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import DetailsModal from "@/components/shared/DetailsModal";
 import JoinMeetingButton from "@/components/shared/JoinMeetingButton";
-import { PaymentModal } from "@/components/shared/PaymentModal";
 import Portal from "@/components/shared/Portal";
 import ReportModal from "@/components/shared/ReportModal";
 import {
@@ -86,7 +85,6 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 	});
 
 	const [showDetailsModal, setShowDetailsModal] = useState(false);
-	const [showPaymentModal, setShowPaymentModal] = useState(false);
 
 	const isTrial = booking.isTrial;
 	const priceDisplay = isTrial
@@ -198,7 +196,8 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 							{BOOKING_STATUS_AR[booking.status]}
 						</span>
 						{booking.status === "CONFIRMED" &&
-							(sessionTimeState.status === "warning_2_frozen" || sessionTimeState.status === "closed_escrow") && (
+							(sessionTimeState.status === "warning_2_frozen" ||
+								sessionTimeState.status === "closed_escrow") && (
 								<span className="flex items-center gap-1 text-[10px] font-bold px-2 py-1.5 rounded-full bg-rose-100 text-rose-700 border border-rose-300 dark:bg-rose-900/40 dark:text-rose-400">
 									<AlertTriangle className="h-3 w-3" />
 									متأخرة الإغلاق
@@ -344,30 +343,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 							تقييم المعلم
 						</button>
 					)}
-
-				{role === "PARENT" &&
-					(booking.status === "PENDING" || booking.status === "AWAITING_PAYMENT") &&
-					booking.paymentStatus === "UNPAID" && (
-						<button
-							onClick={() => setShowPaymentModal(true)}
-							className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs font-bold bg-emerald-600 text-white border border-emerald-700 hover:bg-emerald-700 py-2.5 rounded-xl transition-colors animate-pulse shadow-md"
-						>
-							<CreditCard className="h-4 w-4" />
-							دفع الآن (₪ {Number(booking.price)})
-						</button>
-					)}
 			</div>
-
-			{/* Payment Modal */}
-			{showPaymentModal && (
-				<Portal>
-					<PaymentModal
-						bookingId={booking.id}
-						price={Number(booking.price)}
-						onClose={() => setShowPaymentModal(false)}
-					/>
-				</Portal>
-			)}
 
 			{/* Cancellation Modal */}
 			{showCancelModal && (
