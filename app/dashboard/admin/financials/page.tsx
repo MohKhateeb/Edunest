@@ -22,7 +22,7 @@ export const metadata = {
 export default async function AdminFinancialsPage({
 	searchParams,
 }: {
-	searchParams: Promise<{ tab?: string; from?: string; to?: string }>;
+	searchParams: Promise<{ tab?: string; from?: string; to?: string; cursor?: string }>;
 }) {
 	await requireAuth([UserType.ADMIN]);
 
@@ -159,7 +159,9 @@ export default async function AdminFinancialsPage({
 			</div>
 		);
 	} else if (currentTab === "escrow") {
-		const escrows = await getAllEscrows(from, to);
+		const cursor = resolvedSearchParams.cursor;
+		const { items: escrows, nextCursor } = await getAllEscrows(from, to, { cursor });
+		// TODO: wire up pagination UI
 		const pendingEscrows = escrows.filter((e) => e.status === "PENDING");
 		const resolvedEscrows = escrows.filter((e) => e.status !== "PENDING");
 

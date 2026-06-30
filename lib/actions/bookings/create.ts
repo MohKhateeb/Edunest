@@ -157,8 +157,8 @@ export const createBooking = withAuthAction(
 		// 7. Save booking inside a transaction (handling race conditions)
 		const newBooking = await unitOfWork.runTransaction(async (tx) => {
 			// Acquire exclusive row locks
-			await tx.$executeRaw`SELECT id FROM "User" WHERE id = ${parentUserId} FOR UPDATE`;
-			await tx.$executeRaw`SELECT id FROM "Teacher" WHERE id = ${teacherId} FOR UPDATE`;
+			await tx.$executeRaw`SELECT id FROM "users" WHERE id = ${parentUserId} FOR UPDATE`;
+			await tx.$executeRaw`SELECT id FROM "teachers" WHERE id = ${teacherId} FOR UPDATE`;
 
 			// Verify trial usage inside transaction to prevent parallel booking bypass
 			if (isTrial) {

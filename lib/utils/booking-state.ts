@@ -2,6 +2,16 @@ import { BookingStatus } from "@prisma/client";
 import { BOOKING_STATUS_AR } from "@/lib/translations";
 
 const ALLOWED_TRANSITIONS: Record<BookingStatus, BookingStatus[]> = {
+	PENDING_APPROVAL: [
+		BookingStatus.AWAITING_PAYMENT,
+		BookingStatus.REJECTED,
+		BookingStatus.CANCELLED,
+	],
+	AWAITING_PAYMENT: [
+		BookingStatus.CONFIRMED,
+		BookingStatus.EXPIRED,
+		BookingStatus.CANCELLED,
+	],
 	PENDING: [
 		BookingStatus.CONFIRMED,
 		BookingStatus.REJECTED,
@@ -11,6 +21,7 @@ const ALLOWED_TRANSITIONS: Record<BookingStatus, BookingStatus[]> = {
 	COMPLETED: [],
 	REJECTED: [],
 	CANCELLED: [],
+	EXPIRED: [],
 };
 
 export function isValidTransition(

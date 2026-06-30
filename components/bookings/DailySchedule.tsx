@@ -4,8 +4,10 @@ import {
 	ChevronLeft,
 	FileText,
 	MessageCircleQuestion,
+	X,
 } from "lucide-react";
 import JoinMeetingButton from "@/components/shared/JoinMeetingButton";
+import { PaymentCountdown } from "@/components/shared/PaymentCountdown";
 import { BOOKING_STATUS_AR } from "@/lib/translations";
 import type { DetailedBooking } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -22,6 +24,8 @@ interface DailyScheduleProps {
 	onReportClick: (id: string) => void;
 	loadingId: string | null;
 	handleAcceptShortcut: (id: string, e: React.MouseEvent) => void;
+	handleRejectShortcut: (id: string, e: React.MouseEvent) => void;
+	handleCancelShortcut: (id: string, e: React.MouseEvent) => void;
 }
 
 export function DailySchedule({
@@ -31,6 +35,8 @@ export function DailySchedule({
 	onReportClick,
 	loadingId,
 	handleAcceptShortcut,
+	handleRejectShortcut,
+	handleCancelShortcut,
 }: DailyScheduleProps) {
 	const now = Date.now();
 
@@ -93,13 +99,15 @@ export function DailySchedule({
 							key={b.id}
 							className={cn(
 								"group flex flex-col md:flex-row md:items-center justify-between gap-4 border p-4 rounded-2xl hover:bg-accent/40 transition-all cursor-pointer shadow-xs hover:shadow-sm",
-								b.status === "PENDING"
+								b.status === "PENDING" || b.status === "PENDING_APPROVAL"
 									? "border-amber-200/60 dark:border-amber-900/40 bg-amber-50/20 dark:bg-amber-950/10"
-									: b.status === "CONFIRMED"
-										? "border-emerald-200/60 dark:border-emerald-900/40 bg-emerald-50/20 dark:bg-emerald-950/10"
-										: b.status === "COMPLETED"
-											? "border-blue-200/60 dark:border-blue-900/40 bg-blue-50/20 dark:bg-blue-950/10"
-											: "border-border opacity-75 grayscale bg-muted/20",
+									: b.status === "AWAITING_PAYMENT"
+										? "border-sky-200/60 dark:border-sky-900/40 bg-sky-50/20 dark:bg-sky-950/10"
+										: b.status === "CONFIRMED"
+											? "border-emerald-200/60 dark:border-emerald-900/40 bg-emerald-50/20 dark:bg-emerald-950/10"
+											: b.status === "COMPLETED"
+												? "border-blue-200/60 dark:border-blue-900/40 bg-blue-50/20 dark:bg-blue-950/10"
+												: "border-border opacity-75 grayscale bg-muted/20",
 							)}
 							onClick={() => onBookingClick(b.id)}
 						>
@@ -118,21 +126,33 @@ export function DailySchedule({
 										<span
 											className={cn(
 												"text-[10px] font-extrabold px-2 py-0.5 rounded-full border",
-												b.status === "PENDING" &&
+												(b.status === "PENDING" || b.status === "PENDING_APPROVAL") &&
 													"bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-400",
+												b.status === "AWAITING_PAYMENT" &&
+													"bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-950/50 dark:text-sky-400",
 												b.status === "CONFIRMED" &&
 													"bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-400",
 												b.status === "COMPLETED" &&
 													"bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-400",
-												(b.status === "CANCELLED" || b.status === "REJECTED") &&
+												(b.status === "CANCELLED" || b.status === "REJECTED" || b.status === "EXPIRED") &&
 													"bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-950/50 dark:text-rose-400",
 											)}
 										>
-											{BOOKING_STATUS_AR[b.status]}
+											{BOOKING_STATUS_AR[b.status as keyof typeof BOOKING_STATUS_AR] || b.status}
 										</span>
 										{b.isTrial && (
 											<span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200 dark:bg-purple-950/50 dark:text-purple-400">
 												ترايل مجاني
+											</span>
+										)}
+										{b.adminEscrow?.status === "PENDING" && (
+											<span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-950/50 dark:text-rose-400" title="الأرباح محتجزة بانتظار قرار إداري">
+												أموال مجمدة
+											</span>
+										)}
+										{b.dispute?.status === "OPEN" && (
+											<span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200 dark:bg-red-950/50 dark:text-red-400">
+												نزاع مفتوح
 											</span>
 										)}
 									</div>
@@ -168,38 +188,74 @@ export function DailySchedule({
 										"px-3 py-1 rounded-full text-[11px] font-bold border",
 										b.status === "CONFIRMED"
 											? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800"
-											: b.status === "PENDING"
+											: (b.status === "PENDING" || b.status === "PENDING_APPROVAL")
 												? "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-800"
-												: b.status === "COMPLETED"
-													? "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800"
-													: "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800",
+												: b.status === "AWAITING_PAYMENT"
+													? "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/20 dark:text-sky-400 dark:border-sky-800"
+													: b.status === "COMPLETED"
+														? "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800"
+														: "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800",
 									)}
 								>
-									{
-										BOOKING_STATUS_AR[
-											b.status as keyof typeof BOOKING_STATUS_AR
-										]
-									}
+									{BOOKING_STATUS_AR[b.status as keyof typeof BOOKING_STATUS_AR] || b.status}
 								</span>
 
 								<div
-									className="flex gap-2 items-center"
+									className="flex gap-2 items-center mt-2"
 									onClick={(e) => e.stopPropagation()}
 								>
+									{b.status === "EXPIRED" && (
+										<div className="text-[11px] text-rose-600 font-bold bg-rose-50 px-2 py-1 rounded-lg text-center max-w-[120px]">
+											انتهت مهلة الدفع وتم تحرير الموعد
+										</div>
+									)}
+
+									{b.status === "AWAITING_PAYMENT" && !b.isTrial && (
+										<div className="flex flex-col items-end gap-2">
+											{b.paymentDeadline && <PaymentCountdown deadline={new Date(b.paymentDeadline)} />}
+											<button
+												onClick={(e) => handleCancelShortcut(b.id, e)}
+												disabled={loadingId === b.id}
+												className="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-xl text-[11px] font-bold transition-all shadow-sm flex items-center gap-1"
+											>
+												{loadingId === b.id ? (
+													<span className="h-3.5 w-3.5 border-2 border-t-transparent border-rose-700 rounded-full animate-spin" />
+												) : (
+													<X className="h-3 w-3" />
+												)}
+												إلغاء الموعد
+											</button>
+										</div>
+									)}
+
 									{/* Pending Shortcuts */}
-									{b.status === "PENDING" && (
-										<button
-											onClick={(e) => handleAcceptShortcut(b.id, e)}
-											disabled={loadingId === b.id}
-											className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
-										>
-											{loadingId === b.id ? (
-												<span className="h-3.5 w-3.5 border-2 border-t-transparent border-white rounded-full animate-spin" />
-											) : (
-												<Check className="h-3.5 w-3.5" />
-											)}
-											قبول الطلب
-										</button>
+									{(b.status === "PENDING" || b.status === "PENDING_APPROVAL") && (
+										<div className="flex gap-1.5 items-center">
+											<button
+												onClick={(e) => handleRejectShortcut(b.id, e)}
+												disabled={loadingId === b.id}
+												className="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-xl text-[11px] font-bold transition-all shadow-sm flex items-center gap-1"
+											>
+												{loadingId === b.id ? (
+													<span className="h-3.5 w-3.5 border-2 border-t-transparent border-rose-700 rounded-full animate-spin" />
+												) : (
+													<X className="h-3 w-3" />
+												)}
+												رفض
+											</button>
+											<button
+												onClick={(e) => handleAcceptShortcut(b.id, e)}
+												disabled={loadingId === b.id}
+												className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-[11px] font-bold transition-all shadow-sm flex items-center gap-1"
+											>
+												{loadingId === b.id ? (
+													<span className="h-3.5 w-3.5 border-2 border-t-transparent border-white rounded-full animate-spin" />
+												) : (
+													<Check className="h-3 w-3" />
+												)}
+												قبول
+											</button>
+										</div>
 									)}
 
 									{/* Confirmed Shortcuts */}
@@ -220,7 +276,7 @@ export function DailySchedule({
 														e.stopPropagation();
 														onReportClick(b.id);
 													}}
-													className="px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-1.5"
+													className="px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-xl text-[11px] font-bold transition-all shadow-sm flex items-center gap-1.5"
 												>
 													<FileText className="h-3.5 w-3.5" />
 													رفع التقرير

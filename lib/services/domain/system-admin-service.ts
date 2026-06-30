@@ -3,9 +3,12 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
 
 export class SystemAdminService {
-	static async getAdminDisputes() {
+	static async getAdminDisputes(params: { cursor?: string; take?: number } = {}) {
 		await requireAuth([UserType.ADMIN]);
-		return prisma.dispute.findMany({
+		const PAGE_SIZE = 20;
+		const items = await prisma.dispute.findMany({
+			take: (params.take ?? PAGE_SIZE) + 1,
+			...(params.cursor && { cursor: { id: params.cursor }, skip: 1 }),
 			include: {
 				booking: {
 					include: {
@@ -21,6 +24,12 @@ export class SystemAdminService {
 			},
 			orderBy: { createdAt: "desc" },
 		});
+
+		const hasMore = items.length > (params.take ?? PAGE_SIZE);
+		const data = hasMore ? items.slice(0, -1) : items;
+		const nextCursor = hasMore ? data[data.length - 1].id : null;
+
+		return { items: data, nextCursor };
 	}
 
 	static async getAdminServices() {
@@ -76,26 +85,40 @@ export class SystemAdminService {
 		return { rawSettings: settings, groupedSettings };
 	}
 
-	static async getAdminTeachers() {
+	static async getAdminTeachers(params: { cursor?: string; take?: number } = {}) {
 		await requireAuth([UserType.ADMIN]);
-		const teachers = await prisma.teacher.findMany({
+		const PAGE_SIZE = 20;
+		const items = await prisma.teacher.findMany({
+			take: (params.take ?? PAGE_SIZE) + 1,
+			...(params.cursor && { cursor: { id: params.cursor }, skip: 1 }),
 			include: {
 				user: true,
 				subjects: { include: { subject: true } },
 			},
-			orderBy: { user: { name: "asc" } },
+			orderBy: { id: "asc" }, // Must order by unique field for cursor pagination
 		});
-		return teachers.map((t) => ({
-			...t,
-			specialization:
-				t.subjects?.map((s) => s.subject.name).join(", ") || "غير محدد",
-			averageRating: Number(t.averageRating),
-		}));
+
+		const hasMore = items.length > (params.take ?? PAGE_SIZE);
+		const data = hasMore ? items.slice(0, -1) : items;
+		const nextCursor = hasMore ? data[data.length - 1].id : null;
+
+		return {
+			items: data.map((t) => ({
+				...t,
+				specialization:
+					t.subjects?.map((s) => s.subject.name).join(", ") || "غير محدد",
+				averageRating: Number(t.averageRating),
+			})),
+			nextCursor
+		};
 	}
 
-	static async getAdminUsers() {
+	static async getAdminUsers(params: { cursor?: string; take?: number } = {}) {
 		await requireAuth([UserType.ADMIN]);
-		return prisma.user.findMany({
+		const PAGE_SIZE = 20;
+		const items = await prisma.user.findMany({
+			take: (params.take ?? PAGE_SIZE) + 1,
+			...(params.cursor && { cursor: { id: params.cursor }, skip: 1 }),
 			select: {
 				id: true,
 				name: true,
@@ -121,11 +144,20 @@ export class SystemAdminService {
 			},
 			orderBy: { createdAt: "desc" },
 		});
+
+		const hasMore = items.length > (params.take ?? PAGE_SIZE);
+		const data = hasMore ? items.slice(0, -1) : items;
+		const nextCursor = hasMore ? data[data.length - 1].id : null;
+
+		return { items: data, nextCursor };
 	}
 
-	static async getAdminVerifications() {
+	static async getAdminVerifications(params: { cursor?: string; take?: number } = {}) {
 		await requireAuth([UserType.ADMIN]);
-		return prisma.teacherVerification.findMany({
+		const PAGE_SIZE = 20;
+		const items = await prisma.teacherVerification.findMany({
+			take: (params.take ?? PAGE_SIZE) + 1,
+			...(params.cursor && { cursor: { id: params.cursor }, skip: 1 }),
 			where: { reviewedAt: null },
 			include: {
 				teacher: {
@@ -137,6 +169,12 @@ export class SystemAdminService {
 			},
 			orderBy: { createdAt: "asc" },
 		});
+
+		const hasMore = items.length > (params.take ?? PAGE_SIZE);
+		const data = hasMore ? items.slice(0, -1) : items;
+		const nextCursor = hasMore ? data[data.length - 1].id : null;
+
+		return { items: data, nextCursor };
 	}
 
 	static async getHomepageData() {

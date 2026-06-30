@@ -8,7 +8,7 @@ import { TeacherBookingsSummary } from "@/components/bookings/TeacherBookingsSum
 import { TeacherCalendar } from "@/components/bookings/TeacherCalendar";
 import DetailsModal from "@/components/shared/DetailsModal";
 import ReportModal from "@/components/shared/ReportModal";
-import { acceptBooking } from "@/lib/actions/booking";
+import { acceptBooking, rejectBooking, cancelBooking } from "@/lib/actions/booking";
 import type { DetailedBooking } from "@/lib/types";
 import { getLocalDateString } from "@/lib/utils/time";
 
@@ -81,6 +81,51 @@ export default function TeacherBookingsList({
 		}
 	};
 
+	const handleRejectShortcut = async (
+		bookingId: string,
+		e: React.MouseEvent,
+	) => {
+		e.stopPropagation();
+		setLoadingId(bookingId);
+		try {
+			const res = await rejectBooking(bookingId);
+			if (!res.success) {
+				toast.error("فشل رفض الحجز", { description: res.error });
+			} else {
+				toast.success("تم رفض الحجز");
+			}
+		} catch (err) {
+			console.error(err);
+			toast.error("حدث خطأ غير متوقع أثناء رفض الحجز");
+		} finally {
+			setLoadingId(null);
+		}
+	};
+
+	const handleCancelShortcut = async (
+		bookingId: string,
+		e: React.MouseEvent,
+	) => {
+		e.stopPropagation();
+		const reason = window.prompt("سبب الإلغاء:");
+		if (!reason) return;
+
+		setLoadingId(bookingId);
+		try {
+			const res = await cancelBooking({ bookingId, reason });
+			if (!res.success) {
+				toast.error("فشل إلغاء الحجز", { description: res.error });
+			} else {
+				toast.success("تم إلغاء الحجز وتحرير الموعد بنجاح");
+			}
+		} catch (err) {
+			console.error(err);
+			toast.error("حدث خطأ غير متوقع أثناء الإلغاء");
+		} finally {
+			setLoadingId(null);
+		}
+	};
+
 	return (
 		<div className="space-y-6" dir="rtl">
 			{/* 1. Summary Stats */}
@@ -106,7 +151,9 @@ export default function TeacherBookingsList({
 					onChange={(e) => setStatusFilter(e.target.value)}
 				>
 					<option value="ALL">كل حالات الحصص</option>
-					<option value="PENDING">بانتظار موافقتي (معلق)</option>
+					<option value="PENDING_APPROVAL">طلبات جديدة بانتظار ردك</option>
+					<option value="AWAITING_PAYMENT">بانتظار دفع ولي الأمر</option>
+					<option value="PENDING">بانتظار موافقتي (معلق - قديم)</option>
 					<option value="CONFIRMED">مؤكد ومجدول</option>
 					<option value="COMPLETED">مكتمل ومنتهي</option>
 					<option value="CANCELLED">ملغي</option>
@@ -125,6 +172,8 @@ export default function TeacherBookingsList({
 						onReportClick={setReportBookingId}
 						loadingId={loadingId}
 						handleAcceptShortcut={handleAcceptShortcut}
+						handleRejectShortcut={handleRejectShortcut}
+						handleCancelShortcut={handleCancelShortcut}
 					/>
 				</div>
 

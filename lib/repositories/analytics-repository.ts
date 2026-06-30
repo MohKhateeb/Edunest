@@ -37,8 +37,8 @@ export class AnalyticsRepository {
 					ELSE b."price" - (b."price" * b."appliedCommissionRate" / 100) 
 				END
 			) as total
-			FROM "Booking" b
-			INNER JOIN "TeacherService" ts ON b."teacherServiceId" = ts.id
+			FROM "bookings" b
+			INNER JOIN "teacher_services" ts ON b."teacherServiceId" = ts.id
 			WHERE ts."teacherId" = ${teacherId}
 			  AND b."status" = 'COMPLETED'
 			  AND b."payoutId" IS NULL
@@ -63,8 +63,8 @@ export class AnalyticsRepository {
 						ELSE b."price" - (b."price" * b."appliedCommissionRate" / 100) 
 					END
 				) as earnings
-			FROM "Booking" b
-			INNER JOIN "TeacherService" ts ON b."teacherServiceId" = ts.id
+			FROM "bookings" b
+			INNER JOIN "teacher_services" ts ON b."teacherServiceId" = ts.id
 			WHERE ts."teacherId" = ${teacherId}
 			  AND b."status" = 'COMPLETED'
 			  AND b."startTime" >= ${startDate} AND b."startTime" <= ${endDate}
@@ -208,7 +208,7 @@ export class AnalyticsRepository {
 						ELSE ("price" * "appliedCommissionRate" / 100) 
 					END
 				) as revenue
-			FROM "Booking"
+			FROM "bookings"
 			WHERE "status" = 'COMPLETED' 
 			  AND "completedAt" >= ${startDate} AND "completedAt" <= ${endDate}
 			GROUP BY DATE("completedAt")
@@ -224,10 +224,10 @@ export class AnalyticsRepository {
 			SELECT 
 				COALESCE(s.name, 'غير محدد') as name,
 				COUNT(b.id)::int as count
-			FROM "Booking" b
-			LEFT JOIN "TeacherService" ts ON b."teacherServiceId" = ts.id
-			LEFT JOIN "TeacherSubject" tsub ON ts."teacherId" = tsub."teacherId"
-			LEFT JOIN "Subject" s ON tsub."subjectId" = s.id
+			FROM "bookings" b
+			LEFT JOIN "teacher_services" ts ON b."teacherServiceId" = ts.id
+			LEFT JOIN "teacher_subjects" tsub ON ts."teacherId" = tsub."teacherId"
+			LEFT JOIN "subjects" s ON tsub."subjectId" = s.id
 			WHERE b."createdAt" >= ${startDate} AND b."createdAt" <= ${endDate}
 			GROUP BY COALESCE(s.name, 'غير محدد')
 			ORDER BY count DESC
@@ -238,9 +238,9 @@ export class AnalyticsRepository {
 			SELECT 
 				COALESCE(st.name, 'غير محدد') as name,
 				COUNT(b.id)::int as count
-			FROM "Booking" b
-			LEFT JOIN "TeacherService" ts ON b."teacherServiceId" = ts.id
-			LEFT JOIN "ServiceType" st ON ts."serviceTypeId" = st.id
+			FROM "bookings" b
+			LEFT JOIN "teacher_services" ts ON b."teacherServiceId" = ts.id
+			LEFT JOIN "service_types" st ON ts."serviceTypeId" = st.id
 			WHERE b."createdAt" >= ${startDate} AND b."createdAt" <= ${endDate}
 			GROUP BY COALESCE(st.name, 'غير محدد')
 			ORDER BY count DESC

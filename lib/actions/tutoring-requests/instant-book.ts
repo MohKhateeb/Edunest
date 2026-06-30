@@ -36,7 +36,7 @@ export async function claimLiveRequest(
 		// 1. استخدام Transaction مع Row-Level Lock لمنع الحجز المزدوج الكارثي
 		const result = await prisma.$transaction(async (tx) => {
 			// قفل صف الطلب حصرياً لمنع المعلمين الآخرين من اختطافه في نفس الثانية
-			await tx.$executeRaw`SELECT id FROM "TutoringRequest" WHERE id = ${requestId} FOR UPDATE`;
+			await tx.$executeRaw`SELECT id FROM "tutoring_requests" WHERE id = ${requestId} FOR UPDATE`;
 
 			const request = await tx.tutoringRequest.findUnique({
 				where: { id: requestId },

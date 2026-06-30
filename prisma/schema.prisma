@@ -224,6 +224,7 @@ model TeacherService {
   bookings          Booking[]
 
   @@index([teacherId])
+  @@index([teacherId, serviceTypeId])
   @@map("teacher_services")
 }
 
@@ -232,10 +233,13 @@ model TeacherService {
 // ════════════════════════════════════════════════════
 enum BookingStatus {
   PENDING
+  PENDING_APPROVAL
+  AWAITING_PAYMENT
   CONFIRMED
   REJECTED
   COMPLETED
   CANCELLED
+  EXPIRED
 }
 
 enum PaymentStatus {
@@ -267,6 +271,7 @@ model Booking {
   appliedCommissionRate Decimal        @db.Decimal(5, 2)
   status                BookingStatus  @default(PENDING)
   paymentStatus         PaymentStatus  @default(UNPAID)
+  paymentDeadline       DateTime?
   bookingSource         BookingSource  @default(WEB)
   meetingUrl            String?
   questionTitle         String?
@@ -295,8 +300,10 @@ model Booking {
   parentRefund          ParentRefund?
 
   @@index([parentUserId])
+  @@index([studentId])
   @@index([teacherServiceId])
   @@index([status])
+  @@index([status, createdAt])
   @@index([isTrial])
   @@index([startTime])
   @@index([paymentStatus])
@@ -333,6 +340,7 @@ model Review {
   createdAt DateTime @default(now())
 
   @@index([teacherId])
+  @@index([teacherId, isVisible])
   @@map("reviews")
 }
 
@@ -398,6 +406,7 @@ model Notification {
   createdAt DateTime @default(now())
 
   @@index([userId, isRead])
+  @@index([userId, createdAt])
   @@map("notifications")
 }
 
@@ -459,6 +468,7 @@ model TutoringRequest {
   @@index([studentId])
   @@index([subjectId])
   @@index([status])
+  @@index([status, createdAt])
   @@map("tutoring_requests")
 }
 
@@ -495,6 +505,7 @@ model Dispute {
   messages     DisputeMessage[]
 
   @@index([parentUserId])
+  @@index([status, createdAt])
   @@map("disputes")
 }
 
@@ -533,5 +544,6 @@ model AdminEscrow {
   resolvedBy String? // User ID of the admin who resolved it
   notes      String?          @db.Text
 
+  @@index([status, resolvedAt])
   @@map("admin_escrows")
 }

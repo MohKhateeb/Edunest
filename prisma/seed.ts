@@ -1,4 +1,4 @@
-
+import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import {
 	BookingSource,
@@ -8,10 +8,11 @@ import {
 	PrismaClient,
 	UserType,
 	VerificationLevel,
-	User,
-	Student,
-	Teacher,
-	TeacherService,
+	DisputeStatus,
+	DisputeTurn,
+	EscrowResolution,
+	RequestStatus,
+	FAQCategory,
 } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import crypto from "crypto";
@@ -24,519 +25,332 @@ const pool = new Pool({
 const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
+function randomInt(min: number, max: number) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randomItem<T>(arr: T[]): T {
+	return arr[randomInt(0, arr.length - 1)];
+}
+
+function randomDate(startDays: number, endDays: number) {
+	const date = new Date();
+	date.setDate(date.getDate() + randomInt(startDays, endDays));
+	date.setHours(randomInt(8, 22), 0, 0, 0);
+	return date;
+}
+
 async function main() {
-	console.log("🌱 بدء إنشاء البيانات التجريبية الضخمة...");
+	console.log("🌱 بدء إنشاء البيانات التجريبية الضخمة (النسخة الموسعة)...");
 
 	// 1. Settings
 	const settings = [
-		{
-			settingKey: "DefaultCommissionRate",
-			settingValue: "15",
-			description: "نسبة العمولة الافتراضية (%)",
-		},
-		{
-			settingKey: "QuickHelpCommissionRate",
-			settingValue: "20",
-			description: "عمولة شرح المسألة (%)",
-		},
-		{
-			settingKey: "MonthlyPackageCommissionRate",
-			settingValue: "12",
-			description: "عمولة الحقيبة الشهرية (%)",
-		},
-		{
-			settingKey: "FreeTrialEnabled",
-			settingValue: "true",
-			description: "الجلسة المجانية مفعلة",
-		},
-		{
-			settingKey: "FreeTrialDurationMinutes",
-			settingValue: "30",
-			description: "30 دقيقة",
-		},
-		{
-			settingKey: "FreeTrialCostToPlatform",
-			settingValue: "0",
-			description: "0 شيكل",
-		},
-		{
-			settingKey: "MaxRefundRequests",
-			settingValue: "2",
-			description: "حد الاسترداد التلقائي",
-		},
-		{
-			settingKey: "MinBookingPrice",
-			settingValue: "5",
-			description: "الحد الأدنى (شيكل)",
-		},
-		{
-			settingKey: "CancellationRefundHours",
-			settingValue: "24",
-			description: "ساعات الإلغاء المجاني",
-		},
-		{
-			settingKey: "MinBookingLeadHours",
-			settingValue: "2",
-			description: "حد أدنى بين الحجز والجلسة",
-		},
+		{ settingKey: "DefaultCommissionRate", settingValue: "15" },
+		{ settingKey: "QuickHelpCommissionRate", settingValue: "20" },
+		{ settingKey: "MonthlyPackageCommissionRate", settingValue: "12" },
+		{ settingKey: "FreeTrialEnabled", settingValue: "true" },
+		{ settingKey: "FreeTrialDurationMinutes", settingValue: "30" },
+		{ settingKey: "FreeTrialCostToPlatform", settingValue: "0" },
+		{ settingKey: "MaxRefundRequests", settingValue: "2" },
+		{ settingKey: "MinBookingPrice", settingValue: "5" },
+		{ settingKey: "CancellationRefundHours", settingValue: "24" },
+		{ settingKey: "MinBookingLeadHours", settingValue: "2" },
 	];
 
 	for (const s of settings) {
 		await prisma.systemSetting.upsert({
 			where: { settingKey: s.settingKey },
-			update: { settingValue: s.settingValue, description: s.description },
+			update: { settingValue: s.settingValue },
 			create: s,
 		});
 	}
 	console.log("✅ إعدادات النظام");
 
-	// 2. Service Types
-	const serviceTypes = [
-		{
-			name: SERVICES.FULL_SESSION,
-			nameEnglish: "Full Session",
-			defaultDuration: 60,
-			commissionRate: 15,
-			displayOrder: 1,
-		},
-		{
-			name: SERVICES.QUICK_HELP,
-			nameEnglish: "Quick Help",
-			defaultDuration: 15,
-			commissionRate: 20,
-			displayOrder: 2,
-		},
-		{
-			name: SERVICES.MEDIUM_SESSION,
-			nameEnglish: "Medium Session",
-			defaultDuration: 30,
-			commissionRate: 15,
-			displayOrder: 3,
-		},
-		{
-			name: SERVICES.MONTHLY_PACKAGE,
-			nameEnglish: "Monthly Package",
-			defaultDuration: 480,
-			commissionRate: 12,
-			displayOrder: 4,
-			isRecurring: true,
-		},
+	// 2. Services
+	const serviceTypesData = [
+		{ name: SERVICES.FULL_SESSION, defaultDuration: 60, commissionRate: 15, isRecurring: false },
+		{ name: SERVICES.QUICK_HELP, defaultDuration: 15, commissionRate: 20, isRecurring: false },
+		{ name: SERVICES.MONTHLY_PACKAGE, defaultDuration: 480, commissionRate: 12, isRecurring: true },
 	];
 
-	for (const st of serviceTypes) {
+	for (const st of serviceTypesData) {
 		await prisma.serviceType.upsert({
 			where: { name: st.name },
-			update: {
-				nameEnglish: st.nameEnglish,
-				defaultDuration: st.defaultDuration,
-				commissionRate: st.commissionRate,
-				displayOrder: st.displayOrder,
-				isRecurring: st.isRecurring ?? false,
-			},
+			update: { defaultDuration: st.defaultDuration, commissionRate: st.commissionRate, isRecurring: st.isRecurring },
 			create: st,
 		});
 	}
-	console.log("✅ أنواع الخدمات");
-
-	const fullSession = await prisma.serviceType.findUnique({
-		where: { name: SERVICES.FULL_SESSION },
-	});
-	const quickHelp = await prisma.serviceType.findUnique({
-		where: { name: SERVICES.QUICK_HELP },
-	});
-
+	
+	const fullSession = await prisma.serviceType.findUnique({ where: { name: SERVICES.FULL_SESSION } });
+	const quickHelp = await prisma.serviceType.findUnique({ where: { name: SERVICES.QUICK_HELP } });
 	if (!fullSession || !quickHelp) throw new Error("Service types missing");
+
+	// 3. Subjects
+	const subjectNames = ["رياضيات", "فيزياء", "كيمياء", "أحياء", "لغة عربية", "لغة إنجليزية", "تاريخ", "برمجة", "علوم", "جغرافيا"];
+	for (const name of subjectNames) {
+		await prisma.subject.upsert({
+			where: { name },
+			update: {},
+			create: { name, isActive: true },
+		});
+	}
+	const subjects = await prisma.subject.findMany();
 
 	const defaultPassword = await bcrypt.hash("Test@123456", 12);
 
-	// 3. Admin
+	// 4. Admin
 	const adminEmail = "admin@edunest.ps";
 	let admin = await prisma.user.findUnique({ where: { email: adminEmail } });
 	if (!admin) {
 		admin = await prisma.user.create({
-			data: {
-				name: "مدير النظام",
-				email: adminEmail,
-				passwordHash: defaultPassword,
-				userType: UserType.ADMIN,
-			},
+			data: { name: "مدير النظام", email: adminEmail, passwordHash: defaultPassword, userType: UserType.ADMIN },
 		});
 	}
-	console.log("✅ تم إنشاء/تحديث الأدمن");
 
-	// 4. Parents & Students
-	const parentsData = [
-		{
-			name: "أبو أحمد",
-			email: "parent1@test.com",
-			phone: "0599111111",
-			students: [
-				{ name: "أحمد", grade: 10 },
-				{ name: "سارة", grade: 6 },
-			],
-		},
-		{
-			name: "أم محمد",
-			email: "parent2@test.com",
-			phone: "0599222222",
-			students: [{ name: "محمد", grade: 12 }],
-		},
-		{
-			name: "أبو يوسف",
-			email: "parent3@test.com",
-			phone: "0599333333",
-			students: [
-				{ name: "يوسف", grade: 5 },
-				{ name: "ليان", grade: 8 },
-				{ name: "عمر", grade: 9 },
-			],
-		},
-	];
+	// 5. Parents and Students (50 Parents, ~120 Students)
+	console.log("⏳ جاري إنشاء 50 ولي أمر مع طلابهم...");
+	const parentFirstNames = ["أحمد", "محمد", "خالد", "عمر", "طارق", "سعيد", "فاطمة", "مريم", "سارة", "ليلى", "هدى", "منى"];
+	const parentLastNames = ["الخطيب", "المصري", "النجار", "حداد", "عوض", "منصور", "شاهين", "عودة", "سالم", "حسن"];
+	const studentNamesList = ["يوسف", "علي", "محمود", "ليان", "نور", "رؤى", "رامي", "سامي", "زيد", "هبة", "جنى", "كريم", "تالا"];
 
-	const parentUsers: (User & { students: Student[] })[] = [];
-	const allStudents: Student[] = [];
+	const parentUsers = [];
+	const allStudents = [];
 
-	for (const p of parentsData) {
-		let parent = await prisma.user.findUnique({ where: { email: p.email } });
-		if (!parent) {
-			parent = await prisma.user.create({
-				data: {
-					name: p.name,
-					email: p.email,
-					phone: p.phone,
-					passwordHash: defaultPassword,
-					userType: UserType.PARENT,
-					students: {
-						create: p.students,
-					},
-				},
-				include: { students: true },
-			});
-		} else {
-			parent = await prisma.user.findUnique({
-				where: { email: p.email },
-				include: { students: true },
+	for (let i = 1; i <= 50; i++) {
+		const numStudents = randomInt(1, 4);
+		const studentsToCreate = [];
+		for (let j = 0; j < numStudents; j++) {
+			studentsToCreate.push({
+				name: randomItem(studentNamesList) + " " + i,
+				grade: randomInt(1, 12),
 			});
 		}
-		const parentObj = parent as User & { students: Student[] };
-		parentUsers.push(parentObj);
-		allStudents.push(...(parentObj.students || []));
+
+		const pUser = await prisma.user.create({
+			data: {
+				name: `${randomItem(parentFirstNames)} ${randomItem(parentLastNames)}`,
+				email: `parent${i}@test.com`,
+				phone: `0599${String(i).padStart(6, "0")}`,
+				passwordHash: defaultPassword,
+				userType: UserType.PARENT,
+				students: { create: studentsToCreate },
+			},
+			include: { students: true },
+		});
+		parentUsers.push(pUser);
+		allStudents.push(...pUser.students);
 	}
-	console.log("✅ تم إنشاء 3 أولياء أمور و 6 طلاب");
+	console.log(`✅ تم إنشاء 50 ولي أمر و ${allStudents.length} طالب`);
 
-	// 5. Teachers
-	const teachersData = [
-		{
-			name: "أستاذ خالد",
-			email: "khaled@test.com",
-			spec: "رياضيات",
-			subSpec: "التوجيهي العلمي",
-			city: "رام الله",
-			levels: [10, 11, 12],
-			rate: 60,
-			level: VerificationLevel.GOLD,
-			bio: "مدرس رياضيات بخبرة 15 عاماً في تدريس التوجيهي.",
-		},
-		{
-			name: "معلمة منى",
-			email: "mona@test.com",
-			spec: "رياضيات",
-			subSpec: "المرحلة الأساسية",
-			city: "نابلس",
-			levels: [5, 6, 7, 8, 9],
-			rate: 45,
-			level: VerificationLevel.SILVER,
-			bio: "مختصة في تأسيس الطلاب في مادة الرياضيات.",
-		},
-		{
-			name: "أستاذ سامي",
-			email: "sami@test.com",
-			spec: "فيزياء",
-			subSpec: "فيزياء توجيهي",
-			city: "الخليل",
-			levels: [11, 12],
-			rate: 70,
-			level: VerificationLevel.GOLD,
-			bio: "أقوم بتبسيط الفيزياء المعقدة بطرق مبتكرة.",
-		},
-		{
-			name: "معلمة ليلى",
-			email: "layla@test.com",
-			spec: "لغة إنجليزية",
-			subSpec: "محادثة وتأسيس",
-			city: "رام الله",
-			levels: [1, 2, 3, 4, 5, 6, 7, 8],
-			rate: 40,
-			level: VerificationLevel.BRONZE,
-			bio: "مدرسة لغة إنجليزية وأسعى لكسر حاجز الخوف من التحدث.",
-		},
-		{
-			name: "أستاذ عمر",
-			email: "omar@test.com",
-			spec: "لغة عربية",
-			subSpec: "نحو وصرف",
-			city: "جنين",
-			levels: [8, 9, 10, 11, 12],
-			rate: 50,
-			level: VerificationLevel.SILVER,
-			bio: "عاشق للغة الضاد، أعلم النحو بأسلوب عصري.",
-		},
-	];
+	// 6. Teachers (30 Teachers)
+	console.log("⏳ جاري إنشاء 30 معلم وتخصصاتهم وخدماتهم...");
+	const cities = ["رام الله", "نابلس", "جنين", "الخليل", "بيت لحم", "طولكرم", "غزة", "القدس"];
+	const teacherUsers = [];
+	const teacherObjects = [];
+	const teacherServices = [];
 
-	const teacherObjects: Teacher[] = [];
-	const teacherServices: TeacherService[] = [];
+	for (let i = 1; i <= 30; i++) {
+		const subject = randomItem(subjects);
+		const tUser = await prisma.user.create({
+			data: {
+				name: `أستاذ ${randomItem(parentFirstNames)} ${i}`,
+				email: `teacher${i}@test.com`,
+				phone: `0566${String(i).padStart(6, "0")}`,
+				passwordHash: defaultPassword,
+				userType: UserType.TEACHER,
+				phoneVerified: true,
+			},
+		});
+		teacherUsers.push(tUser);
 
-	for (const t of teachersData) {
-		let tUser = await prisma.user.findUnique({ where: { email: t.email } });
-		if (!tUser) {
-			tUser = await prisma.user.create({
-				data: {
-					name: t.name,
-					email: t.email,
-					passwordHash: defaultPassword,
-					userType: UserType.TEACHER,
-					phoneVerified: true,
-				},
+		const slugSuffix = crypto.randomBytes(3).toString("hex");
+		const levels = Array.from({length: randomInt(3, 8)}, () => randomInt(5, 12));
+		
+		const rate = randomInt(40, 150);
+		const teacher = await prisma.teacher.create({
+			data: {
+				userId: tUser.id,
+				slug: `teacher-${i}-${slugSuffix}`,
+				city: randomItem(cities),
+				gradeLevels: [...new Set(levels)],
+				defaultHourlyRate: rate,
+				yearsOfExperience: randomInt(1, 20),
+				isVerified: true,
+				verificationLevel: randomItem([VerificationLevel.NONE, VerificationLevel.BRONZE, VerificationLevel.SILVER, VerificationLevel.GOLD]),
+				subjects: { create: { subjectId: subject.id } }
+			},
+		});
+		teacherObjects.push(teacher);
+
+		// Full Session
+		const ts1 = await prisma.teacherService.create({
+			data: { teacherId: teacher.id, serviceTypeId: fullSession.id, price: rate, duration: 60 },
+		});
+		teacherServices.push(ts1);
+
+		// Quick Help
+		if (randomInt(0, 1) === 1) {
+			const ts2 = await prisma.teacherService.create({
+				data: { teacherId: teacher.id, serviceTypeId: quickHelp.id, price: rate * 0.4, duration: 15 },
 			});
-			const slugSuffix = crypto.randomBytes(3).toString("hex");
-			const teacher = await prisma.teacher.create({
-				data: {
-					userId: tUser.id,
-					subSpecialization: t.subSpec,
-					slug: `${t.name.split(" ")[1]}-${t.spec}-${slugSuffix}`.replace(
-						/ /g,
-						"-",
-					),
-					city: t.city,
-					gradeLevels: t.levels,
-					defaultHourlyRate: t.rate,
-					yearsOfExperience: Math.floor(Math.random() * 10) + 3,
-					bio: t.bio,
-					isVerified: true,
-					verificationLevel: t.level,
-				},
-			});
-			teacherObjects.push(teacher);
+			teacherServices.push(ts2);
+		}
 
-			// Add Services
-			const ts1 = await prisma.teacherService.create({
-				data: {
-					teacherId: teacher.id,
-					serviceTypeId: fullSession.id,
-					price: t.rate,
-					duration: 60,
-				},
+		// Availability
+		for (let day = 1; day <= 5; day++) {
+			await prisma.teacherAvailability.create({
+				data: { teacherId: teacher.id, dayOfWeek: day, startTime: "14:00", endTime: "22:00" },
 			});
-			teacherServices.push(ts1);
-
-			if (Math.random() > 0.5) {
-				await prisma.teacherService.create({
-					data: {
-						teacherId: teacher.id,
-						serviceTypeId: quickHelp.id,
-						price: t.rate * 0.4,
-						duration: 15,
-					},
-				});
-			}
-
-			// Availability (Mon-Thu, 4pm to 8pm)
-			for (let day = 1; day <= 4; day++) {
-				await prisma.teacherAvailability.create({
-					data: {
-						teacherId: teacher.id,
-						dayOfWeek: day,
-						startTime: "16:00",
-						endTime: "20:00",
-					},
-				});
-			}
-		} else {
-			const teacher = await prisma.teacher.findUnique({
-				where: { userId: tUser.id },
-			});
-			if (teacher) {
-				teacherObjects.push(teacher);
-				const tss = await prisma.teacherService.findMany({
-					where: { teacherId: teacher.id },
-				});
-				teacherServices.push(...tss);
-			}
 		}
 	}
-	console.log("✅ تم إنشاء 5 معلمين (تخصصات متعددة وخبرات مختلفة)");
+	console.log(`✅ تم إنشاء 30 معلم`);
 
-	// 6. Bookings (Diverse statuses)
-	// We will create 15 bookings
-	console.log("⏳ جاري إنشاء الحجوزات والمدفوعات...");
-	const now = new Date();
-
-	const bookingScenarios = [
-		{
-			status: BookingStatus.COMPLETED,
-			paymentStatus: PaymentStatus.PAID,
-			daysOffset: -5,
-			withReport: true,
-			withReview: true,
-		},
-		{
-			status: BookingStatus.COMPLETED,
-			paymentStatus: PaymentStatus.PAID,
-			daysOffset: -3,
-			withReport: true,
-			withReview: false,
-		},
-		{
-			status: BookingStatus.CONFIRMED,
-			paymentStatus: PaymentStatus.PAID,
-			daysOffset: 1,
-			withReport: false,
-			withReview: false,
-		},
-		{
-			status: BookingStatus.CONFIRMED,
-			paymentStatus: PaymentStatus.PAID,
-			daysOffset: 2,
-			withReport: false,
-			withReview: false,
-		},
-		{
-			status: BookingStatus.PENDING,
-			paymentStatus: PaymentStatus.UNPAID,
-			daysOffset: 3,
-			withReport: false,
-			withReview: false,
-		},
-		{
-			status: BookingStatus.PENDING,
-			paymentStatus: PaymentStatus.UNPAID,
-			daysOffset: 4,
-			withReport: false,
-			withReview: false,
-		},
-		{
-			status: BookingStatus.REJECTED,
-			paymentStatus: PaymentStatus.REFUNDED,
-			daysOffset: -1,
-			withReport: false,
-			withReview: false,
-		},
-		{
-			status: BookingStatus.CANCELLED,
-			paymentStatus: PaymentStatus.REFUNDED,
-			daysOffset: -2,
-			withReport: false,
-			withReview: false,
-		},
+	// 7. Bookings (500 Diverse Bookings)
+	console.log("⏳ جاري إنشاء 500 جلسة متنوعة...");
+	
+	const bookingStatuses = [
+		{ s: BookingStatus.COMPLETED, p: PaymentStatus.PAID, weight: 60 },
+		{ s: BookingStatus.CONFIRMED, p: PaymentStatus.PAID, weight: 15 },
+		{ s: BookingStatus.PENDING, p: PaymentStatus.UNPAID, weight: 10 },
+		{ s: BookingStatus.CANCELLED, p: PaymentStatus.REFUNDED, weight: 10 },
+		{ s: BookingStatus.REJECTED, p: PaymentStatus.REFUNDED, weight: 5 },
 	];
 
-	let bookingCounter = 0;
-	for (let i = 0; i < 15; i++) {
-		const scenario = bookingScenarios[i % bookingScenarios.length];
-		const teacherSvc =
-			teacherServices[Math.floor(Math.random() * teacherServices.length)];
-		const parent = parentUsers[Math.floor(Math.random() * parentUsers.length)];
-		const student =
-			parent.students[Math.floor(Math.random() * parent.students.length)];
+	function getWeightedStatus() {
+		const totalWeight = bookingStatuses.reduce((acc, curr) => acc + curr.weight, 0);
+		const random = randomInt(1, totalWeight);
+		let sum = 0;
+		for (const bs of bookingStatuses) {
+			sum += bs.weight;
+			if (random <= sum) return bs;
+		}
+		return bookingStatuses[0];
+	}
 
-		const startTime = new Date(now);
-		startTime.setDate(now.getDate() + scenario.daysOffset);
-		startTime.setHours(16 + Math.floor(Math.random() * 4), 0, 0, 0);
+	const createdBookings = [];
+
+	for (let i = 1; i <= 500; i++) {
+		const statusObj = getWeightedStatus();
+		const ts = randomItem(teacherServices);
+		const parent = randomItem(parentUsers);
+		const student = randomItem(parent.students);
+		
+		let daysOffset = 0;
+		if (statusObj.s === BookingStatus.COMPLETED) daysOffset = randomInt(-60, -1);
+		else if (statusObj.s === BookingStatus.CONFIRMED) daysOffset = randomInt(1, 14);
+		else if (statusObj.s === BookingStatus.PENDING) daysOffset = randomInt(2, 20);
+		else daysOffset = randomInt(-30, 10);
+
+		const startTime = randomDate(daysOffset, daysOffset);
 
 		const booking = await prisma.booking.create({
 			data: {
 				parentUserId: parent.id,
 				studentId: student.id,
-				teacherServiceId: teacherSvc.id,
-				startTime: startTime,
-				duration: teacherSvc.duration,
-				price: teacherSvc.price,
+				teacherServiceId: ts.id,
+				startTime,
+				duration: ts.duration,
+				price: ts.price,
 				appliedCommissionRate: 15,
-				status: scenario.status,
-				paymentStatus: scenario.paymentStatus,
-				bookingSource: BookingSource.WEB,
-				parentNotes: "ابني ضعيف في الأساسيات، يرجى التركيز عليها.",
-				meetingUrl: ([BookingStatus.CONFIRMED, BookingStatus.COMPLETED] as BookingStatus[]).includes(
-					scenario.status,
-				)
-					? "https://meet.jit.si/edunest-test-meeting"
-					: null,
-				confirmedAt: ([
-					BookingStatus.CONFIRMED,
-					BookingStatus.COMPLETED,
-				] as BookingStatus[]).includes(scenario.status)
-					? new Date()
-					: null,
-				completedAt:
-					scenario.status === BookingStatus.COMPLETED ? new Date() : null,
-				cancelledAt:
-					scenario.status === BookingStatus.CANCELLED ? new Date() : null,
-				cancellationReason:
-					scenario.status === BookingStatus.CANCELLED ? "ظرف طارئ" : null,
-			},
+				status: statusObj.s,
+				paymentStatus: statusObj.p,
+				createdAt: randomDate(daysOffset - 5, daysOffset - 1),
+				completedAt: statusObj.s === BookingStatus.COMPLETED ? randomDate(daysOffset, daysOffset) : null,
+			}
 		});
+		createdBookings.push(booking);
 
-		if (scenario.paymentStatus !== PaymentStatus.UNPAID) {
+		if (statusObj.p !== PaymentStatus.UNPAID) {
 			await prisma.payment.create({
-				data: {
-					bookingId: booking.id,
-					amount: teacherSvc.price,
-					method: PaymentMethod.ONLINE_CARD,
-					isPaid: scenario.paymentStatus === PaymentStatus.PAID,
-					paidAt:
-						scenario.paymentStatus === PaymentStatus.PAID ? new Date() : null,
-				},
+				data: { bookingId: booking.id, amount: ts.price, isPaid: statusObj.p === PaymentStatus.PAID, paidAt: new Date() }
 			});
 		}
 
-		if (scenario.withReport && scenario.status === BookingStatus.COMPLETED) {
+		if (statusObj.s === BookingStatus.COMPLETED && randomInt(1, 10) > 2) {
 			await prisma.sessionReport.create({
-				data: {
-					bookingId: booking.id,
-					studentAttended: true,
-					topicsCovered: "مراجعة الوحدة الأولى وحل تمارين الكتاب",
-					studentPerformance: 4,
-					homeworkAssigned: "حل التمارين من صفحة 20 إلى 25",
-					teacherNotes: "الطالب متجاوب وذكي، يحتاج فقط للتدريب المستمر.",
-				},
+				data: { bookingId: booking.id, studentAttended: true, topicsCovered: "تغطية ممتازة للدرس", studentPerformance: randomInt(3, 5) }
+			});
+			await prisma.review.create({
+				data: { bookingId: booking.id, teacherId: ts.teacherId, rating: randomInt(4, 5), comment: "معلم رائع" }
 			});
 		}
 
-		if (scenario.withReview && scenario.status === BookingStatus.COMPLETED) {
-			const tId = teacherObjects.find((t) => t.id === teacherSvc.teacherId)?.id;
-			if (tId) {
-				await prisma.review.create({
+		// Disputes (2% of completed/confirmed)
+		if ((statusObj.s === BookingStatus.COMPLETED || statusObj.s === BookingStatus.CONFIRMED) && randomInt(1, 100) <= 2) {
+			const teacherObj = teacherObjects.find(t => t.id === ts.teacherId);
+			if (teacherObj) {
+				await prisma.dispute.create({
 					data: {
 						bookingId: booking.id,
-						teacherId: tId,
-						rating: 5,
-						comment: "معلم ممتاز وطريقة شرحه رائعة جداً، ابني استفاد كثيراً.",
-					},
+						parentUserId: parent.id,
+						reason: "تأخر المعلم عن الموعد",
+						status: randomItem([DisputeStatus.OPEN, DisputeStatus.RESOLVED_IN_FAVOR_OF_PARENT]),
+						messages: {
+							create: [
+								{ senderId: parent.id, message: "المعلم لم يحضر!" },
+								{ senderId: teacherObj.userId, message: "لقد كنت موجوداً وحصلت مشكلة بالانترنت" }
+							]
+						}
+					}
 				});
 			}
 		}
 
-		// Notifications
-		await prisma.notification.create({
-			data: {
-				userId: parent.id,
-				title: `تحديث لحالة حجزك`,
-				message: `حجزك مع المعلم بتاريخ ${startTime.toLocaleDateString()} أصبح الآن ${scenario.status}.`,
-			},
-		});
-
-		bookingCounter++;
+		// Escrow (1% of bookings)
+		if (statusObj.s === BookingStatus.COMPLETED && randomInt(1, 100) <= 1) {
+			await prisma.adminEscrow.create({
+				data: {
+					bookingId: booking.id,
+					amount: ts.price,
+					reason: "تحقيق في جودة الجلسة بناء على طلب ولي الأمر",
+					status: randomItem([EscrowResolution.PENDING, EscrowResolution.REFUNDED_TO_PARENT])
+				}
+			});
+		}
 	}
-	console.log(
-		`✅ تم إنشاء ${bookingCounter} حجز بحالات مختلفة (مع التقارير، التقييمات والمدفوعات)`,
-	);
+	console.log(`✅ تم إنشاء 500 حجز متنوع (مع تقارير وتقييمات ونزاعات وإسكرو)`);
 
-	console.log("🎉 اكتملت عملية التعبئة بنجاح!");
-	console.log("\n--- الحسابات التجريبية (كلمة المرور للجميع: Test@123456) ---");
-	console.log("🔹 الأدمن: admin@edunest.ps");
-	for (const p of parentsData)
-		console.log(`🔹 ولي أمر (${p.name}): ${p.email}`);
-	for (const t of teachersData) console.log(`🔹 معلم (${t.name}): ${t.email}`);
+	// 8. Tutoring Requests (Live Radar)
+	console.log("⏳ جاري إنشاء طلبات الفزعة...");
+	for (let i = 0; i < 30; i++) {
+		const parent = randomItem(parentUsers);
+		const student = randomItem(parent.students);
+		await prisma.tutoringRequest.create({
+			data: {
+				parentId: parent.id,
+				studentId: student.id,
+				subjectId: randomItem(subjects).id,
+				serviceTypeId: quickHelp.id,
+				title: "طلب مساعدة في مسألة صعبة جداً",
+				details: "احتاج معلم يحل معي هذه المسألة غداً",
+				startTime: randomDate(1, 5),
+				duration: 15,
+				price: randomInt(20, 50),
+				status: randomItem([RequestStatus.PENDING, RequestStatus.ACCEPTED, RequestStatus.EXPIRED])
+			}
+		});
+	}
+	console.log(`✅ تم إنشاء 30 طلب فزعة`);
+
+	// Update Teacher Aggregates manually
+	console.log("⏳ تحديث تقييمات المعلمين...");
+	for (const t of teacherObjects) {
+		const agg = await prisma.review.aggregate({
+			where: { teacherId: t.id, isVisible: true },
+			_avg: { rating: true },
+			_count: { id: true },
+		});
+		await prisma.teacher.update({
+			where: { id: t.id },
+			data: {
+				averageRating: agg._avg.rating || 0,
+				totalReviews: agg._count.id || 0,
+				totalSessions: await prisma.booking.count({ where: { teacherService: { teacherId: t.id }, status: BookingStatus.COMPLETED } })
+			}
+		});
+	}
+
+	console.log("🎉 اكتملت عملية التعبئة بنجاح المطلق!");
 }
 
 main()

@@ -25,12 +25,19 @@ type AdminVerificationRequest = Prisma.TeacherVerificationGetPayload<{
 	include: typeof pendingVerificationInclude;
 }>;
 
-export default async function AdminVerificationPage() {
+export default async function AdminVerificationPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+	const resolvedParams = await searchParams;
 	const session = await auth();
 	await requireAuth([UserType.ADMIN]);
 	if (!session) redirect("/login");
 
-	const pendingRequests = await SystemAdminService.getAdminVerifications();
+	const cursor = resolvedParams.cursor as string | undefined;
+	const { items: pendingRequests, nextCursor } = await SystemAdminService.getAdminVerifications({ cursor });
+	// TODO: wire up pagination UI
 
 	return (
 		<div className="space-y-6">

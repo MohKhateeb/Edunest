@@ -13,10 +13,13 @@ import type {
 
 export const BOOKING_STATUS_AR: Record<BookingStatus, string> = {
 	PENDING: "قيد الانتظار",
+	PENDING_APPROVAL: "بانتظار الموافقة",
+	AWAITING_PAYMENT: "بانتظار الدفع",
 	CONFIRMED: "مؤكد",
 	COMPLETED: "مكتمل",
 	REJECTED: "مرفوض",
 	CANCELLED: "ملغى",
+	EXPIRED: "منتهي",
 };
 
 export const PAYMENT_STATUS_AR: Record<PaymentStatus, string> = {

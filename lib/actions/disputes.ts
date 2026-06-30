@@ -7,6 +7,7 @@ import { requireAuth } from "@/lib/require-auth";
 import type { ActionResponse } from "@/lib/types";
 import { hoursUntil } from "@/lib/utils/time";
 import { disputeRepository } from "@/lib/repositories/disputeRepository";
+import { authorizeDisputeAccess, authorizeDisputeTurn } from "@/lib/auth/authorization";
 
 export async function getSecureDisputeDetails(id: string) {
 	const { userId, userType } = await requireAuth([
@@ -20,15 +21,8 @@ export async function getSecureDisputeDetails(id: string) {
 	if (!dispute) return null;
 
 	// Backend Authorization Check
-	if (userType === "PARENT" && dispute.booking.parentUserId !== userId) {
-		return null;
-	}
-	if (
-		userType === "TEACHER" &&
-		dispute.booking.teacherService.teacher.userId !== userId
-	) {
-		return null;
-	}
+	const auth = authorizeDisputeAccess(dispute, userId, userType);
+	if (!auth.authorized) return null;
 
 	return dispute;
 }
@@ -163,36 +157,15 @@ export async function sendDisputeMessage(
 		}
 
 		// Verify access
-		if (userType === UserType.PARENT && dispute.parentUserId !== userId) {
-			return { success: false, error: "غير مصرح." };
-		}
-		if (
-			userType === UserType.TEACHER &&
-			dispute.booking.teacherService.teacher.userId !== userId
-		) {
-			return { success: false, error: "غير مصرح." };
+		const accessAuth = authorizeDisputeAccess(dispute, userId, userType);
+		if (!accessAuth.authorized) {
+			return { success: false, error: accessAuth.error };
 		}
 
 		// Verify Turn
-		if (userType !== UserType.ADMIN) {
-			if (dispute.allowedTurn === "NONE") {
-				return {
-					success: false,
-					error: "المحادثة مغلقة من قبل الإدارة حالياً.",
-				};
-			}
-			if (dispute.allowedTurn === "PARENT" && userType !== UserType.PARENT) {
-				return {
-					success: false,
-					error: "عذراً، الإدارة تنتظر رد ولي الأمر الآن. لا يمكنك الإرسال.",
-				};
-			}
-			if (dispute.allowedTurn === "TEACHER" && userType !== UserType.TEACHER) {
-				return {
-					success: false,
-					error: "عذراً، الإدارة تنتظر رد المعلم الآن. لا يمكنك الإرسال.",
-				};
-			}
+		const turnAuth = authorizeDisputeTurn(dispute, userType);
+		if (!turnAuth.authorized) {
+			return { success: false, error: turnAuth.error };
 		}
 
 		await disputeRepository.addMessage(disputeId, userId, message);

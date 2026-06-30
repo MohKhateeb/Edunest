@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { authorizeBookingReview } from "@/lib/auth/authorization";
 import type { ActionResponse } from "@/lib/types";
 
 const reviewSchema = z.object({
@@ -38,8 +39,10 @@ export async function submitReview(
 			where: { id: bookingId },
 			include: {
 				teacherService: {
-					select: {
-						teacherId: true,
+					include: {
+						teacher: {
+							select: { id: true, slug: true },
+						},
 					},
 				},
 			},
@@ -50,8 +53,9 @@ export async function submitReview(
 		}
 
 		// Check if the user is authorized to review this booking (must be the parent who made it, or admin)
-		if (userType !== UserType.ADMIN && booking.parentUserId !== userId) {
-			return { success: false, error: "غير مصرح لك بتقييم هذا الحجز" };
+		const auth = authorizeBookingReview(booking, userId, userType);
+		if (!auth.authorized) {
+			return { success: false, error: auth.error };
 		}
 
 		// Verify booking status is COMPLETED
@@ -100,13 +104,10 @@ export async function submitReview(
 		});
 
 		// Revalidate paths
-		const teacher = await prisma.teacher.findUnique({
-			where: { id: teacherId },
-			select: { slug: true },
-		});
+		const slug = booking.teacherService.teacher?.slug;
 
-		if (teacher) {
-			revalidatePath(`/teachers/${teacher.slug}`);
+		if (slug) {
+			revalidatePath(`/teachers/${slug}`);
 		}
 		revalidatePath("/dashboard/parent/bookings");
 

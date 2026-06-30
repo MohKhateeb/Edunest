@@ -13,6 +13,12 @@ import {
 } from "@/lib/types";
 import { sanitizePrismaData } from "@/lib/utils";
 import { calculateEarnings } from "@/lib/utils/financial";
+import {
+	authorizeStudentAccess,
+	authorizeBookingAccess,
+	authorizePayoutAccess,
+	authorizeTeacherProfileAccess,
+} from "@/lib/auth/authorization";
 
 function successResponse<T>(data: T): ActionResponse<T> {
 	return { success: true, data: sanitizePrismaData(data) as T };
@@ -52,11 +58,9 @@ async function getStudentDetails(
 		});
 
 		if (!student) return { success: false, error: "الطالب المطلوب غير موجود." };
-		if (student.parentUserId !== userId)
-			return {
-				success: false,
-				error: "غير مصرح لك بمشاهدة تفاصيل هذا الطالب.",
-			};
+		
+		const auth = authorizeStudentAccess(student, userId, userType);
+		if (!auth.authorized) return { success: false, error: auth.error };
 		return successResponse(withCalculatedPerformance(student));
 	}
 
@@ -74,12 +78,9 @@ async function getStudentDetails(
 		});
 
 		if (!student) return { success: false, error: "الطالب المطلوب غير موجود." };
-		if (student.bookings.length === 0)
-			return {
-				success: false,
-				error:
-					"غير مصرح لك بالاطلاع على هذا الطالب لعدم وجود حجوزات مشتركة بينكما.",
-			};
+		
+		const auth = authorizeStudentAccess(student, userId, userType);
+		if (!auth.authorized) return { success: false, error: auth.error };
 		return successResponse(withCalculatedPerformance(student));
 	}
 
@@ -107,7 +108,8 @@ async function getTeacherDetails(
 
 	if (!teacher) return { success: false, error: "المعلم المطلوب غير موجود." };
 
-	if (userType !== "ADMIN" && teacher.userId !== userId) {
+	const auth = authorizeTeacherProfileAccess(teacher, userId, userType);
+	if (!auth.authorized) {
 		const { verification, ...secureTeacher } = teacher;
 		return successResponse({
 			...secureTeacher,
@@ -148,24 +150,10 @@ async function getBookingDetails(
 
 	if (!booking) return { success: false, error: "الحجز المطلوب غير موجود." };
 
-	if (userType === UserType.ADMIN) return successResponse(booking);
+	const auth = authorizeBookingAccess(booking, userId, userType);
+	if (!auth.authorized) return { success: false, error: auth.error };
 
-	if (userType === UserType.PARENT) {
-		if (booking.parentUserId !== userId)
-			return { success: false, error: "غير مصرح لك بمشاهدة تفاصيل هذا الحجز." };
-		return successResponse(booking);
-	}
-
-	if (userType === UserType.TEACHER) {
-		if (booking.teacherService.teacher.userId !== userId)
-			return {
-				success: false,
-				error: "غير مصرح لك بمشاهدة تفاصيل حجز خاص بمعلم آخر.",
-			};
-		return successResponse(booking);
-	}
-
-	return { success: false, error: "غير مصرح لك بمشاهدة تفاصيل هذا الحجز." };
+	return successResponse(booking);
 }
 
 async function getPayoutDetails(
@@ -173,6 +161,7 @@ async function getPayoutDetails(
 	userId: string,
 	userType: UserType,
 ): Promise<ActionResponse<unknown>> {
+	// Basic role check early return (optional, kept from original logic)
 	if (userType !== UserType.ADMIN && userType !== UserType.TEACHER) {
 		return {
 			success: false,
@@ -187,11 +176,9 @@ async function getPayoutDetails(
 
 	if (!payout)
 		return { success: false, error: "التسوية المالية المطلوبة غير موجودة." };
-	if (userType === UserType.TEACHER && payout.teacher.userId !== userId)
-		return {
-			success: false,
-			error: "غير مصرح لك بالاطلاع على تسوية مالية خاصة بمعلم آخر.",
-		};
+		
+	const auth = authorizePayoutAccess(payout, userId, userType);
+	if (!auth.authorized) return { success: false, error: auth.error };
 
 	const hydratedBookings = payout.bookings.map((b) => {
 		const earnings = calculateEarnings(

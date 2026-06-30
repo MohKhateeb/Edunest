@@ -23,7 +23,7 @@ export async function createTeacherPayout(data: {
 		const { teacherId, bookingIds } = data;
 
 		await prisma.$transaction(async (tx) => {
-			await tx.$executeRaw`SELECT id FROM "Teacher" WHERE id = ${teacherId} FOR UPDATE`;
+			await tx.$executeRaw`SELECT id FROM "teachers" WHERE id = ${teacherId} FOR UPDATE`;
 
 			// Fetch the selected bookings to verify they belong to the teacher and are eligible
 			const bookings = await tx.booking.findMany({

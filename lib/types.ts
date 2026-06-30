@@ -26,6 +26,8 @@ export const bookingDetailsInclude = {
 	payment: true,
 	report: true,
 	review: true,
+	adminEscrow: true,
+	dispute: true,
 } satisfies Prisma.BookingInclude;
 
 export type EntityType = "student" | "teacher" | "booking" | "payout";

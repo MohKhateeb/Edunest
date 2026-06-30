@@ -5,12 +5,19 @@ import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 
-export default async function AdminTeachersPage() {
+export default async function AdminTeachersPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+	const resolvedParams = await searchParams;
 	const session = await auth();
 	await requireAuth([UserType.ADMIN]);
 	if (!session) redirect("/login");
 
-	const teachers = await SystemAdminService.getAdminTeachers();
+	const cursor = resolvedParams.cursor as string | undefined;
+	const { items: teachers, nextCursor } = await SystemAdminService.getAdminTeachers({ cursor });
+	// TODO: wire up pagination UI
 
 	return (
 		<div className="space-y-6">

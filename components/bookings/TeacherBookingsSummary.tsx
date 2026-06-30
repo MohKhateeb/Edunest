@@ -1,4 +1,4 @@
-import { AlertTriangle, CalendarCheck, Clock, TrendingUp } from "lucide-react";
+import { AlertTriangle, CalendarCheck, Clock, TrendingUp, Lock } from "lucide-react";
 import { useMemo } from "react";
 import type { DetailedBooking } from "@/lib/types";
 import { getDetailedSessionState } from "@/lib/utils/booking-state";
@@ -20,6 +20,7 @@ export function TeacherBookingsSummary({
 		let pendingCount = 0;
 		let todayCount = 0;
 		let completedThisMonth = 0;
+		let frozenCount = 0;
 
 		bookings.forEach((b) => {
 			// Pending
@@ -42,13 +43,15 @@ export function TeacherBookingsSummary({
 					completedThisMonth++;
 				}
 			}
+			// Frozen
+			if (b.adminEscrow?.status === "PENDING") frozenCount++;
 		});
 
-		return { ghostCount, pendingCount, todayCount, completedThisMonth };
+		return { ghostCount, pendingCount, todayCount, completedThisMonth, frozenCount };
 	}, [bookings]);
 
 	return (
-		<div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+		<div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
 			{/* Ghost Sessions (Urgent) */}
 			<div className="bg-rose-50/50 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900 rounded-2xl p-4 flex items-start gap-4 transition-all hover:shadow-md">
 				<div className="p-2.5 bg-rose-100 text-rose-600 dark:bg-rose-900/50 dark:text-rose-400 rounded-xl">
@@ -64,6 +67,26 @@ export function TeacherBookingsSummary({
 						</span>
 						<span className="text-[10px] text-rose-500 font-semibold">
 							جلسة معلقة
+						</span>
+					</div>
+				</div>
+			</div>
+
+			{/* Frozen Funds */}
+			<div className="bg-purple-50/50 dark:bg-purple-950/20 border border-purple-100 dark:border-purple-900 rounded-2xl p-4 flex items-start gap-4 transition-all hover:shadow-md">
+				<div className="p-2.5 bg-purple-100 text-purple-600 dark:bg-purple-900/50 dark:text-purple-400 rounded-xl">
+					<Lock className="h-5 w-5" />
+				</div>
+				<div>
+					<p className="text-xs font-bold text-muted-foreground mb-1">
+						أموال مجمدة
+					</p>
+					<div className="flex items-baseline gap-2">
+						<span className="text-2xl font-black text-purple-600 dark:text-purple-400">
+							{stats.frozenCount}
+						</span>
+						<span className="text-[10px] text-purple-500 font-semibold">
+							بانتظار القرار
 						</span>
 					</div>
 				</div>
