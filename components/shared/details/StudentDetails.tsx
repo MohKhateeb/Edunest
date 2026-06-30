@@ -11,7 +11,7 @@ import {
 	User,
 } from "lucide-react";
 import React from "react";
-import { BOOKING_STATUS_AR } from "@/lib/translations";
+import { BOOKING_STATUS_AR, BOOKING_STATUS_STYLES } from "@/lib/translations";
 import type { commonStudentInclude } from "@/lib/types";
 import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
 
@@ -196,23 +196,10 @@ export default function StudentDetails({
 											<span
 												className={cn(
 													"px-2 py-0.5 rounded-full text-[10px] font-bold border",
-													booking.status === "CONFIRMED" &&
-														"bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800",
-													booking.status === "PENDING" &&
-														"bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-800",
-													booking.status === "COMPLETED" &&
-														"bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800",
-													booking.status === "CANCELLED" &&
-														"bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800",
-													booking.status === "REJECTED" &&
-														"bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-800",
+													BOOKING_STATUS_STYLES[booking.status as keyof typeof BOOKING_STATUS_STYLES] ?? BOOKING_STATUS_STYLES.PENDING
 												)}
 											>
-												{
-													BOOKING_STATUS_AR[
-														booking.status as keyof typeof BOOKING_STATUS_AR
-													]
-												}
+												{BOOKING_STATUS_AR[booking.status as keyof typeof BOOKING_STATUS_AR] || booking.status}
 											</span>
 										</div>
 										<p className="text-muted-foreground">

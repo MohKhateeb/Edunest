@@ -43,7 +43,7 @@ const renderPaymentStatus = (booking: FinancialBooking) => {
 			</div>
 		);
 	}
-	if (booking.status === "PENDING") {
+	if (booking.status === "PENDING" || booking.status === "AWAITING_PAYMENT") {
 		return <PaymentAction bookingId={booking.id} price={booking.price} />;
 	}
 	return (

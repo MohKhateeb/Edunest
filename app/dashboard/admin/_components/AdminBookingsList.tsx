@@ -144,10 +144,14 @@ export default function AdminBookingsList({
 							}}
 						>
 							<option value="ALL">كل الحالات ({initialData.totalCount ?? bookings.length})</option>
-							<option value="PENDING">معلق</option>
+							<option value="PENDING_APPROVAL">بانتظار موافقة المعلم</option>
+							<option value="AWAITING_PAYMENT">بانتظار الدفع</option>
+							<option value="PENDING">معلق (قديم)</option>
 							<option value="CONFIRMED">مؤكد</option>
 							<option value="COMPLETED">مكتمل</option>
 							<option value="CANCELLED">ملغي</option>
+							<option value="REJECTED">مرفوض</option>
+							<option value="EXPIRED">منتهي الصلاحية</option>
 						</select>
 					</div>
 				}
@@ -272,6 +276,8 @@ export default function AdminBookingsList({
 										</button>
 
 										{(booking.status === "PENDING" ||
+											booking.status === "PENDING_APPROVAL" ||
+											booking.status === "AWAITING_PAYMENT" ||
 											booking.status === "CONFIRMED") && (
 											<button
 												onClick={() => {
@@ -301,6 +307,8 @@ export default function AdminBookingsList({
 										)}
 
 										{booking.status !== "PENDING" &&
+											booking.status !== "PENDING_APPROVAL" &&
+											booking.status !== "AWAITING_PAYMENT" &&
 											booking.status !== "CONFIRMED" &&
 											!booking.report && (
 												<div className="px-4 py-3 text-xs text-muted-foreground italic text-center">

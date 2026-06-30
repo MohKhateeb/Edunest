@@ -23,8 +23,8 @@ export function TeacherBookingsSummary({
 		let frozenCount = 0;
 
 		bookings.forEach((b) => {
-			// Pending
-			if (b.status === "PENDING") pendingCount++;
+			// Pending Approval
+			if (b.status === "PENDING" || b.status === "PENDING_APPROVAL") pendingCount++;
 
 			// Today
 			const bDateStr = getLocalDateString(new Date(b.startTime));
