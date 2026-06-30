@@ -39,6 +39,10 @@ export class SystemAdminService {
 					price: Number(d.booking.price),
 					appliedCommissionRate: Number(d.booking.appliedCommissionRate),
 					trialCostToPlatform: Number(d.booking.trialCostToPlatform),
+					teacherService: {
+						...d.booking.teacherService,
+						price: Number(d.booking.teacherService.price),
+					},
 				},
 			})),
 			nextCursor,
