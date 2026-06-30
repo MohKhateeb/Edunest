@@ -178,12 +178,14 @@ export function TeacherCalendar({
 													: (b.status === "PENDING" || b.status === "PENDING_APPROVAL")
 														? "bg-amber-500"
 														: b.status === "AWAITING_PAYMENT"
-															? "bg-sky-500"
+															? "bg-orange-500"
 															: b.status === "CONFIRMED"
 																? "bg-emerald-500"
 																: b.status === "COMPLETED"
 																	? "bg-blue-500"
-																	: "bg-rose-500",
+																	: b.status === "REJECTED"
+																		? "bg-rose-500"
+																		: "bg-slate-400",
 											)}
 										/>
 									))}
