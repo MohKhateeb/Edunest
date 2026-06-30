@@ -176,13 +176,6 @@ export default function NewBookingForm({
 
 	return (
 		<div className="max-w-2xl mx-auto">
-			{createdBooking && (
-				<PaymentModal
-					bookingId={createdBooking.id}
-					price={createdBooking.price}
-					onClose={closePaymentModal}
-				/>
-			)}
 			<div className="bg-card border border-border rounded-2xl p-8 shadow-sm space-y-6">
 				{success ? (
 					<BookingSuccessState />

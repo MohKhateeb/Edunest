@@ -209,10 +209,10 @@ export default function TimeFirstBookingForm({
 						router.push("/dashboard/parent/bookings");
 					}, 2000);
 				} else if (res.data) {
-					setCreatedBooking({
-						id: res.data.bookingId,
-						price: activeService?.price || 0,
-					});
+					setSuccess(true);
+					setTimeout(() => {
+						router.push("/dashboard/parent/bookings");
+					}, 2000);
 				}
 			} else {
 				setErrorMsg(res.error);
@@ -291,20 +291,6 @@ export default function TimeFirstBookingForm({
 
 	return (
 		<div className="max-w-2xl mx-auto space-y-4">
-			{createdBooking && (
-				<PaymentModal
-					bookingId={createdBooking.id}
-					price={createdBooking.price}
-					onClose={() => {
-						setCreatedBooking(null);
-						setSuccess(true);
-						setTimeout(() => {
-							router.push("/dashboard/parent/bookings");
-						}, 1500);
-					}}
-				/>
-			)}
-
 			{/* شريط الخطوات */}
 			<div className="flex items-center gap-2 mb-2">
 				{[

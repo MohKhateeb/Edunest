@@ -45,14 +45,10 @@ export function useBookingSubmission(options?: BookingSubmissionOptions) {
 			});
 
 			if (res.success) {
-				if (payload.isTrial) {
-					setSuccess(true);
-					setTimeout(() => {
-						router.push("/dashboard/parent/bookings");
-					}, 2000);
-				} else if (res.data) {
-					setCreatedBooking({ id: res.data.bookingId, price: payload.price });
-				}
+				setSuccess(true);
+				setTimeout(() => {
+					router.push("/dashboard/parent/bookings");
+				}, 2000);
 				options?.onSuccess?.();
 			} else {
 				setErrorMsg(res.error || "حدث خطأ غير معروف");
