@@ -39,12 +39,15 @@ export async function verifyTeacher(
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
 
 		await unitOfWork.runTransaction(async (tx) => {
-			// Update verification request status
-			await teacherVerificationRepository.update(teacherId, {
-				reviewedBy: adminUserId,
-				reviewedAt: new Date(),
-				rejectionReason: null,
-			}, tx);
+			// Update verification request status if it exists
+			const existingVerification = await teacherVerificationRepository.findByTeacherId(teacherId, tx);
+			if (existingVerification) {
+				await teacherVerificationRepository.update(teacherId, {
+					reviewedBy: adminUserId,
+					reviewedAt: new Date(),
+					rejectionReason: null,
+				}, tx);
+			}
 
 			// Update teacher profile verification status
 			const teacherProfile = await teacherRepository.update(teacherId, {
@@ -87,11 +90,14 @@ export async function rejectTeacher(
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
 
 		await unitOfWork.runTransaction(async (tx) => {
-			await teacherVerificationRepository.update(teacherId, {
-				reviewedBy: adminUserId,
-				reviewedAt: new Date(),
-				rejectionReason: reason,
-			}, tx);
+			const existingVerification = await teacherVerificationRepository.findByTeacherId(teacherId, tx);
+			if (existingVerification) {
+				await teacherVerificationRepository.update(teacherId, {
+					reviewedBy: adminUserId,
+					reviewedAt: new Date(),
+					rejectionReason: reason,
+				}, tx);
+			}
 
 			const teacherProfile = await teacherRepository.update(teacherId, {
 				isVerified: false,
