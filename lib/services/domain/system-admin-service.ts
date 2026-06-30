@@ -31,7 +31,18 @@ export class SystemAdminService {
 		const data = hasMore ? items.slice(0, -1) : items;
 		const nextCursor = hasMore ? data[data.length - 1].id : null;
 
-		return { items: data, nextCursor };
+		return {
+			items: data.map((d) => ({
+				...d,
+				booking: {
+					...d.booking,
+					price: Number(d.booking.price),
+					appliedCommissionRate: Number(d.booking.appliedCommissionRate),
+					trialCostToPlatform: Number(d.booking.trialCostToPlatform),
+				},
+			})),
+			nextCursor,
+		};
 	}
 
 	static async getAdminServices() {
