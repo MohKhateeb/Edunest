@@ -174,14 +174,6 @@ export function DailySchedule({
 
 							{/* Actions Section */}
 							<div className="flex flex-wrap sm:flex-col items-end gap-2 shrink-0 justify-center">
-								<span
-									className={cn(
-										"px-3 py-1 rounded-full text-[11px] font-bold border",
-										BOOKING_STATUS_STYLES[b.status as keyof typeof BOOKING_STATUS_STYLES] ?? BOOKING_STATUS_STYLES.PENDING
-									)}
-								>
-									{BOOKING_STATUS_AR[b.status as keyof typeof BOOKING_STATUS_AR] || b.status}
-								</span>
 
 								<div
 									className="flex gap-2 items-center mt-2"
