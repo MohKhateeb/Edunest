@@ -8,6 +8,7 @@ import {
 	RequestStatus,
 	UserType,
 } from "@prisma/client";
+import { PAYMENT_HOLD_MINUTES } from "@/lib/config/constants";
 import { revalidatePath } from "next/cache";
 import { requireTeacherProfile } from "@/lib/actions/auth-helpers";
 import { createNotification } from "@/lib/notifications";
@@ -124,6 +125,9 @@ export async function claimLiveRequest(
 					? quickHelpComm
 					: defaultComm;
 
+			const deadline = new Date(now);
+			deadline.setMinutes(deadline.getMinutes() + PAYMENT_HOLD_MINUTES);
+
 			// إنشاء الحجز فوراً كـ PENDING بانتظار دفع ولي الأمر في الـ Lobby
 			const booking = await tx.booking.create({
 				data: {
@@ -136,6 +140,7 @@ export async function claimLiveRequest(
 					appliedCommissionRate: commissionRate,
 					status: BookingStatus.AWAITING_PAYMENT,
 					paymentStatus: PaymentStatus.UNPAID,
+					paymentDeadline: deadline,
 					bookingSource: BookingSource.WEB,
 					meetingUrl: null, // سيتم توليده بعد الدفع
 					parentNotes: request.details,

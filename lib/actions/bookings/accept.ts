@@ -14,6 +14,7 @@ import {
 	isValidTransition,
 	revalidateBookingPaths,
 } from "@/lib/utils/booking-state";
+import { PAYMENT_HOLD_MINUTES } from "@/lib/config/constants";
 
 export const acceptBooking = withAuthAction(
 	[UserType.TEACHER],
@@ -56,9 +57,9 @@ export const acceptBooking = withAuthAction(
 			};
 
 			if (targetStatus === BookingStatus.AWAITING_PAYMENT) {
-				// Set payment deadline to 3 hours from now
+				// Set payment deadline based on policy
 				const deadline = new Date();
-				deadline.setHours(deadline.getHours() + 3);
+				deadline.setMinutes(deadline.getMinutes() + PAYMENT_HOLD_MINUTES);
 				updateData.paymentDeadline = deadline;
 			} else if (targetStatus === BookingStatus.CONFIRMED) {
 				updateData.confirmedAt = new Date();
