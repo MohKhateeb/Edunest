@@ -14,6 +14,7 @@ import React from "react";
 import JoinMeetingButton from "@/components/shared/JoinMeetingButton";
 import {
 	BOOKING_STATUS_AR,
+	BOOKING_STATUS_STYLES,
 	PAYMENT_METHOD_AR,
 	PAYMENT_STATUS_AR,
 } from "@/lib/translations";
@@ -63,18 +64,7 @@ export default function BookingDetails({
 					<span
 						className={cn(
 							"px-3 py-1 rounded-full text-xs font-bold border",
-							booking.status === "CONFIRMED" &&
-								"bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800",
-							(booking.status === "PENDING" || booking.status === "PENDING_APPROVAL") &&
-								"bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-800",
-							booking.status === "AWAITING_PAYMENT" &&
-								"bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/20 dark:text-sky-400 dark:border-sky-800",
-							booking.status === "COMPLETED" &&
-								"bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800",
-							booking.status === "CANCELLED" &&
-								"bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800",
-							(booking.status === "REJECTED" || booking.status === "EXPIRED") &&
-								"bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/20 dark:text-rose-400 dark:border-rose-800",
+							BOOKING_STATUS_STYLES[booking.status as keyof typeof BOOKING_STATUS_STYLES] ?? BOOKING_STATUS_STYLES.PENDING
 						)}
 					>
 						{BOOKING_STATUS_AR[booking.status as keyof typeof BOOKING_STATUS_AR] || booking.status}

@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import JoinMeetingButton from "@/components/shared/JoinMeetingButton";
 import { PaymentCountdownReadOnly } from "@/components/shared/PaymentCountdownReadOnly";
-import { BOOKING_STATUS_AR } from "@/lib/translations";
+import { BOOKING_STATUS_AR, BOOKING_STATUS_STYLES } from "@/lib/translations";
 import type { DetailedBooking } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import {
@@ -126,16 +126,7 @@ export function DailySchedule({
 										<span
 											className={cn(
 												"text-[10px] font-extrabold px-2 py-0.5 rounded-full border",
-												(b.status === "PENDING" || b.status === "PENDING_APPROVAL") &&
-													"bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950/50 dark:text-amber-400",
-												b.status === "AWAITING_PAYMENT" &&
-													"bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-950/50 dark:text-sky-400",
-												b.status === "CONFIRMED" &&
-													"bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950/50 dark:text-emerald-400",
-												b.status === "COMPLETED" &&
-													"bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-950/50 dark:text-blue-400",
-												(b.status === "CANCELLED" || b.status === "REJECTED" || b.status === "EXPIRED") &&
-													"bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-950/50 dark:text-rose-400",
+												BOOKING_STATUS_STYLES[b.status as keyof typeof BOOKING_STATUS_STYLES] ?? BOOKING_STATUS_STYLES.PENDING
 											)}
 										>
 											{BOOKING_STATUS_AR[b.status as keyof typeof BOOKING_STATUS_AR] || b.status}
@@ -186,15 +177,7 @@ export function DailySchedule({
 								<span
 									className={cn(
 										"px-3 py-1 rounded-full text-[11px] font-bold border",
-										b.status === "CONFIRMED"
-											? "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800"
-											: (b.status === "PENDING" || b.status === "PENDING_APPROVAL")
-												? "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400 dark:border-indigo-800"
-												: b.status === "AWAITING_PAYMENT"
-													? "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/20 dark:text-sky-400 dark:border-sky-800"
-													: b.status === "COMPLETED"
-														? "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800"
-														: "bg-slate-50 text-slate-600 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-800",
+										BOOKING_STATUS_STYLES[b.status as keyof typeof BOOKING_STATUS_STYLES] ?? BOOKING_STATUS_STYLES.PENDING
 									)}
 								>
 									{BOOKING_STATUS_AR[b.status as keyof typeof BOOKING_STATUS_AR] || b.status}
