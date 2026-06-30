@@ -178,7 +178,7 @@ export default function NewBookingForm({
 		<div className="max-w-2xl mx-auto">
 			<div className="bg-card border border-border rounded-2xl p-8 shadow-sm space-y-6">
 				{success ? (
-					<BookingSuccessState />
+					<BookingSuccessState isTrial={formData.isTrial} />
 				) : (
 					<form onSubmit={handleBookingSubmit} className="space-y-6">
 						<h2 className="font-extrabold text-xl border-b border-border pb-3 flex items-center gap-2">
