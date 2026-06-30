@@ -59,7 +59,7 @@ export async function checkConflictingBookings(
 	const activeBookings = await prisma.booking.findMany({
 		where: {
 			teacherService: { teacherId },
-			status: { in: ["PENDING", "CONFIRMED"] },
+			status: { in: ["PENDING", "PENDING_APPROVAL", "AWAITING_PAYMENT", "CONFIRMED"] },
 			startTime: { gte: dayStart, lte: dayEnd },
 		},
 	});

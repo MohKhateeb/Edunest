@@ -32,7 +32,7 @@ export async function checkLiveRequestMatch(
 				where: {
 					parentUserId: parentUserId,
 					questionTitle: request.title,
-					status: "PENDING", // الحجز الفوري يبدأ كـ PENDING بانتظار الدفع
+					status: "AWAITING_PAYMENT", // الحجز الفوري يبدأ كـ AWAITING_PAYMENT بانتظار الدفع
 				},
 				orderBy: { createdAt: "desc" },
 			});

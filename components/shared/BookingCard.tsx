@@ -346,7 +346,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 					)}
 
 				{role === "PARENT" &&
-					booking.status === "PENDING" &&
+					(booking.status === "PENDING" || booking.status === "AWAITING_PAYMENT") &&
 					booking.paymentStatus === "UNPAID" && (
 						<button
 							onClick={() => setShowPaymentModal(true)}

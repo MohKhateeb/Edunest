@@ -33,7 +33,7 @@ export class BookingService {
 
 		for (const b of bookings) {
 			if (b.status === "CONFIRMED") upcomingCount++;
-			if (b.status === "PENDING") pendingCount++;
+			if (b.status === "PENDING" || b.status === "PENDING_APPROVAL" || b.status === "AWAITING_PAYMENT") pendingCount++;
 			if (b.status === "COMPLETED" && b.report) reportsCount++;
 			if (b.status === "CONFIRMED") {
 				const state = getDetailedSessionState(b.startTime, b.duration);
@@ -198,7 +198,7 @@ export class BookingService {
 
 		const bookings = await prisma.booking.findMany({
 			where: {
-				status: { in: ["PENDING", "CONFIRMED"] },
+				status: { in: ["PENDING", "PENDING_APPROVAL", "AWAITING_PAYMENT", "CONFIRMED"] },
 				startTime: { gte: new Date(), lte: fourteenDaysFromNow },
 				teacherService: { teacherId: { in: teacherIds } },
 			},

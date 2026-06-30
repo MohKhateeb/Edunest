@@ -32,7 +32,7 @@ export async function getParentDashboardInsights(
 	const upcomingBookingsCount = await prisma.booking.count({
 		where: {
 			parentUserId: userId,
-			status: { in: ["PENDING", "CONFIRMED"] },
+			status: { in: ["PENDING", "PENDING_APPROVAL", "AWAITING_PAYMENT", "CONFIRMED"] },
 			startTime: { gte: new Date() },
 		},
 	});

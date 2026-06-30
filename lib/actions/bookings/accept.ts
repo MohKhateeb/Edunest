@@ -20,10 +20,12 @@ export const acceptBooking = withAuthAction(
 	async ({ userId, userType }, bookingId: string) => {
 		const booking = await getAuthorizedBooking(bookingId, userId, userType);
 
-		if (!isValidTransition(booking.status, BookingStatus.CONFIRMED)) {
+		const targetStatus = booking.isTrial ? BookingStatus.CONFIRMED : BookingStatus.AWAITING_PAYMENT;
+
+		if (!isValidTransition(booking.status, targetStatus)) {
 			return {
 				success: false,
-				error: getTransitionError(booking.status, BookingStatus.CONFIRMED),
+				error: getTransitionError(booking.status, targetStatus),
 			};
 		}
 
@@ -35,7 +37,7 @@ export const acceptBooking = withAuthAction(
 			};
 		}
 
-		if (booking.paymentStatus === PaymentStatus.UNPAID && !booking.isTrial) {
+		if (booking.paymentStatus === PaymentStatus.UNPAID && targetStatus === BookingStatus.CONFIRMED && !booking.isTrial) {
 			return {
 				success: false,
 				error:
@@ -48,21 +50,31 @@ export const acceptBooking = withAuthAction(
 				booking.meetingUrl ||
 				`https://meet.jit.si/edunest-${crypto.randomUUID()}`;
 
+			const updateData: any = {
+				status: targetStatus,
+				meetingUrl,
+			};
+
+			if (targetStatus === BookingStatus.AWAITING_PAYMENT) {
+				// Set payment deadline to 3 hours from now
+				const deadline = new Date();
+				deadline.setHours(deadline.getHours() + 3);
+				updateData.paymentDeadline = deadline;
+			} else if (targetStatus === BookingStatus.CONFIRMED) {
+				updateData.confirmedAt = new Date();
+			}
+
 			await bookingRepository.update(
 				bookingId,
-				{
-					status: BookingStatus.CONFIRMED,
-					confirmedAt: new Date(),
-					meetingUrl,
-				},
+				updateData,
 				tx
 			);
 
 			await createNotification(
 				{
 					userId: booking.parentUserId,
-					title: "قبول الحجز",
-					message: "لقد وافق المعلم على طلب حجز الجلسة بنجاح.",
+					title: targetStatus === BookingStatus.AWAITING_PAYMENT ? "تمت الموافقة على طلبك" : "قبول الحجز",
+					message: targetStatus === BookingStatus.AWAITING_PAYMENT ? "لقد وافق المعلم على طلبك. يرجى إتمام الدفع لتأكيد الحجز." : "لقد وافق المعلم على طلب حجز الجلسة وتم تأكيدها.",
 				},
 				tx,
 			);

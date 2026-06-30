@@ -23,7 +23,7 @@ export class AnalyticsRepository {
 		const pendingRequests = await prisma.booking.findMany({
 			where: {
 				teacherService: { teacherId },
-				status: "PENDING",
+				status: { in: ["PENDING", "PENDING_APPROVAL", "AWAITING_PAYMENT"] },
 				createdAt: { gte: startDate, lte: endDate },
 			},
 			include: bookingDetailsInclude,
@@ -192,7 +192,7 @@ export class AnalyticsRepository {
 			where: { createdAt: { gte: startDate, lte: endDate } }
 		});
 		const statusMap: Record<string, string> = {
-			COMPLETED: "مكتمل", CONFIRMED: "مؤكد", PENDING: "معلق", CANCELLED: "ملغي", REJECTED: "مرفوض",
+			COMPLETED: "مكتمل", CONFIRMED: "مؤكد", PENDING: "معلق", CANCELLED: "ملغي", REJECTED: "مرفوض", PENDING_APPROVAL: "بانتظار الموافقة", AWAITING_PAYMENT: "بانتظار الدفع",
 		};
 		const bookingStatuses = statusGroups.map(g => ({
 			name: statusMap[g.status] || g.status,
