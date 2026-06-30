@@ -4,9 +4,10 @@ import { BookingStatus, PaymentStatus, UserType } from "@prisma/client";
 import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import { withAuthAction } from "@/lib/action-wrapper";
+import { PAYMENT_HOLD_MINUTES } from "@/lib/config/constants";
 import { createNotification } from "@/lib/notifications";
-import { unitOfWork } from "@/lib/repositories/unit-of-work";
 import { bookingRepository } from "@/lib/repositories/prisma/booking.repository";
+import { unitOfWork } from "@/lib/repositories/unit-of-work";
 import { getAuthorizedBooking } from "@/lib/services/booking-service";
 import {
 	getTransitionError,
@@ -14,14 +15,15 @@ import {
 	isValidTransition,
 	revalidateBookingPaths,
 } from "@/lib/utils/booking-state";
-import { PAYMENT_HOLD_MINUTES } from "@/lib/config/constants";
 
 export const acceptBooking = withAuthAction(
 	[UserType.TEACHER],
 	async ({ userId, userType }, bookingId: string) => {
 		const booking = await getAuthorizedBooking(bookingId, userId, userType);
 
-		const targetStatus = booking.isTrial ? BookingStatus.CONFIRMED : BookingStatus.AWAITING_PAYMENT;
+		const targetStatus = booking.isTrial
+			? BookingStatus.CONFIRMED
+			: BookingStatus.AWAITING_PAYMENT;
 
 		if (!isValidTransition(booking.status, targetStatus)) {
 			return {
@@ -38,7 +40,11 @@ export const acceptBooking = withAuthAction(
 			};
 		}
 
-		if (booking.paymentStatus === PaymentStatus.UNPAID && targetStatus === BookingStatus.CONFIRMED && !booking.isTrial) {
+		if (
+			booking.paymentStatus === PaymentStatus.UNPAID &&
+			targetStatus === BookingStatus.CONFIRMED &&
+			!booking.isTrial
+		) {
 			return {
 				success: false,
 				error:
@@ -65,17 +71,19 @@ export const acceptBooking = withAuthAction(
 				updateData.confirmedAt = new Date();
 			}
 
-			await bookingRepository.update(
-				bookingId,
-				updateData,
-				tx
-			);
+			await bookingRepository.update(bookingId, updateData, tx);
 
 			await createNotification(
 				{
 					userId: booking.parentUserId,
-					title: targetStatus === BookingStatus.AWAITING_PAYMENT ? "تمت الموافقة على طلبك" : "قبول الحجز",
-					message: targetStatus === BookingStatus.AWAITING_PAYMENT ? "لقد وافق المعلم على طلبك. يرجى إتمام الدفع لتأكيد الحجز." : "لقد وافق المعلم على طلب حجز الجلسة وتم تأكيدها.",
+					title:
+						targetStatus === BookingStatus.AWAITING_PAYMENT
+							? "تمت الموافقة على طلبك"
+							: "قبول الحجز",
+					message:
+						targetStatus === BookingStatus.AWAITING_PAYMENT
+							? "لقد وافق المعلم على طلبك. يرجى إتمام الدفع لتأكيد الحجز."
+							: "لقد وافق المعلم على طلب حجز الجلسة وتم تأكيدها.",
 				},
 				tx,
 			);

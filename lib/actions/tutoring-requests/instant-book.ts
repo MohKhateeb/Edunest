@@ -8,9 +8,9 @@ import {
 	RequestStatus,
 	UserType,
 } from "@prisma/client";
-import { PAYMENT_HOLD_MINUTES } from "@/lib/config/constants";
 import { revalidatePath } from "next/cache";
 import { requireTeacherProfile } from "@/lib/actions/auth-helpers";
+import { PAYMENT_HOLD_MINUTES } from "@/lib/config/constants";
 import { createNotification } from "@/lib/notifications";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
@@ -70,7 +70,14 @@ export async function claimLiveRequest(
 			const activeBookings = await tx.booking.findMany({
 				where: {
 					teacherService: { teacherId: teacher.id },
-					status: { in: [BookingStatus.PENDING, BookingStatus.PENDING_APPROVAL, BookingStatus.AWAITING_PAYMENT, BookingStatus.CONFIRMED] },
+					status: {
+						in: [
+							BookingStatus.PENDING,
+							BookingStatus.PENDING_APPROVAL,
+							BookingStatus.AWAITING_PAYMENT,
+							BookingStatus.CONFIRMED,
+						],
+					},
 					startTime: { gte: dayStart, lte: dayEnd },
 				},
 				select: { startTime: true, duration: true },
