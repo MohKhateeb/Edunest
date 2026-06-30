@@ -28,7 +28,7 @@ export const processPayment = withAuthAction(
 			return { success: false, error: "هذا الحجز ليس بحالة انتظار الدفع" };
 		}
 
-		if (isBookingInPast(booking.startTime)) {
+		if (isBookingInPast(booking.startTime, booking.duration)) {
 			return {
 				success: false,
 				error:

@@ -99,8 +99,9 @@ export function canSubmitReport(
 	);
 }
 
-export function isBookingInPast(startTime: Date | string): boolean {
-	return new Date(startTime).getTime() < Date.now();
+export function isBookingInPast(startTime: Date | string, durationInMinutes: number = 0): boolean {
+	const endTime = new Date(startTime).getTime() + durationInMinutes * 60 * 1000;
+	return endTime < Date.now();
 }
 
 /**

@@ -32,7 +32,7 @@ export const acceptBooking = withAuthAction(
 			};
 		}
 
-		if (isBookingInPast(booking.startTime)) {
+		if (isBookingInPast(booking.startTime, booking.duration)) {
 			return {
 				success: false,
 				error:
