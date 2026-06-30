@@ -1,7 +1,14 @@
 "use client";
 
 import type { DisputeStatus, DisputeTurn, UserType } from "@prisma/client";
-import { GraduationCap, Info, Shield, User } from "lucide-react";
+import {
+	CheckCircle2,
+	GraduationCap,
+	Info,
+	Loader2,
+	Shield,
+	User,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -38,6 +45,7 @@ export function DisputeChat({
 }: DisputeChatProps) {
 	const [msgText, setMsgText] = useState("");
 	const [loading, setLoading] = useState(false);
+	const [pendingTurn, setPendingTurn] = useState<DisputeTurn | null>(null);
 	const [resolving, setResolving] = useState(false);
 	const [adminNotes, setAdminNotes] = useState("");
 	const router = useRouter();
@@ -78,14 +86,14 @@ export function DisputeChat({
 	};
 
 	const handleTurnChange = async (turn: DisputeTurn) => {
-		setLoading(true);
+		setPendingTurn(turn);
 		const res = await changeDisputeTurn(disputeId, turn);
 		if (res.success) {
 			router.refresh();
 		} else {
 			alert(res.error);
 		}
-		setLoading(false);
+		setPendingTurn(null);
 	};
 
 	const canSend =
@@ -105,7 +113,7 @@ export function DisputeChat({
 	};
 
 	return (
-		<div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col h-[70vh]">
+		<div className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col h-[800px] max-h-[85vh]">
 			{/* Chat Header */}
 			<div className="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-900/80 flex justify-between items-center shrink-0">
 				<div>
@@ -244,33 +252,61 @@ export function DisputeChat({
 									<button
 										type="button"
 										onClick={() => handleTurnChange("BOTH")}
-										disabled={loading}
-										className={`flex-1 min-w-[120px] py-1.5 rounded-lg text-xs font-bold border transition-all ${allowedTurn === "BOTH" ? "bg-blue-600 text-white border-blue-600" : "bg-white text-blue-600 border-blue-200 hover:bg-blue-50 dark:bg-gray-800 dark:border-gray-700"}`}
+										disabled={pendingTurn !== null}
+										className={`flex-1 flex items-center justify-center gap-1.5 min-w-[120px] py-2 rounded-xl text-xs font-bold border transition-all ${allowedTurn === "BOTH" ? "bg-blue-600 text-white border-blue-600 shadow-md" : "bg-white text-blue-600 border-blue-200 hover:bg-blue-50 dark:bg-gray-800 dark:border-gray-700"}`}
 									>
+										{pendingTurn === "BOTH" ? (
+											<Loader2 className="w-3.5 h-3.5 animate-spin" />
+										) : (
+											allowedTurn === "BOTH" && (
+												<CheckCircle2 className="w-3.5 h-3.5" />
+											)
+										)}
 										الجميع
 									</button>
 									<button
 										type="button"
 										onClick={() => handleTurnChange("PARENT")}
-										disabled={loading}
-										className={`flex-1 min-w-[120px] py-1.5 rounded-lg text-xs font-bold border transition-all ${allowedTurn === "PARENT" ? "bg-amber-600 text-white border-amber-600" : "bg-white text-amber-600 border-amber-200 hover:bg-amber-50 dark:bg-gray-800 dark:border-gray-700"}`}
+										disabled={pendingTurn !== null}
+										className={`flex-1 flex items-center justify-center gap-1.5 min-w-[120px] py-2 rounded-xl text-xs font-bold border transition-all ${allowedTurn === "PARENT" ? "bg-amber-600 text-white border-amber-600 shadow-md" : "bg-white text-amber-600 border-amber-200 hover:bg-amber-50 dark:bg-gray-800 dark:border-gray-700"}`}
 									>
+										{pendingTurn === "PARENT" ? (
+											<Loader2 className="w-3.5 h-3.5 animate-spin" />
+										) : (
+											allowedTurn === "PARENT" && (
+												<CheckCircle2 className="w-3.5 h-3.5" />
+											)
+										)}
 										انتظار {DISPUTE_TURN_AR.PARENT}
 									</button>
 									<button
 										type="button"
 										onClick={() => handleTurnChange("TEACHER")}
-										disabled={loading}
-										className={`flex-1 min-w-[120px] py-1.5 rounded-lg text-xs font-bold border transition-all ${allowedTurn === "TEACHER" ? "bg-emerald-600 text-white border-emerald-600" : "bg-white text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:bg-gray-800 dark:border-gray-700"}`}
+										disabled={pendingTurn !== null}
+										className={`flex-1 flex items-center justify-center gap-1.5 min-w-[120px] py-2 rounded-xl text-xs font-bold border transition-all ${allowedTurn === "TEACHER" ? "bg-emerald-600 text-white border-emerald-600 shadow-md" : "bg-white text-emerald-600 border-emerald-200 hover:bg-emerald-50 dark:bg-gray-800 dark:border-gray-700"}`}
 									>
+										{pendingTurn === "TEACHER" ? (
+											<Loader2 className="w-3.5 h-3.5 animate-spin" />
+										) : (
+											allowedTurn === "TEACHER" && (
+												<CheckCircle2 className="w-3.5 h-3.5" />
+											)
+										)}
 										انتظار {DISPUTE_TURN_AR.TEACHER}
 									</button>
 									<button
 										type="button"
 										onClick={() => handleTurnChange("NONE")}
-										disabled={loading}
-										className={`flex-1 min-w-[120px] py-1.5 rounded-lg text-xs font-bold border transition-all ${allowedTurn === "NONE" ? "bg-red-600 text-white border-red-600" : "bg-white text-red-600 border-red-200 hover:bg-red-50 dark:bg-gray-800 dark:border-gray-700"}`}
+										disabled={pendingTurn !== null}
+										className={`flex-1 flex items-center justify-center gap-1.5 min-w-[120px] py-2 rounded-xl text-xs font-bold border transition-all ${allowedTurn === "NONE" ? "bg-red-600 text-white border-red-600 shadow-md" : "bg-white text-red-600 border-red-200 hover:bg-red-50 dark:bg-gray-800 dark:border-gray-700"}`}
 									>
+										{pendingTurn === "NONE" ? (
+											<Loader2 className="w-3.5 h-3.5 animate-spin" />
+										) : (
+											allowedTurn === "NONE" && (
+												<CheckCircle2 className="w-3.5 h-3.5" />
+											)
+										)}
 										التحويل إلى {DISPUTE_TURN_AR.NONE}
 									</button>
 								</div>
