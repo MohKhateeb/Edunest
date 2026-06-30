@@ -42,6 +42,11 @@ export class SystemAdminService {
 					teacherService: {
 						...d.booking.teacherService,
 						price: Number(d.booking.teacherService.price),
+						teacher: {
+							...d.booking.teacherService.teacher,
+							defaultHourlyRate: Number(d.booking.teacherService.teacher.defaultHourlyRate),
+							averageRating: Number(d.booking.teacherService.teacher.averageRating),
+						},
 					},
 				},
 			})),
