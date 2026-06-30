@@ -7,7 +7,7 @@ import {
 	X,
 } from "lucide-react";
 import JoinMeetingButton from "@/components/shared/JoinMeetingButton";
-import { PaymentCountdown } from "@/components/shared/PaymentCountdown";
+import { PaymentCountdownReadOnly } from "@/components/shared/PaymentCountdownReadOnly";
 import { BOOKING_STATUS_AR } from "@/lib/translations";
 import type { DetailedBooking } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -212,7 +212,7 @@ export function DailySchedule({
 
 									{b.status === "AWAITING_PAYMENT" && !b.isTrial && (
 										<div className="flex flex-col items-end gap-2">
-											{b.paymentDeadline && <PaymentCountdown deadline={new Date(b.paymentDeadline)} />}
+											{b.paymentDeadline && <PaymentCountdownReadOnly deadline={new Date(b.paymentDeadline)} />}
 											<button
 												onClick={(e) => handleCancelShortcut(b.id, e)}
 												disabled={loadingId === b.id}

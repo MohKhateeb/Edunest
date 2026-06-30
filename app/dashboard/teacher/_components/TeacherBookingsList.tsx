@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { DailySchedule } from "@/components/bookings/DailySchedule";
 import { TeacherBookingsSummary } from "@/components/bookings/TeacherBookingsSummary";
 import { TeacherCalendar } from "@/components/bookings/TeacherCalendar";
+import ConfirmDialog from "@/components/shared/ConfirmDialog";
 import DetailsModal from "@/components/shared/DetailsModal";
 import ReportModal from "@/components/shared/ReportModal";
 import { acceptBooking, rejectBooking, cancelBooking } from "@/lib/actions/booking";
@@ -32,6 +33,7 @@ export default function TeacherBookingsList({
 		null,
 	);
 	const [reportBookingId, setReportBookingId] = useState<string | null>(null);
+	const [cancelDialogBookingId, setCancelDialogBookingId] = useState<string | null>(null);
 	const [loadingId, setLoadingId] = useState<string | null>(null);
 
 	// Time ticker for active status
@@ -102,17 +104,20 @@ export default function TeacherBookingsList({
 		}
 	};
 
-	const handleCancelShortcut = async (
+	const handleCancelShortcut = (
 		bookingId: string,
 		e: React.MouseEvent,
 	) => {
 		e.stopPropagation();
-		const reason = window.prompt("سبب الإلغاء:");
-		if (!reason) return;
+		setCancelDialogBookingId(bookingId);
+	};
 
-		setLoadingId(bookingId);
+	const executeCancelBooking = async (reason?: string) => {
+		if (!cancelDialogBookingId || !reason) return;
+
+		setLoadingId(cancelDialogBookingId);
 		try {
-			const res = await cancelBooking({ bookingId, reason });
+			const res = await cancelBooking({ bookingId: cancelDialogBookingId, reason });
 			if (!res.success) {
 				toast.error("فشل إلغاء الحجز", { description: res.error });
 			} else {
@@ -123,6 +128,7 @@ export default function TeacherBookingsList({
 			toast.error("حدث خطأ غير متوقع أثناء الإلغاء");
 		} finally {
 			setLoadingId(null);
+			setCancelDialogBookingId(null);
 		}
 	};
 
@@ -199,6 +205,18 @@ export default function TeacherBookingsList({
 			<ReportModal
 				bookingId={reportBookingId}
 				onClose={() => setReportBookingId(null)}
+			/>
+
+			<ConfirmDialog
+				isOpen={!!cancelDialogBookingId}
+				title="إلغاء الموعد"
+				description="هل أنت متأكد من رغبتك في إلغاء هذا الحجز؟ سيتم تحرير الموعد للطلاب الآخرين."
+				requireReason={true}
+				reasonLabel="سبب الإلغاء"
+				confirmLabel="تأكيد الإلغاء"
+				isLoading={loadingId === cancelDialogBookingId}
+				onConfirm={(reason) => executeCancelBooking(reason)}
+				onCancel={() => setCancelDialogBookingId(null)}
 			/>
 		</div>
 	);

@@ -8,7 +8,7 @@ interface PaymentCountdownProps {
 	className?: string;
 }
 
-export function PaymentCountdown({
+export function PaymentCountdownReadOnly({
 	deadline,
 	className = "",
 }: PaymentCountdownProps) {
