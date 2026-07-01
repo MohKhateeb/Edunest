@@ -96,7 +96,9 @@ export class SystemAdminService {
 				groupedSettings.TRIAL.push(setting);
 			} else if (
 				setting.settingKey.includes("Refund") ||
-				setting.settingKey.includes("Lead")
+				setting.settingKey.includes("Lead") ||
+				setting.settingKey.includes("HOLD") ||
+				setting.settingKey.includes("PAYMENT")
 			) {
 				groupedSettings.POLICY.push(setting);
 			} else {
