@@ -1,6 +1,6 @@
 "use server";
 
-import { BookingStatus, PaymentStatus, UserType } from "@prisma/client";
+import { Prisma, BookingStatus, PaymentStatus, UserType } from "@prisma/client";
 import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import { withAuthAction } from "@/lib/action-wrapper";
@@ -59,7 +59,7 @@ export const acceptBooking = withAuthAction(
 
 			const holdMinutes = await getSettingNumber("PAYMENT_HOLD_MINUTES", 180);
 
-			const updateData: any = {
+			const updateData: Prisma.BookingUpdateInput = {
 				status: targetStatus,
 				meetingUrl,
 			};
