@@ -15,10 +15,10 @@ export type BookingWithDetails = {
 	duration?: number;
 	reportWarningLevel?: number;
 	parentUserId: string;
-	price: any;
+	price: Prisma.Decimal;
 	paymentStatus: PaymentStatus;
 	isTrial: boolean;
-	payment: any;
+	payment: unknown;
 	teacherService?: {
 		teacher: { userId: string };
 	};

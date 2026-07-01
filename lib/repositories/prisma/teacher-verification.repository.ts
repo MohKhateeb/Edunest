@@ -7,7 +7,7 @@ export class PrismaTeacherVerificationRepository implements ITeacherVerification
 		return tx || prisma;
 	}
 
-	async update(teacherId: string, data: any, tx?: DbClient): Promise<any> {
+	async update(teacherId: string, data: Prisma.TeacherVerificationUncheckedUpdateInput | Prisma.TeacherVerificationUpdateInput, tx?: DbClient): Promise<any> {
 		return this.getClient(tx).teacherVerification.update({
 			where: { teacherId },
 			data,

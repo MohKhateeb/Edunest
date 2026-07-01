@@ -38,12 +38,12 @@ export interface IStudentRepository {
 }
 
 export interface ISystemSettingRepository {
-	upsert(key: string, value: any, description?: string, updatedBy?: string, tx?: DbClient): Promise<any>;
+	upsert(key: string, value: string, description?: string, updatedBy?: string, tx?: DbClient): Promise<any>;
 	findByKey(key: string, tx?: DbClient): Promise<any | null>;
-	update(key: string, value: any, tx?: DbClient): Promise<any>;
+	update(key: string, data: Prisma.SystemSettingUpdateInput, tx?: DbClient): Promise<any>;
 }
 
 export interface ITeacherVerificationRepository {
-	update(teacherId: string, data: any, tx?: DbClient): Promise<any>;
+	update(teacherId: string, data: Prisma.TeacherVerificationUncheckedUpdateInput | Prisma.TeacherVerificationUpdateInput, tx?: DbClient): Promise<any>;
 	findByTeacherId(teacherId: string, tx?: DbClient): Promise<any | null>;
 }

@@ -7,7 +7,7 @@ export class PrismaSystemSettingRepository implements ISystemSettingRepository {
 		return tx || prisma;
 	}
 
-	async upsert(key: string, value: any, description?: string, updatedBy?: string, tx?: DbClient): Promise<any> {
+	async upsert(key: string, value: string, description?: string, updatedBy?: string, tx?: DbClient): Promise<any> {
 		return this.getClient(tx).systemSetting.upsert({
 			where: { settingKey: key },
 			update: { settingValue: value, updatedBy },
@@ -21,10 +21,10 @@ export class PrismaSystemSettingRepository implements ISystemSettingRepository {
 		});
 	}
 
-	async update(key: string, value: any, tx?: DbClient): Promise<any> {
+	async update(key: string, data: Prisma.SystemSettingUpdateInput, tx?: DbClient): Promise<any> {
 		return this.getClient(tx).systemSetting.update({
 			where: { settingKey: key },
-			data: value,
+			data,
 		});
 	}
 }

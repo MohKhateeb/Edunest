@@ -1,1 +1,1 @@
-export const PAYMENT_HOLD_MINUTES = 30;
+// Empty file

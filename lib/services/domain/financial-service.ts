@@ -13,7 +13,7 @@ export type AdminFinancialStats = {
 export async function getAdminFinancialStats(startDate?: string, endDate?: string): Promise<AdminFinancialStats> {
 	await requireAuth([UserType.ADMIN]);
 
-	const dateFilter: any = {};
+	const dateFilter: Prisma.DateTimeFilter = {};
 	if (startDate) dateFilter.gte = new Date(startDate);
 	if (endDate) {
 		const end = new Date(endDate);
@@ -89,7 +89,7 @@ export type PlatformRevenueTransaction = {
 export async function getPlatformRevenueDetails(startDate?: string, endDate?: string): Promise<PlatformRevenueTransaction[]> {
 	await requireAuth([UserType.ADMIN]);
 
-	const dateFilter: any = {};
+	const dateFilter: Prisma.DateTimeFilter = {};
 	if (startDate) dateFilter.gte = new Date(startDate);
 	if (endDate) {
 		const end = new Date(endDate);

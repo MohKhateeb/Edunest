@@ -1,5 +1,5 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 import { Pool } from "pg";
 
 const globalForPrisma = globalThis as unknown as {
@@ -49,7 +49,7 @@ if (process.env.NODE_ENV !== "production") {
 
 if (process.env.NODE_ENV === 'development') {
 	// @ts-ignore - necessary if emit: 'event' is not set in log config
-	prisma.$on('query', (e: any) => {
+	prisma.$on('query', (e: Prisma.QueryEvent) => {
 		if (e.duration > 50) {
 			console.warn(`[SLOW QUERY ${e.duration}ms]`, e.query.substring(0, 120))
 		}

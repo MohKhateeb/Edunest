@@ -1,4 +1,4 @@
-import { UserType } from "@prisma/client";
+import { UserType, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
 
@@ -146,7 +146,7 @@ export class UserService {
 		const page = Math.max(1, parseInt(params.page ?? "1", 10));
 		const PAGE_SIZE = 12;
 
-		const where: any = {
+		const where: Prisma.TeacherWhereInput = {
 			isVerified: true,
 			user: { isActive: true },
 		};
