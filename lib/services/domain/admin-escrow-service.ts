@@ -11,13 +11,17 @@ export async function getAllEscrows(
 	const PAGE_SIZE = 20;
 
 	const whereClause: Prisma.AdminEscrowWhereInput = {};
+	const createdAtFilter: Prisma.DateTimeFilter = {};
 	if (from) {
-		whereClause.createdAt = { gte: new Date(from) };
+		createdAtFilter.gte = new Date(from);
 	}
 	if (to) {
 		const end = new Date(to);
 		end.setHours(23, 59, 59, 999);
-		whereClause.createdAt = { ...whereClause.createdAt, lte: end };
+		createdAtFilter.lte = end;
+	}
+	if (from || to) {
+		whereClause.createdAt = createdAtFilter;
 	}
 
 	const items = await prisma.adminEscrow.findMany({
