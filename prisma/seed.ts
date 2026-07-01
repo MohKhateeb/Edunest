@@ -55,6 +55,7 @@ async function main() {
 		{ settingKey: "MinBookingPrice", settingValue: "5" },
 		{ settingKey: "CancellationRefundHours", settingValue: "24" },
 		{ settingKey: "MinBookingLeadHours", settingValue: "2" },
+		{ settingKey: "PAYMENT_HOLD_MINUTES", settingValue: "180", description: "المدة التي يُمهل فيها ولي الأمر لإتمام الدفع بعد موافقة المعلم. القيمة الافتراضية: 180 دقيقة (3 ساعات)" },
 	];
 
 	for (const s of settings) {

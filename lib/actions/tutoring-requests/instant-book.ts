@@ -10,7 +10,6 @@ import {
 } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { requireTeacherProfile } from "@/lib/actions/auth-helpers";
-import { PAYMENT_HOLD_MINUTES } from "@/lib/config/constants";
 import { createNotification } from "@/lib/notifications";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
@@ -132,8 +131,9 @@ export async function claimLiveRequest(
 					? quickHelpComm
 					: defaultComm;
 
+			const holdMinutes = await getSettingNumber("PAYMENT_HOLD_MINUTES", 180);
 			const deadline = new Date(now);
-			deadline.setMinutes(deadline.getMinutes() + PAYMENT_HOLD_MINUTES);
+			deadline.setMinutes(deadline.getMinutes() + holdMinutes);
 
 			// إنشاء الحجز فوراً كـ PENDING بانتظار دفع ولي الأمر في الـ Lobby
 			const booking = await tx.booking.create({

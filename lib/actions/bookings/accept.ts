@@ -4,11 +4,11 @@ import { BookingStatus, PaymentStatus, UserType } from "@prisma/client";
 import crypto from "crypto";
 import { revalidatePath } from "next/cache";
 import { withAuthAction } from "@/lib/action-wrapper";
-import { PAYMENT_HOLD_MINUTES } from "@/lib/config/constants";
 import { createNotification } from "@/lib/notifications";
 import { bookingRepository } from "@/lib/repositories/prisma/booking.repository";
 import { unitOfWork } from "@/lib/repositories/unit-of-work";
 import { getAuthorizedBooking } from "@/lib/services/booking-service";
+import { getSettingNumber } from "@/lib/settings";
 import {
 	getTransitionError,
 	isBookingInPast,
@@ -57,6 +57,8 @@ export const acceptBooking = withAuthAction(
 				booking.meetingUrl ||
 				`https://meet.jit.si/edunest-${crypto.randomUUID()}`;
 
+			const holdMinutes = await getSettingNumber("PAYMENT_HOLD_MINUTES", 180);
+
 			const updateData: any = {
 				status: targetStatus,
 				meetingUrl,
@@ -65,7 +67,7 @@ export const acceptBooking = withAuthAction(
 			if (targetStatus === BookingStatus.AWAITING_PAYMENT) {
 				// Set payment deadline based on policy
 				const deadline = new Date();
-				deadline.setMinutes(deadline.getMinutes() + PAYMENT_HOLD_MINUTES);
+				deadline.setMinutes(deadline.getMinutes() + holdMinutes);
 				updateData.paymentDeadline = deadline;
 			} else if (targetStatus === BookingStatus.CONFIRMED) {
 				updateData.confirmedAt = new Date();
@@ -82,7 +84,7 @@ export const acceptBooking = withAuthAction(
 							: "قبول الحجز",
 					message:
 						targetStatus === BookingStatus.AWAITING_PAYMENT
-							? "لقد وافق المعلم على طلبك. يرجى إتمام الدفع لتأكيد الحجز."
+							? `وافق المعلم على طلبك، يرجى إتمام الدفع خلال ${holdMinutes} دقيقة لتأكيد الحجز`
 							: "لقد وافق المعلم على طلب حجز الجلسة وتم تأكيدها.",
 				},
 				tx,

@@ -104,6 +104,12 @@ const SETTINGS_DICT: Record<string, SettingConfig> = {
 		icon: Clock,
 		category: "POLICY",
 	},
+	PAYMENT_HOLD_MINUTES: {
+		label: "مهلة الدفع بعد موافقة المعلم (بالدقائق)",
+		type: "number",
+		icon: Clock,
+		category: "POLICY",
+	},
 };
 
 const CATEGORIES = {
