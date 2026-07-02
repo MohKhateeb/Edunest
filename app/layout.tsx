@@ -10,13 +10,18 @@ export const metadata: Metadata = {
 		"المنصة الفلسطينية الأولى لربط أولياء الأمور بمعلمي الدروس الخصوصية الأكفاء في الضفة الغربية بطريقة منظمة وموثوقة.",
 };
 
+import {cookies} from 'next/headers'
+
 export default function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const locale = cookies().get('NEXT_LOCALE')?.value ?? 'ar'
+	const dir = locale === 'ar' ? 'rtl' : 'ltr'
+
 	return (
-		<html lang="ar" dir="rtl">
+		<html lang={locale} dir={dir}>
 			<body className="min-h-screen bg-background text-foreground antialiased selection:bg-primary/20">
 				<ClientProvider>
 					{children}

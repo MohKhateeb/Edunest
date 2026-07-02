@@ -1,20 +1,26 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { withAuth } from "next-auth/middleware";
+import createMiddleware from 'next-intl/middleware';
+import { FEATURE_FLAGS } from '@/lib/config/feature-flags';
 
-/**
- * ملف الوسيط الأمني (Proxy / Middleware)
- *
- * المُلخص: هذا الملف هو خط الدفاع الأول للنظام. يعترض جميع الطلبات المتجهة إلى لوحات التحكم (Dashboard)
- * ويتحقق من صلاحيات المستخدم قبل أن يصل الطلب إلى الخادم الفعلي.
- *
- * لماذا؟: لتطبيق الحماية في طبقة الـ Edge (أسرع وأكثر أماناً)، ولتوجيه كل مستخدم (أدمن، معلم، ولي أمر)
- * إلى مساره الصحيح ومنعه من الدخول لمسارات غير مخصصة له. هذا يمنع ثغرات تخطي الصلاحيات (Role Bypass).
- */
-export default withAuth(
+const intlMiddleware = createMiddleware({
+  locales: ['ar', 'en'],
+  defaultLocale: 'ar',
+  localePrefix: 'as-needed',
+});
+
+const authProxy = withAuth(
 	function proxy(req) {
 		const token = req.nextauth.token;
 		// Normalize path: lowercase and remove duplicate slashes
-		const path = req.nextUrl.pathname.replace(/\/+/g, "/").toLowerCase();
+		let path = req.nextUrl.pathname.replace(/\/+/g, "/").toLowerCase();
+		
+		// Strip locale prefix if present to not break auth logic
+		if (path.startsWith('/en/') || path === '/en') {
+			path = path.replace(/^\/en/, '') || '/';
+		} else if (path.startsWith('/ar/') || path === '/ar') {
+			path = path.replace(/^\/ar/, '') || '/';
+		}
 
 		// Map base paths to required roles
 		const rolePaths: Record<string, string> = {
@@ -64,6 +70,9 @@ export default withAuth(
 			return NextResponse.redirect(new URL("/unauthorized", req.url));
 		}
 
+		if (FEATURE_FLAGS.I18N_ENABLED) {
+			return intlMiddleware(req);
+		}
 		return NextResponse.next();
 	},
 	{
@@ -74,6 +83,27 @@ export default withAuth(
 	},
 );
 
+export default function proxy(req: NextRequest) {
+	if (!FEATURE_FLAGS.I18N_ENABLED) {
+		// If i18n is disabled, we must act exactly like original proxy.ts
+		// which only ran on /dashboard/*
+		const isDashboard = req.nextUrl.pathname.startsWith('/dashboard');
+		if (isDashboard) {
+			return (authProxy as any)(req);
+		}
+		return NextResponse.next();
+	}
+
+	const path = req.nextUrl.pathname;
+	const isDashboard = path.startsWith('/dashboard') || path.startsWith('/en/dashboard') || path.startsWith('/ar/dashboard');
+	
+	if (isDashboard) {
+		return (authProxy as any)(req);
+	}
+	
+	return intlMiddleware(req);
+}
+
 export const config = {
-	matcher: ["/dashboard/:path*"],
+	matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)']
 };
