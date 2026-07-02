@@ -36,8 +36,8 @@ export default function TimeFirstBookingForm({
 	type Step = "search" | "results" | "details";
 	const [currentStep, setCurrentStep] = useState<Step>("search");
 
-	// خطوة البحث
 	const [searchQuery, setSearchQuery] = useState({
+		selectedStudentId: students[0]?.id ?? "",
 		selectedSpec: "",
 		selectedDate: "",
 		selectedTime: "",
@@ -54,7 +54,6 @@ export default function TimeFirstBookingForm({
 	const [bookingDetails, setBookingDetails] = useState({
 		selectedTeacher: null as AvailableTeacher | null,
 		selectedServiceId: "",
-		selectedStudentId: students[0]?.id ?? "",
 		isTrial: false,
 		parentNotes: "",
 		questionTitle: "",
@@ -112,6 +111,10 @@ export default function TimeFirstBookingForm({
 
 	// البحث عن معلمين متاحين
 	const handleSearch = async () => {
+		if (!searchQuery.selectedStudentId) {
+			setSearchError("يرجى تحديد الطالب");
+			return;
+		}
 		if (!searchQuery.selectedSpec) {
 			setSearchError("يرجى اختيار المادة");
 			return;
@@ -130,6 +133,7 @@ export default function TimeFirstBookingForm({
 
 		try {
 			const result = await searchAvailableTeachers({
+				studentId: searchQuery.selectedStudentId,
 				subjectId: searchQuery.selectedSpec,
 				date: searchQuery.selectedDate,
 				timeSlot: searchQuery.selectedTime,
@@ -163,8 +167,8 @@ export default function TimeFirstBookingForm({
 	const handleBookingSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		if (!bookingDetails.selectedStudentId) {
-			setErrorMsg("يرجى تحديد الطالب");
+		if (!searchQuery.selectedStudentId) {
+			setErrorMsg("حدث خطأ في بيانات الطالب المختار، يرجى إعادة تحميل الصفحة");
 			return;
 		}
 		if (!bookingDetails.selectedServiceId || !bookingDetails.selectedTeacher) {
@@ -182,7 +186,7 @@ export default function TimeFirstBookingForm({
 
 		try {
 			const res = await createBooking({
-				studentId: bookingDetails.selectedStudentId,
+				studentId: searchQuery.selectedStudentId,
 				teacherServiceId: bookingDetails.selectedServiceId,
 				startTime,
 				isTrial: bookingDetails.isTrial,
@@ -252,6 +256,13 @@ export default function TimeFirstBookingForm({
 		}).format(d);
 		return `${dayName}، ${dayNum} ${monthName}`;
 	}, [searchQuery.selectedDate]);
+
+	const selectedSubjectLabel = useMemo(() => {
+		return (
+			subjects.find((s) => s.id === searchQuery.selectedSpec)?.name ??
+			searchQuery.selectedSpec
+		);
+	}, [searchQuery.selectedSpec, subjects]);
 
 	// عدم وجود طلاب
 	if (students.length === 0) {
@@ -327,6 +338,7 @@ export default function TimeFirstBookingForm({
 				<TimeSearchStep
 					searchQuery={searchQuery}
 					handleSearchChange={handleSearchChange}
+					students={students}
 					subjects={subjects}
 					minDateString={minDateString}
 					timeOptions={timeOptions}
@@ -340,6 +352,7 @@ export default function TimeFirstBookingForm({
 			{currentStep === "results" && (
 				<TeacherSelectionStep
 					searchQuery={searchQuery}
+					selectedSubjectLabel={selectedSubjectLabel}
 					selectedDateLabel={selectedDateLabel}
 					selectedTimeLabel={selectedTimeLabel}
 					availableTeachers={availableTeachers}
@@ -356,6 +369,7 @@ export default function TimeFirstBookingForm({
 					handleBookingSubmit={handleBookingSubmit}
 					setCurrentStep={setCurrentStep}
 					searchQuery={searchQuery}
+					selectedSubjectLabel={selectedSubjectLabel}
 					selectedDateLabel={selectedDateLabel}
 					selectedTimeLabel={selectedTimeLabel}
 					students={students}

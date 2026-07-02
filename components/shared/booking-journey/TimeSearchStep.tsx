@@ -5,15 +5,19 @@ import {
 	Clock,
 	Loader2,
 	Search,
+	User,
 } from "lucide-react";
+import type { Student } from "@/types/booking";
 
 type TimeSearchStepProps = {
 	searchQuery: {
+		selectedStudentId: string;
 		selectedSpec: string;
 		selectedDate: string;
 		selectedTime: string;
 	};
 	handleSearchChange: (name: string, value: string) => void;
+	students: Student[];
 	subjects: { id: string; name: string }[];
 	minDateString: string;
 	timeOptions: { value: string; label: string }[];
@@ -25,6 +29,7 @@ type TimeSearchStepProps = {
 export function TimeSearchStep({
 	searchQuery,
 	handleSearchChange,
+	students,
 	subjects,
 	minDateString,
 	timeOptions,
@@ -45,6 +50,28 @@ export function TimeSearchStep({
 					<span>{searchError}</span>
 				</div>
 			)}
+
+			{/* اختيار الطالب */}
+			<div className="space-y-1.5">
+				<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
+					<User className="h-4 w-4" />
+					الطالب المستهدف
+				</label>
+				<select
+					value={searchQuery.selectedStudentId}
+					onChange={(e) => handleSearchChange("selectedStudentId", e.target.value)}
+					className="w-full premium-input text-xs"
+				>
+					<option value="" disabled>
+						اختر الطالب
+					</option>
+					{students.map((s) => (
+						<option key={s.id} value={s.id}>
+							{s.name} (الصف {s.grade})
+						</option>
+					))}
+				</select>
+			</div>
 
 			{/* اختيار المادة */}
 			<div className="space-y-1.5">

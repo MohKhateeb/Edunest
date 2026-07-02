@@ -10,6 +10,7 @@ import { hoursUntil } from "@/lib/utils/time";
 
 export async function searchAvailableTeachers(input: {
 	subjectId: string;
+	studentId: string;
 	date: string; // "YYYY-MM-DD"
 	timeSlot: string; // "HH:MM"
 }): Promise<
@@ -42,10 +43,20 @@ export async function searchAvailableTeachers(input: {
 	try {
 		await requireAuth([UserType.PARENT]);
 
-		const { subjectId, date, timeSlot } = input;
+		const { subjectId, studentId, date, timeSlot } = input;
 
-		if (!subjectId || !date || !timeSlot) {
-			return { success: false, error: "يرجى تحديد المادة والتاريخ والوقت" };
+		if (!subjectId || !studentId || !date || !timeSlot) {
+			return { success: false, error: "يرجى تحديد الطالب والمادة والتاريخ والوقت" };
+		}
+
+		// جلب بيانات الطالب للتحقق من الصف
+		const student = await prisma.student.findUnique({
+			where: { id: studentId },
+			select: { grade: true },
+		});
+
+		if (!student) {
+			return { success: false, error: "الطالب المحدد غير موجود" };
 		}
 
 		// تحديد يوم الأسبوع من التاريخ المطلوب
@@ -65,10 +76,13 @@ export async function searchAvailableTeachers(input: {
 
 		const dayOfWeek = dateObj.getDay(); // 0 = Sunday ... 6 = Saturday
 
-		// 1. جلب المعلمين الموثقين بنفس التخصص مع أوقات توفرهم وخدماتهم
+		// 1. جلب المعلمين الموثقين بنفس التخصص والذين يدرسون صف الطالب، مع أوقات توفرهم وخدماتهم
 		const teachers = await prisma.teacher.findMany({
 			where: {
 				isVerified: true,
+				gradeLevels: {
+					has: student.grade,
+				},
 				subjects: {
 					some: { subjectId: subjectId },
 				},

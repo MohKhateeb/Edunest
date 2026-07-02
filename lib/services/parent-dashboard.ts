@@ -11,13 +11,15 @@ export type DashboardInsights = {
 	stats: {
 		studentCount: number;
 		upcomingBookingsCount: number;
-		studyHours: string;
-		homeworkCompleted: number;
-		homeworkTotal: number;
-		avgRating: string;
-		isWeekly: boolean;
 	};
 	nextSession: DetailedBooking | null;
+	urgentActions: {
+		type: "PAYMENT" | "APPROVAL" | "REVIEW";
+		booking: DetailedBooking;
+		message: string;
+		dueDate?: Date;
+	}[];
+	todaySessions: DetailedBooking[];
 	notifications: Notification[];
 };
 
@@ -57,6 +59,61 @@ export async function getParentDashboardInsights(
 		? sanitizePrismaData(nextSession)
 		: null;
 
+	const urgentBookings = await prisma.booking.findMany({
+		where: {
+			parentUserId: userId,
+			OR: [
+				{ status: "AWAITING_PAYMENT" },
+				{ status: "PENDING_APPROVAL" },
+				{ status: "COMPLETED", review: { is: null } },
+			],
+		},
+		include: bookingDetailsInclude,
+		orderBy: { startTime: "asc" },
+	});
+
+	const urgentActions = urgentBookings.map((b) => {
+		let type: "PAYMENT" | "APPROVAL" | "REVIEW" = "PAYMENT";
+		let message = "";
+		let dueDate: Date | undefined;
+
+		if (b.status === "AWAITING_PAYMENT") {
+			type = "PAYMENT";
+			message = `بانتظار الدفع: جلسة ${b.teacherService.serviceType.name} للطالب ${b.student.name}`;
+			dueDate = new Date(b.startTime.getTime() - 2 * 60 * 60 * 1000); // just an example due date
+		} else if (b.status === "PENDING_APPROVAL") {
+			type = "APPROVAL";
+			message = `بانتظار الموافقة: جلسة ${b.teacherService.serviceType.name} للطالب ${b.student.name}`;
+		} else if (b.status === "COMPLETED" && !b.review) {
+			type = "REVIEW";
+			message = `الرجاء التقييم: جلسة ${b.teacherService.serviceType.name} للطالب ${b.student.name}`;
+		}
+
+		return {
+			type,
+			booking: sanitizePrismaData(b),
+			message,
+			dueDate,
+		};
+	});
+
+	const startOfToday = new Date();
+	startOfToday.setHours(0, 0, 0, 0);
+	const endOfToday = new Date();
+	endOfToday.setHours(23, 59, 59, 999);
+
+	const todayBookingsRaw = await prisma.booking.findMany({
+		where: {
+			parentUserId: userId,
+			startTime: { gte: startOfToday, lte: endOfToday },
+			status: { in: ["CONFIRMED", "COMPLETED", "AWAITING_PAYMENT"] },
+		},
+		include: bookingDetailsInclude,
+		orderBy: { startTime: "asc" },
+	});
+
+	const todaySessions = todayBookingsRaw.map(sanitizePrismaData);
+
 	const students = await prisma.student.findMany({
 		where: { parentUserId: userId, isActive: true },
 		select: { id: true, name: true },
@@ -83,56 +140,7 @@ export async function getParentDashboardInsights(
 		orderBy: { startTime: "desc" },
 	});
 
-	const sevenDaysAgo = new Date();
-	sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-
-	let weeklyBookings = completedBookings.filter(
-		(b) => b.startTime >= sevenDaysAgo,
-	);
-	let isWeekly = true;
-
-	if (weeklyBookings.length === 0 && completedBookings.length > 0) {
-		weeklyBookings = completedBookings;
-		isWeekly = false;
-	}
-
-	const totalMinutes = weeklyBookings.reduce((sum, b) => sum + b.duration, 0);
-	const studyHours = (totalMinutes / 60).toFixed(1);
-
-	const totalHomeworkAssigned = weeklyBookings.filter(
-		(b) =>
-			b.report?.homeworkAssigned &&
-			b.report.homeworkAssigned.toLowerCase() !== "no" &&
-			b.report.homeworkAssigned.toLowerCase() !== "none" &&
-			b.report.homeworkAssigned.trim() !== "",
-	).length;
-
-	let homeworkCompleted = 0;
-	let homeworkTotal = 0;
-
-	if (totalHomeworkAssigned > 0) {
-		homeworkTotal = totalHomeworkAssigned;
-		homeworkCompleted = weeklyBookings.filter(
-			(b) =>
-				b.report?.homeworkAssigned &&
-				b.report.homeworkAssigned.toLowerCase() !== "no" &&
-				b.report.studentPerformance &&
-				b.report.studentPerformance >= 3,
-		).length;
-	} else {
-		homeworkTotal = weeklyBookings.length;
-		homeworkCompleted = weeklyBookings.filter(
-			(b) => b.report?.studentPerformance && b.report.studentPerformance >= 4,
-		).length;
-	}
-
-	const ratings = weeklyBookings
-		.map((b) => b.report?.studentPerformance)
-		.filter((r): r is number => typeof r === "number");
-	const avgRating =
-		ratings.length > 0
-			? (ratings.reduce((sum, r) => sum + r, 0) / ratings.length).toFixed(1)
-			: "5.0";
+	// Removed stats calculation logic as requested
 
 	// --- صياغة نصيحة الحكيم المبنية على بيانات دقيقة (Hakeem's Data-Driven Advice) ---
 	let hakeemMessage = "";
@@ -164,14 +172,11 @@ export async function getParentDashboardInsights(
 
 	// --- صياغة رسالة نجيب التشجيعية (Najeeb's Encouragement) ---
 	let najeebMessage = "";
-	let najeebMode: "welcome" | "study" | "success" | "help" = "welcome";
+	let najeebMode: "welcome" | "study" | "success" | "help";
 
 	if (upcomingBookingsCount > 0) {
 		najeebMessage = `يا سلام! لدينا ${upcomingBookingsCount} جلسة قادمة! 🚀 أنا متحمس جداً لبدء التعلم، تأكد من تجهيز الدفاتر والأقلام!`;
 		najeebMode = "study";
-	} else if (homeworkCompleted > 0 && homeworkCompleted === homeworkTotal) {
-		najeebMessage = `عمل رائع! لقد تم إنجاز جميع الواجبات المطلوبة بنجاح التام! 🌟 أبطالنا يستحقون مكافأة اليوم!`;
-		najeebMode = "success";
 	} else if (students.length > 0 && upcomingBookingsCount === 0) {
 		najeebMessage = `لا توجد جلسات مجدولة حالياً. ما رأيك أن نحجز جلسة جديدة لنستمر في رحلتنا التعليمية الممتعة؟ 💡`;
 		najeebMode = "help";
@@ -187,13 +192,10 @@ export async function getParentDashboardInsights(
 		stats: {
 			studentCount,
 			upcomingBookingsCount,
-			studyHours,
-			homeworkCompleted,
-			homeworkTotal,
-			avgRating,
-			isWeekly,
 		},
 		nextSession: sanitizedNextSession,
+		urgentActions,
+		todaySessions,
 		notifications,
 	};
 }

@@ -16,6 +16,7 @@ type TeacherSelectionStepProps = {
 		selectedDate: string;
 		selectedTime: string;
 	};
+	selectedSubjectLabel: string;
 	selectedDateLabel: string;
 	selectedTimeLabel: string;
 	availableTeachers: AvailableTeacher[];
@@ -25,6 +26,7 @@ type TeacherSelectionStepProps = {
 
 export function TeacherSelectionStep({
 	searchQuery,
+	selectedSubjectLabel,
 	selectedDateLabel,
 	selectedTimeLabel,
 	availableTeachers,
@@ -43,7 +45,7 @@ export function TeacherSelectionStep({
 						<div>
 							<p className="text-xs text-muted-foreground">نتائج البحث</p>
 							<p className="text-sm font-bold">
-								{searchQuery.selectedSpec} — {selectedDateLabel} —{" "}
+								{selectedSubjectLabel} — {selectedDateLabel} —{" "}
 								{selectedTimeLabel}
 							</p>
 						</div>
@@ -67,7 +69,7 @@ export function TeacherSelectionStep({
 					<h3 className="font-bold text-lg">لا يوجد معلمون متاحون</h3>
 					<p className="text-xs text-muted-foreground max-w-sm mx-auto">
 						نعتذر، لا يوجد معلمون متاحون لمادة{" "}
-						<strong>{searchQuery.selectedSpec}</strong> في الوقت المحدد. جرّب
+						<strong>{selectedSubjectLabel}</strong> في الوقت المحدد. جرّب
 						تغيير التاريخ أو الوقت.
 					</p>
 					<button

@@ -1,6 +1,6 @@
 import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
-import JitsiMeetingRoom from "@/components/shared/JitsiMeetingRoom";
+import JitsiMeetingRoomWrapper from "@/components/shared/JitsiMeetingRoomWrapper";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { SessionService } from "@/lib/services/domain/session-service";
@@ -49,7 +49,7 @@ export default async function SessionMeetPage({
 		: `edunest-${booking.id}`;
 
 	return (
-		<JitsiMeetingRoom
+		<JitsiMeetingRoomWrapper
 			roomName={roomName}
 			userName={userName}
 			bookingId={booking.id}

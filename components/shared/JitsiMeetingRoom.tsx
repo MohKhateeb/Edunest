@@ -1,9 +1,9 @@
 "use client";
 
 import { JitsiMeeting } from "@jitsi/react-sdk";
-import { AlertTriangle, CheckCircle2, Clock, FileText } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Clock, FileText, Monitor } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ReportModal from "@/components/shared/ReportModal";
 
@@ -31,6 +31,7 @@ export default function JitsiMeetingRoom({
 	} | null>(null);
 	const [timeLeft, setTimeLeft] = useState<number | null>(null);
 	const [sessionEnded, setSessionEnded] = useState(false);
+	const [isSharingScreen, setIsSharingScreen] = useState(false);
 
 	// States for report modal
 	const [showReportModal, setShowReportModal] = useState(false);
@@ -72,6 +73,12 @@ export default function JitsiMeetingRoom({
 		const m = Math.floor(seconds / 60);
 		const s = seconds % 60;
 		return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+	};
+
+	const toggleScreenShare = () => {
+		if (api) {
+			api.executeCommand("toggleShareScreen");
+		}
 	};
 
 	if (sessionEnded) {
@@ -152,7 +159,7 @@ export default function JitsiMeetingRoom({
 
 			<div className="flex-1 w-full h-full">
 				<JitsiMeeting
-					domain="meet.jit.si"
+					domain="jitsi.riot.im"
 					roomName={roomName}
 					configOverwrite={{
 						startWithAudioMuted: false,
@@ -199,6 +206,9 @@ export default function JitsiMeetingRoom({
 					}}
 					onApiReady={(externalApi) => {
 						setApi(externalApi);
+						externalApi.addListener("screenSharingStatusChanged", (event: { on: boolean }) => {
+							setIsSharingScreen(event.on);
+						});
 					}}
 					getIFrameRef={(iframeRef) => {
 						iframeRef.style.height = "100%";
@@ -207,15 +217,30 @@ export default function JitsiMeetingRoom({
 				/>
 			</div>
 
-			{/* Manual End Button */}
-			<div className="absolute bottom-6 right-6 z-10">
+			{/* Controls Floating Bar */}
+			<div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3 bg-black/60 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10 shadow-2xl transition-all hover:bg-black/70">
+				<button
+					onClick={toggleScreenShare}
+					className={`px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg flex items-center gap-2 transition-all cursor-pointer border ${isSharingScreen ? "bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-400/20" : "bg-white/10 hover:bg-white/20 text-white border-white/10"}`}
+					dir="rtl"
+					title="مشاركة الشاشة"
+				>
+					<Monitor className={`w-4 h-4 ${isSharingScreen ? "animate-pulse" : ""}`} />
+					<span className="hidden sm:inline">
+						{isSharingScreen ? "إيقاف المشاركة" : "مشاركة الشاشة"}
+					</span>
+				</button>
+				
+				<div className="w-px h-8 bg-white/10 mx-1"></div>
+
 				<button
 					onClick={endSession}
-					className="bg-rose-600 hover:bg-rose-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-xl flex items-center gap-2 transition-transform hover:scale-105 cursor-pointer border border-rose-400/20"
+					className="bg-rose-600 hover:bg-rose-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg flex items-center gap-2 transition-all hover:scale-105 cursor-pointer border border-rose-400/20"
 					dir="rtl"
 				>
 					<AlertTriangle className="w-4 h-4" />
-					إنهاء الجلسة
+					<span className="hidden sm:inline">إنهاء الجلسة</span>
+					<span className="sm:hidden">إنهاء</span>
 				</button>
 			</div>
 		</div>

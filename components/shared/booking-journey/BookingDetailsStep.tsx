@@ -14,7 +14,6 @@ type BookingDetailsStepProps = {
 	bookingDetails: {
 		selectedTeacher: AvailableTeacher | null;
 		selectedServiceId: string;
-		selectedStudentId: string;
 		isTrial: boolean;
 		parentNotes: string;
 		questionTitle: string;
@@ -25,10 +24,12 @@ type BookingDetailsStepProps = {
 	handleBookingSubmit: (e: React.FormEvent) => Promise<void>;
 	setCurrentStep: (step: "search" | "results" | "details") => void;
 	searchQuery: {
+		selectedStudentId: string;
 		selectedSpec: string;
 		selectedDate: string;
 		selectedTime: string;
 	};
+	selectedSubjectLabel: string;
 	selectedDateLabel: string;
 	selectedTimeLabel: string;
 	students: Student[];
@@ -43,6 +44,7 @@ export function BookingDetailsStep({
 	handleBookingSubmit,
 	setCurrentStep,
 	searchQuery,
+	selectedSubjectLabel,
 	selectedDateLabel,
 	selectedTimeLabel,
 	students,
@@ -55,6 +57,8 @@ export function BookingDetailsStep({
 	);
 
 	if (!bookingDetails.selectedTeacher) return null;
+
+	const selectedStudent = students.find((s) => s.id === searchQuery.selectedStudentId);
 
 	return (
 		<div className="bg-card border border-border rounded-2xl p-8 shadow-sm space-y-6 animate-fadeIn">
@@ -95,7 +99,7 @@ export function BookingDetailsStep({
 							)}
 						</p>
 						<p className="text-[11px] text-muted-foreground">
-							{searchQuery.selectedSpec} — {selectedDateLabel} —{" "}
+							{selectedSubjectLabel} — {selectedDateLabel} —{" "}
 							{selectedTimeLabel}
 						</p>
 					</div>
@@ -110,25 +114,15 @@ export function BookingDetailsStep({
 			)}
 
 			<form onSubmit={handleBookingSubmit} className="space-y-5">
-				{/* اختيار الطالب */}
+				{/* بيانات الطالب (للعرض فقط) */}
 				<div className="space-y-1.5">
 					<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 						<User className="h-4 w-4" />
 						الطالب المستهدف
 					</label>
-					<select
-						value={bookingDetails.selectedStudentId}
-						onChange={(e) =>
-							handleBookingChange("selectedStudentId", e.target.value)
-						}
-						className="w-full premium-input text-xs"
-					>
-						{students.map((s) => (
-							<option key={s.id} value={s.id}>
-								{s.name} (الصف {s.grade})
-							</option>
-						))}
-					</select>
+					<div className="w-full premium-input text-xs bg-muted/50 cursor-not-allowed">
+						{selectedStudent ? `${selectedStudent.name} (الصف ${selectedStudent.grade})` : "لم يتم تحديد الطالب"}
+					</div>
 				</div>
 
 				{/* اختيار الخدمة */}
