@@ -1,5 +1,5 @@
-import { NextResponse, NextRequest } from "next/server";
-import { withAuth } from "next-auth/middleware";
+import { NextResponse, NextRequest, NextFetchEvent } from "next/server";
+import { withAuth, NextRequestWithAuth } from "next-auth/middleware";
 import createMiddleware from 'next-intl/middleware';
 import { FEATURE_FLAGS } from '@/lib/config/feature-flags';
 
@@ -83,13 +83,13 @@ const authProxy = withAuth(
 	},
 );
 
-export default function proxy(req: NextRequest) {
+export default function proxy(req: NextRequestWithAuth, event: NextFetchEvent) {
 	if (!FEATURE_FLAGS.I18N_ENABLED) {
 		// If i18n is disabled, we must act exactly like original proxy.ts
 		// which only ran on /dashboard/*
 		const isDashboard = req.nextUrl.pathname.startsWith('/dashboard');
 		if (isDashboard) {
-			return (authProxy as any)(req);
+			return authProxy(req, event);
 		}
 		return NextResponse.next();
 	}
@@ -98,7 +98,7 @@ export default function proxy(req: NextRequest) {
 	const isDashboard = path.startsWith('/dashboard') || path.startsWith('/en/dashboard') || path.startsWith('/ar/dashboard');
 	
 	if (isDashboard) {
-		return (authProxy as any)(req);
+		return authProxy(req, event);
 	}
 	
 	return intlMiddleware(req);
