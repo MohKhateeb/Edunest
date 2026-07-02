@@ -1,0 +1,27 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "success": "Done",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "search": "Search",
+    "filter": "Filter",
+    "noResults": "No results found"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "bookings": "Bookings",
+    "teachers": "Teachers",
+    "students": "Students",
+    "settings": "Settings",
+    "logout": "Log out",
+    "profile": "Profile"
+  }
+}
