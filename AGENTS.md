@@ -203,3 +203,17 @@ This version has breaking changes — APIs, conventions, and file structure may 
 هذا الملف حي — إن اكتشف الوكيل قاعدة جديدة ضرورية أثناء العمل (كما حدث مراراً
 في هذا المشروع)، يُقترح على المطوّر تحديث هذا الملف بدل الاكتفاء بإصلاح
 الحالة الفردية فقط.
+
+---
+
+## 11. i18n & Currency Safety Rules
+
+- **Rule 10:** All i18n strings must use next-intl `t('key')` — never hardcode user-facing text in components.
+- **Rule 11:** All monetary values must display via `formatCurrency()` from `lib/utils/currency.ts` — never format prices inline.
+
+---
+
+## ROLLBACK PLAN
+
+- **Full rollback:** `git checkout main` (feature branch preserved for debugging)
+- **Partial rollback:** set `NEXT_PUBLIC_I18N_ENABLED=false` in `.env.local` (bypasses all routing changes)
