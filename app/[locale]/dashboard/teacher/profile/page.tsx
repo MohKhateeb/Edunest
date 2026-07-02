@@ -1,7 +1,7 @@
 import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
-import TeacherProfileForm from "@/app/dashboard/teacher/_components/TeacherProfileForm";
-import TeacherSlugForm from "@/app/dashboard/teacher/_components/TeacherSlugForm";
+import TeacherProfileForm from "../_components/TeacherProfileForm";
+import TeacherSlugForm from "../_components/TeacherSlugForm";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { UserService } from "@/lib/services/domain/user-service";

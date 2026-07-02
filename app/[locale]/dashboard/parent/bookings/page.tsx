@@ -1,7 +1,7 @@
 import { UserType } from "@prisma/client";
 import { Calendar } from "lucide-react";
 import { redirect } from "next/navigation";
-import ParentBookingsList from "@/app/dashboard/parent/_components/ParentBookingsList";
+import ParentBookingsList from "../_components/ParentBookingsList";
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import { auth } from "@/lib/auth";
 import { BookingService } from "@/lib/services/domain/booking-service";

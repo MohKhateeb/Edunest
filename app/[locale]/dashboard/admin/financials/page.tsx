@@ -11,8 +11,8 @@ import {
 import { getAllEscrows } from "@/lib/services/domain/admin-escrow-service";
 import DateFilter from "./_components/DateFilter";
 import FinancialTabs from "./_components/FinancialTabs";
-import AdminPayoutsEngine from "@/app/dashboard/admin/payouts/_components/AdminPayoutsEngine";
-import { EscrowActions } from "@/app/dashboard/admin/escrow/escrow-actions";
+import AdminPayoutsEngine from "../payouts/_components/AdminPayoutsEngine";
+import { EscrowActions } from "../escrow/escrow-actions";
 import { formatPrice } from "@/lib/utils";
 
 export const metadata = {

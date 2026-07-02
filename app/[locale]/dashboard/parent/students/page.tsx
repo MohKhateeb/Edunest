@@ -1,8 +1,8 @@
 import { UserType } from "@prisma/client";
 import { Users } from "lucide-react";
 import { redirect } from "next/navigation";
-import AddStudentForm from "@/app/dashboard/parent/_components/AddStudentForm";
-import ParentStudentsList from "@/app/dashboard/parent/_components/ParentStudentsList";
+import AddStudentForm from "../_components/AddStudentForm";
+import ParentStudentsList from "../_components/ParentStudentsList";
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";

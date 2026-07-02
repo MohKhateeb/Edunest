@@ -12,12 +12,13 @@ export const metadata: Metadata = {
 
 import {cookies} from 'next/headers'
 
-export default function RootLayout({
+export default async function RootLayout({
 	children,
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const locale = cookies().get('NEXT_LOCALE')?.value ?? 'ar'
+	const cookieStore = await cookies();
+	const locale = cookieStore.get('NEXT_LOCALE')?.value ?? 'ar'
 	const dir = locale === 'ar' ? 'rtl' : 'ltr'
 
 	return (

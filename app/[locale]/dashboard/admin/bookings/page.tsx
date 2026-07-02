@@ -1,7 +1,7 @@
 import { UserType } from "@prisma/client";
 import { Calendar } from "lucide-react";
 import { redirect } from "next/navigation";
-import AdminBookingsList from "@/app/dashboard/admin/_components/AdminBookingsList";
+import AdminBookingsList from "../_components/AdminBookingsList";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { BookingService } from "@/lib/services/domain/booking-service";

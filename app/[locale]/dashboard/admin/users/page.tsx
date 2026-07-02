@@ -1,6 +1,6 @@
 import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
-import AdminUsersList from "@/app/dashboard/admin/_components/AdminUsersList";
+import AdminUsersList from "../_components/AdminUsersList";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { SystemAdminService } from "@/lib/services/domain/system-admin-service";

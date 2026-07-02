@@ -1,7 +1,7 @@
 import { UserType } from "@prisma/client";
 import { AlertCircle, Calendar } from "lucide-react";
 import { redirect } from "next/navigation";
-import TeacherBookingsList from "@/app/dashboard/teacher/_components/TeacherBookingsList";
+import TeacherBookingsList from "../_components/TeacherBookingsList";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { processStaleBookingsCancellation } from "@/lib/services/booking-cleanup";

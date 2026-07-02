@@ -1,7 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
-import AdminVerificationQueue from "@/app/dashboard/admin/_components/AdminVerificationQueue";
+import AdminVerificationQueue from "../_components/AdminVerificationQueue";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
