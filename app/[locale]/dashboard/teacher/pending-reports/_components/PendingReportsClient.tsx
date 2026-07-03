@@ -11,14 +11,12 @@ import { useState } from "react";
 import ReportModal from "@/components/shared/ReportModal";
 import type { DetailedBooking } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
-import { useTranslations } from "next-intl";
 
 export default function PendingReportsClient({
 	initialBookings,
 }: {
 	initialBookings: DetailedBooking[];
 }) {
-    const t = useTranslations('teachers')
 	const [bookings, setBookings] = useState(initialBookings);
 	const [activeBookingId, setActiveBookingId] = useState<string | null>(null);
 
@@ -30,14 +28,16 @@ export default function PendingReportsClient({
 	}
 
 	return (
-		<div className="space-y-6 text-end" dir="rtl">
+		<div className="space-y-6 text-right" dir="rtl">
 			{bookings.length === 0 ? (
 				<div className="bg-card border border-border rounded-3xl p-12 text-center text-muted-foreground">
 					<CheckCircle2 className="h-12 w-12 mx-auto text-green-500 mb-4 opacity-75" />
 					<h3 className="font-bold text-lg text-foreground mb-1">
-						{t('key_1783109439784_40ws')}</h3>
+						عمل رائع! 🏆
+					</h3>
 					<p className="text-sm">
-						{t('key_1783109439791_d2b5')}</p>
+						لا توجد لديك أي جلسات معلقة أو تقارير متأخرة حالياً.
+					</p>
 				</div>
 			) : (
 				<div className="grid gap-4">
@@ -77,7 +77,7 @@ export default function PendingReportsClient({
 									<div className="space-y-2">
 										<div className="flex flex-wrap items-center gap-2">
 											<span className="font-black text-sm bg-primary/10 text-primary px-3 py-1 rounded-full">
-												{t('key_1783109439797_wq7t')}{booking.student.name}
+												جلسة {booking.student.name}
 											</span>
 											<div
 												className={`flex items-center gap-1 border px-2.5 py-0.5 rounded-full text-xs font-bold ${statusClass}`}
@@ -89,17 +89,20 @@ export default function PendingReportsClient({
 										<div className="text-xs text-muted-foreground space-y-1">
 											<p>
 												<span className="font-semibold text-foreground">
-													{t('key_1783109439804_0zbg')}</span>{" "}
+													المادة/الخدمة:
+												</span>{" "}
 												{booking.teacherService.serviceType.name}
 											</p>
 											<p>
 												<span className="font-semibold text-foreground">
-													{t('key_1783109439814_plni')}</span>{" "}
+													تاريخ الجلسة:
+												</span>{" "}
 												{new Date(booking.startTime).toLocaleString("ar-EG")}
 											</p>
 											<p>
 												<span className="font-semibold text-foreground">
-													{t('key_1783109439822_alpi')}</span>{" "}
+													قيمة الجلسة:
+												</span>{" "}
 												{formatPrice(Number(booking.price))}
 											</p>
 										</div>
@@ -109,7 +112,8 @@ export default function PendingReportsClient({
 										className="shrink-0 flex items-center gap-1.5 text-xs font-bold bg-primary text-primary-foreground hover:bg-primary/95 px-5 py-2.5 rounded-xl transition-all shadow-sm"
 									>
 										<FileText className="h-4 w-4" />
-										{t('key_1783109439830_br62')}</button>
+										كتابة التقرير الآن
+									</button>
 								</div>
 							</div>
 						);

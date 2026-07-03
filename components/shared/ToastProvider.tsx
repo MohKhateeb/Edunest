@@ -11,7 +11,7 @@ export default function ToastProvider() {
 			expand={false}
 			toastOptions={{
 				className:
-					"font-sans rtl text-end border-border bg-card text-foreground shadow-lg rounded-xl",
+					"font-sans rtl text-right border-border bg-card text-foreground shadow-lg rounded-xl",
 				style: {
 					fontFamily: "var(--font-sans)",
 				},

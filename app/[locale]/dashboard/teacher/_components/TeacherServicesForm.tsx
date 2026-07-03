@@ -13,7 +13,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { addOrUpdateTeacherService } from "@/lib/actions/teacher";
 import { teacherServiceSchema } from "@/lib/validations/teacher";
-import { useTranslations } from "next-intl";
 
 type ServiceType = {
 	id: string;
@@ -40,7 +39,6 @@ export default function TeacherServicesForm({
 	serviceTypes,
 	configuredServices,
 }: TeacherServicesFormProps) {
-    const t = useTranslations('teachers')
 	const router = useRouter();
 	const [formData, setFormData] = useState({
 		selectedServiceTypeId: "",
@@ -115,9 +113,11 @@ export default function TeacherServicesForm({
 	return (
 		<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-8 space-y-8 shadow-sm hover:shadow-md transition-all">
 			<div>
-				<h2 className="font-extrabold text-xl mb-1">{t('key_1783109437131_6115')}</h2>
+				<h2 className="font-extrabold text-xl mb-1">إدارة الخدمات والأسعار</h2>
 				<p className="text-xs text-muted-foreground">
-					{t('key_1783109437142_5234')}</p>
+					اختر نوع الحصة، حدد مدتها بالدقائق وسعرها بالشيكل ليتمكن الأهالي من
+					حجزها.
+				</p>
 			</div>
 
 			{/* Grid: Configured List vs Addition Form */}
@@ -129,7 +129,8 @@ export default function TeacherServicesForm({
 				>
 					<h3 className="font-bold text-sm border-b border-border pb-2.5 flex items-center gap-1.5 text-primary">
 						<Plus className="h-4.5 w-4.5" />
-						{t('key_1783109437153_iwkf')}</h3>
+						إضافة / تحديث خدمة
+					</h3>
 
 					{errorMsg && (
 						<div className="flex items-center gap-2 text-xs text-destructive bg-destructive/10 px-3 py-2.5 rounded-lg border border-destructive/20">
@@ -146,14 +147,15 @@ export default function TeacherServicesForm({
 
 					<div className="space-y-1">
 						<label className="text-xs font-semibold text-muted-foreground block">
-							{t('key_1783109437162_xwz9')}</label>
+							نوع الخدمة *
+						</label>
 						<select
 							value={formData.selectedServiceTypeId}
 							onChange={(e) => handleServiceTypeChange(e.target.value)}
 							className="w-full premium-input text-xs"
 							required
 						>
-							<option value="">{t('key_1783109437172_ti8k')}</option>
+							<option value="">-- اختر نوع الخدمة --</option>
 							{serviceTypes.map((st) => (
 								<option key={st.id} value={st.id}>
 									{st.name}
@@ -164,7 +166,8 @@ export default function TeacherServicesForm({
 
 					<div className="space-y-1">
 						<label className="text-xs font-semibold text-muted-foreground block">
-							{t('key_1783109437179_skvv')}</label>
+							رسوم الخدمة (شيكل) *
+						</label>
 						<input
 							type="number"
 							name="price"
@@ -178,7 +181,8 @@ export default function TeacherServicesForm({
 
 					<div className="space-y-1">
 						<label className="text-xs font-semibold text-muted-foreground block">
-							{t('key_1783109437199_kfd1')}</label>
+							المدة المقررة (بالدقائق) *
+						</label>
 						<input
 							type="number"
 							name="duration"
@@ -192,13 +196,14 @@ export default function TeacherServicesForm({
 
 					<div className="space-y-1">
 						<label className="text-xs font-semibold text-muted-foreground block">
-							{t('key_1783109437208_8wj8')}</label>
+							تفاصيل إضافية (اختياري)
+						</label>
 						<textarea
 							name="customDescription"
 							rows={2}
 							value={formData.customDescription}
 							onChange={handleChange}
-							placeholder={t('key_1783109437278_kp6r')}
+							placeholder="وصف إضافي للمواد أو المناهج المشمولة في هذه الخدمة..."
 							className="w-full text-xs premium-input resize-none"
 						/>
 					</div>
@@ -211,11 +216,13 @@ export default function TeacherServicesForm({
 						{loading ? (
 							<>
 								<Loader2 className="h-4 w-4 animate-spin" />
-								{t('key_1783109437221_stis')}</>
+								جاري الحفظ...
+							</>
 						) : (
 							<>
 								<Check className="h-4 w-4" />
-								{t('key_1783109437230_mtj7')}</>
+								حفظ الخدمة
+							</>
 						)}
 					</button>
 				</form>
@@ -224,7 +231,7 @@ export default function TeacherServicesForm({
 				<div className="lg:col-span-2 space-y-4">
 					<h3 className="font-bold text-sm flex items-center gap-1.5">
 						<Briefcase className="h-4.5 w-4.5 text-muted-foreground" />
-						{t('key_1783109437239_bhst')}{configuredServices.length})
+						الخدمات المفعلة في حسابك حالياً ({configuredServices.length})
 					</h3>
 
 					{configuredServices.length === 0 ? (
@@ -246,10 +253,12 @@ export default function TeacherServicesForm({
 									<div className="flex gap-4 text-xs text-muted-foreground">
 										<span className="flex items-center gap-1">
 											<Clock className="h-3.5 w-3.5" />
-											{cs.duration} {t('key_1783109437251_4omh')}</span>
+											{cs.duration} دقيقة
+										</span>
 										<span className="flex items-center gap-1 text-primary font-semibold">
 											<DollarSign className="h-3.5 w-3.5" />
-											{cs.price} {t('key_1783109437260_rpev')}</span>
+											{cs.price} شيكل
+										</span>
 									</div>
 
 									{cs.customDescription && (

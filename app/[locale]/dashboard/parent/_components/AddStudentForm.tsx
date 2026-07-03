@@ -4,10 +4,8 @@ import { AlertCircle, Loader2, Plus } from "lucide-react";
 import { useState } from "react";
 import { addStudent } from "@/lib/actions/user";
 import { studentSchema } from "@/lib/validations/user";
-import { useTranslations } from "next-intl";
 
 export default function AddStudentForm() {
-    const t = useTranslations('parent')
 	const [formData, setFormData] = useState({
 		name: "",
 		grade: "1",
@@ -66,7 +64,8 @@ export default function AddStudentForm() {
 			className="bg-card border border-border/80 rounded-3xl p-6 space-y-4 shadow-premium"
 		>
 			<h3 className="font-black text-base border-b border-border/60 pb-2.5 flex items-center gap-2">
-				{t('key_1783109434665_5yyt')}</h3>
+				إضافة طالب جديد للحساب
+			</h3>
 
 			{errorMsg && (
 				<div className="flex items-center gap-2 text-xs text-destructive bg-destructive/10 px-3 py-2.5 rounded-xl border border-destructive/20">
@@ -77,21 +76,23 @@ export default function AddStudentForm() {
 
 			<div className="space-y-1">
 				<label className="text-xs font-bold text-muted-foreground block">
-					{t('key_1783109434675_cs3c')}</label>
+					اسم الطالب *
+				</label>
 				<input
 					type="text"
 					name="name"
 					required
 					value={formData.name}
 					onChange={handleChange}
-					placeholder={t('key_1783109434723_1suw')}
+					placeholder="محمد أحمد"
 					className="w-full premium-input text-xs"
 				/>
 			</div>
 
 			<div className="space-y-1">
 				<label className="text-xs font-bold text-muted-foreground block">
-					{t('key_1783109434682_n7ap')}</label>
+					الصف الدراسي *
+				</label>
 				<select
 					name="grade"
 					value={formData.grade}
@@ -102,7 +103,7 @@ export default function AddStudentForm() {
 						const classNum = index + 1;
 						return (
 							<option key={classNum} value={classNum}>
-								{t('key_1783109434688_iusf')}{classNum}
+								الصف {classNum}
 							</option>
 						);
 					})}
@@ -111,13 +112,14 @@ export default function AddStudentForm() {
 
 			<div className="space-y-1">
 				<label className="text-xs font-bold text-muted-foreground block">
-					{t('key_1783109434693_b2kq')}</label>
+					المدرسة (اختياري)
+				</label>
 				<input
 					type="text"
 					name="school"
 					value={formData.school}
 					onChange={handleChange}
-					placeholder={t('str_2YXYr9ix')}
+					placeholder="مدرسة بيت لحم الثانوية"
 					className="w-full premium-input text-xs"
 				/>
 			</div>
@@ -130,11 +132,13 @@ export default function AddStudentForm() {
 				{loading ? (
 					<>
 						<Loader2 className="h-4 w-4 animate-spin" />
-						{t('key_1783109434698_w7hf')}</>
+						جاري الإضافة...
+					</>
 				) : (
 					<>
 						<Plus className="h-4 w-4" />
-						{t('key_1783109434705_wd9w')}</>
+						إضافة الطالب
+					</>
 				)}
 			</button>
 		</form>

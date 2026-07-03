@@ -212,7 +212,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 				</div>
 
 				{/* السعر وحالة الدفع (مدمجة وبدون عناوين مزعجة) */}
-				<div className="text-start flex flex-col items-end">
+				<div className="text-left flex flex-col items-end">
 					<span className="text-xl font-black text-primary leading-none">
 						{priceDisplay}
 					</span>
@@ -502,7 +502,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 									</div>
 
 									{report.studentAttended && report.studentPerformance && (
-										<div className="space-y-1 text-start">
+										<div className="space-y-1 text-left">
 											<span className="text-xs text-muted-foreground block font-semibold">
 												{t('adaa_altalb_fy_alhsh')}</span>
 											<div className="flex items-center gap-1 justify-end">

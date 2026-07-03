@@ -7,10 +7,8 @@ import { requireAuth } from "@/lib/require-auth";
 import { processStaleBookingsCancellation } from "@/lib/services/booking-cleanup";
 import { BookingService } from "@/lib/services/domain/booking-service";
 import { sanitizePrismaData } from "@/lib/utils";
-import { getTranslations } from "next-intl/server";
 
 export default async function TeacherBookingsPage() {
-    const t = await getTranslations('teachers')
 	const session = await auth();
 	await requireAuth([UserType.TEACHER]);
 	if (!session) redirect("/login");
@@ -31,7 +29,8 @@ export default async function TeacherBookingsPage() {
 		<div className="space-y-6">
 			<div>
 				<h1 className="text-2xl font-extrabold mb-1">
-					{t('key_1783109437867_i1ut')}</h1>
+					جدول الحصص والطلبات الواردة
+				</h1>
 				<p className="text-xs text-muted-foreground">
 					تابع مواعيد الحصص المجدولة للطلاب، قبول/رفض طلبات الحجز المعلقة، ورفع
 					تقارير الأداء بعد انتهاء الحصص.
@@ -43,9 +42,10 @@ export default async function TeacherBookingsPage() {
 					<AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
 					<div>
 						<h3 className="font-bold text-sm">
-							{t('key_1783109437870_vr5t')}</h3>
+							تنبيه النظام: تم الإلغاء التلقائي
+						</h3>
 						<p className="text-sm mt-1">
-							{t('key_1783109437872_xewl')}<strong>{cancelledCount}</strong> من طلبات الحجز تلقائياً
+							تم إلغاء <strong>{cancelledCount}</strong> من طلبات الحجز تلقائياً
 							نظراً لانتهاء وقتها المجدول دون قيامك بتأكيدها. يرجى المتابعة
 							اليومية لطلباتك لتجنب ذلك.
 						</p>
@@ -56,7 +56,8 @@ export default async function TeacherBookingsPage() {
 			<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all space-y-4">
 				<h2 className="font-black text-lg border-b border-border pb-3 flex items-center gap-2">
 					<Calendar className="h-6 w-6 text-primary" />
-					{t('key_1783109437875_wex5')}</h2>
+					سجل الحصص الواردة
+				</h2>
 
 				<TeacherBookingsList bookings={sanitizedBookings} />
 			</div>

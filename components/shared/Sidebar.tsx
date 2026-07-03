@@ -129,7 +129,7 @@ export default function Sidebar() {
 	return (
 		<aside
 			className={cn(
-				"bg-white dark:bg-slate-950 border-s border-slate-100 dark:border-slate-900/60 h-[calc(100vh-4rem)] sticky top-16 hidden md:flex flex-col p-4 text-end transition-all duration-300 ease-in-out select-none shadow-sm",
+				"bg-white dark:bg-slate-950 border-l border-slate-100 dark:border-slate-900/60 h-[calc(100vh-4rem)] sticky top-16 hidden md:flex flex-col p-4 text-right transition-all duration-300 ease-in-out select-none shadow-sm",
 				isCollapsed ? "w-20" : "w-64",
 			)}
 		>
@@ -171,7 +171,7 @@ export default function Sidebar() {
 			</div>
 
 			{/* Nav Links */}
-			<nav className="flex-1 space-y-1.5 overflow-y-auto overflow-x-hidden min-h-0 pe-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+			<nav className="flex-1 space-y-1.5 overflow-y-auto overflow-x-hidden min-h-0 pr-0.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
 				{links.map((link) => {
 					const Icon = link.icon;
 					const isActive = pathname === link.href;
@@ -210,7 +210,7 @@ export default function Sidebar() {
 			{/* Advisor Interactive Block (Hakeem & Najeeb) */}
 			<div className="border-t border-border/50 pt-4 mt-auto">
 				{!isCollapsed ? (
-					<div className="bg-gradient-to-br from-indigo-50/50 to-primary/5 dark:from-slate-900/60 dark:to-primary/10 border border-primary/15 rounded-2xl p-3 shadow-sm text-end animate-in fade-in duration-500">
+					<div className="bg-gradient-to-br from-indigo-50/50 to-primary/5 dark:from-slate-900/60 dark:to-primary/10 border border-primary/15 rounded-2xl p-3 shadow-sm text-right animate-in fade-in duration-500">
 						<div className="flex justify-between items-center mb-2">
 							<span className="text-[10px] font-black text-primary flex items-center gap-1">
 								<Sparkles className="h-3 w-3" />
@@ -256,7 +256,7 @@ export default function Sidebar() {
 						</button>
 
 						{/* Rich Tooltip popup on hover */}
-						<div className="absolute start-full ms-3 top-1/2 -translate-y-1/2 hidden group-hover:block w-52 bg-white dark:bg-slate-900 border border-border/80 text-foreground text-[10px] p-3 rounded-2xl shadow-premium z-50 pointer-events-none text-end animate-in fade-in zoom-in-95 duration-200">
+						<div className="absolute start-full ms-3 top-1/2 -translate-y-1/2 hidden group-hover:block w-52 bg-white dark:bg-slate-900 border border-border/80 text-foreground text-[10px] p-3 rounded-2xl shadow-premium z-50 pointer-events-none text-right animate-in fade-in zoom-in-95 duration-200">
 							<div className="font-black text-primary mb-2 border-b border-border/50 pb-1 flex items-center gap-1">
 								<Sparkles className="h-3 w-3" />
 								{activeTip.advisor === "hakeem"

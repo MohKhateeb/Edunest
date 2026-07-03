@@ -12,7 +12,6 @@ import ReportModal from "@/components/shared/ReportModal";
 import { acceptBooking, rejectBooking, cancelBooking } from "@/lib/actions/booking";
 import type { DetailedBooking } from "@/lib/types";
 import { getLocalDateString } from "@/lib/utils/time";
-import { useTranslations } from "next-intl";
 
 interface TeacherBookingsListProps {
 	bookings: DetailedBooking[];
@@ -21,7 +20,6 @@ interface TeacherBookingsListProps {
 export default function TeacherBookingsList({
 	bookings,
 }: TeacherBookingsListProps) {
-    const t = useTranslations('teachers')
 	// Search and Filter
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState("ALL");
@@ -144,7 +142,7 @@ export default function TeacherBookingsList({
 				<div className="relative flex-1">
 					<input
 						type="text"
-						placeholder={t('key_1783109436219_0vpu')}
+						placeholder="ابحث باسم الطالب، ولي الأمر، المادة، أو موضوع الجلسة..."
 						className="premium-input w-full text-sm ps-10 pe-4 py-3 rounded-2xl border border-border/80 bg-background"
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
@@ -158,14 +156,14 @@ export default function TeacherBookingsList({
 					value={statusFilter}
 					onChange={(e) => setStatusFilter(e.target.value)}
 				>
-					<option value="ALL">{t('key_1783109435963_qre0')}</option>
-					<option value="PENDING_APPROVAL">{t('key_1783109436012_61yy')}</option>
-					<option value="AWAITING_PAYMENT">{t('key_1783109436034_y43e')}</option>
-					<option value="PENDING">{t('key_1783109436053_d0rc')}</option>
-					<option value="CONFIRMED">{t('key_1783109436069_i44p')}</option>
-					<option value="COMPLETED">{t('key_1783109436088_euwb')}</option>
-					<option value="CANCELLED">{t('key_1783109436108_6h96')}</option>
-					<option value="REJECTED">{t('key_1783109436130_m0sj')}</option>
+					<option value="ALL">كل حالات الحصص</option>
+					<option value="PENDING_APPROVAL">طلبات جديدة بانتظار ردك</option>
+					<option value="AWAITING_PAYMENT">بانتظار دفع ولي الأمر</option>
+					<option value="PENDING">بانتظار موافقتي (معلق - قديم)</option>
+					<option value="CONFIRMED">مؤكد ومجدول</option>
+					<option value="COMPLETED">مكتمل ومنتهي</option>
+					<option value="CANCELLED">ملغي</option>
+					<option value="REJECTED">مرفوض</option>
 				</select>
 			</div>
 
@@ -211,11 +209,11 @@ export default function TeacherBookingsList({
 
 			<ConfirmDialog
 				isOpen={!!cancelDialogBookingId}
-				title={t('str_2KXZhNi6')}
-				description={t('str_2YfZhCDY')}
+				title="إلغاء الموعد"
+				description="هل أنت متأكد من رغبتك في إلغاء هذا الحجز؟ سيتم تحرير الموعد للطلاب الآخرين."
 				requireReason={true}
-				reasonLabel={t('str_2LPYqNio')}
-				confirmLabel={t('str_2KrYo9mD')}
+				reasonLabel="سبب الإلغاء"
+				confirmLabel="تأكيد الإلغاء"
 				isLoading={loadingId === cancelDialogBookingId}
 				onConfirm={(reason) => executeCancelBooking(reason)}
 				onCancel={() => setCancelDialogBookingId(null)}

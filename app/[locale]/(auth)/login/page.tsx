@@ -7,10 +7,8 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { loginSchema } from "@/lib/validations/user";
-import { useTranslations } from "next-intl";
 
 export default function LoginPage() {
-    const t = useTranslations('common')
 	const router = useRouter();
 	const [formData, setFormData] = useState({
 		email: "",
@@ -94,9 +92,11 @@ export default function LoginPage() {
 						/>
 					</Link>
 					<h2 className="text-2xl font-bold tracking-tight text-foreground/90">
-						{t('key_1783109428284_xgiz')}</h2>
+						أهلاً بك مجدداً
+					</h2>
 					<p className="text-xs text-muted-foreground">
-						{t('key_1783109428294_9jzl')}</p>
+						قم بتسجيل الدخول إلى حسابك للمتابعة
+					</p>
 				</div>
 
 				{/* Card Form */}
@@ -112,7 +112,8 @@ export default function LoginPage() {
 						<div className="space-y-1.5">
 							<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 								<Mail className="h-3.5 w-3.5" />
-								{t('albryd_alilktrwny')}</label>
+								البريد الإلكتروني
+							</label>
 							<input
 								type="email"
 								name="email"
@@ -127,7 +128,8 @@ export default function LoginPage() {
 						<div className="space-y-1.5">
 							<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 								<Lock className="h-3.5 w-3.5" />
-								{t('key_1783109428308_b9aj')}</label>
+								كلمة المرور
+							</label>
 							<input
 								type="password"
 								name="password"
@@ -147,7 +149,8 @@ export default function LoginPage() {
 							{loading ? (
 								<>
 									<Loader2 className="h-4.5 w-4.5 animate-spin" />
-									{t('key_1783109428316_742l')}</>
+									جاري تسجيل الدخول...
+								</>
 							) : (
 								"تسجيل الدخول"
 							)}
@@ -157,12 +160,13 @@ export default function LoginPage() {
 
 				{/* Footer info */}
 				<p className="text-center text-xs text-muted-foreground">
-					{t('key_1783109428324_a7lm')}{" "}
+					ليس لديك حساب؟{" "}
 					<Link
 						href="/register"
 						className="font-semibold text-primary hover:underline"
 					>
-						{t('key_1783109428330_gl0e')}</Link>
+						أنشئ حساباً جديداً الآن
+					</Link>
 				</p>
 			</div>
 		</div>

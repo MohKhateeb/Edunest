@@ -23,7 +23,7 @@ export default function WelcomeHeader({ teacherName, teacherSlug, isAvailableNow
 			<div className="flex flex-col gap-3 shrink-0">
 				<TeacherOnlineToggle initialStatus={isAvailableNow} />
 
-				<div className="text-start bg-gradient-to-l from-primary to-blue-400 px-6 py-4 rounded-2xl shadow-md text-white animate-pulse-soft">
+				<div className="text-left bg-gradient-to-l from-primary to-blue-400 px-6 py-4 rounded-2xl shadow-md text-white animate-pulse-soft">
 					<span className="text-xs text-white/80 block mb-1">{t('rabt_sfhtk_alaamh_lltlab')}</span>
 					<Link
 						href={`/teachers/${teacherSlug}`}

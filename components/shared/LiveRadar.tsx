@@ -90,7 +90,7 @@ export default function LiveRadar({
 			<div className="flex flex-col items-center justify-center p-12 text-center border-2 border-dashed border-border rounded-3xl bg-slate-50 dark:bg-slate-900/50">
 				<div className="p-6 bg-slate-100 dark:bg-slate-800 rounded-full mb-6 relative">
 					<Wifi className="h-12 w-12 text-slate-400" />
-					<div className="absolute top-2 end-2 w-4 h-4 bg-red-500 border-2 border-white dark:border-slate-800 rounded-full"></div>
+					<div className="absolute top-2 right-2 w-4 h-4 bg-red-500 border-2 border-white dark:border-slate-800 rounded-full"></div>
 				</div>
 				<h3 className="text-2xl font-bold text-slate-700 dark:text-slate-300 mb-2">
 					{t('alradar_mtwqf_halya')}</h3>
@@ -105,10 +105,10 @@ export default function LiveRadar({
 			{/* Radar Header */}
 			<div className="flex items-center justify-between p-6 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 rounded-3xl border border-indigo-500/20 relative overflow-hidden">
 				{/* Radar Animation Rings */}
-				<div className="absolute top-1/2 end-12 -translate-y-1/2 w-8 h-8 rounded-full bg-emerald-500/20 animate-ping"></div>
-				<div className="absolute top-1/2 end-12 -translate-y-1/2 w-8 h-8 rounded-full bg-emerald-500/40"></div>
+				<div className="absolute top-1/2 right-12 -translate-y-1/2 w-8 h-8 rounded-full bg-emerald-500/20 animate-ping"></div>
+				<div className="absolute top-1/2 right-12 -translate-y-1/2 w-8 h-8 rounded-full bg-emerald-500/40"></div>
 
-				<div className="pe-20 z-10">
+				<div className="pr-20 z-10">
 					<h2 className="text-2xl font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
 						{t('alradar_alhy_yaml')}</h2>
 					<p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
@@ -138,7 +138,7 @@ export default function LiveRadar({
 							)}
 						>
 							{/* Ping badge */}
-							<div className="absolute top-0 end-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-es-xl shadow-sm flex items-center gap-1">
+							<div className="absolute top-0 right-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-bl-xl shadow-sm flex items-center gap-1">
 								<span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
 								{t('tlb_fwry')}</div>
 
@@ -155,12 +155,13 @@ export default function LiveRadar({
 								</p>
 
 								<div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
-									<div className="flex-1 text-center border-s border-slate-200 dark:border-slate-700">
+									<div className="flex-1 text-center border-l border-slate-200 dark:border-slate-700">
 										<span className="block text-xs text-slate-500 mb-1">
 											{t('almdh')}</span>
 										<span className="font-bold flex items-center justify-center gap-1">
 											<Clock className="w-3 h-3 text-emerald-500" />{" "}
-											{req.duration} {t('key_1783109425977_9h4x')}</span>
+											{req.duration} د
+										</span>
 									</div>
 									<div className="flex-1 text-center">
 										<span className="block text-xs text-slate-500 mb-1">

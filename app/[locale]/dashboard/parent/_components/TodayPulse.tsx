@@ -6,21 +6,20 @@ import type { DetailedBooking } from "@/lib/types";
 import { formatTimeOnly } from "@/lib/utils/time";
 import DetailsModal from "@/components/shared/DetailsModal";
 import NajeebCharacter from "@/components/shared/NajeebCharacter";
-import { useTranslations } from "next-intl";
 
 interface TodayPulseProps {
 	sessions: DetailedBooking[];
 }
 
 export default function TodayPulse({ sessions }: TodayPulseProps) {
-    const t = useTranslations('parent')
 	const [selectedBookingId, setSelectedBookingId] = useState<string | null>(null);
 
 	if (!sessions || sessions.length === 0) {
 		return (
 			<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 text-center shadow-sm">
 				<p className="text-sm text-muted-foreground font-semibold">
-					{t('key_1783109435501_56s4')}</p>
+					لا توجد جلسات مجدولة لهذا اليوم.
+				</p>
 			</div>
 		);
 	}
@@ -34,16 +33,17 @@ export default function TodayPulse({ sessions }: TodayPulseProps) {
 				<div className="w-12 h-12 bg-white dark:bg-slate-800 rounded-full shadow-sm flex items-center justify-center shrink-0 border border-emerald-200 dark:border-emerald-800">
 					<NajeebCharacter size="xs" mode="study" animated={true} />
 				</div>
-				<div className="text-center sm:text-end">
+				<div className="text-center sm:text-right">
 					<h2 className="text-lg font-black text-emerald-800 dark:text-emerald-400">
-						{t('key_1783109435510_8ndp')}</h2>
+						نبض اليوم
+					</h2>
 					<p className="text-sm font-semibold text-emerald-700/80 dark:text-emerald-300/80 mt-1">
 						بطلنا لديه جلسات ممتعة اليوم، استمروا في هذا التألق، اضغط على الجلسة لمتابعة التفاصيل!
 					</p>
 				</div>
 			</div>
 
-			<div className="space-y-6 relative before:absolute before:inset-0 before:ms-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 dark:before:via-slate-700 before:to-transparent">
+			<div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 dark:before:via-slate-700 before:to-transparent">
 				{sessions.map((session) => {
 					const startUtc = new Date(session.startTime);
 					const endTime = new Date(startUtc.getTime() + session.duration * 60000);
@@ -69,7 +69,7 @@ export default function TodayPulse({ sessions }: TodayPulseProps) {
 					return (
 						<div key={session.id} className="relative flex items-center justify-between md:justify-start md:odd:justify-end group is-active py-2">
 							{/* Icon */}
-							<div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 ${statusColor} shrink-0 z-10 md:absolute md:start-1/2 md:-translate-x-1/2`}>
+							<div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 ${statusColor} shrink-0 z-10 md:absolute md:left-1/2 md:-translate-x-1/2`}>
 								{isOngoing && <span className="absolute w-full h-full rounded-full bg-green-400 animate-ping opacity-50"></span>}
 								<StatusIcon className="w-4 h-4 relative z-10" />
 							</div>
@@ -77,7 +77,7 @@ export default function TodayPulse({ sessions }: TodayPulseProps) {
 							{/* Card - Clickable */}
 							<button 
 								onClick={() => setSelectedBookingId(session.id)}
-								className="w-[calc(100%-3.5rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-border/50 hover:border-primary/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-end cursor-pointer shadow-sm hover:shadow group-hover:-translate-y-1"
+								className="w-[calc(100%-3.5rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-border/50 hover:border-primary/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-right cursor-pointer shadow-sm hover:shadow group-hover:-translate-y-1"
 							>
 								<div className="flex items-center justify-between mb-2">
 									<span className={`text-xs font-bold px-2.5 py-1 rounded-full ${isOngoing ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : isPast ? "bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-400" : "bg-primary/10 text-primary"}`}>
@@ -93,7 +93,7 @@ export default function TodayPulse({ sessions }: TodayPulseProps) {
 									{session.teacherService.serviceType.name}
 								</h3>
 								<p className="text-xs text-muted-foreground font-medium line-clamp-1">
-									{t('key_1783109435530_nki4')}<span className="font-bold text-slate-700 dark:text-slate-300">{session.student.name}</span> {t('key_1783109435536_bjbu')}<span className="font-bold text-slate-700 dark:text-slate-300">{session.teacherService.teacher.user.name}</span>
+									الطالب: <span className="font-bold text-slate-700 dark:text-slate-300">{session.student.name}</span> • المعلم: <span className="font-bold text-slate-700 dark:text-slate-300">{session.teacherService.teacher.user.name}</span>
 								</p>
 							</button>
 						</div>

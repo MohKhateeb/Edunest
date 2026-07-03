@@ -135,7 +135,7 @@ export default function JitsiMeetingRoom({
 			dir="ltr"
 		>
 			{/* Top Banner with Timer */}
-			<div className="absolute top-0 start-0 end-0 h-14 bg-gradient-to-b from-black/90 to-transparent z-10 flex items-center justify-between px-6 pointer-events-none">
+			<div className="absolute top-0 left-0 right-0 h-14 bg-gradient-to-b from-black/90 to-transparent z-10 flex items-center justify-between px-6 pointer-events-none">
 				<div className="text-white/90 font-semibold text-sm drop-shadow-md flex items-center gap-2">
 					<div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
 					{userName} ({role === "TEACHER" ? t('almalm_1') : t('altalb_1')})
@@ -216,7 +216,7 @@ export default function JitsiMeetingRoom({
 			</div>
 
 			{/* Controls Floating Bar */}
-			<div className="absolute bottom-6 start-1/2 -translate-x-1/2 z-10 flex items-center gap-3 bg-black/60 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10 shadow-2xl transition-all hover:bg-black/70">
+			<div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex items-center gap-3 bg-black/60 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/10 shadow-2xl transition-all hover:bg-black/70">
 				<button
 					onClick={toggleScreenShare}
 					className={`px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg flex items-center gap-2 transition-all cursor-pointer border ${isSharingScreen ? "bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-400/20" : "bg-white/10 hover:bg-white/20 text-white border-white/10"}`}

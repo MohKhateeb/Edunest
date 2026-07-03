@@ -64,7 +64,7 @@ export default function StudentDetails({
 				</div>
 
 				{avgPerformance && (
-					<div className="text-start sm:text-end bg-violet-500/10 border border-violet-500/20 px-4 py-2.5 rounded-xl">
+					<div className="text-left sm:text-right bg-violet-500/10 border border-violet-500/20 px-4 py-2.5 rounded-xl">
 						<span className="text-[10px] text-muted-foreground block font-bold">
 							{t('mstwa_aladaa_aldrasy')}</span>
 						<div className="flex items-center gap-1 mt-0.5 justify-end">
@@ -210,7 +210,7 @@ export default function StudentDetails({
 										</div>
 									</div>
 
-									<div className="text-end flex flex-col justify-between items-end gap-2">
+									<div className="text-right flex flex-col justify-between items-end gap-2">
 										<span className="font-extrabold text-primary block">
 											{booking.isTrial
 												? t('tjrybyh_mjanyh')

@@ -2,7 +2,6 @@
 
 import { AlertCircle, RefreshCcw } from "lucide-react";
 import { useEffect } from "react";
-import { useTranslations } from "next-intl";
 
 export default function DashboardError({
 	error,
@@ -11,7 +10,6 @@ export default function DashboardError({
 	error: Error & { digest?: string };
 	reset: () => void;
 }) {
-    const t = useTranslations('common')
 	useEffect(() => {
 		// Log the error to an error reporting service
 		console.error(error);
@@ -27,16 +25,19 @@ export default function DashboardError({
 			</div>
 			<div className="space-y-2">
 				<h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-					{t('key_1783109426045_pcfa')}</h2>
+					عذراً، حدث خطأ غير متوقع
+				</h2>
 				<p className="text-slate-500 dark:text-slate-400 max-w-md">
-					{t('key_1783109426048_ybp1')}</p>
+					يبدو أن هناك مشكلة في تحميل هذه الصفحة. نحن نعتذر عن هذا الخلل.
+				</p>
 			</div>
 			<button
 				onClick={() => reset()}
 				className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-md shadow-indigo-500/20"
 			>
 				<RefreshCcw className="w-4 h-4" />
-				{t('key_1783109426051_u9st')}</button>
+				حاول مرة أخرى
+			</button>
 		</div>
 	);
 }

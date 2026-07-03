@@ -186,10 +186,10 @@ export function DisputeChat({
 										isAdminMsg
 											? "bg-yellow-50 border border-yellow-200 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-200 text-sm w-full text-center flex items-center justify-center gap-2"
 											: isMe
-												? "bg-blue-600 text-white rounded-se-none"
+												? "bg-blue-600 text-white rounded-tr-none"
 												: isSenderAdmin
-													? "bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/50 text-red-900 dark:text-red-100 rounded-ss-none shadow-sm"
-													: "bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-800 dark:text-gray-100 rounded-ss-none shadow-sm"
+													? "bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/50 text-red-900 dark:text-red-100 rounded-tl-none shadow-sm"
+													: "bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 text-gray-800 dark:text-gray-100 rounded-tl-none shadow-sm"
 									}`}
 								>
 									{isAdminMsg && <Info className="w-4 h-4 shrink-0" />}
@@ -197,7 +197,7 @@ export function DisputeChat({
 								</div>
 								{!isAdminMsg && (
 									<div
-										className={`text-[10px] mt-1 text-end ${isMe ? "text-gray-400" : "text-gray-400"}`}
+										className={`text-[10px] mt-1 text-right ${isMe ? "text-gray-400" : "text-gray-400"}`}
 									>
 										{new Date(msg.createdAt).toLocaleTimeString("ar-SA", {
 											hour: "2-digit",
@@ -217,7 +217,7 @@ export function DisputeChat({
 						<form onSubmit={handleSend} className="flex gap-2">
 							{!canSend ? (
 								<div className="flex-1 bg-amber-50 border border-amber-200 text-amber-800 dark:bg-amber-900/20 dark:border-amber-800/50 dark:text-amber-400 p-3 rounded-xl flex items-center justify-center font-bold text-sm">
-									<Info className="w-5 h-5 ms-2" />
+									<Info className="w-5 h-5 ml-2" />
 									{getTurnMessage()}
 								</div>
 							) : (

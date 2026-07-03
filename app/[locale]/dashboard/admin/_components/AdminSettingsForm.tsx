@@ -20,7 +20,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { updateSystemSettings } from "@/lib/actions/admin";
 import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
 
 type SystemSetting = {
 	id: string;
@@ -144,7 +143,6 @@ export default function AdminSettingsForm({
 	initialSettings,
 	groupedSettings: initialGroupedSettings,
 }: AdminSettingsFormProps) {
-    const t = useTranslations('admin')
 	const router = useRouter();
 	const [settings, setSettings] = useState<SystemSetting[]>(initialSettings);
 	const [loading, setLoading] = useState(false);
@@ -199,7 +197,7 @@ export default function AdminSettingsForm({
 		<div className="space-y-8" dir="rtl">
 			<div>
 				<h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3 mb-2">
-					{t('key_1783109431174_p68f')}{" "}
+					إعدادات النظام الديناميكية{" "}
 					<Settings2 className="w-8 h-8 text-primary" />
 				</h1>
 				<p className="text-slate-500">
@@ -299,7 +297,7 @@ export default function AdminSettingsForm({
 																	)
 																}
 															/>
-															<div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:-translate-x-[0.1rem] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-emerald-600 rtl:peer-checked:after:-translate-x-full"></div>
+															<div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:-translate-x-[0.1rem] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-emerald-600 rtl:peer-checked:after:-translate-x-full"></div>
 														</label>
 														<span
 															className={cn(
@@ -333,18 +331,19 @@ export default function AdminSettingsForm({
 															}
 															className={cn(
 																"w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-bold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all",
-																config.type === "percentage" && "ps-10 pe-4",
-																config.type === "currency" && "ps-14 pe-4",
+																config.type === "percentage" && "pl-10 pr-4",
+																config.type === "currency" && "pl-14 pr-4",
 															)}
 														/>
 														{config.type === "percentage" && (
-															<div className="absolute start-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
+															<div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
 																%
 															</div>
 														)}
 														{config.type === "currency" && (
-															<div className="absolute start-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
-																{t('key_1783109431203_nwey')}</div>
+															<div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
+																شيكل
+															</div>
 														)}
 													</div>
 												)}
@@ -370,7 +369,8 @@ export default function AdminSettingsForm({
 				<div className="sticky bottom-6 z-20 flex justify-end">
 					<div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-4 rounded-3xl shadow-2xl border border-slate-200/50 dark:border-slate-700/50 w-full md:w-auto flex flex-col sm:flex-row items-center gap-4">
 						<p className="text-xs font-medium text-slate-500 px-4 hidden sm:block">
-							{t('key_1783109431215_pqoi')}</p>
+							تأكد من مراجعة الإعدادات، التغييرات تطبق فوراً على النظام.
+						</p>
 						<button
 							type="submit"
 							disabled={loading}
@@ -379,11 +379,13 @@ export default function AdminSettingsForm({
 							{loading ? (
 								<>
 									<Loader2 className="h-5 w-5 animate-spin" />
-									{t('key_1783109431228_mser')}</>
+									جاري التطبيق...
+								</>
 							) : (
 								<>
 									<Save className="h-5 w-5" />
-									{t('key_1783109431241_4oxt')}</>
+									حفظ الإعدادات الجديدة
+								</>
 							)}
 						</button>
 					</div>

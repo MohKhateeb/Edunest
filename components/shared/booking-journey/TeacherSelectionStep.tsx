@@ -102,7 +102,7 @@ export function TeacherSelectionStep({
 									key={teacher.id}
 									type="button"
 									onClick={() => handleSelectTeacher(teacher)}
-									className="w-full bg-card border border-border rounded-xl p-5 shadow-sm hover:border-primary/50 hover:shadow-md transition-all cursor-pointer text-end group"
+									className="w-full bg-card border border-border rounded-xl p-5 shadow-sm hover:border-primary/50 hover:shadow-md transition-all cursor-pointer text-right group"
 								>
 									<div className="flex gap-4">
 										{/* صورة المعلم */}

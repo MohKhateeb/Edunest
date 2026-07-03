@@ -140,7 +140,7 @@ export default function ParentLiveRadarClient({
 	return (
 		<div className="max-w-3xl mx-auto">
 			<div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-[2rem] p-8 text-white mb-8 shadow-xl shadow-indigo-500/20 relative overflow-hidden">
-				<div className="absolute top-0 end-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+				<div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
 				<div className="relative z-10 flex items-start justify-between">
 					<div>
 						<h2 className="text-3xl font-black mb-2 flex items-center gap-2">

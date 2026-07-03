@@ -15,7 +15,6 @@ import { toast } from "sonner";
 import { updateTeacherProfile } from "@/lib/actions/teacher";
 import { cn } from "@/lib/utils";
 import { teacherProfileSchema } from "@/lib/validations/teacher";
-import { useTranslations } from "next-intl";
 
 type ProfileData = {
 	subjectIds: string[];
@@ -39,7 +38,6 @@ export default function TeacherProfileForm({
 	initialData,
 	subjects,
 }: TeacherProfileFormProps) {
-    const t = useTranslations('teachers')
 	const router = useRouter();
 	const [formData, setFormData] = useState<ProfileData>(initialData);
 	const [loading, setLoading] = useState(false);
@@ -142,7 +140,7 @@ export default function TeacherProfileForm({
 		<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl shadow-sm hover:shadow-md transition-all overflow-hidden">
 			{/* Stepper Header */}
 			<div className="bg-muted/30 border-b border-border px-8 py-6">
-				<h2 className="font-extrabold text-xl mb-6">{t('key_1783109436491_vjnq')}</h2>
+				<h2 className="font-extrabold text-xl mb-6">إعداد الملف الشخصي</h2>
 				<div className="flex items-center justify-between relative">
 					<div className="absolute top-1/2 start-0 end-0 h-0.5 bg-border -z-10 -translate-y-1/2" />
 					{[1, 2, 3].map((step) => {
@@ -190,7 +188,7 @@ export default function TeacherProfileForm({
 				<div className="min-h-[300px]">
 					{/* STEP 1: Personal Info */}
 					{currentStep === 1 && (
-						<div className="space-y-6 animate-in fade-in slide-in-from-end-4">
+						<div className="space-y-6 animate-in fade-in slide-in-from-right-4">
 							<div className="flex items-center gap-6 flex-wrap mb-6">
 								<div className="relative h-24 w-24 rounded-2xl overflow-hidden bg-accent border border-border flex-shrink-0">
 									{formData.profileImageUrl ? (
@@ -221,21 +219,26 @@ export default function TeacherProfileForm({
 									>
 										{uploadingImage ? (
 											<>
-												<Loader2 className="h-3.5 w-3.5 animate-spin" /> {t('key_1783109436513_772a')}</>
+												<Loader2 className="h-3.5 w-3.5 animate-spin" /> جاري
+												الرفع...
+											</>
 										) : (
 											<>
-												<Upload className="h-3.5 w-3.5" /> {t('key_1783109436540_7aq0')}</>
+												<Upload className="h-3.5 w-3.5" /> اختيار الصورة الشخصية
+											</>
 										)}
 									</label>
 									<span className="text-[10px] text-muted-foreground block mt-1">
-										{t('jpg_png_2')}</span>
+										تنسيق JPG أو PNG، بحد أقصى 2 ميجابايت
+									</span>
 								</div>
 							</div>
 
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										{t('key_1783109436573_14mj')}</label>
+										المدينة *
+									</label>
 									<input
 										type="text"
 										required
@@ -243,20 +246,21 @@ export default function TeacherProfileForm({
 										onChange={(e) =>
 											setFormData({ ...formData, city: e.target.value || null })
 										}
-										placeholder={t('key_1783109436938_ohzk')}
+										placeholder="رام الله، نابلس، الخليل"
 										className="w-full premium-input text-sm"
 									/>
 								</div>
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										{t('key_1783109436590_sd91')}</label>
+										المنطقة / الحي (اختياري)
+									</label>
 									<input
 										type="text"
 										value={formData.area || ""}
 										onChange={(e) =>
 											setFormData({ ...formData, area: e.target.value || null })
 										}
-										placeholder={t('str_2YXYq9in')}
+										placeholder="مثال: البالوع، الطيرة، رفيديا"
 										className="w-full premium-input text-sm"
 									/>
 								</div>
@@ -266,11 +270,12 @@ export default function TeacherProfileForm({
 
 					{/* STEP 2: Experience & Specialization */}
 					{currentStep === 2 && (
-						<div className="space-y-6 animate-in fade-in slide-in-from-end-4">
+						<div className="space-y-6 animate-in fade-in slide-in-from-right-4">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										{t('key_1783109436607_q798')}</label>
+										المواد التي تدرسها *
+									</label>
 									<div className="flex flex-wrap gap-2 mt-2">
 										{subjects.map((sub) => {
 											const isSelected = formData.subjectIds.includes(sub.id);
@@ -302,7 +307,8 @@ export default function TeacherProfileForm({
 
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										{t('key_1783109436624_zz9l')}</label>
+										التخصص الفرعي (اختياري)
+									</label>
 									<input
 										type="text"
 										value={formData.subSpecialization || ""}
@@ -312,14 +318,15 @@ export default function TeacherProfileForm({
 												subSpecialization: e.target.value || null,
 											})
 										}
-										placeholder={t('str_2YXYq9in')}
+										placeholder="مثال: الجبر والهندسة، التوجيهي العلمي"
 										className="w-full premium-input text-sm"
 									/>
 								</div>
 
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										{t('key_1783109436650_vxyv')}</label>
+										التعليم والمؤهلات الأكاديمية
+									</label>
 									<input
 										type="text"
 										value={formData.education || ""}
@@ -329,14 +336,15 @@ export default function TeacherProfileForm({
 												education: e.target.value || null,
 											})
 										}
-										placeholder={t('str_2YXYq9in')}
+										placeholder="مثال: بكالوريوس في الرياضيات - جامعة بيرزيت"
 										className="w-full premium-input text-sm"
 									/>
 								</div>
 
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										{t('key_1783109436670_ogem')}</label>
+										سنوات الخبرة *
+									</label>
 									<input
 										type="number"
 										required
@@ -355,7 +363,8 @@ export default function TeacherProfileForm({
 
 							<div className="space-y-2">
 								<label className="text-xs font-semibold text-muted-foreground block">
-									{t('key_1783109436685_ib59')}</label>
+									المراحل والصفوف الدراسية التي تدرسها *
+								</label>
 								<div className="flex flex-wrap gap-2 pt-1">
 									{availableGrades.map((grade) => {
 										const isSelected = formData.gradeLevels.includes(grade);
@@ -371,7 +380,7 @@ export default function TeacherProfileForm({
 														: "bg-card border-border hover:border-primary/50 hover:bg-primary/5 text-muted-foreground",
 												)}
 											>
-												{t('key_1783109436708_v2n4')}{grade}
+												الصف {grade}
 											</button>
 										);
 									})}
@@ -382,10 +391,11 @@ export default function TeacherProfileForm({
 
 					{/* STEP 3: Pricing & Bio */}
 					{currentStep === 3 && (
-						<div className="space-y-6 animate-in fade-in slide-in-from-end-4">
+						<div className="space-y-6 animate-in fade-in slide-in-from-right-4">
 							<div className="space-y-1.5 max-w-sm">
 								<label className="text-xs font-semibold text-muted-foreground block">
-									{t('key_1783109436725_v7oa')}</label>
+									سعر الساعة الافتراضي (شيكل) *
+								</label>
 								<div className="relative">
 									<span className="absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium">
 										₪
@@ -408,7 +418,8 @@ export default function TeacherProfileForm({
 
 							<div className="space-y-1.5">
 								<label className="text-xs font-semibold text-muted-foreground block">
-									{t('key_1783109436741_eief')}</label>
+									النبذة التعريفية (السيرة الشخصية)
+								</label>
 								<textarea
 									rows={5}
 									value={formData.bio || ""}
@@ -432,7 +443,8 @@ export default function TeacherProfileForm({
 						className="text-sm font-semibold px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 disabled:opacity-0 hover:bg-accent"
 					>
 						<ChevronRight className="h-4 w-4" />
-						{t('key_1783109436758_8vai')}</button>
+						السابق
+					</button>
 
 					{currentStep < totalSteps ? (
 						<button
@@ -440,7 +452,8 @@ export default function TeacherProfileForm({
 							onClick={nextStep}
 							className="bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors flex items-center gap-1.5 shadow-md"
 						>
-							{t('key_1783109436775_514c')}<ChevronLeft className="h-4 w-4" />
+							التالي
+							<ChevronLeft className="h-4 w-4" />
 						</button>
 					) : (
 						<button
@@ -451,10 +464,12 @@ export default function TeacherProfileForm({
 						>
 							{loading ? (
 								<>
-									<Loader2 className="h-4.5 w-4.5 animate-spin" /> {t('key_1783109436792_31gx')}</>
+									<Loader2 className="h-4.5 w-4.5 animate-spin" /> حفظ وإكمال...
+								</>
 							) : (
 								<>
-									<Save className="h-4.5 w-4.5" /> {t('key_1783109436809_p1cs')}</>
+									<Save className="h-4.5 w-4.5" /> حفظ البيانات
+								</>
 							)}
 						</button>
 					)}

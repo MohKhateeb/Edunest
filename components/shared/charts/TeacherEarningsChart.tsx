@@ -40,7 +40,7 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
     const t = useTranslations('common');
 	if (active && payload && payload.length) {
 		return (
-			<div className="bg-card border border-border p-3 rounded-lg shadow-lg rtl text-end">
+			<div className="bg-card border border-border p-3 rounded-lg shadow-lg rtl text-right">
 				<p className="font-bold text-sm mb-2">{label}</p>
 				<div className="space-y-1">
 					<p className="text-emerald-600 text-sm font-semibold flex justify-between gap-4">

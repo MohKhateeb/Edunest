@@ -30,7 +30,6 @@ import type { DetailedBooking } from "@/lib/types";
 import { BookingStatus } from "@prisma/client";
 import { loadMoreAdminBookings } from "@/lib/actions/admin";
 import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
-import { useTranslations } from "next-intl";
 
 interface AdminBookingsListProps {
 	initialData: {
@@ -44,7 +43,6 @@ interface AdminBookingsListProps {
 export default function AdminBookingsList({
 	initialData,
 }: AdminBookingsListProps) {
-    const t = useTranslations('admin')
 	const router = useRouter();
 	const [bookings, setBookings] = useState<DetailedBooking[]>(initialData.data);
 	const [hasMore, setHasMore] = useState(initialData.hasMore);
@@ -133,7 +131,7 @@ export default function AdminBookingsList({
 					setSearchQuery(val);
 					setCurrentPage(1);
 				}}
-				searchPlaceholder={t('key_1783109430309_finn')}
+				searchPlaceholder="بحث بالاسم، أو رقم الحجز..."
 				toolbarChildren={
 					<div className="flex items-center gap-2 w-full sm:w-auto">
 						<Filter className="h-4 w-4 text-muted-foreground hidden sm:block" />
@@ -145,19 +143,19 @@ export default function AdminBookingsList({
 								setCurrentPage(1);
 							}}
 						>
-							<option value="ALL">{t('key_1783109429491_5s51')}{initialData.totalCount ?? bookings.length})</option>
-							<option value="PENDING_APPROVAL">{t('key_1783109429544_2d61')}</option>
-							<option value="AWAITING_PAYMENT">{t('key_1783109429582_ekac')}</option>
-							<option value="PENDING">{t('key_1783109429606_jpx3')}</option>
-							<option value="CONFIRMED">{t('key_1783109429636_qq3o')}</option>
-							<option value="COMPLETED">{t('key_1783109429656_d939')}</option>
-							<option value="CANCELLED">{t('key_1783109429765_qmkz')}</option>
-							<option value="REJECTED">{t('key_1783109429791_gp5z')}</option>
-							<option value="EXPIRED">{t('key_1783109429825_g7ny')}</option>
+							<option value="ALL">كل الحالات ({initialData.totalCount ?? bookings.length})</option>
+							<option value="PENDING_APPROVAL">بانتظار موافقة المعلم</option>
+							<option value="AWAITING_PAYMENT">بانتظار الدفع</option>
+							<option value="PENDING">معلق (قديم)</option>
+							<option value="CONFIRMED">مؤكد</option>
+							<option value="COMPLETED">مكتمل</option>
+							<option value="CANCELLED">ملغي</option>
+							<option value="REJECTED">مرفوض</option>
+							<option value="EXPIRED">منتهي الصلاحية</option>
 						</select>
 					</div>
 				}
-				emptyMessage={t('str_2YTYpyDY')}
+				emptyMessage="لا توجد حجوزات مطابقة لمعايير البحث الحالية."
 				renderRow={(booking) => (
 					<tr key={booking.id} className="hover:bg-muted/30 transition-colors">
 						{/* Date & Time */}
@@ -172,7 +170,8 @@ export default function AdminBookingsList({
 										hour: "2-digit",
 										minute: "2-digit",
 									})}{" "}
-									({booking.duration} {t('key_1783109429850_yqe2')}</span>
+									({booking.duration} دقيقة)
+								</span>
 								<span
 									className="text-[10px] text-muted-foreground/60 font-mono mt-1"
 									title={booking.id}
@@ -194,7 +193,8 @@ export default function AdminBookingsList({
 								</span>
 								{booking.isTrial && (
 									<span className="text-[10px] font-bold text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded w-fit mt-0.5">
-										{t('key_1783109429878_vt1y')}</span>
+										جلسة تجريبية
+									</span>
 								)}
 							</div>
 						</td>
@@ -206,11 +206,11 @@ export default function AdminBookingsList({
 									<UserIcon className="h-3.5 w-3.5 text-primary" />
 									{booking.student.name}{" "}
 									<span className="text-xs font-normal text-muted-foreground">
-										{t('key_1783109429897_ym1r')}{booking.student.grade})
+										(الصف {booking.student.grade})
 									</span>
 								</span>
 								<span className="text-xs text-muted-foreground">
-									{t('key_1783109429934_7ewj')}{booking.parent.name}
+									ولي الأمر: {booking.parent.name}
 								</span>
 							</div>
 						</td>
@@ -263,7 +263,7 @@ export default function AdminBookingsList({
 										className="fixed inset-0 z-10"
 										onClick={() => setActiveDropdown(null)}
 									/>
-									<div className="absolute end-8 top-10 z-20 w-48 bg-card border border-border rounded-xl shadow-lg py-1 text-end overflow-hidden animate-in fade-in slide-in-from-top-2">
+									<div className="absolute end-8 top-10 z-20 w-48 bg-card border border-border rounded-xl shadow-lg py-1 text-right overflow-hidden animate-in fade-in slide-in-from-top-2">
 										<button
 											onClick={() => {
 												setSelectedDetailsId(booking.id);
@@ -272,7 +272,8 @@ export default function AdminBookingsList({
 											className="w-full px-4 py-2 text-xs font-semibold text-foreground hover:bg-accent flex items-center gap-2 transition-colors border-b border-border/40 cursor-pointer"
 										>
 											<Search className="h-4 w-4 text-primary" />
-											{t('key_1783109429952_hnom')}</button>
+											عرض التفاصيل كاملة
+										</button>
 
 										{(booking.status === "PENDING" ||
 											booking.status === "PENDING_APPROVAL" ||
@@ -287,7 +288,8 @@ export default function AdminBookingsList({
 												className="w-full px-4 py-2 text-xs font-semibold text-destructive hover:bg-destructive/10 flex items-center gap-2 transition-colors cursor-pointer"
 											>
 												<XCircle className="h-4 w-4" />
-												{t('key_1783109429971_8w73')}</button>
+												إلغاء إداري
+											</button>
 										)}
 
 										{booking.status === "COMPLETED" && booking.report && (
@@ -300,7 +302,8 @@ export default function AdminBookingsList({
 												className="w-full px-4 py-2 text-xs font-semibold text-foreground hover:bg-accent flex items-center gap-2 transition-colors cursor-pointer"
 											>
 												<FileText className="h-4 w-4 text-blue-500" />
-												{t('key_1783109429989_as67')}</button>
+												عرض التقرير
+											</button>
 										)}
 
 										{booking.status !== "PENDING" &&
@@ -309,7 +312,8 @@ export default function AdminBookingsList({
 											booking.status !== "CONFIRMED" &&
 											!booking.report && (
 												<div className="px-4 py-3 text-xs text-muted-foreground italic text-center">
-													{t('key_1783109430007_nnup')}</div>
+													لا توجد إجراءات إضافية
+												</div>
 											)}
 									</div>
 								</>
@@ -357,7 +361,8 @@ export default function AdminBookingsList({
 						>
 							<h3 className="font-extrabold text-lg flex items-center gap-2">
 								<XCircle className="h-5 w-5 text-destructive" />
-								{t('key_1783109430024_0xkk')}</h3>
+								إلغاء حجز (إجراء إداري)
+							</h3>
 							<p className="text-xs text-muted-foreground leading-relaxed">
 								بصفتك مدير النظام، فإن إلغاءك لهذا الحجز سيتجاوز شروط الإلغاء
 								العادية وسيعتبر نهائياً. سيتم إشعار المعلم وولي الأمر.
@@ -367,7 +372,7 @@ export default function AdminBookingsList({
 								rows={3}
 								value={cancelReason}
 								onChange={(e) => setCancelReason(e.target.value)}
-								placeholder={t('str_2KfZg9iq')}
+								placeholder="اكتب سبب الإلغاء الإداري هنا (سيرسَل للأطراف المعنية)..."
 								className="w-full text-sm premium-input resize-none"
 							/>
 							<div className="flex justify-end gap-3 pt-2">
@@ -380,7 +385,8 @@ export default function AdminBookingsList({
 									}}
 									className="text-xs font-semibold border border-border hover:bg-accent px-4 py-2 rounded-lg cursor-pointer"
 								>
-									{t('key_1783109430052_d4am')}</button>
+									تراجع
+								</button>
 								<button
 									type="submit"
 									disabled={loading}
@@ -401,12 +407,14 @@ export default function AdminBookingsList({
 						<div className="bg-card border border-border rounded-xl max-w-md w-full p-6 space-y-5 shadow-xl relative my-8">
 							<h3 className="font-extrabold text-lg border-b border-border pb-3 flex items-center gap-2">
 								<FileText className="h-5 w-5 text-primary" />
-								{t('key_1783109430098_g1w4')}</h3>
+								تقرير الجلسة (للاطلاع الإداري)
+							</h3>
 
 							<div className="space-y-4 text-sm">
 								<div className="bg-accent/30 p-3 rounded-lg">
 									<span className="text-xs font-bold block mb-1">
-										{t('key_1783109430118_o4bq')}</span>
+										حضور الطالب:
+									</span>
 									<span
 										className={
 											selectedReport.studentAttended
@@ -422,7 +430,8 @@ export default function AdminBookingsList({
 
 								<div>
 									<span className="text-xs text-muted-foreground font-bold block mb-1">
-										{t('key_1783109430138_uiqs')}</span>
+										المواضيع المغطاة:
+									</span>
 									<p className="bg-card border border-border p-3 rounded-lg whitespace-pre-wrap">
 										{selectedReport.topicsCovered}
 									</p>
@@ -431,7 +440,8 @@ export default function AdminBookingsList({
 								{selectedReport.teacherNotes && (
 									<div>
 										<span className="text-xs text-muted-foreground font-bold block mb-1">
-											{t('key_1783109430162_o6ts')}</span>
+											ملاحظات المعلم السفلية:
+										</span>
 										<p className="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-900/50 p-3 rounded-lg text-yellow-800 dark:text-yellow-400 whitespace-pre-wrap">
 											{selectedReport.teacherNotes}
 										</p>
@@ -445,7 +455,8 @@ export default function AdminBookingsList({
 									onClick={() => setShowReportModal(false)}
 									className="text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer"
 								>
-									{t('key_1783109430185_ctz5')}</button>
+									إغلاق
+								</button>
 							</div>
 						</div>
 					</div>

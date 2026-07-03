@@ -6,10 +6,8 @@ import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import { auth } from "@/lib/auth";
 import { BookingService } from "@/lib/services/domain/booking-service";
 import { sanitizePrismaData } from "@/lib/utils";
-import { getTranslations } from "next-intl/server";
 
 export default async function ParentBookingsPage() {
-    const t = await getTranslations('parent')
 	const session = await auth();
 	if (!session) redirect("/login");
 
@@ -24,14 +22,16 @@ export default async function ParentBookingsPage() {
 		<div className="space-y-8" dir="rtl">
 			<div>
 				<h1 className="text-2xl font-black mb-4 text-primary">
-					{t('key_1783109435554_fuzb')}</h1>
+					حجوزاتي وجلساتي
+				</h1>
 				<InteractiveMessage character="hakeem" message={hakeemMsg} />
 			</div>
 
 			<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
 				<h2 className="font-black text-lg border-b border-border/50 pb-3 flex items-center gap-2">
 					<Calendar className="h-6 w-6 text-secondary" />
-					{t('key_1783109435556_wnzy')}</h2>
+					سجل الحصص والطلبات
+				</h2>
 
 				<ParentBookingsList bookings={sanitizedBookings} insights={insights} />
 			</div>

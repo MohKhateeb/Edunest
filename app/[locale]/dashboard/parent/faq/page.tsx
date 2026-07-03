@@ -6,7 +6,6 @@ import NajeebCharacter from "@/components/shared/NajeebCharacter";
 import { getFAQs } from "@/lib/actions/faq";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
-import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
 	title: "الأسئلة الشائعة | منصة إديونست",
@@ -14,7 +13,6 @@ export const metadata: Metadata = {
 };
 
 export default async function ParentFAQPage() {
-    const t = await getTranslations('parent')
 	const session = await auth();
 	await requireAuth([UserType.PARENT]);
 	if (!session) redirect("/login");
@@ -22,9 +20,9 @@ export default async function ParentFAQPage() {
 	const res = await getFAQs(FAQCategory.PARENT);
 
 	return (
-		<div className="space-y-6 text-end" dir="rtl">
+		<div className="space-y-6 text-right" dir="rtl">
 			<div className="border-b border-border/40 pb-4">
-				<h1 className="text-2xl font-black mb-1">{t('key_1783109435561_o60u')}</h1>
+				<h1 className="text-2xl font-black mb-1">الأسئلة الشائعة</h1>
 				<p className="text-xs text-muted-foreground">
 					تجد هنا إجابات لأكثر الأسئلة شيوعاً حول استخدام المنصة، الحجوزات،
 					والمدفوعات الخاصة بأولياء الأمور.
@@ -38,7 +36,7 @@ export default async function ParentFAQPage() {
 			) : (
 				<div className="bg-card border border-border/80 rounded-3xl p-6 shadow-premium relative overflow-visible mt-12">
 					{/* نجيب يخرج رأسه من خلف بطاقة الأسئلة الشائعة (ثابت بدون حركة) */}
-					<div className="absolute -top-14 start-6 z-0">
+					<div className="absolute -top-14 left-6 z-0">
 						<NajeebCharacter mode="help" size="sm" animated={false} />
 					</div>
 					<div className="relative z-10">

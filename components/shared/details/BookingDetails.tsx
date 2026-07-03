@@ -312,7 +312,7 @@ export default function BookingDetails({
 								</strong>
 							</div>
 							{report.studentAttended && report.studentPerformance && (
-								<div className="text-start">
+								<div className="text-left">
 									<span className="text-muted-foreground block text-[10px]">
 										{t('tqyym_adaa_altalb')}</span>
 									<div className="flex justify-end items-center gap-0.5 mt-0.5">

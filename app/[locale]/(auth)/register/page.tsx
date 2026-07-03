@@ -19,10 +19,8 @@ import { getActiveSubjects } from "@/lib/actions/subject";
 import { registerUser } from "@/lib/actions/user";
 import { cn } from "@/lib/utils";
 import { registerSchema } from "@/lib/validations/user";
-import { useTranslations } from "next-intl";
 
 export default function RegisterPage() {
-    const t = useTranslations('common')
 	const router = useRouter();
 	const [formData, setFormData] = useState({
 		role: "PARENT" as "PARENT" | "TEACHER",
@@ -121,9 +119,11 @@ export default function RegisterPage() {
 						/>
 					</Link>
 					<h2 className="text-2xl font-bold tracking-tight text-foreground/90">
-						{t('inshaa_hsab_jdyd')}</h2>
+						إنشاء حساب جديد
+					</h2>
 					<p className="text-xs text-muted-foreground">
-						{t('key_1783109428389_tdde')}</p>
+						انضم إلى مجتمعنا التعليمي الموثوق اليوم
+					</p>
 				</div>
 
 				{/* Card Form */}
@@ -134,9 +134,11 @@ export default function RegisterPage() {
 								<Check className="h-6 w-6" />
 							</div>
 							<h3 className="text-lg font-bold text-foreground">
-								{t('key_1783109428400_x7xo')}</h3>
+								تم إنشاء الحساب بنجاح!
+							</h3>
 							<p className="text-xs text-muted-foreground">
-								{t('key_1783109428417_xwc6')}</p>
+								جاري تحويلك إلى صفحة تسجيل الدخول...
+							</p>
 						</div>
 					) : (
 						<form onSubmit={handleSubmit} className="space-y-4">
@@ -159,7 +161,8 @@ export default function RegisterPage() {
 											: "text-muted-foreground hover:text-foreground",
 									)}
 								>
-									{t('key_1783109428429_nly2')}</button>
+									ولي أمر طالب
+								</button>
 								<button
 									type="button"
 									onClick={() => handleRoleChange("TEACHER")}
@@ -170,20 +173,22 @@ export default function RegisterPage() {
 											: "text-muted-foreground hover:text-foreground",
 									)}
 								>
-									{t('key_1783109428441_8rzb')}</button>
+									معلم خصوصي
+								</button>
 							</div>
 
 							<div className="space-y-1.5">
 								<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 									<User className="h-3.5 w-3.5" />
-									{t('key_1783109428452_skjn')}</label>
+									الاسم الكامل
+								</label>
 								<input
 									type="text"
 									name="name"
 									required
 									value={formData.name}
 									onChange={handleChange}
-									placeholder={t('key_1783109428559_ytn1')}
+									placeholder="محمد أحمد"
 									className="w-full premium-input text-sm"
 								/>
 							</div>
@@ -191,7 +196,8 @@ export default function RegisterPage() {
 							<div className="space-y-1.5">
 								<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 									<Mail className="h-3.5 w-3.5" />
-									{t('albryd_alilktrwny')}</label>
+									البريد الإلكتروني
+								</label>
 								<input
 									type="email"
 									name="email"
@@ -206,7 +212,8 @@ export default function RegisterPage() {
 							<div className="space-y-1.5">
 								<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 									<Phone className="h-3.5 w-3.5" />
-									{t('key_1783109428476_kadm')}</label>
+									رقم الهاتف (اختياري)
+								</label>
 								<input
 									type="tel"
 									name="phone"
@@ -222,7 +229,8 @@ export default function RegisterPage() {
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 										<Briefcase className="h-3.5 w-3.5" />
-										{t('key_1783109428487_dcaz')}</label>
+										المواد التي تدرسها
+									</label>
 									<div className="flex flex-wrap gap-2 mt-2">
 										{subjects.map((sub) => {
 											const isSelected = formData.subjectIds.includes(sub.id);
@@ -256,14 +264,15 @@ export default function RegisterPage() {
 							<div className="space-y-1.5">
 								<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 									<Lock className="h-3.5 w-3.5" />
-									{t('key_1783109428308_b9aj')}</label>
+									كلمة المرور
+								</label>
 								<input
 									type="password"
 									name="password"
 									required
 									value={formData.password}
 									onChange={handleChange}
-									placeholder={t('str_4oCi4oCi')}
+									placeholder="•••••••• (6 أحرف على الأقل)"
 									className="w-full premium-input text-sm"
 								/>
 							</div>
@@ -276,7 +285,8 @@ export default function RegisterPage() {
 								{loading ? (
 									<>
 										<Loader2 className="h-4.5 w-4.5 animate-spin" />
-										{t('key_1783109428519_1ctn')}</>
+										جاري إنشاء الحساب...
+									</>
 								) : (
 									"تسجيل حساب جديد"
 								)}
@@ -287,12 +297,13 @@ export default function RegisterPage() {
 
 				{/* Footer info */}
 				<p className="text-center text-xs text-muted-foreground">
-					{t('key_1783109428530_i57n')}{" "}
+					لديك حساب بالفعل؟{" "}
 					<Link
 						href="/login"
 						className="font-semibold text-primary hover:underline"
 					>
-						{t('key_1783109428542_p0se')}</Link>
+						سجل دخولك هنا
+					</Link>
 				</p>
 			</div>
 		</div>

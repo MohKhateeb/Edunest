@@ -17,10 +17,8 @@ import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { analyticsRepository } from "@/lib/repositories/analytics-repository";
 import { formatPrice } from "@/lib/utils";
-import { getTranslations } from "next-intl/server";
 
 export default async function AdminDashboard() {
-    const t = await getTranslations('admin')
 	await requireAuth([UserType.ADMIN]);
 	const session = await auth();
 
@@ -54,7 +52,7 @@ export default async function AdminDashboard() {
 		pendingEscrowsCount > 0;
 
 	return (
-		<div className="space-y-8 text-end pb-10" dir="rtl">
+		<div className="space-y-8 text-right pb-10" dir="rtl">
 			{/* Welcome header & Interactive Message */}
 			<div className="mt-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
 				<InteractiveMessage
@@ -67,15 +65,16 @@ export default async function AdminDashboard() {
 
 			{/* Action Center (Urgent Matters) */}
 			<section className="bg-white/80 dark:bg-card/80 backdrop-blur-md rounded-3xl p-6 border-2 border-red-100 dark:border-red-900/30 shadow-sm relative overflow-hidden">
-				<div className="absolute top-0 end-0 w-2 h-full bg-red-500"></div>
+				<div className="absolute top-0 right-0 w-2 h-full bg-red-500"></div>
 				<h2 className="text-xl font-bold flex items-center gap-2 mb-6 text-red-700 dark:text-red-400">
 					<AlertTriangle className="w-6 h-6" />
-					{t('action_center')}</h2>
+					مركز العمليات العاجلة (Action Center)
+				</h2>
 				
 				{!hasUrgentMatters ? (
 					<div className="text-center py-8 text-green-600 dark:text-green-400 font-bold flex flex-col items-center">
 						<CheckCircle className="w-12 h-12 mb-3 opacity-50" />
-						<p>{t('key_1783109428772_do4o')}</p>
+						<p>كل الأمور تحت السيطرة! لا توجد مهام عاجلة حالياً.</p>
 					</div>
 				) : (
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -88,7 +87,7 @@ export default async function AdminDashboard() {
 									<div className="p-2 bg-yellow-200 dark:bg-yellow-800 text-yellow-700 dark:text-yellow-300 rounded-xl group-hover:scale-110 transition-transform">
 										<ShieldCheck className="w-5 h-5" />
 									</div>
-									<div className="font-bold text-yellow-900 dark:text-yellow-100">{t('key_1783109428780_4gai')}</div>
+									<div className="font-bold text-yellow-900 dark:text-yellow-100">توثيق معلمين</div>
 								</div>
 								<span className="text-lg font-black text-yellow-600">{pendingVerifications}</span>
 							</Link>
@@ -102,7 +101,7 @@ export default async function AdminDashboard() {
 									<div className="p-2 bg-red-200 dark:bg-red-800 text-red-700 dark:text-red-300 rounded-xl group-hover:scale-110 transition-transform">
 										<AlertTriangle className="w-5 h-5" />
 									</div>
-									<div className="font-bold text-red-900 dark:text-red-100">{t('key_1783109428788_n0te')}</div>
+									<div className="font-bold text-red-900 dark:text-red-100">نزاعات مفتوحة</div>
 								</div>
 								<span className="text-lg font-black text-red-600 animate-pulse">{openDisputesCount}</span>
 							</Link>
@@ -116,7 +115,7 @@ export default async function AdminDashboard() {
 									<div className="p-2 bg-orange-200 dark:bg-orange-800 text-orange-700 dark:text-orange-300 rounded-xl group-hover:scale-110 transition-transform">
 										<Wallet className="w-5 h-5" />
 									</div>
-									<div className="font-bold text-orange-900 dark:text-orange-100">{t('key_1783109428795_2l2q')}</div>
+									<div className="font-bold text-orange-900 dark:text-orange-100">تسويات عالقة</div>
 								</div>
 								<span className="text-lg font-black text-orange-600">{pendingPayoutsCount}</span>
 							</Link>
@@ -130,7 +129,7 @@ export default async function AdminDashboard() {
 									<div className="p-2 bg-blue-200 dark:bg-blue-800 text-blue-700 dark:text-blue-300 rounded-xl group-hover:scale-110 transition-transform">
 										<ShieldAlert className="w-5 h-5" />
 									</div>
-									<div className="font-bold text-blue-900 dark:text-blue-100">{t('key_1783109428801_w814')}</div>
+									<div className="font-bold text-blue-900 dark:text-blue-100">أموال مجمدة</div>
 								</div>
 								<span className="text-lg font-black text-blue-600">{pendingEscrowsCount}</span>
 							</Link>
@@ -149,7 +148,8 @@ export default async function AdminDashboard() {
 						{totalStudents}
 					</span>
 					<span className="text-xs text-muted-foreground font-bold">
-						{t('key_1783109428808_bh6a')}</span>
+						إجمالي الطلاب
+					</span>
 				</div>
 
 				<div className="bg-white dark:bg-slate-900 border border-border/60 rounded-3xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all">
@@ -160,7 +160,8 @@ export default async function AdminDashboard() {
 						{activeTeachers}
 					</span>
 					<span className="text-xs text-muted-foreground font-bold">
-						{t('key_1783109428814_ekp5')}</span>
+						معلمين نشطين
+					</span>
 				</div>
 
 				<div className="bg-white dark:bg-slate-900 border border-border/60 rounded-3xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all">
@@ -171,7 +172,8 @@ export default async function AdminDashboard() {
 						{formatPrice(averageOrderValue)}
 					</span>
 					<span className="text-xs text-muted-foreground font-bold">
-						{t('aov')}</span>
+						متوسط الدفع (AOV)
+					</span>
 				</div>
 
 				<div className="bg-white dark:bg-slate-900 border border-border/60 rounded-3xl p-4 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition-all">
@@ -185,7 +187,8 @@ export default async function AdminDashboard() {
 						<span className="text-sm font-bold text-muted-foreground">%</span>
 					</div>
 					<span className="text-xs text-muted-foreground font-bold">
-						{t('key_1783109428828_8a39')}</span>
+						إكمال الحجوزات
+					</span>
 				</div>
 			</div>
 
