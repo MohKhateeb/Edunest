@@ -17,6 +17,7 @@ import PayoutDetails, { type DetailedPayout } from "./details/PayoutDetails";
 import StudentDetails, { type DetailedStudent } from "./details/StudentDetails";
 import TeacherDetails, { type DetailedTeacher } from "./details/TeacherDetails";
 import Portal from "./Portal";
+import { useTranslations } from "next-intl";
 
 interface DetailsModalProps {
 	isOpen: boolean;
@@ -31,6 +32,7 @@ export default function DetailsModal({
 	entityType,
 	entityId,
 }: DetailsModalProps) {
+    const t = useTranslations('common');
 	const [data, setData] = useState<
 		DetailedStudent | DetailedTeacher | DetailedBooking | DetailedPayout | null
 	>(null);
@@ -65,10 +67,10 @@ export default function DetailsModal({
 					if (entityType === "student") setActiveTab("info");
 					if (entityType === "teacher") setActiveTab("info");
 				} else {
-					setError(res.error || "فشل تحميل البيانات.");
+					setError(res.error || t('fshl_thmyl_albyanat'));
 				}
 			} catch (err) {
-				setError("حدث خطأ غير متوقع أثناء الاتصال بالخادم.");
+				setError(t('hdth_khta_ghyr_mtwqa'));
 			} finally {
 				setLoading(false);
 			}
@@ -98,10 +100,10 @@ export default function DetailsModal({
 								{entityType === "payout" && <DollarSign className="h-5 w-5" />}
 							</span>
 							<span>
-								{entityType === "student" && "تفاصيل البطل"}
-								{entityType === "teacher" && "الملف التعريفي للمعلم"}
-								{entityType === "booking" && "التفاصيل الكاملة للجلسة"}
-								{entityType === "payout" && "تفاصيل التسوية المالية"}
+								{entityType === "student" && t('tfasyl_albtl')}
+								{entityType === "teacher" && t('almlf_altaryfy_llmalm')}
+								{entityType === "booking" && t('altfasyl_alkamlh_lljlsh')}
+								{entityType === "payout" && t('tfasyl_altswyh_almalyh')}
 							</span>
 						</h2>
 						<button
@@ -129,8 +131,7 @@ export default function DetailsModal({
 							<div className="flex flex-col items-center justify-center py-12 text-center space-y-3">
 								<AlertCircle className="h-12 w-12 text-destructive animate-bounce" />
 								<h3 className="font-bold text-base">
-									عذراً، فشل تحميل التفاصيل
-								</h3>
+									{t('athra_fshl_thmyl_altfasyl')}</h3>
 								<p className="text-xs text-muted-foreground max-w-sm">
 									{error}
 								</p>
@@ -138,8 +139,7 @@ export default function DetailsModal({
 									onClick={onClose}
 									className="mt-2 text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg"
 								>
-									إغلاق النافذة
-								</button>
+									{t('ighlaq_alnafthh')}</button>
 							</div>
 						)}
 
@@ -189,8 +189,7 @@ export default function DetailsModal({
 							onClick={onClose}
 							className="text-xs font-bold bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-700 dark:text-slate-300 dark:hover:bg-slate-600 px-5 py-2 rounded-xl transition-colors cursor-pointer"
 						>
-							إغلاق
-						</button>
+							{t('ighlaq')}</button>
 					</div>
 				</div>
 			</div>

@@ -20,6 +20,7 @@ import Image from "next/image";
 import React from "react";
 import type { commonTeacherInclude } from "@/lib/types";
 import { cn, formatPrice } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 export type DetailedTeacher = Prisma.TeacherGetPayload<{
 	include: typeof commonTeacherInclude;
@@ -36,6 +37,7 @@ export default function TeacherDetails({
 	activeTab,
 	setActiveTab,
 }: TeacherDetailsProps) {
+    const t = useTranslations('common');
 	return (
 		<div className="space-y-6">
 			{/* Teacher Main Header */}
@@ -55,7 +57,7 @@ export default function TeacherDetails({
 					</div>
 					<div>
 						<h3 className="text-xl font-extrabold text-foreground">
-							أ. {teacher.user.name}
+							{t('a')}{teacher.user.name}
 						</h3>
 						<span className="text-xs text-primary font-bold">
 							{teacher.subjects && teacher.subjects.length > 0
@@ -69,7 +71,7 @@ export default function TeacherDetails({
 					{teacher.isVerified && (
 						<span className="bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800 text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1">
 							<CheckCircle2 className="h-4.5 w-4.5 text-emerald-600" />
-							موثق {teacher.verificationLevel}
+							{t('mwthq')}{teacher.verificationLevel}
 						</span>
 					)}
 				</div>
@@ -80,8 +82,7 @@ export default function TeacherDetails({
 				<div className="p-4 border border-border bg-accent/10 rounded-xl text-center">
 					<Star className="h-5 w-5 text-violet-500 fill-currentColor mx-auto mb-1" />
 					<span className="text-[10px] text-muted-foreground block font-bold">
-						التقييم
-					</span>
+						{t('altqyym')}</span>
 					<span className="text-sm font-extrabold text-foreground">
 						{Number(teacher.averageRating).toFixed(1)} / 5.0
 					</span>
@@ -89,30 +90,25 @@ export default function TeacherDetails({
 				<div className="p-4 border border-border bg-accent/10 rounded-xl text-center">
 					<FileText className="h-5 w-5 text-primary mx-auto mb-1" />
 					<span className="text-[10px] text-muted-foreground block font-bold">
-						الحصص المنفذة
-					</span>
+						{t('alhss_almnfthh')}</span>
 					<span className="text-sm font-extrabold text-foreground">
-						{teacher.totalSessions} حصة
-					</span>
+						{teacher.totalSessions} {t('hsh')}</span>
 				</div>
 				<div className="p-4 border border-border bg-accent/10 rounded-xl text-center">
 					<Award className="h-5 w-5 text-primary mx-auto mb-1" />
 					<span className="text-[10px] text-muted-foreground block font-bold">
-						الخبرة
-					</span>
+						{t('alkhbrh')}</span>
 					<span className="text-sm font-extrabold text-foreground">
-						{teacher.yearsOfExperience} سنوات
-					</span>
+						{teacher.yearsOfExperience} {t('snwat')}</span>
 				</div>
 				<div className="p-4 border border-border bg-accent/10 rounded-xl text-center">
 					<DollarSign className="h-5 w-5 text-primary mx-auto mb-1" />
 					<span className="text-[10px] text-muted-foreground block font-bold">
-						السعر الافتراضي
-					</span>
+						{t('alsar_alaftrady')}</span>
 					<span className="text-sm font-extrabold text-foreground">
 						{teacher.defaultHourlyRate
 							? formatPrice(Number(teacher.defaultHourlyRate))
-							: "غير محدد"}
+							: t('ghyr_mhdd')}
 					</span>
 				</div>
 			</div>
@@ -128,8 +124,7 @@ export default function TeacherDetails({
 							: "border-transparent text-muted-foreground hover:text-foreground",
 					)}
 				>
-					السيرة الذاتية والمعلومات
-				</button>
+					{t('alsyrh_althatyh_walmalwmat')}</button>
 				<button
 					onClick={() => setActiveTab("services")}
 					className={cn(
@@ -139,7 +134,7 @@ export default function TeacherDetails({
 							: "border-transparent text-muted-foreground hover:text-foreground",
 					)}
 				>
-					الخدمات الخصوصية ({teacher.services.length})
+					{t('alkhdmat_alkhswsyh')}{teacher.services.length})
 				</button>
 				<button
 					onClick={() => setActiveTab("reviews")}
@@ -150,7 +145,7 @@ export default function TeacherDetails({
 							: "border-transparent text-muted-foreground hover:text-foreground",
 					)}
 				>
-					آراء وتقييمات الأهالي ({teacher.reviews.length})
+					{t('araa_wtqyymat_alahaly')}{teacher.reviews.length})
 				</button>
 			</div>
 
@@ -161,8 +156,7 @@ export default function TeacherDetails({
 					{teacher.bio && (
 						<div className="p-4 border border-border bg-card rounded-xl">
 							<span className="font-bold text-primary block mb-2 text-[11px]">
-								النبذة الشخصية:
-							</span>
+								{t('alnbthh_alshkhsyh')}</span>
 							<p className="leading-relaxed text-foreground/80 italic">
 								{teacher.bio}
 							</p>
@@ -173,24 +167,23 @@ export default function TeacherDetails({
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 						<div className="p-4 border border-border bg-card rounded-xl space-y-2">
 							<span className="font-bold text-primary block mb-1 text-[11px]">
-								الموقع والمستوى الدراسي:
-							</span>
+								{t('almwqa_walmstwa_aldrasy')}</span>
 							<div className="flex items-center gap-1.5 text-foreground/85">
 								<MapPin className="h-4 w-4 text-muted-foreground" />
 								<span>
-									المدينة والمنطقة:{" "}
-									<strong>{teacher.city || "غير محدد"}</strong>{" "}
+									{t('almdynh_walmntqh')}{" "}
+									<strong>{teacher.city || t('ghyr_mhdd')}</strong>{" "}
 									{teacher.area && `(${teacher.area})`}
 								</span>
 							</div>
 							<div className="flex items-center gap-1.5 text-foreground/85">
 								<GraduationCap className="h-4 w-4 text-muted-foreground" />
 								<span>
-									الصفوف التي يدرسها:{" "}
+									{t('alsfwf_alty_ydrsha')}{" "}
 									<strong>
 										{teacher.gradeLevels
 											?.map((g: number) => `الصف ${g}`)
-											.join(", ") || "غير محدد"}
+											.join(", ") || t('ghyr_mhdd')}
 									</strong>
 								</span>
 							</div>
@@ -198,26 +191,25 @@ export default function TeacherDetails({
 
 						<div className="p-4 border border-border bg-card rounded-xl space-y-2">
 							<span className="font-bold text-primary block mb-1 text-[11px]">
-								بيانات الاتصال والتعليم:
-							</span>
+								{t('byanat_alatsal_waltalym')}</span>
 							<div className="flex items-center gap-1.5 text-foreground/85">
 								<BookOpen className="h-4 w-4 text-muted-foreground" />
 								<span>
-									المؤهل العلمي:{" "}
-									<strong>{teacher.education || "غير محدد"}</strong>
+									{t('almohl_alalmy')}{" "}
+									<strong>{teacher.education || t('ghyr_mhdd')}</strong>
 								</span>
 							</div>
 							<div className="flex items-center gap-1.5 text-foreground/85">
 								<Mail className="h-4 w-4 text-muted-foreground" />
 								<span>
-									البريد الإلكتروني: <strong>{teacher.user.email}</strong>
+									{t('albryd_alilktrwny_1')}<strong>{teacher.user.email}</strong>
 								</span>
 							</div>
 							{teacher.user.phone && (
 								<div className="flex items-center gap-1.5 text-foreground/85">
 									<Phone className="h-4 w-4 text-muted-foreground" />
 									<span>
-										رقم الهاتف: <strong>{teacher.user.phone}</strong>
+										{t('rqm_alhatf_1')}<strong>{teacher.user.phone}</strong>
 									</span>
 								</div>
 							)}
@@ -228,14 +220,12 @@ export default function TeacherDetails({
 					{Object.hasOwn(teacher, "verification") && (
 						<div className="p-4 border border-border bg-card rounded-xl space-y-3">
 							<span className="font-bold text-primary block border-b border-border pb-1.5 text-[11px]">
-								مستندات التحقق المرفوعة (للمدراء فقط):
-							</span>
+								{t('mstndat_althqq_almrfwah_llmdraa')}</span>
 							{teacher.verification ? (
 								<div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
 									<div className="p-3 border border-border bg-accent/15 rounded-xl space-y-1.5 flex flex-col justify-between">
 										<span className="font-bold text-[10px] text-muted-foreground block">
-											البطاقة الشخصية (هوية)
-										</span>
+											{t('albtaqh_alshkhsyh_hwyh')}</span>
 										{teacher.verification.nationalIdUrl ? (
 											<a
 												href={teacher.verification.nationalIdUrl}
@@ -243,20 +233,18 @@ export default function TeacherDetails({
 												rel="noopener noreferrer"
 												className="text-[11px] font-semibold text-primary hover:underline flex items-center justify-between mt-1"
 											>
-												<span>عرض الهوية المرفوعة</span>
+												<span>{t('ard_alhwyh_almrfwah')}</span>
 												<ExternalLink className="h-3.5 w-3.5" />
 											</a>
 										) : (
 											<span className="text-[10px] text-rose-500 font-semibold block mt-1">
-												غير مرفوعة
-											</span>
+												{t('ghyr_mrfwah')}</span>
 										)}
 									</div>
 
 									<div className="p-3 border border-border bg-accent/15 rounded-xl space-y-1.5 flex flex-col justify-between">
 										<span className="font-bold text-[10px] text-muted-foreground block">
-											الشهادة الجامعية
-										</span>
+											{t('alshhadh_aljamayh')}</span>
 										{teacher.verification.degreeUrl ? (
 											<a
 												href={teacher.verification.degreeUrl}
@@ -264,20 +252,18 @@ export default function TeacherDetails({
 												rel="noopener noreferrer"
 												className="text-[11px] font-semibold text-primary hover:underline flex items-center justify-between mt-1"
 											>
-												<span>عرض الشهادة المرفوعة</span>
+												<span>{t('ard_alshhadh_almrfwah')}</span>
 												<ExternalLink className="h-3.5 w-3.5" />
 											</a>
 										) : (
 											<span className="text-[10px] text-rose-500 font-semibold block mt-1">
-												غير مرفوعة
-											</span>
+												{t('ghyr_mrfwah')}</span>
 										)}
 									</div>
 
 									<div className="p-3 border border-border bg-accent/15 rounded-xl space-y-1.5 flex flex-col justify-between">
 										<span className="font-bold text-[10px] text-muted-foreground block">
-											الفيديو التعريفي
-										</span>
+											{t('alfydyw_altaryfy')}</span>
 										{teacher.verification.videoInterviewUrl ? (
 											<a
 												href={teacher.verification.videoInterviewUrl}
@@ -285,21 +271,18 @@ export default function TeacherDetails({
 												rel="noopener noreferrer"
 												className="text-[11px] font-semibold text-primary hover:underline flex items-center justify-between mt-1"
 											>
-												<span>عرض الفيديو المرفوع</span>
+												<span>{t('ard_alfydyw_almrfwa')}</span>
 												<ExternalLink className="h-3.5 w-3.5" />
 											</a>
 										) : (
 											<span className="text-[10px] text-muted-foreground block mt-1 italic">
-												غير مرفوع
-											</span>
+												{t('ghyr_mrfwa')}</span>
 										)}
 									</div>
 								</div>
 							) : (
 								<p className="text-xs text-muted-foreground italic">
-									لا توجد مستندات مرفوعة لهذا المعلم حالياً (تم توثيقه مباشرة من
-									الإدارة أو لم يقم برفع وثائقه بعد).
-								</p>
+									{t('la_twjd_mstndat_mrfwah')}</p>
 							)}
 						</div>
 					)}
@@ -310,8 +293,7 @@ export default function TeacherDetails({
 				<div className="space-y-3">
 					{teacher.services.length === 0 ? (
 						<p className="text-xs text-muted-foreground py-10 text-center bg-accent/10 border border-border rounded-xl">
-							لا توجد خدمات خصوصية مضافة لهذا المعلم.
-						</p>
+							{t('la_twjd_khdmat_khswsyh')}</p>
 					) : (
 						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							{teacher.services.map((srv) => (
@@ -333,8 +315,7 @@ export default function TeacherDetails({
 									<div className="flex justify-between items-center border-t border-border/50 pt-2 mt-2">
 										<span className="text-muted-foreground flex items-center gap-1">
 											<Clock className="h-3.5 w-3.5" />
-											{srv.duration} دقيقة
-										</span>
+											{srv.duration} {t('dqyqh')}</span>
 										<span className="font-extrabold text-primary text-sm">
 											{formatPrice(Number(srv.price))}
 										</span>
@@ -350,8 +331,7 @@ export default function TeacherDetails({
 				<div className="space-y-3 max-h-[40vh] overflow-y-auto pe-1">
 					{teacher.reviews.length === 0 ? (
 						<p className="text-xs text-muted-foreground py-10 text-center bg-accent/10 border border-border rounded-xl">
-							لا توجد تقييمات مكتوبة لهذا المعلم بعد.
-						</p>
+							{t('la_twjd_tqyymat_mktwbh')}</p>
 					) : (
 						teacher.reviews.map((rev) => (
 							<div
@@ -360,7 +340,7 @@ export default function TeacherDetails({
 							>
 								<div className="flex justify-between items-center">
 									<span className="font-bold text-foreground">
-										{rev.booking.student.name || "ولي أمر"}
+										{rev.booking.student.name || t('wly_amr')}
 									</span>
 									<div className="flex items-center gap-0.5">
 										{[1, 2, 3, 4, 5].map((s) => (
@@ -383,7 +363,7 @@ export default function TeacherDetails({
 									</p>
 								)}
 								<span className="text-[10px] text-muted-foreground/50 block mt-1">
-									تاريخ التقييم:{" "}
+									{t('tarykh_altqyym')}{" "}
 									{new Date(rev.createdAt).toLocaleDateString("ar-EG")}
 								</span>
 							</div>

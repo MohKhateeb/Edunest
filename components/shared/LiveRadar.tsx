@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { claimLiveRequest } from "@/lib/actions/tutoring-requests/instant-book";
 import { cn, formatLocalTime } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 type LiveRequest = {
 	id: string;
@@ -35,6 +36,7 @@ export default function LiveRadar({
 	initialRequests,
 	isAvailableNow,
 }: LiveRadarProps) {
+    const t = useTranslations('common');
 	const router = useRouter();
 	const [requests, setRequests] = useState<LiveRequest[]>(initialRequests);
 	const [isClaiming, setIsClaiming] = useState<string | null>(null);
@@ -58,26 +60,26 @@ export default function LiveRadar({
 
 	const handleClaim = async (requestId: string) => {
 		setIsClaiming(requestId);
-		toast.loading("جاري التقاط الطلب الفوري... ⚡", {
+		toast.loading(t('jary_altqat_altlb_alfwry'), {
 			id: `claim-${requestId}`,
 		});
 
 		try {
 			const res = await claimLiveRequest(requestId);
 			if (res.success && res.data) {
-				toast.success("تم التقاط الطلب بنجاح! جاري تحويلك لغرفة الجلسة... 🎉", {
+				toast.success(t('tm_altqat_altlb_bnjah'), {
 					id: `claim-${requestId}`,
 				});
 				// Redirect to the session lobby
 				router.push(`/dashboard/session/${res.data.bookingId}`);
 			} else {
 				toast.error(
-					!res.success ? res.error : "عذراً، التقط معلم آخر هذا الطلب قبلك!",
+					!res.success ? res.error : t('athra_altqt_malm_akhr'),
 					{ id: `claim-${requestId}` },
 				);
 			}
 		} catch (error) {
-			toast.error("حدث خطأ أثناء الاتصال", { id: `claim-${requestId}` });
+			toast.error(t('hdth_khta_athnaa_alatsal'), { id: `claim-${requestId}` });
 		} finally {
 			setIsClaiming(null);
 		}
@@ -91,12 +93,9 @@ export default function LiveRadar({
 					<div className="absolute top-2 right-2 w-4 h-4 bg-red-500 border-2 border-white dark:border-slate-800 rounded-full"></div>
 				</div>
 				<h3 className="text-2xl font-bold text-slate-700 dark:text-slate-300 mb-2">
-					الرادار متوقف حالياً
-				</h3>
+					{t('alradar_mtwqf_halya')}</h3>
 				<p className="text-slate-500 max-w-md">
-					قم بتفعيل "متاح الآن" من ملفك الشخصي لتتمكن من استقبال طلبات الفزعة
-					السريعة بشكل فوري.
-				</p>
+					{t('qm_btfayl_mtah_alan')}</p>
 			</div>
 		);
 	}
@@ -111,11 +110,9 @@ export default function LiveRadar({
 
 				<div className="pr-20 z-10">
 					<h2 className="text-2xl font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
-						الرادار الحي يعمل 📡
-					</h2>
+						{t('alradar_alhy_yaml')}</h2>
 					<p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-						نحن نبحث عن طلاب يطلبون فزعة سريعة في مادتك الآن...
-					</p>
+						{t('nhn_nbhth_an_tlab')}</p>
 				</div>
 			</div>
 
@@ -125,11 +122,9 @@ export default function LiveRadar({
 					<div className="col-span-full flex flex-col items-center justify-center p-16 text-center border-2 border-dashed border-emerald-500/20 rounded-3xl bg-emerald-50/50 dark:bg-emerald-950/20">
 						<Loader2 className="h-10 w-10 text-emerald-500 animate-spin mb-4" />
 						<p className="text-lg font-bold text-emerald-700 dark:text-emerald-400">
-							الرادار يمسح المنطقة...
-						</p>
+							{t('alradar_ymsh_almntqh')}</p>
 						<p className="text-sm text-emerald-600/70 dark:text-emerald-500/70 mt-2">
-							لا توجد طلبات فورية حالياً. ابق هذه الصفحة مفتوحة!
-						</p>
+							{t('la_twjd_tlbat_fwryh')}</p>
 					</div>
 				) : (
 					requests.map((req) => (
@@ -145,8 +140,7 @@ export default function LiveRadar({
 							{/* Ping badge */}
 							<div className="absolute top-0 right-0 bg-emerald-500 text-white text-xs font-bold px-3 py-1 rounded-bl-xl shadow-sm flex items-center gap-1">
 								<span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
-								طلب فوري!
-							</div>
+								{t('tlb_fwry')}</div>
 
 							<div className="mt-4 mb-6">
 								<h3 className="text-xl font-bold text-slate-800 dark:text-slate-100 mb-1">
@@ -157,14 +151,13 @@ export default function LiveRadar({
 										{req.specialization}
 									</span>
 									<span>•</span>
-									<span>الصف {req.student.grade}</span>
+									<span>{t('alsf')}{req.student.grade}</span>
 								</p>
 
 								<div className="flex items-center gap-4 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
 									<div className="flex-1 text-center border-l border-slate-200 dark:border-slate-700">
 										<span className="block text-xs text-slate-500 mb-1">
-											المدة
-										</span>
+											{t('almdh')}</span>
 										<span className="font-bold flex items-center justify-center gap-1">
 											<Clock className="w-3 h-3 text-emerald-500" />{" "}
 											{req.duration} د
@@ -172,8 +165,7 @@ export default function LiveRadar({
 									</div>
 									<div className="flex-1 text-center">
 										<span className="block text-xs text-slate-500 mb-1">
-											السعر الموحد
-										</span>
+											{t('alsar_almwhd')}</span>
 										<span className="font-bold text-indigo-600 dark:text-indigo-400">
 											{req.price} ₪
 										</span>
@@ -196,13 +188,11 @@ export default function LiveRadar({
 								{isClaiming === req.id ? (
 									<>
 										<Loader2 className="w-5 h-5 animate-spin" />
-										جاري الالتقاط...
-									</>
+										{t('jary_alaltqat')}</>
 								) : (
 									<>
 										<Zap className="w-5 h-5" />
-										التقط الجلسة الآن!
-									</>
+										{t('altqt_aljlsh_alan')}</>
 								)}
 							</button>
 						</div>

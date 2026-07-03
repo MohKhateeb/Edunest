@@ -7,6 +7,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import Portal from "@/components/shared/Portal";
 import { submitSessionReport } from "@/lib/actions/booking";
+import { useTranslations } from "next-intl";
 
 interface ReportModalProps {
 	bookingId: string | null;
@@ -19,6 +20,7 @@ export default function ReportModal({
 	onClose,
 	onSuccess,
 }: ReportModalProps) {
+    const t = useTranslations('common');
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [reportForm, setReportForm] = useState({
@@ -34,8 +36,8 @@ export default function ReportModal({
 	const handleReportSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (reportForm.studentAttended && !reportForm.topicsCovered.trim()) {
-			toast.warning("بيانات ناقصة", {
-				description: "الرجاء تعبئة المواضيع المغطاة",
+			toast.warning(t('byanat_naqsh'), {
+				description: t('alrjaa_tabeh_almwadya_almghtah'),
 			});
 			return;
 		}
@@ -53,14 +55,14 @@ export default function ReportModal({
 		setLoading(false);
 
 		if (res.success) {
-			toast.success("تم إرسال التقرير", {
-				description: "تم حفظ تقرير الجلسة وإنهاء الحجز بنجاح",
+			toast.success(t('tm_irsal_altqryr'), {
+				description: t('tm_hfdh_tqryr_aljlsh'),
 			});
 			onClose();
 			onSuccess?.();
 			router.refresh(); // Refresh the data to show the report is submitted
 		} else {
-			toast.error("فشل إرسال التقرير", { description: res.error });
+			toast.error(t('fshl_irsal_altqryr'), { description: res.error });
 		}
 	};
 
@@ -77,7 +79,7 @@ export default function ReportModal({
 					<button
 						onClick={onClose}
 						className="absolute top-4 end-4 z-10 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-accent transition-colors border border-border bg-card shadow-xs"
-						aria-label="إغلاق النافذة"
+						aria-label={t('ighlaq_alnafthh')}
 					>
 						<X className="h-5 w-5" />
 					</button>
@@ -88,8 +90,7 @@ export default function ReportModal({
 					>
 						<h4 className="font-extrabold text-lg text-primary flex items-center gap-2 border-b border-primary/10 pb-3 pt-2">
 							<FileText className="h-5.5 w-5.5" />
-							تعبئة واعتماد تقرير الجلسة
-						</h4>
+							{t('tabeh_waatmad_tqryr_aljlsh')}</h4>
 
 						<div className="space-y-4">
 							<div className="flex items-center gap-2 bg-accent/30 p-3.5 rounded-xl border border-border/50">
@@ -109,16 +110,14 @@ export default function ReportModal({
 									htmlFor="attended"
 									className="font-bold cursor-pointer text-foreground text-sm"
 								>
-									هل حضر الطالب الجلسة بشكل فعلي؟
-								</label>
+									{t('hl_hdr_altalb_aljlsh')}</label>
 							</div>
 
 							{reportForm.studentAttended ? (
 								<>
 									<div className="space-y-1.5">
 										<label className="block text-xs font-bold text-muted-foreground">
-											أداء الطالب وتقييمه (1-5)
-										</label>
+											{t('adaa_altalb_wtqyymh_15')}</label>
 										<select
 											value={reportForm.studentPerformance}
 											onChange={(e) =>
@@ -129,18 +128,17 @@ export default function ReportModal({
 											}
 											className="w-full premium-input text-sm bg-background/50 border-border"
 										>
-											<option value="5">ممتاز جداً (5)</option>
-											<option value="4">جيد جداً (4)</option>
-											<option value="3">متوسط الأداء (3)</option>
-											<option value="2">يحتاج تحسين (2)</option>
-											<option value="1">ضعيف جداً (1)</option>
+											<option value="5">{t('mmtaz_jda_5')}</option>
+											<option value="4">{t('jyd_jda_4')}</option>
+											<option value="3">{t('mtwst_aladaa_3')}</option>
+											<option value="2">{t('yhtaj_thsyn_2')}</option>
+											<option value="1">{t('dayf_jda_1')}</option>
 										</select>
 									</div>
 
 									<div className="space-y-1.5">
 										<label className="block text-xs font-bold text-muted-foreground">
-											المواضيع التي تم تغطيتها ومناقشتها *
-										</label>
+											{t('almwadya_alty_tm_tghtytha_1')}</label>
 										<textarea
 											required
 											rows={3}
@@ -151,15 +149,14 @@ export default function ReportModal({
 													topicsCovered: e.target.value,
 												})
 											}
-											placeholder="اكتب هنا المواضيع والمسائل والدروس التي تم شرحها للطالب بالتفصيل..."
+											placeholder={t('aktb_hna_almwadya_walmsael')}
 											className="w-full premium-input text-sm resize-none bg-background/50 border-border"
 										/>
 									</div>
 
 									<div className="space-y-1.5">
 										<label className="block text-xs font-bold text-muted-foreground">
-											الواجبات المنزلية المقررة (اختياري)
-										</label>
+											{t('alwajbat_almnzlyh_almqrrh_akhtyary')}</label>
 										<textarea
 											rows={2}
 											value={reportForm.homeworkAssigned}
@@ -169,7 +166,7 @@ export default function ReportModal({
 													homeworkAssigned: e.target.value,
 												})
 											}
-											placeholder="أي تدريبات أو واجبات مقررة للمرة القادمة..."
+											placeholder={t('ay_tdrybat_aw_wajbat')}
 											className="w-full premium-input text-sm resize-none bg-background/50 border-border"
 										/>
 									</div>
@@ -177,18 +174,15 @@ export default function ReportModal({
 							) : (
 								<div className="p-4 bg-amber-50 dark:bg-amber-950/30 rounded-xl border border-amber-200 dark:border-amber-900/50">
 									<p className="text-xs font-bold text-amber-800 dark:text-amber-400">
-										بما أن الطالب لم يحضر الجلسة، لست بحاجة لكتابة تقرير
-										أكاديمي. فقط اترك ملاحظة إن أردت (اختياري) وسنحتفظ بحقك
-										المادي لهذه الجلسة.
-									</p>
+										{t('bma_an_altalb_lm')}</p>
 								</div>
 							)}
 
 							<div className="space-y-1.5">
 								<label className="block text-xs font-bold text-muted-foreground">
 									{reportForm.studentAttended
-										? "ملاحظات المعلم لولي الأمر (اختياري)"
-										: "ملاحظات حول الغياب (اختياري)"}
+										? t('mlahdhat_almalm_lwly_alamr')
+										: t('mlahdhat_hwl_alghyab_akhtyary')}
 								</label>
 								<textarea
 									rows={2}
@@ -201,8 +195,8 @@ export default function ReportModal({
 									}
 									placeholder={
 										reportForm.studentAttended
-											? "ملاحظات أو توصيات إضافية لولي الأمر لمساعدة الطالب..."
-											: "سبب الغياب (إذا كنت تعلم) أو أي تفاصيل أخرى..."
+											? t('mlahdhat_aw_twsyat_idafyh')
+											: t('sbb_alghyab_itha_knt')
 									}
 									className="w-full premium-input text-sm resize-none bg-background/50 border-border"
 								/>
@@ -215,8 +209,7 @@ export default function ReportModal({
 								onClick={onClose}
 								className="text-xs font-bold border border-border bg-slate-50 hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground px-5 py-2.5 rounded-xl transition-colors"
 							>
-								تراجع وإلغاء
-							</button>
+								{t('traja_wilghaa')}</button>
 							<button
 								type="submit"
 								disabled={loading}
@@ -227,8 +220,7 @@ export default function ReportModal({
 								) : (
 									<FileText className="h-4 w-4" />
 								)}
-								اعتماد التقرير وإنهاء الحصة
-							</button>
+								{t('aatmad_altqryr_winhaa_alhsh')}</button>
 						</div>
 					</form>
 				</div>

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface PaymentCountdownProps {
 	deadline: Date;
@@ -12,6 +13,7 @@ export function PaymentCountdownReadOnly({
 	deadline,
 	className = "",
 }: PaymentCountdownProps) {
+    const t = useTranslations('common');
 	const [timeLeft, setTimeLeft] = useState<string>("");
 
 	useEffect(() => {
@@ -21,7 +23,7 @@ export function PaymentCountdownReadOnly({
 			const difference = target - now;
 
 			if (difference <= 0) {
-				return "انتهى الوقت";
+				return t('antha_alwqt');
 			}
 
 			const hours = Math.floor(difference / (1000 * 60 * 60));
@@ -43,7 +45,7 @@ export function PaymentCountdownReadOnly({
 
 	if (!timeLeft) return null;
 
-	const isExpired = timeLeft === "انتهى الوقت";
+	const isExpired = timeLeft === t('antha_alwqt');
 
 	return (
 		<div
@@ -51,7 +53,7 @@ export function PaymentCountdownReadOnly({
 		>
 			<Clock className="w-3.5 h-3.5" />
 			<span dir="rtl">
-				{isExpired ? "انتهى وقت الدفع" : `متبقي للدفع: ${timeLeft}`}
+				{isExpired ? t('antha_wqt_aldfa') : `متبقي للدفع: ${timeLeft}`}
 			</span>
 		</div>
 	);

@@ -14,6 +14,7 @@ import { toast } from "sonner";
 import { createTutoringRequest } from "@/lib/actions/tutoring-requests/create";
 import { checkLiveRequestMatch } from "@/lib/actions/tutoring-requests/status";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface Student {
 	id: string;
@@ -39,6 +40,7 @@ export default function ParentLiveRadarClient({
 	serviceTypes,
 	subjects,
 }: ParentLiveRadarClientProps) {
+    const t = useTranslations('common');
 	const router = useRouter();
 	const [isSearching, setIsSearching] = useState(false);
 	const [activeRequestId, setActiveRequestId] = useState<string | null>(null);
@@ -57,30 +59,30 @@ export default function ParentLiveRadarClient({
 	const handleSearch = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!formData.studentId || !formData.title || !formData.subjectId) {
-			toast.error("يرجى تعبئة الحقول الأساسية لطلب الفزعة!");
+			toast.error(t('yrja_tabeh_alhqwl_alasasyh'));
 			return;
 		}
 
 		setIsSearching(true);
-		toast.loading("جاري بث طلبك لجميع المعلمين المتاحين الآن... 📡", {
+		toast.loading(t('jary_bth_tlbk_ljmya'), {
 			id: "live-request",
 		});
 
 		try {
 			const res = await createTutoringRequest(formData);
 			if (res.success && res.data) {
-				toast.success("تم إرسال الطلب بنجاح! نحن نبحث لك عن المعلم الأسرع...", {
+				toast.success(t('tm_irsal_altlb_bnjah'), {
 					id: "live-request",
 				});
 				setActiveRequestId(res.data.requestId);
 			} else {
-				toast.error(!res.success ? res.error : "حدث خطأ أثناء الطلب", {
+				toast.error(!res.success ? res.error : t('hdth_khta_athnaa_altlb'), {
 					id: "live-request",
 				});
 				setIsSearching(false);
 			}
 		} catch (err) {
-			toast.error("خطأ غير متوقع", { id: "live-request" });
+			toast.error(t('khta_ghyr_mtwqa'), { id: "live-request" });
 			setIsSearching(false);
 		}
 	};
@@ -94,7 +96,7 @@ export default function ParentLiveRadarClient({
 					const res = await checkLiveRequestMatch(activeRequestId);
 					if (res.success && res.data?.isMatched && res.data.bookingId) {
 						clearInterval(interval);
-						toast.success("تم العثور على معلم! جاري توجيهك للجلسة...", {
+						toast.success(t('tm_alathwr_ala_malm'), {
 							id: "live-match",
 						});
 						router.push(`/dashboard/session/${res.data.bookingId}`);
@@ -126,12 +128,9 @@ export default function ParentLiveRadarClient({
 
 				<div className="space-y-3">
 					<h2 className="text-3xl font-black text-slate-800 dark:text-slate-100">
-						رادار EduNest يعمل 📡
-					</h2>
+						{t('radar_edunest_yaml')}</h2>
 					<p className="text-lg text-slate-500 max-w-md mx-auto">
-						لقد تم بث طلبك بنجاح! ننتظر الآن أول معلم متصل ليقوم بالتقاطه. يرجى
-						الانتظار، سيتم نقلك تلقائياً.
-					</p>
+						{t('lqd_tm_bth_tlbk')}</p>
 				</div>
 				<Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
 			</div>
@@ -145,12 +144,10 @@ export default function ParentLiveRadarClient({
 				<div className="relative z-10 flex items-start justify-between">
 					<div>
 						<h2 className="text-3xl font-black mb-2 flex items-center gap-2">
-							فزعة سريعة <Zap className="w-8 h-8 text-yellow-300" />
+							{t('fzah_sryah')}<Zap className="w-8 h-8 text-yellow-300" />
 						</h2>
 						<p className="text-indigo-100 max-w-md">
-							هل يواجه ابنك صعوبة في فهم موضوع معين الآن؟ اطلب فزعة وسنقوم بربطك
-							فوراً بأول معلم متاح!
-						</p>
+							{t('hl_ywajh_abnk_sawbh')}</p>
 					</div>
 					<Rocket className="w-24 h-24 text-white/20 hidden md:block" />
 				</div>
@@ -163,8 +160,7 @@ export default function ParentLiveRadarClient({
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 					<div className="space-y-2">
 						<label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-							<UserCircle className="w-4 h-4 text-indigo-500" /> الطالب
-						</label>
+							<UserCircle className="w-4 h-4 text-indigo-500" /> {t('altalb_1')}</label>
 						<select
 							value={formData.studentId}
 							onChange={(e) =>
@@ -175,7 +171,7 @@ export default function ParentLiveRadarClient({
 						>
 							{students.map((s) => (
 								<option key={s.id} value={s.id}>
-									{s.name} (الصف {s.grade})
+									{s.name} {t('alsf_1')}{s.grade})
 								</option>
 							))}
 						</select>
@@ -183,8 +179,7 @@ export default function ParentLiveRadarClient({
 
 					<div className="space-y-2">
 						<label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-							<BookOpen className="w-4 h-4 text-purple-500" /> المادة / التخصص
-						</label>
+							<BookOpen className="w-4 h-4 text-purple-500" /> {t('almadh_altkhss')}</label>
 						<select
 							value={formData.subjectId}
 							onChange={(e) =>
@@ -204,8 +199,7 @@ export default function ParentLiveRadarClient({
 
 				<div className="space-y-2">
 					<label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-						<Zap className="w-4 h-4 text-amber-500" /> نوع الجلسة (المدة والسعر)
-					</label>
+						<Zap className="w-4 h-4 text-amber-500" /> {t('nwa_aljlsh_almdh_walsar')}</label>
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 						{serviceTypes.map((st) => (
 							<label
@@ -233,8 +227,7 @@ export default function ParentLiveRadarClient({
 											{st.name}
 										</div>
 										<div className="text-xs text-slate-500 dark:text-slate-400">
-											{st.fazaaDuration} دقيقة
-										</div>
+											{st.fazaaDuration} {t('dqyqh')}</div>
 									</div>
 								</div>
 								<div className="font-black text-indigo-600 dark:text-indigo-400">
@@ -247,11 +240,10 @@ export default function ParentLiveRadarClient({
 
 				<div className="space-y-2">
 					<label className="text-sm font-bold text-slate-700 dark:text-slate-300">
-						ما هو السؤال أو الموضوع؟ (باختصار)
-					</label>
+						{t('ma_hw_alsoal_aw')}</label>
 					<input
 						type="text"
-						placeholder="مثال: مساعدة في حل معادلة من الدرجة الثانية"
+						placeholder={t('mthal_msaadh_fy_hl')}
 						value={formData.title}
 						onChange={(e) =>
 							setFormData({ ...formData, title: e.target.value })
@@ -266,7 +258,7 @@ export default function ParentLiveRadarClient({
 					className="w-full flex items-center justify-center gap-3 py-5 bg-slate-900 hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white rounded-2xl font-black text-xl transition-all hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-slate-900/20 dark:shadow-indigo-500/20"
 				>
 					<Search className="w-6 h-6 text-indigo-400 dark:text-white" />
-					ابحث عن معلم الآن ({selectedServiceType?.fazaaPrice} ₪)
+					{t('abhth_an_malm_alan')}{selectedServiceType?.fazaaPrice} ₪)
 				</button>
 			</form>
 		</div>

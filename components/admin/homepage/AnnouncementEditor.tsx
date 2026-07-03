@@ -1,6 +1,7 @@
 "use client";
 
 import type { AnnouncementBannerContent } from "@/types/homepage";
+import { useTranslations } from "next-intl";
 
 interface Props {
 	content: AnnouncementBannerContent;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function AnnouncementEditor({ content, onChange }: Props) {
+    const t = useTranslations('common');
 	const updateField = <K extends keyof AnnouncementBannerContent>(
 		field: K,
 		value: AnnouncementBannerContent[K],
@@ -19,10 +21,9 @@ export default function AnnouncementEditor({ content, onChange }: Props) {
 		<div className="space-y-4">
 			<div className="flex items-center justify-between p-4 bg-muted/20 border border-border rounded-xl">
 				<div>
-					<h3 className="font-bold text-sm">تفعيل الشريط الإعلاني</h3>
+					<h3 className="font-bold text-sm">{t('tfayl_alshryt_alialany')}</h3>
 					<p className="text-xs text-muted-foreground">
-						سيظهر شريط إعلاني أعلى الصفحة الرئيسية عند تفعيله
-					</p>
+						{t('sydhhr_shryt_ialany_aala')}</p>
 				</div>
 				<label className="relative inline-flex items-center cursor-pointer">
 					<input
@@ -39,8 +40,7 @@ export default function AnnouncementEditor({ content, onChange }: Props) {
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 					<div className="space-y-1.5 md:col-span-2">
 						<label className="text-[11px] font-bold text-muted-foreground block">
-							نص الإعلان
-						</label>
+							{t('ns_alialan')}</label>
 						<input
 							type="text"
 							value={content.text}
@@ -50,8 +50,7 @@ export default function AnnouncementEditor({ content, onChange }: Props) {
 					</div>
 					<div className="space-y-1.5">
 						<label className="text-[11px] font-bold text-muted-foreground block">
-							رابط الإعلان (اختياري)
-						</label>
+							{t('rabt_alialan_akhtyary')}</label>
 						<input
 							type="text"
 							value={content.link}
@@ -61,14 +60,13 @@ export default function AnnouncementEditor({ content, onChange }: Props) {
 					</div>
 					<div className="space-y-1.5">
 						<label className="text-[11px] font-bold text-muted-foreground block">
-							لون الخلفية (كلاس Tailwind)
-						</label>
+							{t('lwn_alkhlfyh_klas_tailwind')}</label>
 						<input
 							type="text"
 							value={content.backgroundColor || ""}
 							onChange={(e) => updateField("backgroundColor", e.target.value)}
 							className="w-full premium-input text-xs"
-							placeholder="bg-primary أو bg-amber-500"
+							placeholder={t('bgprimary_aw_bgamber500')}
 						/>
 					</div>
 				</div>

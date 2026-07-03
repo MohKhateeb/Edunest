@@ -5,12 +5,14 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { toggleTeacherAvailability } from "@/lib/actions/teacher";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 export default function TeacherOnlineToggle({
 	initialStatus,
 }: {
 	initialStatus: boolean;
 }) {
+    const t = useTranslations('common');
 	const [isOnline, setIsOnline] = useState(initialStatus);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -24,12 +26,12 @@ export default function TeacherOnlineToggle({
 		if (!res.success) {
 			// Revert on failure
 			setIsOnline(!newStatus);
-			toast.error(res.error || "فشل في تحديث حالة التواجد");
+			toast.error(res.error || t('fshl_fy_thdyth_halh'));
 		} else {
 			toast.success(
 				newStatus
-					? "أنت الآن متصل وتستقبل الرسائل/الحجوزات الفورية"
-					: "أنت الآن غير متصل",
+					? t('ant_alan_mtsl_wtstqbl')
+					: t('ant_alan_ghyr_mtsl'),
 			);
 		}
 		setIsLoading(false);
@@ -54,7 +56,7 @@ export default function TeacherOnlineToggle({
 				)}
 			/>
 			<Power className="h-4 w-4" />
-			{isOnline ? "متصل الآن (متاح)" : "غير متصل (غير متاح)"}
+			{isOnline ? t('mtsl_alan_mtah') : t('ghyr_mtsl_ghyr_mtah')}
 		</button>
 	);
 }

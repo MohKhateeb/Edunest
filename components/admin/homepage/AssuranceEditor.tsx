@@ -2,6 +2,7 @@
 
 import { Plus, Trash2 } from "lucide-react";
 import type { AssuranceSectionContent } from "@/types/homepage";
+import { useTranslations } from "next-intl";
 
 // Available Lucide icons string array
 const AVAILABLE_ICONS = [
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function AssuranceEditor({ content, onChange }: Props) {
+    const t = useTranslations('common');
 	const updateField = <K extends keyof AssuranceSectionContent>(
 		field: K,
 		value: AssuranceSectionContent[K],
@@ -41,8 +43,8 @@ export default function AssuranceEditor({ content, onChange }: Props) {
 			...content.features,
 			{
 				iconName: "ShieldCheck",
-				title: "ميزة جديدة",
-				description: "الوصف هنا.",
+				title: t('myzh_jdydh'),
+				description: t('alwsf_hna'),
 			},
 		]);
 	};
@@ -59,8 +61,7 @@ export default function AssuranceEditor({ content, onChange }: Props) {
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				<div className="space-y-1.5 md:col-span-2">
 					<label className="text-[11px] font-bold text-muted-foreground block">
-						عنوان القسم الرئيسي
-					</label>
+						{t('anwan_alqsm_alreysy')}</label>
 					<input
 						type="text"
 						value={content.title}
@@ -70,8 +71,7 @@ export default function AssuranceEditor({ content, onChange }: Props) {
 				</div>
 				<div className="space-y-1.5 md:col-span-2">
 					<label className="text-[11px] font-bold text-muted-foreground block">
-						الوصف / العنوان الفرعي
-					</label>
+						{t('alwsf_alanwan_alfray')}</label>
 					<input
 						type="text"
 						value={content.subtitle}
@@ -84,14 +84,12 @@ export default function AssuranceEditor({ content, onChange }: Props) {
 			<div className="border-t border-border pt-4 space-y-4">
 				<div className="flex justify-between items-center">
 					<h4 className="text-xs font-bold text-foreground">
-						قائمة المميزات (الضمانات)
-					</h4>
+						{t('qaemh_almmyzat_aldmanat')}</h4>
 					<button
 						onClick={addFeature}
 						className="bg-primary/10 text-primary hover:bg-primary/20 text-[10px] px-3 py-1.5 rounded-lg flex items-center gap-1 font-bold transition-all"
 					>
-						<Plus className="w-3 h-3" /> إضافة ميزة
-					</button>
+						<Plus className="w-3 h-3" /> {t('idafh_myzh')}</button>
 				</div>
 				<div className="space-y-3">
 					{content.features.map((feature, idx) => (
@@ -102,8 +100,7 @@ export default function AssuranceEditor({ content, onChange }: Props) {
 							<div className="grid grid-cols-1 md:grid-cols-3 gap-3">
 								<div className="space-y-1">
 									<label className="text-[10px] text-muted-foreground block font-bold">
-										الأيقونة (Lucide)
-									</label>
+										{t('alayqwnh_lucide')}</label>
 									<select
 										value={feature.iconName}
 										onChange={(e) =>
@@ -120,8 +117,7 @@ export default function AssuranceEditor({ content, onChange }: Props) {
 								</div>
 								<div className="md:col-span-2 space-y-1">
 									<label className="text-[10px] text-muted-foreground block font-bold">
-										عنوان الميزة
-									</label>
+										{t('anwan_almyzh')}</label>
 									<input
 										type="text"
 										value={feature.title}
@@ -134,8 +130,7 @@ export default function AssuranceEditor({ content, onChange }: Props) {
 							</div>
 							<div className="space-y-1">
 								<label className="text-[10px] text-muted-foreground block font-bold">
-									تفاصيل الميزة
-								</label>
+									{t('tfasyl_almyzh')}</label>
 								<textarea
 									rows={2}
 									value={feature.description}

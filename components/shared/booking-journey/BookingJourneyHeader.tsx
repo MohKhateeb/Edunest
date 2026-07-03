@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
 import CharacterDialogue from "@/components/shared/booking-journey/CharacterDialogue";
+import { useTranslations } from "next-intl";
 
 interface BookingJourneyHeaderProps {
 	title: string;
@@ -19,8 +20,11 @@ export default function BookingJourneyHeader({
 	characterMessage,
 	characterMode = "default",
 	backLink = "/dashboard/parent/bookings/new",
-	backText = "تغيير مسار الحجز",
+	backText,
 }: BookingJourneyHeaderProps) {
+	const t = useTranslations("common");
+	const resolvedBackText = backText ?? t("tghyyr_msar_alhjz");
+
 	return (
 		<>
 			<div className="text-center space-y-1 mb-8">
@@ -38,7 +42,7 @@ export default function BookingJourneyHeader({
 					className="flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-white transition-colors bg-white dark:bg-slate-800 px-4 py-2 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:shadow-md"
 				>
 					<ArrowRight className="w-4 h-4" />
-					{backText}
+					{resolvedBackText}
 				</Link>
 
 				<div className="flex-1 max-w-lg">

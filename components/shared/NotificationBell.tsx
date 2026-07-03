@@ -10,8 +10,10 @@ import {
 	markNotificationAsRead,
 } from "@/lib/actions/notification";
 import { cn, formatLocalTime } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 export default function NotificationBell() {
+    const t = useTranslations('common');
 	const [notifications, setNotifications] = useState<Notification[]>([]);
 	const [isOpen, setIsOpen] = useState(false);
 	const [loading, setLoading] = useState(true);
@@ -66,7 +68,7 @@ export default function NotificationBell() {
 			<button
 				onClick={() => setIsOpen(!isOpen)}
 				className="relative p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-full transition-colors cursor-pointer"
-				aria-label="الإشعارات"
+				aria-label={t('alishaarat')}
 			>
 				<Bell className="h-5.5 w-5.5" />
 				{unreadCount > 0 && (
@@ -78,11 +80,9 @@ export default function NotificationBell() {
 				<div className="absolute end-0 mt-2 w-80 sm:w-96 bg-card border border-border shadow-xl rounded-2xl overflow-hidden z-50 animate-in fade-in slide-in-from-top-2">
 					<div className="p-4 border-b border-border flex justify-between items-center bg-muted/20">
 						<h3 className="font-extrabold text-sm flex items-center gap-2">
-							الإشعارات
-							{unreadCount > 0 && (
+							{t('alishaarat')}{unreadCount > 0 && (
 								<span className="bg-primary text-primary-foreground text-[10px] px-2 py-0.5 rounded-full">
-									{unreadCount} جديد
-								</span>
+									{unreadCount} {t('jdyd')}</span>
 							)}
 						</h3>
 						{unreadCount > 0 && (
@@ -90,23 +90,21 @@ export default function NotificationBell() {
 								onClick={handleMarkAllAsRead}
 								className="text-xs text-primary hover:underline font-semibold"
 							>
-								تحديد الكل كمقروء
-							</button>
+								{t('thdyd_alkl_kmqrwa')}</button>
 						)}
 					</div>
 
 					<div className="max-h-96 overflow-y-auto">
 						{loading ? (
 							<div className="p-6 text-center text-sm text-muted-foreground animate-pulse">
-								جاري التحميل...
-							</div>
+								{t('loading')}</div>
 						) : notifications.length === 0 ? (
 							<div className="p-8 flex flex-col items-center justify-center text-center text-muted-foreground">
 								<div className="bg-accent/50 p-3 rounded-full mb-3">
 									<CheckCircle2 className="h-6 w-6 text-emerald-500" />
 								</div>
-								<p className="text-sm font-semibold">لا توجد إشعارات جديدة</p>
-								<p className="text-xs mt-1">أنت على إطلاع بكل جديد!</p>
+								<p className="text-sm font-semibold">{t('la_twjd_ishaarat_jdydh')}</p>
+								<p className="text-xs mt-1">{t('ant_ala_itlaa_bkl')}</p>
 							</div>
 						) : (
 							<ul className="divide-y divide-border">
@@ -144,8 +142,7 @@ export default function NotificationBell() {
 															className="text-[10px] flex items-center gap-1 text-primary hover:text-primary/80 font-semibold opacity-0 group-hover:opacity-100 transition-opacity"
 														>
 															<Check className="h-3 w-3" />
-															تحديد كمقروء
-														</button>
+															{t('thdyd_kmqrwa')}</button>
 													)}
 												</div>
 											</div>

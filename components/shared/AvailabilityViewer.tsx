@@ -1,4 +1,5 @@
 import { DAYS_OF_WEEK_AR } from "@/lib/translations";
+import { useTranslations } from "next-intl";
 
 type AvailabilityItem = {
 	dayOfWeek: number;
@@ -14,6 +15,7 @@ type AvailabilityViewerProps = {
 export default function AvailabilityViewer({
 	availability,
 }: AvailabilityViewerProps) {
+    const t = useTranslations('common');
 	// Sort and group by dayOfWeek
 	const activeAvailability = availability.filter((a) => a.isActive);
 
@@ -31,8 +33,7 @@ export default function AvailabilityViewer({
 	return (
 		<div className="bg-card border border-border rounded-xl p-6 space-y-4 shadow-sm">
 			<h3 className="font-extrabold text-base border-b border-border pb-2.5">
-				ساعات العمل الأسبوعية المتاحة
-			</h3>
+				{t('saaat_alaml_alasbwayh_almtahh')}</h3>
 			<div className="space-y-3">
 				{grouped.map((group) => (
 					<div
@@ -45,8 +46,7 @@ export default function AvailabilityViewer({
 						<div className="flex flex-wrap gap-1.5 flex-1 justify-start sm:justify-end">
 							{group.slots.length === 0 ? (
 								<span className="text-xs text-muted-foreground bg-accent/40 px-2.5 py-1 rounded-lg">
-									غير متاح
-								</span>
+									{t('ghyr_mtah')}</span>
 							) : (
 								group.slots.map((slot, index) => (
 									<span

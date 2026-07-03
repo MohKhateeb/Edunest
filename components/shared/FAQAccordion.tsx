@@ -3,8 +3,10 @@
 import type { FAQ } from "@prisma/client";
 import { ChevronDown, Search } from "lucide-react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function FAQAccordion({ faqs }: { faqs: FAQ[] }) {
+    const t = useTranslations('common');
 	const [searchTerm, setSearchTerm] = useState("");
 	const [openId, setOpenId] = useState<string | null>(null);
 
@@ -28,7 +30,7 @@ export default function FAQAccordion({ faqs }: { faqs: FAQ[] }) {
 				<input
 					type="text"
 					dir="rtl"
-					placeholder="ابحث في الأسئلة الشائعة..."
+					placeholder={t('abhth_fy_alaselh_alshaeah')}
 					value={searchTerm}
 					onChange={(e) => setSearchTerm(e.target.value)}
 					className="block w-full ps-3 pe-10 py-3 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary sm:text-sm shadow-sm transition-shadow"
@@ -72,8 +74,7 @@ export default function FAQAccordion({ faqs }: { faqs: FAQ[] }) {
 				) : (
 					<div className="text-center py-10 bg-gray-50 rounded-lg border border-dashed border-gray-300">
 						<p className="text-gray-500 text-lg">
-							لم يتم العثور على نتائج تطابق بحثك.
-						</p>
+							{t('lm_ytm_alathwr_ala')}</p>
 					</div>
 				)}
 			</div>

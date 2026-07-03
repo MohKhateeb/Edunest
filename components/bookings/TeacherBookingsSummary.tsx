@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import type { DetailedBooking } from "@/lib/types";
 import { getDetailedSessionState } from "@/lib/utils/booking-state";
 import { getLocalDateString } from "@/lib/utils/time";
+import { useTranslations } from "next-intl";
 
 interface TeacherBookingsSummaryProps {
 	bookings: DetailedBooking[];
@@ -11,6 +12,7 @@ interface TeacherBookingsSummaryProps {
 export function TeacherBookingsSummary({
 	bookings,
 }: TeacherBookingsSummaryProps) {
+    const t = useTranslations('bookings');
 	const stats = useMemo(() => {
 		const todayStr = getLocalDateString(new Date());
 		const currentMonth = new Date().getMonth();
@@ -59,15 +61,13 @@ export function TeacherBookingsSummary({
 				</div>
 				<div>
 					<p className="text-xs font-bold text-muted-foreground mb-1">
-						تقارير متأخرة
-					</p>
+						{t('tqaryr_mtakhrh')}</p>
 					<div className="flex items-baseline gap-2">
 						<span className="text-2xl font-black text-rose-600 dark:text-rose-400">
 							{stats.ghostCount}
 						</span>
 						<span className="text-[10px] text-rose-500 font-semibold">
-							جلسة معلقة
-						</span>
+							{t('jlsh_malqh')}</span>
 					</div>
 				</div>
 			</div>
@@ -79,15 +79,13 @@ export function TeacherBookingsSummary({
 				</div>
 				<div>
 					<p className="text-xs font-bold text-muted-foreground mb-1">
-						أموال مجمدة
-					</p>
+						{t('amwal_mjmdh')}</p>
 					<div className="flex items-baseline gap-2">
 						<span className="text-2xl font-black text-purple-600 dark:text-purple-400">
 							{stats.frozenCount}
 						</span>
 						<span className="text-[10px] text-purple-500 font-semibold">
-							بانتظار القرار
-						</span>
+							{t('bantdhar_alqrar')}</span>
 					</div>
 				</div>
 			</div>
@@ -99,15 +97,13 @@ export function TeacherBookingsSummary({
 				</div>
 				<div>
 					<p className="text-xs font-bold text-muted-foreground mb-1">
-						بانتظار موافقتك
-					</p>
+						{t('bantdhar_mwafqtk')}</p>
 					<div className="flex items-baseline gap-2">
 						<span className="text-2xl font-black text-amber-600 dark:text-amber-400">
 							{stats.pendingCount}
 						</span>
 						<span className="text-[10px] text-amber-500 font-semibold">
-							طلب حجز
-						</span>
+							{t('tlb_hjz')}</span>
 					</div>
 				</div>
 			</div>
@@ -119,15 +115,13 @@ export function TeacherBookingsSummary({
 				</div>
 				<div>
 					<p className="text-xs font-bold text-muted-foreground mb-1">
-						حصص اليوم
-					</p>
+						{t('hss_alywm')}</p>
 					<div className="flex items-baseline gap-2">
 						<span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
 							{stats.todayCount}
 						</span>
 						<span className="text-[10px] text-emerald-500 font-semibold">
-							مجدولة
-						</span>
+							{t('mjdwlh')}</span>
 					</div>
 				</div>
 			</div>
@@ -139,15 +133,13 @@ export function TeacherBookingsSummary({
 				</div>
 				<div>
 					<p className="text-xs font-bold text-muted-foreground mb-1">
-						إنجاز الشهر
-					</p>
+						{t('injaz_alshhr')}</p>
 					<div className="flex items-baseline gap-2">
 						<span className="text-2xl font-black text-blue-600 dark:text-blue-400">
 							{stats.completedThisMonth}
 						</span>
 						<span className="text-[10px] text-blue-500 font-semibold">
-							مكتملة
-						</span>
+							{t('mktmlh')}</span>
 					</div>
 				</div>
 			</div>

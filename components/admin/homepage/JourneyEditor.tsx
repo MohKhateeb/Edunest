@@ -2,6 +2,7 @@
 
 import { Plus, Trash2 } from "lucide-react";
 import type { JourneyPathContent } from "@/types/homepage";
+import { useTranslations } from "next-intl";
 
 interface Props {
 	content: JourneyPathContent;
@@ -9,6 +10,7 @@ interface Props {
 }
 
 export default function JourneyEditor({ content, onChange }: Props) {
+    const t = useTranslations('common');
 	const updateField = <K extends keyof JourneyPathContent>(
 		field: K,
 		value: JourneyPathContent[K],
@@ -29,7 +31,7 @@ export default function JourneyEditor({ content, onChange }: Props) {
 	const addStep = () => {
 		updateField("steps", [
 			...content.steps,
-			{ title: "خطوة جديدة", description: "وصف الخطوة هنا..." },
+			{ title: t('khtwh_jdydh'), description: t('wsf_alkhtwh_hna') },
 		]);
 	};
 
@@ -45,8 +47,7 @@ export default function JourneyEditor({ content, onChange }: Props) {
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 				<div className="space-y-1.5 md:col-span-2">
 					<label className="text-[11px] font-bold text-muted-foreground block">
-						عنوان القسم الرئيسي
-					</label>
+						{t('anwan_alqsm_alreysy')}</label>
 					<input
 						type="text"
 						value={content.title}
@@ -56,8 +57,7 @@ export default function JourneyEditor({ content, onChange }: Props) {
 				</div>
 				<div className="space-y-1.5 md:col-span-2">
 					<label className="text-[11px] font-bold text-muted-foreground block">
-						الوصف / العنوان الفرعي
-					</label>
+						{t('alwsf_alanwan_alfray')}</label>
 					<input
 						type="text"
 						value={content.subtitle}
@@ -69,13 +69,12 @@ export default function JourneyEditor({ content, onChange }: Props) {
 
 			<div className="border-t border-border pt-4 space-y-4">
 				<div className="flex justify-between items-center">
-					<h4 className="text-xs font-bold text-foreground">قائمة الخطوات</h4>
+					<h4 className="text-xs font-bold text-foreground">{t('qaemh_alkhtwat')}</h4>
 					<button
 						onClick={addStep}
 						className="bg-primary/10 text-primary hover:bg-primary/20 text-[10px] px-3 py-1.5 rounded-lg flex items-center gap-1 font-bold transition-all"
 					>
-						<Plus className="w-3 h-3" /> إضافة خطوة
-					</button>
+						<Plus className="w-3 h-3" /> {t('idafh_khtwh')}</button>
 				</div>
 				<div className="space-y-3">
 					{content.steps.map((step, idx) => (
@@ -85,8 +84,7 @@ export default function JourneyEditor({ content, onChange }: Props) {
 						>
 							<div className="space-y-1">
 								<label className="text-[10px] text-muted-foreground block font-bold">
-									عنوان الخطوة
-								</label>
+									{t('anwan_alkhtwh')}</label>
 								<input
 									type="text"
 									value={step.title}
@@ -96,8 +94,7 @@ export default function JourneyEditor({ content, onChange }: Props) {
 							</div>
 							<div className="space-y-1">
 								<label className="text-[10px] text-muted-foreground block font-bold">
-									التفاصيل
-								</label>
+									{t('altfasyl')}</label>
 								<textarea
 									rows={2}
 									value={step.description}

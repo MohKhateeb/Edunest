@@ -29,8 +29,10 @@ import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import NotificationBell from "@/components/shared/NotificationBell";
 import { adminLinks, parentLinks, teacherLinks } from "@/lib/config/navigation";
+import { useTranslations } from "next-intl";
 
 export default function Header() {
+    const t = useTranslations('common');
 	const { data: session } = useSession();
 	const [isOpen, setIsOpen] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
@@ -73,27 +75,23 @@ export default function Header() {
 							href="/"
 							className="text-sm font-semibold hover:text-primary transition-colors"
 						>
-							الرئيسية
-						</Link>
+							{t('alreysyh')}</Link>
 						<Link
 							href="/teachers"
 							className="text-sm font-semibold hover:text-primary transition-colors flex items-center gap-1.5"
 						>
 							<Search className="h-4 w-4" />
-							البحث عن معلمين
-						</Link>
+							{t('albhth_an_malmyn')}</Link>
 						<Link
 							href="/help"
 							className="text-sm font-semibold hover:text-primary transition-colors"
 						>
-							مركز المساعدة
-						</Link>
+							{t('mrkz_almsaadh')}</Link>
 						<Link
 							href="/privacy"
 							className="text-sm font-semibold hover:text-primary transition-colors"
 						>
-							سياسة الخصوصية
-						</Link>
+							{t('syash_alkhswsyh')}</Link>
 					</nav>
 
 					{/* User Actions */}
@@ -159,7 +157,7 @@ export default function Header() {
 														className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground/80 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-primary transition-colors text-right"
 													>
 														<LayoutDashboard className="h-4 w-4 text-muted-foreground" />
-														<span>لوحة التحكم</span>
+														<span>{t('lwhh_althkm')}</span>
 													</Link>
 
 													<Link
@@ -168,7 +166,7 @@ export default function Header() {
 														className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground/80 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-primary transition-colors text-right"
 													>
 														<User className="h-4 w-4 text-muted-foreground" />
-														<span>تعديل الملف الشخصي</span>
+														<span>{t('tadyl_almlf_alshkhsy')}</span>
 													</Link>
 												</div>
 
@@ -181,7 +179,7 @@ export default function Header() {
 														className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors text-right cursor-pointer"
 													>
 														<LogOut className="h-4 w-4 text-rose-500" />
-														<span>تسجيل الخروج</span>
+														<span>{t('tsjyl_alkhrwj')}</span>
 													</button>
 												</div>
 											</div>
@@ -195,14 +193,12 @@ export default function Header() {
 									href="/login"
 									className="text-sm font-semibold text-foreground/80 hover:text-primary transition-colors px-3 py-2"
 								>
-									تسجيل الدخول
-								</Link>
+									{t('tsjyl_aldkhwl')}</Link>
 								<Link
 									href="/register"
 									className="text-sm font-medium bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg transition-all shadow-sm"
 								>
-									إنشاء حساب جديد
-								</Link>
+									{t('inshaa_hsab_jdyd')}</Link>
 							</div>
 						)}
 					</div>
@@ -233,29 +229,25 @@ export default function Header() {
 							onClick={() => setIsOpen(false)}
 							className="block px-3 py-2 rounded-md text-base font-medium hover:bg-accent hover:text-primary transition-colors"
 						>
-							الرئيسية
-						</Link>
+							{t('alreysyh')}</Link>
 						<Link
 							href="/teachers"
 							onClick={() => setIsOpen(false)}
 							className="block px-3 py-2 rounded-md text-base font-medium hover:bg-accent hover:text-primary transition-colors"
 						>
-							البحث عن معلمين
-						</Link>
+							{t('albhth_an_malmyn')}</Link>
 						<Link
 							href="/help"
 							onClick={() => setIsOpen(false)}
 							className="block px-3 py-2 rounded-md text-base font-medium hover:bg-accent hover:text-primary transition-colors"
 						>
-							مركز المساعدة
-						</Link>
+							{t('mrkz_almsaadh')}</Link>
 						<Link
 							href="/privacy"
 							onClick={() => setIsOpen(false)}
 							className="block px-3 py-2 rounded-md text-base font-medium hover:bg-accent hover:text-primary transition-colors"
 						>
-							سياسة الخصوصية
-						</Link>
+							{t('syash_alkhswsyh')}</Link>
 
 						<div className="border-t border-border my-2 pt-2">
 							{session ? (
@@ -263,7 +255,7 @@ export default function Header() {
 									<div className="px-3 py-2 text-xs font-semibold text-muted-foreground flex items-center justify-between">
 										<div className="flex items-center gap-1.5">
 											<User className="h-4 w-4" />
-											مرحباً، {session.user.name}
+											{t('mrhba')}{session.user.name}
 										</div>
 										<div className="flex items-center">
 											<NotificationBell />
@@ -281,16 +273,14 @@ export default function Header() {
 										className="flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
 									>
 										<LayoutDashboard className="h-5 w-5" />
-										لوحة التحكم
-									</Link>
+										{t('lwhh_althkm')}</Link>
 									<Link
 										href="/dashboard/profile"
 										onClick={() => setIsOpen(false)}
 										className="flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-foreground/80 hover:bg-accent hover:text-primary transition-colors"
 									>
 										<User className="h-5 w-5 text-muted-foreground" />
-										الملف الشخصي
-									</Link>
+										{t('almlf_alshkhsy')}</Link>
 
 									{/* Mobile Dashboard Sub-links */}
 									{links.length > 0 && (
@@ -325,8 +315,7 @@ export default function Header() {
 										className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-destructive hover:bg-destructive/10 transition-colors text-right"
 									>
 										<LogOut className="h-5 w-5" />
-										تسجيل الخروج
-									</button>
+										{t('tsjyl_alkhrwj')}</button>
 								</div>
 							) : (
 								<div className="grid grid-cols-2 gap-2 p-2">
@@ -335,15 +324,13 @@ export default function Header() {
 										onClick={() => setIsOpen(false)}
 										className="text-center px-4 py-2 border border-border rounded-lg text-sm font-semibold hover:bg-accent transition-colors"
 									>
-										تسجيل الدخول
-									</Link>
+										{t('tsjyl_aldkhwl')}</Link>
 									<Link
 										href="/register"
 										onClick={() => setIsOpen(false)}
 										className="text-center px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors"
 									>
-										إنشاء حساب
-									</Link>
+										{t('inshaa_hsab')}</Link>
 								</div>
 							)}
 						</div>

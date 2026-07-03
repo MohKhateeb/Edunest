@@ -3,6 +3,7 @@
 import { Video } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface JoinMeetingButtonProps {
 	bookingId: string;
@@ -15,9 +16,11 @@ export default function JoinMeetingButton({
 	bookingId,
 	variant = "small",
 	className,
-	label = "انضم للغرفة",
+	label,
 }: JoinMeetingButtonProps) {
 	const router = useRouter();
+	const t = useTranslations("common");
+	const resolvedLabel = label ?? t("andm_llghrfh");
 
 	const handleJoin = (e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -34,7 +37,7 @@ export default function JoinMeetingButton({
 				)}
 			>
 				<Video className="w-6 h-6" />
-				{label}
+				{resolvedLabel}
 			</button>
 		);
 	}
@@ -49,7 +52,7 @@ export default function JoinMeetingButton({
 				)}
 			>
 				<Video className="h-4 w-4" />
-				{label}
+				{resolvedLabel}
 			</button>
 		);
 	}
@@ -62,7 +65,7 @@ export default function JoinMeetingButton({
 					"p-0.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded cursor-pointer transition-colors shadow-xs animate-bounce",
 					className,
 				)}
-				title={label}
+				title={resolvedLabel}
 			>
 				<Video className="h-2.5 w-2.5" />
 			</button>
@@ -79,7 +82,7 @@ export default function JoinMeetingButton({
 			)}
 		>
 			<Video className="h-3.5 w-3.5 shrink-0" />
-			{label}
+			{resolvedLabel}
 		</button>
 	);
 }

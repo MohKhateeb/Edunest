@@ -1,10 +1,12 @@
 import { CheckCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface BookingSuccessStateProps {
 	isTrial?: boolean;
 }
 
 export function BookingSuccessState({ isTrial }: BookingSuccessStateProps) {
+    const t = useTranslations('bookings');
 	return (
 		<div className="bg-card border border-border rounded-2xl p-8 shadow-sm max-w-2xl mx-auto">
 			<div className="text-center py-8 space-y-3">
@@ -12,10 +14,10 @@ export function BookingSuccessState({ isTrial }: BookingSuccessStateProps) {
 					<CheckCircle className="h-10 w-10" />
 				</div>
 				<h2 className="text-xl font-bold">
-					{isTrial ? "تم تأكيد حجزك التجريبي بنجاح!" : "تم إرسال طلب الحجز، بانتظار موافقة المعلم"}
+					{isTrial ? t('tm_takyd_hjzk_altjryby') : t('tm_irsal_tlb_alhjz')}
 				</h2>
 				<p className="text-xs text-muted-foreground">
-					{isTrial ? "يتم نقلك الآن إلى قائمة حجوزاتك..." : "سيتم إشعارك فور رد المعلم. يتم نقلك الآن..."}
+					{isTrial ? t('ytm_nqlk_alan_ila') : t('sytm_ishaark_fwr_rd')}
 				</p>
 			</div>
 		</div>

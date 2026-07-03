@@ -51,6 +51,7 @@ import {
 	getDetailedSessionState,
 	type SessionTimeState,
 } from "@/lib/utils/booking-state";
+import { useTranslations } from "next-intl";
 
 type BookingCardProps = {
 	booking: Booking & {
@@ -69,6 +70,7 @@ type BookingCardProps = {
 };
 
 export default function BookingCard({ booking, role }: BookingCardProps) {
+    const t = useTranslations('common');
 	const [loading, setLoading] = useState(false);
 
 	const [showCancelModal, setShowCancelModal] = useState(false);
@@ -88,7 +90,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 
 	const isTrial = booking.isTrial;
 	const priceDisplay = isTrial
-		? "تجريبية مجانية"
+		? t('tjrybyh_mjanyh')
 		: formatPrice(Number(booking.price));
 
 	// Actions
@@ -96,23 +98,23 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 		setLoading(true);
 		const res = await acceptBooking(booking.id);
 		setLoading(false);
-		if (!res.success) toast.error("فشل قبول الحجز", { description: res.error });
-		else toast.success("تم قبول الحجز بنجاح");
+		if (!res.success) toast.error(t('fshl_qbwl_alhjz'), { description: res.error });
+		else toast.success(t('tm_qbwl_alhjz_bnjah'));
 	};
 
 	const handleReject = async () => {
 		setLoading(true);
 		const res = await rejectBooking(booking.id);
 		setLoading(false);
-		if (!res.success) toast.error("فشل رفض الحجز", { description: res.error });
-		else toast.success("تم رفض الحجز");
+		if (!res.success) toast.error(t('fshl_rfd_alhjz'), { description: res.error });
+		else toast.success(t('tm_rfd_alhjz'));
 	};
 
 	const handleCancelSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (cancelReason.trim().length < 5) {
-			toast.warning("سبب الإلغاء قصير جداً", {
-				description: "الرجاء كتابة سبب إلغاء لا يقل عن 5 أحرف",
+			toast.warning(t('sbb_alilghaa_qsyr_jda'), {
+				description: t('alrjaa_ktabh_sbb_ilghaa'),
 			});
 			return;
 		}
@@ -123,13 +125,13 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 		});
 		setLoading(false);
 		if (res.success) {
-			toast.success("تم الإلغاء بنجاح", {
-				description: "تم إلغاء الجلسة وإبلاغ الطرف الآخر",
+			toast.success(t('tm_alilghaa_bnjah'), {
+				description: t('tm_ilghaa_aljlsh_wiblagh'),
 			});
 			setShowCancelModal(false);
 			setCancelReason("");
 		} else {
-			toast.error("فشل إلغاء الحجز", { description: res.error });
+			toast.error(t('fshl_ilghaa_alhjz'), { description: res.error });
 		}
 	};
 
@@ -143,12 +145,12 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 		});
 		setLoading(false);
 		if (res.success) {
-			toast.success("شكراً لتقييمك", {
-				description: "تم إرسال تقييمك للمعلم بنجاح",
+			toast.success(t('shkra_ltqyymk'), {
+				description: t('tm_irsal_tqyymk_llmalm'),
 			});
 			setShowReviewModal(false);
 		} else {
-			toast.error("فشل إرسال التقييم", { description: res.error });
+			toast.error(t('fshl_irsal_altqyym'), { description: res.error });
 		}
 	};
 
@@ -200,14 +202,12 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 								sessionTimeState.status === "closed_escrow") && (
 								<span className="flex items-center gap-1 text-[10px] font-bold px-2 py-1.5 rounded-full bg-rose-100 text-rose-700 border border-rose-300 dark:bg-rose-900/40 dark:text-rose-400">
 									<AlertTriangle className="h-3 w-3" />
-									متأخرة الإغلاق
-								</span>
+									{t('mtakhrh_alighlaq')}</span>
 							)}
 					</div>
 					{isTrial && (
 						<span className="me-2 text-[10px] font-bold px-2 py-1 rounded-full border border-purple-200 bg-purple-50 text-purple-700 dark:bg-purple-950/30 dark:text-purple-400 dark:border-purple-900 mt-2 inline-block">
-							جلسة تجريبية
-						</span>
+							{t('jlsh_tjrybyh')}</span>
 					)}
 				</div>
 
@@ -238,11 +238,11 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 					</h3>
 					<div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-semibold">
 						<Clock className="h-3.5 w-3.5" />
-						<span>{booking.duration} دقيقة</span>
+						<span>{booking.duration} {t('dqyqh')}</span>
 					</div>
 					{booking.questionTitle && (
 						<div className="mt-2 text-xs font-semibold text-muted-foreground bg-accent/40 p-2.5 rounded-xl border border-border flex items-start gap-2">
-							<span className="shrink-0 text-primary">موضوع الجلسة:</span>
+							<span className="shrink-0 text-primary">{t('mwdwa_aljlsh')}</span>
 							<span className="text-foreground">{booking.questionTitle}</span>
 						</div>
 					)}
@@ -286,7 +286,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 						<JoinMeetingButton
 							bookingId={booking.id}
 							variant="large"
-							label="انضم الآن"
+							label={t('andm_alan')}
 						/>
 					) : (
 						<div className="flex-1 flex flex-col items-center">
@@ -295,11 +295,9 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 								className="w-full flex items-center justify-center gap-1.5 text-xs font-bold bg-slate-100 text-slate-400 border border-slate-200 py-2.5 rounded-xl cursor-not-allowed dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500"
 							>
 								<Lock className="h-4 w-4" />
-								رابط الجلسة
-							</button>
+								{t('rabt_aljlsh')}</button>
 							<span className="text-[10px] font-bold text-muted-foreground mt-1 text-center w-full">
-								سيُفتح الرابط قبل الجلسة بـ 5 دقائق
-							</span>
+								{t('syfth_alrabt_qbl_aljlsh')}</span>
 						</div>
 					))}
 
@@ -315,8 +313,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 					)}
 				>
 					<Eye className="h-3.5 w-3.5" />
-					التفاصيل
-				</button>
+					{t('altfasyl')}</button>
 
 				{/* Action icons based on role and status */}
 
@@ -328,8 +325,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 							className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 hover:bg-blue-100 py-2.5 rounded-xl transition-colors"
 						>
 							<FileText className="h-3.5 w-3.5" />
-							إنهاء ورفع التقرير
-						</button>
+							{t('inhaa_wrfa_altqryr')}</button>
 					)}
 
 				{role === "PARENT" &&
@@ -340,8 +336,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 							className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200 hover:bg-amber-100 py-2.5 rounded-xl transition-colors"
 						>
 							<Star className="h-3.5 w-3.5" />
-							تقييم المعلم
-						</button>
+							{t('tqyym_almalm')}</button>
 					)}
 			</div>
 
@@ -353,17 +348,15 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 							onSubmit={handleCancelSubmit}
 							className="bg-card border border-border rounded-xl max-w-md w-full p-6 space-y-4 shadow-xl my-8"
 						>
-							<h3 className="font-extrabold text-lg">إلغاء حجز الجلسة</h3>
+							<h3 className="font-extrabold text-lg">{t('ilghaa_hjz_aljlsh')}</h3>
 							<p className="text-xs text-muted-foreground">
-								يرجى توضيح سبب الإلغاء. تطبق سياسة الاسترداد للمنصة تلقائياً على
-								هذا الإلغاء.
-							</p>
+								{t('yrja_twdyh_sbb_alilghaa')}</p>
 							<textarea
 								required
 								rows={3}
 								value={cancelReason}
 								onChange={(e) => setCancelReason(e.target.value)}
-								placeholder="اكتب سبب إلغاء الحجز هنا (5 أحرف على الأقل)..."
+								placeholder={t('aktb_sbb_ilghaa_alhjz')}
 								className="w-full text-sm premium-input resize-none"
 							/>
 							<div className="flex justify-end gap-3">
@@ -372,15 +365,13 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 									onClick={() => setShowCancelModal(false)}
 									className="text-xs font-semibold border border-border hover:bg-accent px-4 py-2 rounded-lg cursor-pointer"
 								>
-									تراجع
-								</button>
+									{t('traja')}</button>
 								<button
 									type="submit"
 									disabled={loading}
 									className="text-xs font-semibold bg-destructive text-destructive-foreground hover:bg-destructive/90 px-4 py-2 rounded-lg shadow-sm cursor-pointer"
 								>
-									تأكيد الإلغاء
-								</button>
+									{t('takyd_alilghaa')}</button>
 							</div>
 						</form>
 					</div>
@@ -404,13 +395,11 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 							className="bg-card border border-border rounded-xl max-w-md w-full p-6 space-y-4 shadow-xl my-8"
 						>
 							<h3 className="font-extrabold text-lg">
-								تقييم تجربة التعلم مع المعلم
-							</h3>
+								{t('tqyym_tjrbh_altalm_ma')}</h3>
 							<div className="space-y-3">
 								<div className="space-y-1">
 									<label className="block text-xs font-semibold text-muted-foreground">
-										التقييم بالنجوم
-									</label>
+										{t('altqyym_balnjwm')}</label>
 									<div className="flex items-center gap-1.5 mt-1">
 										{[1, 2, 3, 4, 5].map((star) => (
 											<button
@@ -434,15 +423,14 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 								</div>
 								<div className="space-y-1">
 									<label className="block text-xs font-semibold text-muted-foreground">
-										تعليق إضافي (اختياري)
-									</label>
+										{t('talyq_idafy_akhtyary')}</label>
 									<textarea
 										rows={3}
 										value={reviewForm.comment}
 										onChange={(e) =>
 											setReviewForm({ ...reviewForm, comment: e.target.value })
 										}
-										placeholder="اكتب رأيك وتجربتك مع المعلم هنا لمساعدة الآخرين..."
+										placeholder={t('aktb_rayk_wtjrbtk_ma')}
 										className="w-full text-sm premium-input resize-none"
 									/>
 								</div>
@@ -453,15 +441,13 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 									onClick={() => setShowReviewModal(false)}
 									className="text-xs font-semibold border border-border hover:bg-accent px-4 py-2 rounded-lg cursor-pointer"
 								>
-									تراجع
-								</button>
+									{t('traja')}</button>
 								<button
 									type="submit"
 									disabled={loading}
 									className="text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-lg shadow-sm cursor-pointer"
 								>
-									إرسال التقييم
-								</button>
+									{t('irsal_altqyym')}</button>
 							</div>
 						</form>
 					</div>
@@ -478,14 +464,13 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 								<div>
 									<h3 className="font-extrabold text-lg text-foreground flex items-center gap-2">
 										<FileText className="h-5.5 w-5.5 text-primary" />
-										تقرير الجلسة التعليمية المنتهية
-									</h3>
+										{t('tqryr_aljlsh_altalymyh_almnthyh')}</h3>
 									<p className="text-xs text-muted-foreground mt-1">
-										المعلم:{" "}
+										{t('almalm')}{" "}
 										<span className="font-semibold text-foreground">
 											{booking.teacherService.teacher.user.name}
 										</span>{" "}
-										| الطالب:{" "}
+										{t('altalb')}{" "}
 										<span className="font-semibold text-foreground">
 											{booking.student.name}
 										</span>
@@ -494,7 +479,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 								<button
 									onClick={() => setShowViewReportModal(false)}
 									className="text-muted-foreground hover:text-foreground p-1 rounded-lg hover:bg-accent transition-colors"
-									aria-label="إغلاق"
+									aria-label={t('ighlaq')}
 								>
 									✕
 								</button>
@@ -506,24 +491,20 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 								<div className="flex justify-between items-center gap-4 bg-accent/20 p-3.5 rounded-xl border border-border">
 									<div className="space-y-1">
 										<span className="text-xs text-muted-foreground block font-semibold">
-											حضور الطالب
-										</span>
+											{t('hdwr_altalb')}</span>
 										{report.studentAttended ? (
 											<span className="inline-flex items-center gap-1 text-xs font-bold bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900 px-2.5 py-1 rounded-full">
-												✓ حضر الجلسة
-											</span>
+												{t('hdr_aljlsh')}</span>
 										) : (
 											<span className="inline-flex items-center gap-1 text-xs font-bold bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-400 border border-rose-200 dark:border-rose-900 px-2.5 py-1 rounded-full">
-												✗ غاب عن الجلسة
-											</span>
+												{t('ghab_an_aljlsh')}</span>
 										)}
 									</div>
 
 									{report.studentAttended && report.studentPerformance && (
 										<div className="space-y-1 text-left">
 											<span className="text-xs text-muted-foreground block font-semibold">
-												أداء الطالب في الحصة
-											</span>
+												{t('adaa_altalb_fy_alhsh')}</span>
 											<div className="flex items-center gap-1 justify-end">
 												{[1, 2, 3, 4, 5].map((star) => (
 													<Star
@@ -550,8 +531,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 								<div className="space-y-1.5">
 									<span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 										<BookOpen className="h-4 w-4 text-primary" />
-										المواضيع التي تم تغطيتها وشرحها
-									</span>
+										{t('almwadya_alty_tm_tghtytha')}</span>
 									<div className="bg-accent/40 border border-border rounded-xl p-4 text-xs leading-relaxed text-foreground whitespace-pre-wrap">
 										{report.topicsCovered}
 									</div>
@@ -561,15 +541,13 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 								<div className="space-y-1.5">
 									<span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 										<Clock className="h-4 w-4 text-primary" />
-										الواجبات المنزلية والمهام المقررة
-									</span>
+										{t('alwajbat_almnzlyh_walmham_almqrrh')}</span>
 									<div className="bg-accent/40 border border-border rounded-xl p-4 text-xs leading-relaxed text-foreground whitespace-pre-wrap">
 										{report.homeworkAssigned ? (
 											report.homeworkAssigned
 										) : (
 											<span className="text-muted-foreground italic">
-												لم يتم تحديد واجبات منزلية لهذه الحصة.
-											</span>
+												{t('lm_ytm_thdyd_wajbat')}</span>
 										)}
 									</div>
 								</div>
@@ -578,15 +556,13 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 								<div className="space-y-1.5">
 									<span className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 										<FileText className="h-4 w-4 text-primary" />
-										ملاحظات وتوصيات المعلم لولي الأمر
-									</span>
+										{t('mlahdhat_wtwsyat_almalm_lwly')}</span>
 									<div className="bg-accent/40 border border-border rounded-xl p-4 text-xs leading-relaxed text-foreground whitespace-pre-wrap">
 										{report.teacherNotes ? (
 											report.teacherNotes
 										) : (
 											<span className="text-muted-foreground italic">
-												لا توجد ملاحظات إضافية من المعلم.
-											</span>
+												{t('la_twjd_mlahdhat_idafyh')}</span>
 										)}
 									</div>
 								</div>
@@ -599,8 +575,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 									onClick={() => setShowViewReportModal(false)}
 									className="text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 px-5 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer"
 								>
-									إغلاق التقرير
-								</button>
+									{t('ighlaq_altqryr')}</button>
 							</div>
 						</div>
 					</div>

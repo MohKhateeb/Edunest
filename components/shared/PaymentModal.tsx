@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import BaseModal from "@/components/shared/BaseModal";
 import { processPayment } from "@/lib/actions/bookings/pay";
+import { useTranslations } from "next-intl";
 
 export function PaymentModal({
 	bookingId,
@@ -14,6 +15,7 @@ export function PaymentModal({
 	price: number;
 	onClose: () => void;
 }) {
+    const t = useTranslations('common');
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
 	const router = useRouter();
@@ -29,7 +31,7 @@ export function PaymentModal({
 			router.refresh();
 			onClose();
 		} else {
-			setError(res.error || "حدث خطأ أثناء معالجة الدفع");
+			setError(res.error || t('hdth_khta_athnaa_maaljh'));
 			setLoading(false);
 		}
 	};
@@ -56,33 +58,27 @@ export function PaymentModal({
 					</svg>
 				</div>
 				<h3 className="text-xl font-bold text-gray-900 dark:text-white">
-					تأكيد عملية الدفع
-				</h3>
+					{t('takyd_amlyh_aldfa')}</h3>
 				<p className="text-gray-500 dark:text-gray-400 mt-2 text-sm">
-					سيتم خصم المبلغ من بطاقتك الائتمانية لتأكيد الحجز.
-				</p>
+					{t('sytm_khsm_almblgh_mn')}</p>
 			</div>
 
 			<div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-4 mb-6">
 				<div className="flex justify-between items-center mb-2">
-					<span className="text-gray-600 dark:text-gray-300">قيمة الجلسة</span>
+					<span className="text-gray-600 dark:text-gray-300">{t('qymh_aljlsh')}</span>
 					<span className="font-semibold text-gray-900 dark:text-white">
-						{price} شيكل
-					</span>
+						{price} {t('shykl_1')}</span>
 				</div>
 				<div className="flex justify-between items-center mb-2">
-					<span className="text-gray-600 dark:text-gray-300">رسوم إضافية</span>
+					<span className="text-gray-600 dark:text-gray-300">{t('rswm_idafyh')}</span>
 					<span className="font-semibold text-gray-900 dark:text-white">
-						0 شيكل
-					</span>
+						{t('0_shykl')}</span>
 				</div>
 				<div className="border-t border-gray-200 dark:border-gray-600 my-2 pt-2 flex justify-between items-center">
 					<span className="text-gray-900 dark:text-white font-bold">
-						الإجمالي
-					</span>
+						{t('alijmaly')}</span>
 					<span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-						{price} شيكل
-					</span>
+						{price} {t('shykl_1')}</span>
 				</div>
 			</div>
 
@@ -119,10 +115,9 @@ export function PaymentModal({
 									d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
 								></path>
 							</svg>
-							جاري المعالجة...
-						</>
+							{t('jary_almaaljh')}</>
 					) : (
-						"دفع وتأكيد الحجز"
+						t('dfa_wtakyd_alhjz')
 					)}
 				</button>
 
@@ -131,8 +126,7 @@ export function PaymentModal({
 					disabled={loading}
 					className="w-full bg-transparent hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-semibold py-3 px-4 rounded-xl transition-all duration-200"
 				>
-					إلغاء
-				</button>
+					{t('cancel')}</button>
 			</div>
 		</BaseModal>
 	);

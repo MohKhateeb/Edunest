@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import JoinMeetingButton from "@/components/shared/JoinMeetingButton";
 import { processPayment } from "@/lib/actions/bookings/pay";
+import { useTranslations } from "next-intl";
 
 interface SessionLobbyClientProps {
 	bookingId: string;
@@ -39,6 +40,7 @@ export default function SessionLobbyClient({
 	subject,
 	price,
 }: SessionLobbyClientProps) {
+    const t = useTranslations('common');
 	const router = useRouter();
 	const [isPaying, setIsPaying] = useState(false);
 
@@ -53,21 +55,21 @@ export default function SessionLobbyClient({
 
 	const handleSimulatePayment = async () => {
 		setIsPaying(true);
-		toast.loading("جاري معالجة الدفع... 💳", { id: "payment" });
+		toast.loading(t('jary_maaljh_aldfa'), { id: "payment" });
 
 		try {
 			const res = await processPayment(bookingId);
 
 			if (res.success) {
-				toast.success("تم الدفع بنجاح! جاري تجهيز الغرفة...", {
+				toast.success(t('tm_aldfa_bnjah_jary'), {
 					id: "payment",
 				});
 				router.refresh(); // Refresh to get the Meeting URL
 			} else {
-				toast.error(res.error || "حدث خطأ في الدفع", { id: "payment" });
+				toast.error(res.error || t('hdth_khta_fy_aldfa'), { id: "payment" });
 			}
 		} catch (error) {
-			toast.error("خطأ في الاتصال", { id: "payment" });
+			toast.error(t('khta_fy_alatsal'), { id: "payment" });
 		} finally {
 			setIsPaying(false);
 		}
@@ -93,13 +95,13 @@ export default function SessionLobbyClient({
 			</div>
 
 			<h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-2">
-				غرفة الجلسة: {subject}
+				{t('ghrfh_aljlsh')}{subject}
 			</h1>
 			<p className="text-slate-500 mb-10 max-w-lg">
-				هذه هي غرفة الانتظار المشتركة.{" "}
+				{t('hthh_hy_ghrfh_alantdhar')}{" "}
 				{isParent
-					? "قم بالدفع للبدء في جلستك"
-					: "بانتظار إتمام الدفع لفتح الرابط"}
+					? t('qm_baldfa_llbda_fy')
+					: t('bantdhar_itmam_aldfa_lfth')}
 				.
 			</p>
 
@@ -124,7 +126,7 @@ export default function SessionLobbyClient({
 						) : (
 							<Clock className="w-4 h-4" />
 						)}
-						{isPaid ? "تم الدفع، الجلسة جاهزة!" : "بانتظار الدفع..."}
+						{isPaid ? t('tm_aldfa_aljlsh_jahzh') : t('bantdhar_aldfa')}
 					</div>
 
 					{!isPaid ? (
@@ -133,8 +135,7 @@ export default function SessionLobbyClient({
 								<>
 									<div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700">
 										<p className="text-sm text-slate-500 mb-1">
-											المبلغ المطلوب
-										</p>
+											{t('almblgh_almtlwb')}</p>
 										<p className="text-3xl font-black text-slate-800 dark:text-slate-100">
 											{price} ₪
 										</p>
@@ -150,22 +151,17 @@ export default function SessionLobbyClient({
 										) : (
 											<CreditCard className="w-5 h-5" />
 										)}
-										ادفع وابدأ الجلسة الآن
-									</button>
+										{t('adfa_wabda_aljlsh_alan')}</button>
 									<p className="text-xs text-slate-400 mt-2">
-										ملاحظة: هذا زر لمحاكاة الدفع حالياً للتبسيط
-									</p>
+										{t('mlahdhh_htha_zr_lmhakah')}</p>
 								</>
 							) : (
 								<div className="flex flex-col items-center justify-center p-6 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700">
 									<Loader2 className="w-8 h-8 text-amber-500 animate-spin mb-4" />
 									<p className="font-bold text-slate-700 dark:text-slate-300">
-										ننتظر ولي الأمر...
-									</p>
+										{t('nntdhr_wly_alamr')}</p>
 									<p className="text-sm text-slate-500 mt-1">
-										ولي الأمر الآن في صفحة الدفع. سيظهر الرابط هنا تلقائياً بمجرد
-										نجاح العملية.
-									</p>
+										{t('wly_alamr_alan_fy')}</p>
 								</div>
 							)}
 						</div>
@@ -173,19 +169,16 @@ export default function SessionLobbyClient({
 						<div className="space-y-6 animate-in zoom-in duration-500">
 							<div className="p-6 bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-800 rounded-2xl">
 								<p className="text-sm text-emerald-600 dark:text-emerald-400 mb-2">
-									رابط الجلسة الفورية الخاصة بكما
-								</p>
+									{t('rabt_aljlsh_alfwryh_alkhash')}</p>
 								{meetingUrl ? (
 									<JoinMeetingButton
 										bookingId={bookingId}
 										variant="giant"
-										label="ادخل الجلسة الآن"
+										label={t('adkhl_aljlsh_alan')}
 									/>
 								) : (
 									<div className="flex items-center justify-center gap-2 text-amber-600">
-										<AlertCircle className="w-5 h-5" /> جاري توليد الرابط...
-										يرجى الانتظار ثانية
-									</div>
+										<AlertCircle className="w-5 h-5" /> {t('jary_twlyd_alrabt_yrja')}</div>
 								)}
 							</div>
 						</div>

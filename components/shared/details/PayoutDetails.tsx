@@ -5,6 +5,7 @@ import { FileText } from "lucide-react";
 import React from "react";
 import type { commonPayoutInclude } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 export type DetailedPayout = Omit<
 	Prisma.TeacherPayoutGetPayload<{ include: typeof commonPayoutInclude }>,
@@ -23,35 +24,33 @@ interface PayoutDetailsProps {
 }
 
 export default function PayoutDetails({ payout }: PayoutDetailsProps) {
+    const t = useTranslations('common');
 	return (
 		<div className="space-y-6 text-xs text-muted-foreground">
 			{/* Payout Summary Card */}
 			<div className="p-5 bg-gradient-to-br from-emerald-500/10 to-teal-500/10 border border-emerald-500/20 rounded-2xl flex justify-between items-center flex-wrap gap-4">
 				<div>
 					<span className="text-[10px] block font-mono">
-						رقم مستند التسوية: #{payout.id.toUpperCase()}
+						{t('rqm_mstnd_altswyh')}{payout.id.toUpperCase()}
 					</span>
 					<h3 className="text-base font-extrabold text-foreground mt-0.5">
-						مستحقات المعلم: أ. {payout.teacher.user.name}
+						{t('msthqat_almalm_a')}{payout.teacher.user.name}
 					</h3>
 					<span className="text-[10px] text-muted-foreground block mt-1">
-						الفترة المشمولة:{" "}
-						{new Date(payout.periodStart).toLocaleDateString("ar-EG")} إلى{" "}
+						{t('alftrh_almshmwlh')}{" "}
+						{new Date(payout.periodStart).toLocaleDateString("ar-EG")} {t('ila')}{" "}
 						{new Date(payout.periodEnd).toLocaleDateString("ar-EG")}
 					</span>
 				</div>
 				<div className="text-right">
 					<span className="text-[10px] text-muted-foreground block font-bold">
-						الحالة المالية
-					</span>
+						{t('alhalh_almalyh')}</span>
 					{payout.isPaid ? (
 						<span className="bg-emerald-100 text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-400 font-bold px-3 py-1 rounded-full text-[10px] mt-1 inline-block">
-							تم تحويل المستحقات ✓
-						</span>
+							{t('tm_thwyl_almsthqat')}</span>
 					) : (
 						<span className="bg-yellow-100 text-yellow-800 dark:bg-yellow-950/30 dark:text-yellow-400 font-bold px-3 py-1 rounded-full text-[10px] mt-1 inline-block">
-							معلق بانتظار التحويل البنكي
-						</span>
+							{t('malq_bantdhar_althwyl_albnky')}</span>
 					)}
 				</div>
 			</div>
@@ -60,32 +59,28 @@ export default function PayoutDetails({ payout }: PayoutDetailsProps) {
 			<div className="grid grid-cols-2 md:grid-cols-4 gap-4">
 				<div className="p-4 border border-border bg-card rounded-xl text-center">
 					<span className="text-[10px] text-muted-foreground block font-bold">
-						إجمالي رسوم الحصص
-					</span>
+						{t('ijmaly_rswm_alhss')}</span>
 					<span className="text-sm font-extrabold text-foreground">
 						{formatPrice(Number(payout.totalAmount))}
 					</span>
 				</div>
 				<div className="p-4 border border-border bg-card rounded-xl text-center text-rose-600 dark:text-rose-400">
 					<span className="text-[10px] text-muted-foreground block font-bold">
-						خصم عمولة المنصة
-					</span>
+						{t('khsm_amwlh_almnsh')}</span>
 					<span className="text-sm font-extrabold">
 						-{formatPrice(Number(payout.commissionAmount))}
 					</span>
 				</div>
 				<div className="p-4 border border-border bg-card rounded-xl text-center text-purple-600 dark:text-purple-400">
 					<span className="text-[10px] text-muted-foreground block font-bold">
-						تعويض الحصص المجانية
-					</span>
+						{t('tawyd_alhss_almjanyh')}</span>
 					<span className="text-sm font-extrabold">
 						+{formatPrice(Number(payout.trialCompensation))}
 					</span>
 				</div>
 				<div className="p-4 border border-border bg-emerald-500/10 rounded-xl text-center text-primary font-bold">
 					<span className="text-[10px] text-primary block font-bold">
-						الصافي المحول للمعلم
-					</span>
+						{t('alsafy_almhwl_llmalm')}</span>
 					<span className="text-base font-extrabold">
 						{formatPrice(Number(payout.netAmount))}
 					</span>
@@ -96,17 +91,17 @@ export default function PayoutDetails({ payout }: PayoutDetailsProps) {
 			<div className="space-y-3">
 				<h4 className="font-extrabold text-sm border-b border-border pb-2 text-primary flex items-center gap-1.5">
 					<FileText className="h-4.5 w-4.5" />
-					تفاصيل الجلسات المشمولة في هذه الفاتورة ({payout.bookings.length})
+					{t('tfasyl_aljlsat_almshmwlh_fy')}{payout.bookings.length})
 				</h4>
 				<div className="border border-border rounded-xl overflow-hidden bg-card">
 					<table className="w-full text-right border-collapse text-xs">
 						<thead>
 							<tr className="bg-muted/50 text-muted-foreground font-semibold border-b border-border">
-								<th className="p-3">الطالب والخدمة</th>
-								<th className="p-3">تاريخ ووقت الجلسة</th>
-								<th className="p-3">رسوم الحصة</th>
-								<th className="p-3">العمولة المقتطعة</th>
-								<th className="p-3 text-left">المبلغ الصافي</th>
+								<th className="p-3">{t('altalb_walkhdmh')}</th>
+								<th className="p-3">{t('tarykh_wwqt_aljlsh')}</th>
+								<th className="p-3">{t('rswm_alhsh')}</th>
+								<th className="p-3">{t('alamwlh_almqttah')}</th>
+								<th className="p-3 text-left">{t('almblgh_alsafy')}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -139,7 +134,7 @@ export default function PayoutDetails({ payout }: PayoutDetailsProps) {
 										<td className="p-3">
 											{isFree ? (
 												<span className="text-[10px] font-bold text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded">
-													مجانية (تعويض:{" "}
+													{t('mjanyh_tawyd')}{" "}
 													{formatPrice(Number(booking.trialCostToPlatform))})
 												</span>
 											) : (

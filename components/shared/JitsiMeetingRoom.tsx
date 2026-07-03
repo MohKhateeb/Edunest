@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import ReportModal from "@/components/shared/ReportModal";
+import { useTranslations } from "next-intl";
 
 interface JitsiMeetingRoomProps {
 	roomName: string;
@@ -24,6 +25,7 @@ export default function JitsiMeetingRoom({
 	startTime,
 	durationMinutes,
 }: JitsiMeetingRoomProps) {
+    const t = useTranslations('common');
 	const router = useRouter();
 	const [api, setApi] = useState<{
 		executeCommand: (cmd: string) => void;
@@ -91,12 +93,11 @@ export default function JitsiMeetingRoom({
 					<CheckCircle2 className="w-12 h-12" />
 				</div>
 				<h2 className="text-3xl font-black text-slate-800 dark:text-slate-100 mb-2">
-					انتهت الجلسة بنجاح!
-				</h2>
+					{t('antht_aljlsh_bnjah')}</h2>
 				<p className="text-slate-500 mb-8 max-w-md">
 					{role === "TEACHER"
-						? "شكراً لجهودك، يرجى كتابة التقرير الختامي للطالب."
-						: "شكراً لحضورك، نتمنى لك التوفيق! لا تنسَ تقييم المعلم من صفحة الحجوزات."}
+						? t('shkra_ljhwdk_yrja_ktabh')
+						: t('shkra_lhdwrk_ntmna_lk')}
 				</p>
 
 				{role === "PARENT" && (
@@ -104,8 +105,7 @@ export default function JitsiMeetingRoom({
 						onClick={() => router.push("/dashboard/parent/bookings")}
 						className="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold shadow-md transition-all cursor-pointer"
 					>
-						العودة للحجوزات
-					</button>
+						{t('alawdh_llhjwzat')}</button>
 				)}
 
 				{role === "TEACHER" && !showReportModal && (
@@ -114,8 +114,7 @@ export default function JitsiMeetingRoom({
 						className="px-6 py-3 bg-primary hover:bg-primary/90 text-white rounded-xl font-bold shadow-md transition-all flex items-center gap-2 cursor-pointer"
 					>
 						<FileText className="w-5 h-5" />
-						كتابة التقرير الآن
-					</button>
+						{t('ktabh_altqryr_alan')}</button>
 				)}
 
 				{/* Report Modal */}
@@ -139,7 +138,7 @@ export default function JitsiMeetingRoom({
 			<div className="absolute top-0 left-0 right-0 h-14 bg-gradient-to-b from-black/90 to-transparent z-10 flex items-center justify-between px-6 pointer-events-none">
 				<div className="text-white/90 font-semibold text-sm drop-shadow-md flex items-center gap-2">
 					<div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-					{userName} ({role === "TEACHER" ? "المعلم" : "الطالب"})
+					{userName} ({role === "TEACHER" ? t('almalm_1') : t('altalb_1')})
 				</div>
 
 				{timeLeft !== null && (
@@ -150,8 +149,7 @@ export default function JitsiMeetingRoom({
 						{formatTime(timeLeft)}
 						{timeLeft < 300 && (
 							<span className="text-xs ms-2 bg-rose-500/20 px-2 py-0.5 rounded text-rose-300">
-								ينتهي قريباً
-							</span>
+								{t('ynthy_qryba')}</span>
 						)}
 					</div>
 				)}
@@ -223,11 +221,11 @@ export default function JitsiMeetingRoom({
 					onClick={toggleScreenShare}
 					className={`px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg flex items-center gap-2 transition-all cursor-pointer border ${isSharingScreen ? "bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-400/20" : "bg-white/10 hover:bg-white/20 text-white border-white/10"}`}
 					dir="rtl"
-					title="مشاركة الشاشة"
+					title={t('msharkh_alshashh')}
 				>
 					<Monitor className={`w-4 h-4 ${isSharingScreen ? "animate-pulse" : ""}`} />
 					<span className="hidden sm:inline">
-						{isSharingScreen ? "إيقاف المشاركة" : "مشاركة الشاشة"}
+						{isSharingScreen ? t('iyqaf_almsharkh') : t('msharkh_alshashh')}
 					</span>
 				</button>
 				
@@ -239,8 +237,8 @@ export default function JitsiMeetingRoom({
 					dir="rtl"
 				>
 					<AlertTriangle className="w-4 h-4" />
-					<span className="hidden sm:inline">إنهاء الجلسة</span>
-					<span className="sm:hidden">إنهاء</span>
+					<span className="hidden sm:inline">{t('inhaa_aljlsh')}</span>
+					<span className="sm:hidden">{t('inhaa')}</span>
 				</button>
 			</div>
 		</div>

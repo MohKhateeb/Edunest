@@ -1,5 +1,6 @@
 import { Search } from "lucide-react";
 import type { ReactNode } from "react";
+import { useTranslations } from "next-intl";
 
 interface DataTableProps<T> {
 	data: T[];
@@ -36,6 +37,7 @@ export default function DataTable<T>({
 	onPageChange,
 	paginationLabel = "عنصر",
 }: DataTableProps<T>) {
+    const t = useTranslations('common');
 	return (
 		<div className="space-y-4" dir="rtl">
 			{/* Search & Filters Toolbar */}
@@ -96,8 +98,8 @@ export default function DataTable<T>({
 				{onPageChange && totalPages > 1 && (
 					<div className="flex items-center justify-between px-6 py-4 border-t border-border bg-muted/20">
 						<div className="text-xs text-muted-foreground">
-							عرض {(currentPage - 1) * itemsPerPage + 1} إلى{" "}
-							{Math.min(currentPage * itemsPerPage, totalItems)} من {totalItems}{" "}
+							{t('ard')}{(currentPage - 1) * itemsPerPage + 1} {t('ila')}{" "}
+							{Math.min(currentPage * itemsPerPage, totalItems)} {t('mn')}{totalItems}{" "}
 							{paginationLabel}
 						</div>
 						<div className="flex items-center gap-2">
@@ -106,15 +108,13 @@ export default function DataTable<T>({
 								disabled={currentPage === 1}
 								className="px-3 py-1.5 border border-border text-xs rounded-lg hover:bg-muted disabled:opacity-50 transition-colors cursor-pointer"
 							>
-								السابق
-							</button>
+								{t('alsabq')}</button>
 							<button
 								onClick={() => onPageChange(currentPage + 1)}
 								disabled={currentPage === totalPages}
 								className="px-3 py-1.5 border border-border text-xs rounded-lg hover:bg-muted disabled:opacity-50 transition-colors cursor-pointer"
 							>
-								التالي
-							</button>
+								{t('next')}</button>
 						</div>
 					</div>
 				)}

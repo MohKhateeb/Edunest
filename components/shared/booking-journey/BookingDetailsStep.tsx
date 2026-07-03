@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { SERVICES } from "@/lib/translations";
 import type { AvailableTeacher, Student } from "@/types/booking";
+import { useTranslations } from "next-intl";
 
 type BookingDetailsStepProps = {
 	bookingDetails: {
@@ -52,6 +53,7 @@ export function BookingDetailsStep({
 	errorMsg,
 	loading,
 }: BookingDetailsStepProps) {
+    const t = useTranslations('common');
 	const activeService = bookingDetails.selectedTeacher?.services.find(
 		(s) => s.id === bookingDetails.selectedServiceId,
 	);
@@ -65,16 +67,14 @@ export function BookingDetailsStep({
 			<div className="flex items-center justify-between border-b border-border pb-3">
 				<h2 className="font-extrabold text-xl flex items-center gap-2">
 					<BookCheck className="h-5 w-5 text-primary" />
-					تأكيد بيانات الحجز
-				</h2>
+					{t('takyd_byanat_alhjz')}</h2>
 				<button
 					type="button"
 					onClick={() => setCurrentStep("results")}
 					className="text-xs font-bold text-primary hover:underline cursor-pointer flex items-center gap-1"
 				>
 					<ChevronLeft className="h-3.5 w-3.5" />
-					العودة للنتائج
-				</button>
+					{t('alawdh_llntaej')}</button>
 			</div>
 
 			{/* ملخص المعلم والوقت المختار */}
@@ -118,10 +118,9 @@ export function BookingDetailsStep({
 				<div className="space-y-1.5">
 					<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 						<User className="h-4 w-4" />
-						الطالب المستهدف
-					</label>
+						{t('altalb_almsthdf')}</label>
 					<div className="w-full premium-input text-xs bg-muted/50 cursor-not-allowed">
-						{selectedStudent ? `${selectedStudent.name} (الصف ${selectedStudent.grade})` : "لم يتم تحديد الطالب"}
+						{selectedStudent ? `${selectedStudent.name} (الصف ${selectedStudent.grade})` : t('lm_ytm_thdyd_altalb')}
 					</div>
 				</div>
 
@@ -129,8 +128,7 @@ export function BookingDetailsStep({
 				<div className="space-y-1.5">
 					<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 						<BookOpen className="h-4 w-4" />
-						نوع الخدمة المطلوبة
-					</label>
+						{t('nwa_alkhdmh_almtlwbh')}</label>
 					<select
 						value={bookingDetails.selectedServiceId}
 						onChange={(e) =>
@@ -140,8 +138,7 @@ export function BookingDetailsStep({
 					>
 						{bookingDetails.selectedTeacher.services.map((s) => (
 							<option key={s.id} value={s.id}>
-								{s.serviceTypeName} (السعر: {s.price} شيكل / {s.duration} دقيقة)
-							</option>
+								{s.serviceTypeName} {t('alsar')}{s.price} {t('shykl')}{s.duration} {t('dqyqh_1')}</option>
 						))}
 					</select>
 				</div>
@@ -160,9 +157,7 @@ export function BookingDetailsStep({
 							htmlFor="trial-time"
 							className="text-xs font-bold text-purple-800 dark:text-purple-300 cursor-pointer"
 						>
-							هل ترغب في حجز هذه الجلسة كـ حصة تجريبية مجانية؟ (30 دقيقة - مرة
-							واحدة لكل ولي أمر)
-						</label>
+							{t('hl_trghb_fy_hjz')}</label>
 					</div>
 				)}
 
@@ -170,13 +165,11 @@ export function BookingDetailsStep({
 				{activeService?.serviceTypeName === SERVICES.QUICK_HELP && (
 					<div className="bg-accent/40 border border-border rounded-xl p-4 space-y-3 animate-fadeIn">
 						<h3 className="text-xs font-bold text-primary">
-							بيانات المسألة السريعة المطلوب شرحها:
-						</h3>
+							{t('byanat_almsalh_alsryah_almtlwb')}</h3>
 
 						<div className="space-y-1">
 							<label className="text-[11px] font-semibold text-muted-foreground block">
-								عنوان السؤال / المسألة *
-							</label>
+								{t('anwan_alsoal_almsalh')}</label>
 							<input
 								type="text"
 								name="questionTitle"
@@ -185,15 +178,14 @@ export function BookingDetailsStep({
 								onChange={(e) =>
 									handleBookingChange("questionTitle", e.target.value)
 								}
-								placeholder="مثال: حل معادلة تفاضلية من الدرجة الثانية"
+								placeholder={t('mthal_hl_maadlh_tfadlyh')}
 								className="w-full premium-input text-xs"
 							/>
 						</div>
 
 						<div className="space-y-1">
 							<label className="text-[11px] font-semibold text-muted-foreground block">
-								تفاصيل المسألة أو الواجب الدراسي *
-							</label>
+								{t('tfasyl_almsalh_aw_alwajb')}</label>
 							<textarea
 								name="questionDetails"
 								required
@@ -202,7 +194,7 @@ export function BookingDetailsStep({
 								onChange={(e) =>
 									handleBookingChange("questionDetails", e.target.value)
 								}
-								placeholder="اكتب تفاصيل المسألة الحسابية أو الدرس المطلوب شرحه بالتفصيل..."
+								placeholder={t('aktb_tfasyl_almsalh_alhsabyh')}
 								className="w-full premium-input text-xs resize-none"
 							/>
 						</div>
@@ -212,14 +204,13 @@ export function BookingDetailsStep({
 				{/* ملاحظات */}
 				<div className="space-y-1.5">
 					<label className="text-xs font-bold text-muted-foreground">
-						ملاحظات إضافية للمعلم (اختياري)
-					</label>
+						{t('mlahdhat_idafyh_llmalm_akhtyary')}</label>
 					<textarea
 						name="parentNotes"
 						rows={2}
 						value={bookingDetails.parentNotes}
 						onChange={(e) => handleBookingChange("parentNotes", e.target.value)}
-						placeholder="أي ملاحظات أو تفاصيل تريد مشاركتها مع المعلم..."
+						placeholder={t('ay_mlahdhat_aw_tfasyl')}
 						className="w-full text-xs premium-input resize-none"
 					/>
 				</div>
@@ -234,10 +225,9 @@ export function BookingDetailsStep({
 						{loading ? (
 							<>
 								<Loader2 className="h-4.5 w-4.5 animate-spin" />
-								جاري معالجة وحفظ الحجز...
-							</>
+								{t('jary_maaljh_whfdh_alhjz')}</>
 						) : (
-							"تأكيد طلب حجز الجلسة"
+							t('takyd_tlb_hjz_aljlsh')
 						)}
 					</button>
 				</div>

@@ -10,6 +10,7 @@ import {
 	YAxis,
 } from "recharts";
 import { formatPrice } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface ChartDataPoint {
 	date: string;
@@ -36,17 +37,18 @@ interface TeacherEarningsChartProps {
 }
 
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
+    const t = useTranslations('common');
 	if (active && payload && payload.length) {
 		return (
 			<div className="bg-card border border-border p-3 rounded-lg shadow-lg rtl text-right">
 				<p className="font-bold text-sm mb-2">{label}</p>
 				<div className="space-y-1">
 					<p className="text-emerald-600 text-sm font-semibold flex justify-between gap-4">
-						<span>الأرباح:</span>
+						<span>{t('alarbah')}</span>
 						<span>{formatPrice(payload[0].value)}</span>
 					</p>
 					<p className="text-blue-600 text-sm font-semibold flex justify-between gap-4">
-						<span>الجلسات:</span>
+						<span>{t('aljlsat')}</span>
 						<span>{payload[1].value}</span>
 					</p>
 				</div>
@@ -59,12 +61,12 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 export default function TeacherEarningsChart({
 	data,
 }: TeacherEarningsChartProps) {
+    const t = useTranslations('common');
 	// If no data, show a placeholder
 	if (!data || data.length === 0) {
 		return (
 			<div className="h-64 flex items-center justify-center text-muted-foreground text-sm bg-muted/20 rounded-xl border border-dashed border-border">
-				لا توجد بيانات كافية لعرض الرسم البياني.
-			</div>
+				{t('la_twjd_byanat_kafyh')}</div>
 		);
 	}
 
@@ -126,7 +128,7 @@ export default function TeacherEarningsChart({
 						strokeWidth={2}
 						fillOpacity={1}
 						fill="url(#colorEarnings)"
-						name="الأرباح"
+						name={t('alarbah_1')}
 					/>
 					<Area
 						yAxisId="right"
@@ -136,7 +138,7 @@ export default function TeacherEarningsChart({
 						strokeWidth={2}
 						fillOpacity={1}
 						fill="url(#colorSessions)"
-						name="الجلسات"
+						name={t('aljlsat_1')}
 					/>
 				</AreaChart>
 			</ResponsiveContainer>

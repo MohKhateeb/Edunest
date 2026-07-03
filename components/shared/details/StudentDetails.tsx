@@ -14,6 +14,7 @@ import React from "react";
 import { BOOKING_STATUS_AR, BOOKING_STATUS_STYLES } from "@/lib/translations";
 import type { commonStudentInclude } from "@/lib/types";
 import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 export type DetailedStudent = Prisma.StudentGetPayload<{
 	include: typeof commonStudentInclude;
@@ -33,6 +34,7 @@ export default function StudentDetails({
 	activeTab,
 	setActiveTab,
 }: StudentDetailsProps) {
+    const t = useTranslations('common');
 	const avgPerformance = student.calculatedAvgPerformance;
 
 	return (
@@ -49,7 +51,7 @@ export default function StudentDetails({
 						</h3>
 						<div className="flex flex-wrap gap-2 mt-1">
 							<span className="text-[10px] bg-primary/20 text-primary px-2.5 py-0.5 rounded-full font-bold">
-								الصف الدراسي {student.grade}
+								{t('alsf_aldrasy')}{student.grade}
 							</span>
 							{student.school && (
 								<span className="text-[10px] bg-muted text-muted-foreground px-2.5 py-0.5 rounded-full flex items-center gap-1 font-semibold">
@@ -64,16 +66,14 @@ export default function StudentDetails({
 				{avgPerformance && (
 					<div className="text-left sm:text-right bg-violet-500/10 border border-violet-500/20 px-4 py-2.5 rounded-xl">
 						<span className="text-[10px] text-muted-foreground block font-bold">
-							مستوى الأداء الدراسي
-						</span>
+							{t('mstwa_aladaa_aldrasy')}</span>
 						<div className="flex items-center gap-1 mt-0.5 justify-end">
 							<Star className="h-4 w-4 text-violet-500 fill-currentColor" />
 							<span className="font-extrabold text-violet-600 dark:text-violet-400 text-sm">
 								{avgPerformance} / 5.0
 							</span>
 							<span className="text-[10px] text-muted-foreground">
-								({student.calculatedReportsCount} تقارير)
-							</span>
+								({student.calculatedReportsCount} {t('tqaryr')}</span>
 						</div>
 					</div>
 				)}
@@ -90,8 +90,7 @@ export default function StudentDetails({
 							: "border-transparent text-muted-foreground hover:text-foreground",
 					)}
 				>
-					البيانات الأساسية لولي الأمر
-				</button>
+					{t('albyanat_alasasyh_lwly_alamr')}</button>
 				<button
 					onClick={() => setActiveTab("history")}
 					className={cn(
@@ -101,7 +100,7 @@ export default function StudentDetails({
 							: "border-transparent text-muted-foreground hover:text-foreground",
 					)}
 				>
-					سجل الحصص والجلسات ({student.bookings.length})
+					{t('sjl_alhss_waljlsat')}{student.bookings.length})
 				</button>
 			</div>
 
@@ -111,21 +110,18 @@ export default function StudentDetails({
 					<div className="p-5 border border-border bg-accent/10 rounded-xl space-y-3">
 						<h4 className="font-extrabold text-sm border-b border-border/50 pb-2 flex items-center gap-1.5 text-primary">
 							<User className="h-4.5 w-4.5" />
-							بيانات ولي الأمر المسئول
-						</h4>
+							{t('byanat_wly_alamr_almsewl')}</h4>
 						<div className="text-xs space-y-2">
 							<div className="flex justify-between">
 								<span className="text-muted-foreground font-semibold">
-									الاسم الكامل:
-								</span>
+									{t('alasm_alkaml')}</span>
 								<span className="font-bold text-foreground">
 									{student.parent.name}
 								</span>
 							</div>
 							<div className="flex justify-between">
 								<span className="text-muted-foreground font-semibold">
-									البريد الإلكتروني:
-								</span>
+									{t('albryd_alilktrwny_1')}</span>
 								<span className="font-bold text-foreground">
 									{student.parent.email}
 								</span>
@@ -133,8 +129,7 @@ export default function StudentDetails({
 							{student.parent.phone && (
 								<div className="flex justify-between">
 									<span className="text-muted-foreground font-semibold">
-										رقم الجوال:
-									</span>
+										{t('rqm_aljwal')}</span>
 									<span className="font-bold text-foreground">
 										{student.parent.phone}
 									</span>
@@ -146,28 +141,25 @@ export default function StudentDetails({
 					<div className="p-5 border border-border bg-accent/10 rounded-xl space-y-3">
 						<h4 className="font-extrabold text-sm border-b border-border/50 pb-2 flex items-center gap-1.5 text-primary">
 							<Clock className="h-4.5 w-4.5" />
-							بيانات النظام
-						</h4>
+							{t('byanat_alndham')}</h4>
 						<div className="text-xs space-y-2">
 							<div className="flex justify-between">
 								<span className="text-muted-foreground font-semibold">
-									تاريخ التسجيل بالمنصة:
-								</span>
+									{t('tarykh_altsjyl_balmnsh')}</span>
 								<span className="font-bold text-foreground">
 									{new Date(student.createdAt).toLocaleDateString("ar-EG")}
 								</span>
 							</div>
 							<div className="flex justify-between">
 								<span className="text-muted-foreground font-semibold">
-									حالة الحساب:
-								</span>
+									{t('halh_alhsab')}</span>
 								<span
 									className={cn(
 										"font-bold text-xs",
 										student.isActive ? "text-emerald-600" : "text-rose-500",
 									)}
 								>
-									{student.isActive ? "نشط ومؤهل للحجز" : "غير نشط"}
+									{student.isActive ? t('nsht_wmohl_llhjz') : t('ghyr_nsht')}
 								</span>
 							</div>
 						</div>
@@ -179,8 +171,7 @@ export default function StudentDetails({
 				<div className="space-y-4">
 					{student.bookings.length === 0 ? (
 						<p className="text-xs text-muted-foreground py-10 text-center bg-accent/10 border border-border rounded-xl">
-							لا توجد حجوزات مسجلة لهذا الطالب بعد.
-						</p>
+							{t('la_twjd_hjwzat_msjlh')}</p>
 					) : (
 						<div className="space-y-3 max-h-[40vh] overflow-y-auto pe-1">
 							{student.bookings.map((booking) => (
@@ -203,7 +194,7 @@ export default function StudentDetails({
 											</span>
 										</div>
 										<p className="text-muted-foreground">
-											المعلم:{" "}
+											{t('almalm')}{" "}
 											<strong className="text-foreground">
 												{booking.teacherService.teacher.user.name}
 											</strong>
@@ -215,21 +206,20 @@ export default function StudentDetails({
 											</span>
 											<span className="flex items-center gap-1">
 												<Clock className="h-3.5 w-3.5" />
-												{booking.duration} دقيقة
-											</span>
+												{booking.duration} {t('dqyqh')}</span>
 										</div>
 									</div>
 
 									<div className="text-right flex flex-col justify-between items-end gap-2">
 										<span className="font-extrabold text-primary block">
 											{booking.isTrial
-												? "تجريبية مجانية"
+												? t('tjrybyh_mjanyh')
 												: formatPrice(Number(booking.price))}
 										</span>
 										{booking.status === "COMPLETED" && booking.report && (
 											<div className="flex items-center gap-1 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-900 text-[10px]">
 												<FileText className="h-3 w-3" />
-												<span>التقرير متوفر</span>
+												<span>{t('altqryr_mtwfr')}</span>
 											</div>
 										)}
 									</div>

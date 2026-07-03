@@ -8,6 +8,7 @@ import {
 	User,
 } from "lucide-react";
 import type { Student } from "@/types/booking";
+import { useTranslations } from "next-intl";
 
 type TimeSearchStepProps = {
 	searchQuery: {
@@ -37,12 +38,12 @@ export function TimeSearchStep({
 	searching,
 	searchError,
 }: TimeSearchStepProps) {
+    const t = useTranslations('common');
 	return (
 		<div className="bg-card border border-border rounded-2xl p-8 shadow-sm space-y-6 animate-fadeIn">
 			<h2 className="font-extrabold text-xl border-b border-border pb-3 flex items-center gap-2">
 				<Search className="h-5 w-5 text-primary" />
-				ابحث عن معلم بالوقت والمادة
-			</h2>
+				{t('abhth_an_malm_balwqt')}</h2>
 
 			{searchError && (
 				<div className="flex items-center gap-2 text-xs text-destructive bg-destructive/10 px-3 py-2.5 rounded-lg border border-destructive/20">
@@ -55,19 +56,17 @@ export function TimeSearchStep({
 			<div className="space-y-1.5">
 				<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 					<User className="h-4 w-4" />
-					الطالب المستهدف
-				</label>
+					{t('altalb_almsthdf')}</label>
 				<select
 					value={searchQuery.selectedStudentId}
 					onChange={(e) => handleSearchChange("selectedStudentId", e.target.value)}
 					className="w-full premium-input text-xs"
 				>
 					<option value="" disabled>
-						اختر الطالب
-					</option>
+						{t('akhtr_altalb')}</option>
 					{students.map((s) => (
 						<option key={s.id} value={s.id}>
-							{s.name} (الصف {s.grade})
+							{s.name} {t('alsf_1')}{s.grade})
 						</option>
 					))}
 				</select>
@@ -77,20 +76,17 @@ export function TimeSearchStep({
 			<div className="space-y-1.5">
 				<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 					<BookOpen className="h-4 w-4" />
-					المادة الدراسية / التخصص
-				</label>
+					{t('almadh_aldrasyh_altkhss')}</label>
 				<select
 					value={searchQuery.selectedSpec}
 					onChange={(e) => handleSearchChange("selectedSpec", e.target.value)}
 					className="w-full premium-input text-xs"
 				>
 					<option value="" disabled>
-						اختر المادة
-					</option>
+						{t('akhtr_almadh')}</option>
 					{subjects.length === 0 ? (
 						<option value="" disabled>
-							لا توجد مواد متاحة حالياً
-						</option>
+							{t('la_twjd_mwad_mtahh')}</option>
 					) : (
 						subjects.map((s) => (
 							<option key={s.id} value={s.id}>
@@ -105,8 +101,7 @@ export function TimeSearchStep({
 			<div className="space-y-1.5">
 				<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 					<Calendar className="h-4 w-4" />
-					التاريخ المطلوب
-				</label>
+					{t('altarykh_almtlwb')}</label>
 				<input
 					type="date"
 					min={minDateString}
@@ -120,14 +115,13 @@ export function TimeSearchStep({
 			<div className="space-y-1.5">
 				<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 					<Clock className="h-4 w-4" />
-					الوقت المفضل (بتوقيت فلسطين)
-				</label>
+					{t('alwqt_almfdl_btwqyt_flstyn')}</label>
 				<select
 					value={searchQuery.selectedTime}
 					onChange={(e) => handleSearchChange("selectedTime", e.target.value)}
 					className="w-full premium-input text-xs"
 				>
-					<option value="">-- اختر الوقت --</option>
+					<option value="">{t('akhtr_alwqt')}</option>
 					{timeOptions.map((opt) => (
 						<option key={opt.value} value={opt.value}>
 							{opt.label}
@@ -146,13 +140,11 @@ export function TimeSearchStep({
 				{searching ? (
 					<>
 						<Loader2 className="h-4.5 w-4.5 animate-spin" />
-						جاري البحث عن معلمين متاحين...
-					</>
+						{t('jary_albhth_an_malmyn')}</>
 				) : (
 					<>
 						<Search className="h-4.5 w-4.5" />
-						ابحث عن المعلمين المتاحين
-					</>
+						{t('abhth_an_almalmyn_almtahyn')}</>
 				)}
 			</button>
 		</div>

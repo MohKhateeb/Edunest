@@ -8,6 +8,7 @@ import {
 	getLocalDateString,
 	PALESTINE_TZ,
 } from "@/lib/utils/time";
+import { useTranslations } from "next-intl";
 
 type SlotPickerProps = {
 	availability: {
@@ -29,6 +30,7 @@ export default function TimeSlotPicker({
 	duration,
 	onChange,
 }: SlotPickerProps) {
+    const t = useTranslations('common');
 	const [selectedDate, setSelectedDate] = useState("");
 	const [selectedSlotTime, setSelectedSlotTime] = useState<number | null>(null);
 	const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
@@ -181,16 +183,15 @@ export default function TimeSlotPicker({
 				<div className="flex justify-between items-center">
 					<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 						<Calendar className="h-4 w-4 text-primary" />
-						اختر تاريخ الحصة المطلوب
-					</label>
+						{t('akhtr_tarykh_alhsh_almtlwb')}</label>
 					<button
 						type="button"
 						onClick={() => setShowCustomDatePicker(!showCustomDatePicker)}
 						className="text-[11px] font-bold text-primary hover:underline cursor-pointer flex items-center gap-1"
 					>
 						{showCustomDatePicker
-							? "← العودة للتواريخ القريبة"
-							: "أو اختر تاريخاً آخر..."}
+							? t('alawdh_lltwarykh_alqrybh')
+							: t('aw_akhtr_tarykha_akhr')}
 					</button>
 				</div>
 
@@ -235,8 +236,7 @@ export default function TimeSlotPicker({
 										/>
 									) : (
 										<span className="text-[8px] text-muted-foreground scale-90 block mt-0.5 font-medium">
-											عطلة
-										</span>
+											{t('atlh')}</span>
 									)}
 								</button>
 							);
@@ -264,20 +264,17 @@ export default function TimeSlotPicker({
 				<div className="space-y-4 border-t border-border/60 pt-4 animate-fadeIn">
 					<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 						<Clock className="h-4 w-4 text-primary" />
-						الأوقات المتاحة ليوم{" "}
+						{t('alawqat_almtahh_lywm')}{" "}
 						<span className="text-foreground font-semibold">
 							{selectedDateLabel}
 						</span>{" "}
-						(بتوقيت فلسطين)
-					</label>
+						{t('btwqyt_flstyn')}</label>
 
 					{availableSlots.length === 0 ? (
 						<div className="flex items-center gap-2 text-xs text-amber-700 bg-amber-50 px-3.5 py-3 rounded-xl border border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-900">
 							<AlertCircle className="h-4.5 w-4.5 text-amber-600 shrink-0" />
 							<span>
-								نعتذر، لا توجد أوقات عمل متاحة للمعلم في هذا اليوم أو تم حجزها
-								بالكامل. يرجى اختيار تاريخ آخر.
-							</span>
+								{t('natthr_la_twjd_awqat')}</span>
 						</div>
 					) : (
 						<div className="space-y-4">
@@ -286,8 +283,7 @@ export default function TimeSlotPicker({
 								<div className="space-y-2">
 									<span className="text-[11px] font-bold text-muted-foreground/85 flex items-center gap-1.5">
 										<Sun className="h-3.5 w-3.5 text-amber-500" />
-										الفترة الصباحية
-									</span>
+										{t('alftrh_alsbahyh')}</span>
 									<div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
 										{morningSlots.map((slot, idx) => {
 											const isSelected =
@@ -320,8 +316,7 @@ export default function TimeSlotPicker({
 								<div className="space-y-2">
 									<span className="text-[11px] font-bold text-muted-foreground/85 flex items-center gap-1.5">
 										<Moon className="h-3.5 w-3.5 text-indigo-500" />
-										الفترة المسائية
-									</span>
+										{t('alftrh_almsaeyh')}</span>
 									<div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
 										{eveningSlots.map((slot, idx) => {
 											const isSelected =

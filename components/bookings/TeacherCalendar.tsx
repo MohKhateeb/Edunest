@@ -7,6 +7,7 @@ import { useMemo } from "react";
 import type { DetailedBooking } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { getLocalDateString } from "@/lib/utils/time";
+import { useTranslations } from "next-intl";
 
 const MONTHS_AR = [
 	"يناير",
@@ -39,6 +40,7 @@ export function TeacherCalendar({
 	selectedDateStr,
 	setSelectedDateStr,
 }: TeacherCalendarProps) {
+    const t = useTranslations('bookings');
 	const year = currentDate.getFullYear();
 	const month = currentDate.getMonth();
 
@@ -107,14 +109,12 @@ export function TeacherCalendar({
 			<div className="flex items-center justify-between mb-4">
 				<h2 className="font-extrabold text-sm flex items-center gap-2">
 					<CalendarIcon className="h-4.5 w-4.5 text-primary" />
-					التقويم
-				</h2>
+					{t('altqwym')}</h2>
 				<button
 					onClick={handleToday}
 					className="text-[10px] font-bold bg-primary/10 text-primary hover:bg-primary/20 px-3 py-1 rounded-full transition-colors"
 				>
-					اليوم
-				</button>
+					{t('alywm')}</button>
 			</div>
 
 			<div className="flex items-center justify-between mb-4 bg-accent/40 rounded-xl p-1.5 border border-border">

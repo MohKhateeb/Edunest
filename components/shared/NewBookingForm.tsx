@@ -18,6 +18,7 @@ import { useBookingSubmission } from "@/hooks/useBookingSubmission";
 import { createBooking } from "@/lib/actions/booking";
 import { SERVICES } from "@/lib/translations";
 import TimeSlotPicker from "./TimeSlotPicker";
+import { useTranslations } from "next-intl";
 
 type Student = {
 	id: string;
@@ -70,6 +71,7 @@ export default function NewBookingForm({
 	teachers,
 	hasUsedTrial,
 }: NewBookingFormProps) {
+    const t = useTranslations('common');
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const teacherParam = searchParams.get("teacher");
@@ -132,19 +134,19 @@ export default function NewBookingForm({
 	const handleBookingSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (!formData.selectedStudentId) {
-			setErrorMsg("يرجى تحديد الطالب");
+			setErrorMsg(t('yrja_thdyd_altalb'));
 			return;
 		}
 		if (!formData.selectedTutorId) {
-			setErrorMsg("يرجى تحديد المعلم");
+			setErrorMsg(t('yrja_thdyd_almalm'));
 			return;
 		}
 		if (!formData.selectedServiceId) {
-			setErrorMsg("يرجى تحديد نوع الخدمة المطلوب حجزها");
+			setErrorMsg(t('yrja_thdyd_nwa_alkhdmh'));
 			return;
 		}
 		if (!formData.startTime) {
-			setErrorMsg("يرجى تحديد تاريخ ووقت الجلسة المطلوب");
+			setErrorMsg(t('yrja_thdyd_tarykh_wwqt'));
 			return;
 		}
 
@@ -182,8 +184,7 @@ export default function NewBookingForm({
 				) : (
 					<form onSubmit={handleBookingSubmit} className="space-y-6">
 						<h2 className="font-extrabold text-xl border-b border-border pb-3 flex items-center gap-2">
-							جدولة حجز جلسة جديدة
-						</h2>
+							{t('jdwlh_hjz_jlsh_jdydh')}</h2>
 
 						{errorMsg && (
 							<div className="flex items-center gap-2 text-xs text-destructive bg-destructive/10 px-3 py-2.5 rounded-lg border border-destructive/20">
@@ -195,8 +196,7 @@ export default function NewBookingForm({
 						<div className="space-y-1.5">
 							<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 								<User className="h-4 w-4" />
-								الطالب المستهدف
-							</label>
+								{t('altalb_almsthdf')}</label>
 							<select
 								value={formData.selectedStudentId}
 								onChange={(e) =>
@@ -206,7 +206,7 @@ export default function NewBookingForm({
 							>
 								{students.map((s) => (
 									<option key={s.id} value={s.id}>
-										{s.name} (الصف {s.grade})
+										{s.name} {t('alsf_1')}{s.grade})
 									</option>
 								))}
 							</select>
@@ -215,8 +215,7 @@ export default function NewBookingForm({
 						<div className="space-y-1.5">
 							<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 								<User className="h-4 w-4" />
-								اختيار المعلم الخصوصي
-							</label>
+								{t('akhtyar_almalm_alkhswsy')}</label>
 							<select
 								value={formData.selectedTutorId}
 								onChange={(e) => {
@@ -229,7 +228,7 @@ export default function NewBookingForm({
 								}}
 								className="w-full premium-input text-xs"
 							>
-								<option value="">-- اختر معلماً من القائمة --</option>
+								<option value="">{t('akhtr_malma_mn')}</option>
 								{teachers.map((t) => (
 									<option key={t.id} value={t.id}>
 										{t.user.name}
@@ -258,8 +257,7 @@ export default function NewBookingForm({
 										{activeTutor.user.name}
 									</h4>
 									<p className="text-xs text-muted-foreground">
-										معلم معتمد وموثق على المنصة
-									</p>
+										{t('malm_matmd_wmwthq_ala')}</p>
 								</div>
 							</div>
 						)}
@@ -268,8 +266,7 @@ export default function NewBookingForm({
 							<div className="space-y-1.5 animate-fadeIn">
 								<label className="text-xs font-bold text-muted-foreground flex items-center gap-1.5">
 									<BookOpen className="h-4 w-4" />
-									نوع الخدمة المطلوبة
-								</label>
+									{t('nwa_alkhdmh_almtlwbh')}</label>
 								<select
 									value={formData.selectedServiceId}
 									onChange={(e) => {
@@ -281,12 +278,11 @@ export default function NewBookingForm({
 									}}
 									className="w-full premium-input text-xs"
 								>
-									<option value="">-- اختر الخدمة المطلوبة --</option>
+									<option value="">{t('akhtr_alkhdmh_almtlwbh')}</option>
 									{activeTutor.services.map((s) => (
 										<option key={s.id} value={s.id}>
-											{s.serviceType.name} (السعر: {s.price} شيكل / {s.duration}{" "}
-											دقيقة)
-										</option>
+											{s.serviceType.name} {t('alsar')}{s.price} {t('shykl')}{s.duration}{" "}
+											{t('dqyqh_1')}</option>
 									))}
 								</select>
 							</div>
@@ -324,14 +320,13 @@ export default function NewBookingForm({
 						{formData.startTime && (
 							<div className="space-y-1.5">
 								<label className="text-xs font-bold text-muted-foreground">
-									ملاحظات إضافية للمعلم (اختياري)
-								</label>
+									{t('mlahdhat_idafyh_llmalm_akhtyary')}</label>
 								<textarea
 									name="parentNotes"
 									rows={2}
 									value={formData.parentNotes}
 									onChange={handleChange}
-									placeholder="أي ملاحظات أو تفاصيل تريد مشاركتها مع المعلم..."
+									placeholder={t('ay_mlahdhat_aw_tfasyl')}
 									className="w-full text-xs premium-input resize-none"
 								/>
 							</div>
@@ -348,10 +343,9 @@ export default function NewBookingForm({
 									{loading ? (
 										<>
 											<Loader2 className="h-4.5 w-4.5 animate-spin" />
-											جاري معالجة وحفظ الحجز...
-										</>
+											{t('jary_maaljh_whfdh_alhjz')}</>
 									) : (
-										"تأكيد طلب حجز الجلسة"
+										t('takyd_tlb_hjz_aljlsh')
 									)}
 								</button>
 							</div>

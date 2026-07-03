@@ -15,6 +15,7 @@ import {
 import { useState } from "react";
 import { updateWeeklyAvailability } from "@/lib/actions/availability";
 import { DAYS_OF_WEEK_AR } from "@/lib/translations";
+import { useTranslations } from "next-intl";
 
 type AvailabilityItem = {
 	dayOfWeek: number;
@@ -29,6 +30,7 @@ type AvailabilityFormProps = {
 export default function AvailabilityForm({
 	initialAvailability,
 }: AvailabilityFormProps) {
+    const t = useTranslations('common');
 	const [availability, setAvailability] = useState<AvailabilityItem[]>(
 		initialAvailability.sort(
 			(a, b) =>
@@ -71,12 +73,12 @@ export default function AvailabilityForm({
 		setSuccessMsg(null);
 
 		if (inlineStart >= inlineEnd) {
-			setErrorMsg("وقت الانتهاء يجب أن يكون بعد وقت البدء");
+			setErrorMsg(t('wqt_alanthaa_yjb_an'));
 			return;
 		}
 
 		if (checkOverlap(day, inlineStart, inlineEnd)) {
-			setErrorMsg("هذا الوقت يتداخل مع فترة عمل مضافة مسبقاً في نفس اليوم");
+			setErrorMsg(t('htha_alwqt_ytdakhl_ma'));
 			return;
 		}
 
@@ -175,7 +177,7 @@ export default function AvailabilityForm({
 		setAvailability(updated);
 		setCopySourceDay(null);
 		setSuccessMsg(
-			"تم نسخ جدول التوفر للأيام المحددة بنجاح (يرجى حفظ التغييرات)",
+			t('tm_nskh_jdwl_altwfr'),
 		);
 	};
 
@@ -186,7 +188,7 @@ export default function AvailabilityForm({
 
 		// Confirmation fallback
 		const confirm = window.confirm(
-			"سيتم استبدال جدول التوفر الحالي بجدول قياسي (9:00 - 17:00) من الأحد إلى الخميس. هل تريد المتابعة؟",
+			t('sytm_astbdal_jdwl_altwfr'),
 		);
 		if (!confirm) return;
 
@@ -201,7 +203,7 @@ export default function AvailabilityForm({
 
 		setAvailability(standardSlots);
 		setSuccessMsg(
-			"تم تطبيق الجدول القياسي المقترح. يرجى الضغط على حفظ التغييرات لتثبيته.",
+			t('tm_ttbyq_aljdwl_alqyasy'),
 		);
 	};
 
@@ -211,7 +213,7 @@ export default function AvailabilityForm({
 		setSuccessMsg(null);
 
 		const confirm = window.confirm(
-			"هل أنت متأكد من رغبتك في تصفير وحذف جميع فترات التوفر بالكامل؟",
+			t('hl_ant_mtakd_mn'),
 		);
 		if (!confirm) return;
 
@@ -228,9 +230,9 @@ export default function AvailabilityForm({
 		setLoading(false);
 
 		if (res.success) {
-			setSuccessMsg("تم حفظ أوقات التوفر بنجاح في النظام");
+			setSuccessMsg(t('tm_hfdh_awqat_altwfr'));
 		} else {
-			setErrorMsg(res.error || "حدث خطأ أثناء حفظ التغييرات");
+			setErrorMsg(res.error || t('hdth_khta_athnaa_hfdh'));
 		}
 	};
 
@@ -240,12 +242,9 @@ export default function AvailabilityForm({
 			<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4 transition-all hover:shadow-md">
 				<div>
 					<h1 className="text-2xl font-extrabold mb-1">
-						جدول التوفر الأسبوعي المعتاد
-					</h1>
+						{t('jdwl_altwfr_alasbway_almatad')}</h1>
 					<p className="text-xs text-muted-foreground max-w-xl leading-relaxed">
-						حدد أوقات تفرغك المعتادة أسبوعياً لتقديم الجلسات التعليمية. لن يتمكن
-						أولياء الأمور من حجز حصص معك خارج هذه الفترات المعتمدة.
-					</p>
+						{t('hdd_awqat_tfrghk_almatadh')}</p>
 				</div>
 
 				{/* Global Action buttons */}
@@ -256,16 +255,14 @@ export default function AvailabilityForm({
 						className="flex items-center gap-1.5 px-3 py-2 bg-primary/10 text-primary hover:bg-primary/20 text-xs font-bold rounded-lg transition-colors cursor-pointer"
 					>
 						<RefreshCw className="h-4 w-4" />
-						تعبئة سريعة (أيام العمل 9-17)
-					</button>
+						{t('tabeh_sryah_ayam_alaml')}</button>
 					<button
 						type="button"
 						onClick={clearAllAvailability}
 						className="flex items-center gap-1.5 px-3 py-2 bg-destructive/10 text-destructive hover:bg-destructive/20 text-xs font-bold rounded-lg transition-colors cursor-pointer"
 					>
 						<Trash2 className="h-4 w-4" />
-						تصفير الجدول
-					</button>
+						{t('tsfyr_aljdwl')}</button>
 				</div>
 			</div>
 
@@ -307,8 +304,7 @@ export default function AvailabilityForm({
 								</div>
 								{/* Count badge */}
 								<span className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-bold">
-									{daySlots.length} فترات
-								</span>
+									{daySlots.length} {t('ftrat')}</span>
 							</div>
 
 							{/* Day Action Icons */}
@@ -319,7 +315,7 @@ export default function AvailabilityForm({
 											type="button"
 											onClick={() => openCopyModal(day)}
 											className="p-1 hover:text-primary hover:bg-accent rounded-lg transition-colors cursor-pointer"
-											title="نسخ هذا اليوم لأيام أخرى"
+											title={t('nskh_htha_alywm_layam')}
 										>
 											<Copy className="h-4 w-4" />
 										</button>
@@ -327,7 +323,7 @@ export default function AvailabilityForm({
 											type="button"
 											onClick={() => handleClearDay(day)}
 											className="p-1 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors cursor-pointer"
-											title="مسح أوقات هذا اليوم"
+											title={t('msh_awqat_htha_alywm')}
 										>
 											<Trash2 className="h-4 w-4" />
 										</button>
@@ -340,8 +336,7 @@ export default function AvailabilityForm({
 								{daySlots.length === 0 ? (
 									<div className="h-full flex items-center justify-center py-8">
 										<span className="text-xs text-muted-foreground bg-accent/40 px-3 py-1.5 rounded-xl border border-dashed border-border w-full text-center">
-											مغلق
-										</span>
+											{t('mghlq')}</span>
 									</div>
 								) : (
 									daySlots.map((slot, index) => (
@@ -361,7 +356,7 @@ export default function AvailabilityForm({
 													handleRemoveSlot(day, slot.startTime, slot.endTime)
 												}
 												className="text-muted-foreground hover:text-destructive p-0.5 rounded transition-colors opacity-60 group-hover:opacity-100 cursor-pointer"
-												title="حذف هذه الفترة"
+												title={t('hthf_hthh_alftrh')}
 											>
 												<X className="h-3.5 w-3.5" />
 											</button>
@@ -377,8 +372,7 @@ export default function AvailabilityForm({
 										<div className="space-y-2">
 											<div className="flex items-center justify-between gap-2">
 												<span className="text-[11px] font-bold text-muted-foreground whitespace-nowrap min-w-[24px]">
-													من
-												</span>
+													{t('mn')}</span>
 												<input
 													type="time"
 													value={inlineStart}
@@ -388,8 +382,7 @@ export default function AvailabilityForm({
 											</div>
 											<div className="flex items-center justify-between gap-2">
 												<span className="text-[11px] font-bold text-muted-foreground whitespace-nowrap min-w-[24px]">
-													إلى
-												</span>
+													{t('ila')}</span>
 												<input
 													type="time"
 													value={inlineEnd}
@@ -405,8 +398,7 @@ export default function AvailabilityForm({
 												className="flex-1 bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-bold py-1.5 rounded-lg flex items-center justify-center gap-0.5 transition-colors cursor-pointer"
 											>
 												<Check className="h-3.5 w-3.5" />
-												إضافة
-											</button>
+												{t('idafh')}</button>
 											<button
 												type="button"
 												onClick={() => setAddingDay(null)}
@@ -427,8 +419,7 @@ export default function AvailabilityForm({
 										className="w-full py-2 border border-dashed border-border rounded-xl text-xs font-semibold text-muted-foreground hover:text-primary hover:border-primary/50 transition-all flex items-center justify-center gap-1 cursor-pointer hover:bg-primary/5"
 									>
 										<Plus className="h-3.5 w-3.5" />
-										إضافة فترة
-									</button>
+										{t('idafh_ftrh')}</button>
 								)}
 							</div>
 						</div>
@@ -445,7 +436,7 @@ export default function AvailabilityForm({
 					className="bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-semibold px-6 py-2.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer shadow-md disabled:opacity-50"
 				>
 					<Save className="h-4.5 w-4.5" />
-					{loading ? "جاري الحفظ والتوثيق..." : "حفظ التغييرات في الجدول"}
+					{loading ? t('jary_alhfdh_waltwthyq') : t('hfdh_altghyyrat_fy_aljdwl')}
 				</button>
 			</div>
 
@@ -459,11 +450,10 @@ export default function AvailabilityForm({
 						<div className="flex justify-between items-start">
 							<div>
 								<h3 className="font-extrabold text-base text-foreground">
-									نسخ جدول يوم {DAYS_OF_WEEK_AR[copySourceDay]}
+									{t('nskh_jdwl_ywm')}{DAYS_OF_WEEK_AR[copySourceDay]}
 								</h3>
 								<p className="text-[11px] text-muted-foreground">
-									اختر الأيام الأخرى التي ترغب في نسخ هذا الجدول إليها:
-								</p>
+									{t('akhtr_alayam_alakhra_alty')}</p>
 							</div>
 							<button
 								type="button"
@@ -509,16 +499,14 @@ export default function AvailabilityForm({
 								onClick={() => setCopySourceDay(null)}
 								className="bg-accent border border-border hover:bg-accent/80 text-xs font-semibold px-4 py-2 rounded-lg transition-colors cursor-pointer text-muted-foreground"
 							>
-								إلغاء
-							</button>
+								{t('cancel')}</button>
 							<button
 								type="button"
 								onClick={handleApplyCopy}
 								className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold px-5 py-2 rounded-lg transition-colors cursor-pointer flex items-center gap-1 shadow-sm"
 							>
 								<Check className="h-3.5 w-3.5" />
-								تطبيق النسخ
-							</button>
+								{t('ttbyq_alnskh')}</button>
 						</div>
 					</div>
 				</div>

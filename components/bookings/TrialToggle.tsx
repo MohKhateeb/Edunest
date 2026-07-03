@@ -5,6 +5,7 @@ export function TrialToggle({
 	isTrial: boolean;
 	onChange: (checked: boolean) => void;
 }) {
+    const t = useTranslations('bookings');
 	return (
 		<div className="flex items-center gap-2 p-3 bg-purple-50 dark:bg-purple-950/20 rounded-xl border border-purple-100 dark:border-purple-900">
 			<input
@@ -18,9 +19,9 @@ export function TrialToggle({
 				htmlFor="trial"
 				className="text-xs font-bold text-purple-800 dark:text-purple-300 cursor-pointer"
 			>
-				هل ترغب في حجز هذه الجلسة كـ حصة تجريبية مجانية؟ (30 دقيقة - مرة واحدة
-				لكل ولي أمر)
-			</label>
+				{t('hl_trghb_fy_hjz')}</label>
 		</div>
 	);
 }
+
+import { useTranslations } from "next-intl";

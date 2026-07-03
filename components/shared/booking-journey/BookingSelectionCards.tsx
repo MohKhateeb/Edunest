@@ -5,8 +5,10 @@ import { ArrowLeft, Clock, User, Zap } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import CharacterDialogue from "./CharacterDialogue";
+import { useTranslations } from "next-intl";
 
 export default function BookingSelectionCards() {
+    const t = useTranslations('common');
 	const containerVariants = {
 		hidden: { opacity: 0 },
 		show: {
@@ -31,7 +33,7 @@ export default function BookingSelectionCards() {
 			{/* الترحيب من حكيم */}
 			<CharacterDialogue
 				character="hakeem"
-				message="أهلاً بك يا صديقي! كيف تفضل أن نرتب جلسة اليوم لأبنائنا؟ الخيارات أمامك، اختر ما يريحك."
+				message={t('ahla_bk_ya_sdyqy')}
 				align="right"
 			/>
 
@@ -55,15 +57,13 @@ export default function BookingSelectionCards() {
 							</div>
 
 							<h3 className="text-xl font-bold text-slate-800 dark:text-white mb-3">
-								أعرف من أبحث عنه! 🎯
-							</h3>
+								{t('aarf_mn_abhth_anh')}</h3>
 
 							<p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-								اختر معلمك المفضل مباشرة واطلع على ملفه الشخصي ومواعيده المتاحة.
-							</p>
+								{t('akhtr_malmk_almfdl_mbashrh')}</p>
 
 							<div className="mt-auto flex items-center gap-2 text-blue-600 dark:text-blue-400 font-bold text-sm opacity-80 group-hover:opacity-100 transition-opacity">
-								<span>اختر هذا المسار</span>
+								<span>{t('akhtr_htha_almsar')}</span>
 								<ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
 							</div>
 						</div>
@@ -84,16 +84,13 @@ export default function BookingSelectionCards() {
 							</div>
 
 							<h3 className="text-xl font-bold text-slate-800 dark:text-white mb-3">
-								لدي وقت محدد ⏱️
-							</h3>
+								{t('ldy_wqt_mhdd')}</h3>
 
 							<p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-								الوقت من ذهب! حدد المادة والوقت الذي يناسبك، وسنظهر لك المعلمين
-								المتاحين.
-							</p>
+								{t('alwqt_mn_thhb_hdd')}</p>
 
 							<div className="mt-auto flex items-center gap-2 text-amber-600 dark:text-amber-400 font-bold text-sm opacity-80 group-hover:opacity-100 transition-opacity">
-								<span>اختر هذا المسار</span>
+								<span>{t('akhtr_htha_almsar')}</span>
 								<ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
 							</div>
 						</div>
@@ -114,16 +111,13 @@ export default function BookingSelectionCards() {
 							</div>
 
 							<h3 className="text-xl font-bold text-slate-800 dark:text-white mb-3">
-								فزعة سريعة (الرادار الحي) ⚡
-							</h3>
+								{t('fzah_sryah_alradar_alhy')}</h3>
 
 							<p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-6">
-								أرسل إشعاراً فورياً لجميع المعلمين المتاحين الآن للحصول على مساعدة
-								عاجلة في أقل من دقيقة!
-							</p>
+								{t('arsl_ishaara_fwrya_ljmya')}</p>
 
 							<div className="mt-auto flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-bold text-sm opacity-80 group-hover:opacity-100 transition-opacity">
-								<span>اختر هذا المسار</span>
+								<span>{t('akhtr_htha_almsar')}</span>
 								<ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
 							</div>
 						</div>

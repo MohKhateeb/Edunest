@@ -1,5 +1,6 @@
 import { AlertCircle } from "lucide-react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 
 interface UrgentMattersSectionProps {
 	isVerified: boolean;
@@ -8,6 +9,7 @@ interface UrgentMattersSectionProps {
 }
 
 export default function UrgentMattersSection({ isVerified, openDisputes, urgentAlerts }: UrgentMattersSectionProps) {
+    const t = useTranslations('dashboard');
 	if (openDisputes.length === 0 && isVerified && urgentAlerts.length === 0) {
 		return null;
 	}
@@ -16,23 +18,20 @@ export default function UrgentMattersSection({ isVerified, openDisputes, urgentA
 		<div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-3xl p-6 shadow-sm">
 			<h2 className="font-black text-lg text-red-700 dark:text-red-400 flex items-center gap-2 mb-4">
 				<AlertCircle className="h-6 w-6" />
-				تنبيهات هامة بحاجة لإجراء
-			</h2>
+				{t('tnbyhat_hamh_bhajh_lijraa')}</h2>
 			<div className="space-y-3">
 				{!isVerified && (
 					<div className="flex items-center justify-between bg-white dark:bg-card p-4 rounded-2xl border border-red-100 dark:border-red-900/50">
 						<div>
-							<h3 className="font-bold text-sm text-foreground">ملفك الشخصي غير موثق بعد</h3>
+							<h3 className="font-bold text-sm text-foreground">{t('mlfk_alshkhsy_ghyr_mwthq')}</h3>
 							<p className="text-xs text-muted-foreground mt-1">
-								لا يمكنك استقبال حجوزات جديدة أو الظهور في نتائج البحث حتى يتم توثيق ملفك.
-							</p>
+								{t('la_ymknk_astqbal_hjwzat')}</p>
 						</div>
 						<Link
 							href="/dashboard/teacher/profile"
 							className="text-xs font-bold text-primary hover:underline whitespace-nowrap mr-4"
 						>
-							إكمال الملف
-						</Link>
+							{t('ikmal_almlf')}</Link>
 					</div>
 				)}
 				{openDisputes.map((dispute) => (
@@ -42,18 +41,16 @@ export default function UrgentMattersSection({ isVerified, openDisputes, urgentA
 					>
 						<div>
 							<h3 className="font-bold text-sm text-foreground">
-								نزاع مفتوح: جلسة {dispute.booking.student.name}
+								{t('nzaa_mftwh_jlsh')}{dispute.booking.student.name}
 							</h3>
 							<p className="text-xs text-muted-foreground mt-1">
-								قام ولي الأمر بفتح نزاع حول الجلسة. يرجى الرد والتواصل مع الإدارة.
-							</p>
+								{t('qam_wly_alamr_bfth')}</p>
 						</div>
 						<Link
 							href={`/dashboard/disputes/${dispute.id}`}
 							className="text-xs font-bold text-primary hover:underline whitespace-nowrap mr-4"
 						>
-							عرض النزاع والرد
-						</Link>
+							{t('ard_alnzaa_walrd')}</Link>
 					</div>
 				))}
 				{urgentAlerts.map((alert) => (
@@ -65,7 +62,7 @@ export default function UrgentMattersSection({ isVerified, openDisputes, urgentA
 							<h3
 								className={`font-bold text-sm ${alert.type === "WARNING_2_FROZEN" ? "text-red-600 dark:text-red-400" : "text-orange-600 dark:text-orange-400"}`}
 							>
-								{alert.type === "WARNING_2_FROZEN" ? "تجميد رصيد - تحذير نهائي!" : "تحذير تقرير متأخر"}
+								{alert.type === "WARNING_2_FROZEN" ? t('tjmyd_rsyd_ththyr') : t('ththyr_tqryr_mtakhr')}
 							</h3>
 							<p className="text-xs text-muted-foreground mt-1 font-semibold">{alert.message}</p>
 						</div>
@@ -73,8 +70,7 @@ export default function UrgentMattersSection({ isVerified, openDisputes, urgentA
 							href="/dashboard/teacher/pending-reports"
 							className="shrink-0 text-xs font-bold bg-primary/10 text-primary hover:bg-primary/20 px-4 py-2 rounded-lg transition-colors whitespace-nowrap"
 						>
-							الذهاب لكتابة التقارير
-						</Link>
+							{t('althhab_lktabh_altqaryr')}</Link>
 					</div>
 				))}
 			</div>

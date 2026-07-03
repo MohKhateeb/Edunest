@@ -1,6 +1,7 @@
 "use client";
 
 import type { FooterCtaContent } from "@/types/homepage";
+import { useTranslations } from "next-intl";
 
 interface Props {
 	content: FooterCtaContent;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function FooterCtaEditor({ content, onChange }: Props) {
+    const t = useTranslations('common');
 	const updateField = (field: keyof FooterCtaContent, value: string) => {
 		onChange({ ...content, [field]: value });
 	};
@@ -16,8 +18,7 @@ export default function FooterCtaEditor({ content, onChange }: Props) {
 		<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div className="space-y-1.5 md:col-span-2">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					العنوان الرئيسي
-				</label>
+					{t('alanwan_alreysy')}</label>
 				<input
 					type="text"
 					value={content.title}
@@ -27,8 +28,7 @@ export default function FooterCtaEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5 md:col-span-2">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					الوصف / العنوان الفرعي
-				</label>
+					{t('alwsf_alanwan_alfray')}</label>
 				<textarea
 					rows={2}
 					value={content.subtitle}
@@ -38,8 +38,7 @@ export default function FooterCtaEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					نص زر الدعوة
-				</label>
+					{t('ns_zr_aldawh')}</label>
 				<input
 					type="text"
 					value={content.btnText}
@@ -49,8 +48,7 @@ export default function FooterCtaEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					رابط زر الدعوة
-				</label>
+					{t('rabt_zr_aldawh')}</label>
 				<input
 					type="text"
 					value={content.btnLink}

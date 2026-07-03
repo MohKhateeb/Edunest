@@ -18,6 +18,7 @@ import type { AvailableTeacher, Student } from "@/types/booking";
 import { BookingDetailsStep } from "./booking-journey/BookingDetailsStep";
 import { TeacherSelectionStep } from "./booking-journey/TeacherSelectionStep";
 import { TimeSearchStep } from "./booking-journey/TimeSearchStep";
+import { useTranslations } from "next-intl";
 
 type TimeFirstBookingFormProps = {
 	students: Student[];
@@ -30,6 +31,7 @@ export default function TimeFirstBookingForm({
 	subjects,
 	hasUsedTrial,
 }: TimeFirstBookingFormProps) {
+    const t = useTranslations('common');
 	const router = useRouter();
 
 	// خطوات النموذج
@@ -112,19 +114,19 @@ export default function TimeFirstBookingForm({
 	// البحث عن معلمين متاحين
 	const handleSearch = async () => {
 		if (!searchQuery.selectedStudentId) {
-			setSearchError("يرجى تحديد الطالب");
+			setSearchError(t('yrja_thdyd_altalb'));
 			return;
 		}
 		if (!searchQuery.selectedSpec) {
-			setSearchError("يرجى اختيار المادة");
+			setSearchError(t('yrja_akhtyar_almadh'));
 			return;
 		}
 		if (!searchQuery.selectedDate) {
-			setSearchError("يرجى اختيار التاريخ");
+			setSearchError(t('yrja_akhtyar_altarykh'));
 			return;
 		}
 		if (!searchQuery.selectedTime) {
-			setSearchError("يرجى اختيار الوقت");
+			setSearchError(t('yrja_akhtyar_alwqt'));
 			return;
 		}
 
@@ -147,7 +149,7 @@ export default function TimeFirstBookingForm({
 			}
 		} catch (err: unknown) {
 			console.error(err);
-			setSearchError("حدث خطأ أثناء البحث");
+			setSearchError(t('hdth_khta_athnaa_albhth'));
 		} finally {
 			setSearching(false);
 		}
@@ -168,11 +170,11 @@ export default function TimeFirstBookingForm({
 		e.preventDefault();
 
 		if (!searchQuery.selectedStudentId) {
-			setErrorMsg("حدث خطأ في بيانات الطالب المختار، يرجى إعادة تحميل الصفحة");
+			setErrorMsg(t('hdth_khta_fy_byanat'));
 			return;
 		}
 		if (!bookingDetails.selectedServiceId || !bookingDetails.selectedTeacher) {
-			setErrorMsg("يرجى تحديد الخدمة المطلوبة");
+			setErrorMsg(t('yrja_thdyd_alkhdmh_almtlwbh'));
 			return;
 		}
 
@@ -224,7 +226,7 @@ export default function TimeFirstBookingForm({
 			}
 		} catch (err: unknown) {
 			console.error(err);
-			setErrorMsg("حدث خطأ غير متوقع أثناء إتمام الحجز");
+			setErrorMsg(t('hdth_khta_ghyr_mtwqa_3'));
 			setLoading(false);
 		}
 	};
@@ -269,16 +271,14 @@ export default function TimeFirstBookingForm({
 		return (
 			<div className="bg-card border border-border rounded-xl p-8 text-center max-w-md mx-auto space-y-4">
 				<AlertCircle className="h-12 w-12 text-yellow-500 mx-auto" />
-				<h3 className="font-extrabold text-lg">لم تقم بإضافة طلاب بعد</h3>
+				<h3 className="font-extrabold text-lg">{t('lm_tqm_bidafh_tlab')}</h3>
 				<p className="text-xs text-muted-foreground">
-					يجب عليك إضافة طالب واحد على الأقل لحسابك لتتمكن من حجز الحصص والدروس.
-				</p>
+					{t('yjb_alyk_idafh_talb')}</p>
 				<button
 					onClick={() => router.push("/dashboard/parent/students")}
 					className="bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold px-6 py-2.5 rounded-lg cursor-pointer"
 				>
-					اذهب لإضافة طالب
-				</button>
+					{t('athhb_lidafh_talb')}</button>
 			</div>
 		);
 	}
@@ -293,9 +293,9 @@ export default function TimeFirstBookingForm({
 			{/* شريط الخطوات */}
 			<div className="flex items-center gap-2 mb-2">
 				{[
-					{ key: "search", label: "بحث", icon: Search },
-					{ key: "results", label: "النتائج", icon: User },
-					{ key: "details", label: "التأكيد", icon: BookCheck },
+					{ key: "search", label: t('search'), icon: Search },
+					{ key: "results", label: t('alntaej'), icon: User },
+					{ key: "details", label: t('altakyd'), icon: BookCheck },
 				].map((step, idx) => {
 					const StepIcon = step.icon;
 					const isActive = currentStep === step.key;

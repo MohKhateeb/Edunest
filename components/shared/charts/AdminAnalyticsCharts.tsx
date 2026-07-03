@@ -16,6 +16,7 @@ import {
 	YAxis,
 } from "recharts";
 import { formatPrice } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 type DataItem = { name: string; value?: number; count?: number };
 type RevenueData = { date: string; revenue: number }[];
@@ -94,6 +95,7 @@ export default function AdminAnalyticsCharts({
 	registeredGrades,
 	revenue,
 }: AdminAnalyticsChartsProps) {
+    const t = useTranslations('common');
 	return (
 		<div className="space-y-6 mt-8">
 			{/* Row 1: Revenue & Booking Statuses */}
@@ -102,11 +104,9 @@ export default function AdminAnalyticsCharts({
 				<div className="glass-card rounded-2xl p-6 lg:col-span-2">
 					<div className="mb-4">
 						<h3 className="font-extrabold text-lg">
-							أرباح المنصة (آخر 14 يوم)
-						</h3>
+							{t('arbah_almnsh_akhr_14')}</h3>
 						<p className="text-xs text-muted-foreground">
-							مجموع العمولات المحصلة من الحجوزات المكتملة
-						</p>
+							{t('mjmwa_alamwlat_almhslh_mn')}</p>
 					</div>
 					<div className="h-[300px] w-full">
 						<ResponsiveContainer width="100%" height="100%">
@@ -169,10 +169,9 @@ export default function AdminAnalyticsCharts({
 				{/* Booking Status Distribution */}
 				<div className="glass-card rounded-2xl p-6">
 					<div className="mb-4">
-						<h3 className="font-extrabold text-lg">حالات الحجوزات</h3>
+						<h3 className="font-extrabold text-lg">{t('halat_alhjwzat')}</h3>
 						<p className="text-xs text-muted-foreground">
-							نظرة عامة على سير العمليات
-						</p>
+							{t('ndhrh_aamh_ala_syr')}</p>
 					</div>
 					<div className="h-[300px] w-full flex items-center justify-center">
 						<ResponsiveContainer width="100%" height="100%">
@@ -224,10 +223,9 @@ export default function AdminAnalyticsCharts({
 				{/* Most Requested Specializations */}
 				<div className="glass-card rounded-2xl p-6">
 					<div className="mb-4">
-						<h3 className="font-extrabold text-lg">أكثر التخصصات طلباً</h3>
+						<h3 className="font-extrabold text-lg">{t('akthr_altkhssat_tlba')}</h3>
 						<p className="text-xs text-muted-foreground">
-							عدد الحجوزات الفعلية حسب تخصص المعلم
-						</p>
+							{t('add_alhjwzat_alfalyh_hsb')}</p>
 					</div>
 					<div className="h-[300px] w-full">
 						<ResponsiveContainer width="100%" height="100%">
@@ -268,7 +266,7 @@ export default function AdminAnalyticsCharts({
 								/>
 								<Bar
 									dataKey="count"
-									name="الحجوزات"
+									name={t('alhjwzat')}
 									fill="hsl(var(--primary))"
 									radius={[0, 6, 6, 0]}
 									barSize={25}
@@ -288,10 +286,9 @@ export default function AdminAnalyticsCharts({
 				{/* Most Requested Session Types */}
 				<div className="glass-card rounded-2xl p-6">
 					<div className="mb-4">
-						<h3 className="font-extrabold text-lg">أنواع الجلسات المفضلة</h3>
+						<h3 className="font-extrabold text-lg">{t('anwaa_aljlsat_almfdlh')}</h3>
 						<p className="text-xs text-muted-foreground">
-							توزيع الحجوزات بناءً على نوع الخدمة
-						</p>
+							{t('twzya_alhjwzat_bnaa_ala')}</p>
 					</div>
 					<div className="h-[300px] w-full flex items-center justify-center">
 						<ResponsiveContainer width="100%" height="100%">
@@ -376,10 +373,9 @@ export default function AdminAnalyticsCharts({
 			{/* Row 3: Most Registered Grades */}
 			<div className="glass-card rounded-2xl p-6">
 				<div className="mb-4">
-					<h3 className="font-extrabold text-lg">الطلاب المسجلين حسب الصفوف</h3>
+					<h3 className="font-extrabold text-lg">{t('altlab_almsjlyn_hsb_alsfwf')}</h3>
 					<p className="text-xs text-muted-foreground">
-						توزيع قاعدة الطلاب بناءً على مراحلهم الدراسية
-					</p>
+						{t('twzya_qaadh_altlab_bnaa')}</p>
 				</div>
 				<div className="h-[300px] w-full">
 					<ResponsiveContainer width="100%" height="100%">
@@ -416,7 +412,7 @@ export default function AdminAnalyticsCharts({
 							/>
 							<Bar
 								dataKey="count"
-								name="عدد الطلاب"
+								name={t('add_altlab')}
 								fill="#0ea5e9"
 								radius={[6, 6, 0, 0]}
 								barSize={40}

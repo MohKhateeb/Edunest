@@ -25,6 +25,7 @@ import {
 	getDetailedSessionState,
 	SessionTimeState,
 } from "@/lib/utils/booking-state";
+import { useTranslations } from "next-intl";
 
 interface BookingDetailsProps {
 	booking: DetailedBooking;
@@ -35,9 +36,10 @@ export default function BookingDetails({
 	booking,
 	setPreviewImage,
 }: BookingDetailsProps) {
+    const t = useTranslations('common');
 	const isTrial = booking.isTrial;
 	const priceDisplay = isTrial
-		? "جلسة تجريبية مجانية"
+		? t('jlsh_tjrybyh_mjanyh')
 		: formatPrice(Number(booking.price));
 	const sessionTimeState = getDetailedSessionState(
 		booking.startTime,
@@ -54,7 +56,7 @@ export default function BookingDetails({
 			<div className="p-6 bg-slate-50 dark:bg-slate-800/50 rounded-2xl flex justify-between items-center flex-wrap gap-4 border border-border/50 shadow-sm">
 				<div>
 					<span className="text-[10px] text-muted-foreground block font-mono">
-						رقم الحجز: #{booking.id.toUpperCase()}
+						{t('rqm_alhjz')}{booking.id.toUpperCase()}
 					</span>
 					<h3 className="text-base font-extrabold text-foreground mt-0.5">
 						{booking.teacherService.serviceType.name}
@@ -78,32 +80,30 @@ export default function BookingDetails({
 				<div className="p-5 bg-white dark:bg-slate-900 rounded-2xl space-y-4 shadow-sm border border-border/50">
 					<h4 className="font-black text-sm pb-2 border-b border-border/50 flex items-center gap-1.5 text-foreground">
 						<Calendar className="h-4.5 w-4.5 text-primary" />
-						توقيت وتكلفة الجلسة
-					</h4>
+						{t('twqyt_wtklfh_aljlsh')}</h4>
 					<div className="space-y-3">
 						<div className="flex justify-between">
-							<span>تاريخ ووقت البدء:</span>
+							<span>{t('tarykh_wwqt_albda')}</span>
 							<strong className="text-foreground bg-primary/5 px-2 py-0.5 rounded-md text-primary">
 								{formatLocalTime(booking.startTime)}
 							</strong>
 						</div>
 						<div className="flex justify-between">
-							<span>مدة الحصة:</span>
+							<span>{t('mdh_alhsh')}</span>
 							<strong className="text-foreground">
-								{booking.duration} دقيقة
-							</strong>
+								{booking.duration} {t('dqyqh')}</strong>
 						</div>
 						<div className="flex justify-between">
-							<span>التكلفة الإجمالية:</span>
+							<span>{t('altklfh_alijmalyh')}</span>
 							<strong className="text-foreground text-sm text-primary font-black">
 								{priceDisplay}
 							</strong>
 						</div>
 						{booking.bookingSource && (
 							<div className="flex justify-between">
-								<span>مصدر الحجز:</span>
+								<span>{t('msdr_alhjz')}</span>
 								<strong className="text-foreground">
-									{booking.bookingSource === "ADMIN" ? "إداري" : "الويب"}
+									{booking.bookingSource === "ADMIN" ? t('idary') : t('alwyb')}
 								</strong>
 							</div>
 						)}
@@ -114,21 +114,20 @@ export default function BookingDetails({
 				<div className="p-5 bg-white dark:bg-slate-900 rounded-2xl space-y-4 shadow-sm border border-border/50">
 					<h4 className="font-black text-sm pb-2 border-b border-border/50 flex items-center gap-1.5 text-foreground">
 						<User className="h-4.5 w-4.5 text-secondary" />
-						أطراف الجلسة التعليمية
-					</h4>
+						{t('atraf_aljlsh_altalymyh')}</h4>
 					<div className="space-y-2">
 						<div className="flex justify-between">
-							<span>الطالب المستفيد:</span>
+							<span>{t('altalb_almstfyd')}</span>
 							<strong className="text-foreground">
-								{booking.student.name} (الصف {booking.student.grade})
+								{booking.student.name} {t('alsf_1')}{booking.student.grade})
 							</strong>
 						</div>
 						<div className="flex justify-between">
-							<span>ولي الأمر:</span>
+							<span>{t('wly_alamr_1')}</span>
 							<strong className="text-foreground">{booking.parent.name}</strong>
 						</div>
 						<div className="flex justify-between items-center">
-							<span>المعلم الخصوصي:</span>
+							<span>{t('almalm_alkhswsy')}</span>
 							<div className="flex items-center gap-2">
 								<div className="relative h-6 w-6 rounded-full overflow-hidden bg-accent border border-border flex-shrink-0">
 									{booking.teacherService.teacher.profileImageUrl ? (
@@ -150,7 +149,7 @@ export default function BookingDetails({
 						</div>
 						{booking.parent.phone && (
 							<div className="flex justify-between">
-								<span>رقم هاتف ولي الأمر:</span>
+								<span>{t('rqm_hatf_wly_alamr')}</span>
 								<strong className="text-foreground">
 									{booking.parent.phone}
 								</strong>
@@ -165,12 +164,11 @@ export default function BookingDetails({
 				<div className="p-5 bg-white dark:bg-slate-900 rounded-2xl space-y-4 shadow-sm border border-border/50">
 					<h4 className="font-black text-sm pb-2 border-b border-border/50 flex items-center gap-1.5 text-foreground">
 						<CreditCard className="h-4.5 w-4.5 text-emerald-500" />
-						حالة الدفع وتأكيد الرسوم
-					</h4>
+						{t('halh_aldfa_wtakyd_alrswm')}</h4>
 					<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 						<div className="space-y-2">
 							<div className="flex justify-between">
-								<span>حالة التحويل:</span>
+								<span>{t('halh_althwyl')}</span>
 								<strong
 									className={cn(
 										"font-bold",
@@ -187,7 +185,7 @@ export default function BookingDetails({
 							</div>
 							{payment?.method && (
 								<div className="flex justify-between">
-									<span>طريقة التحويل:</span>
+									<span>{t('tryqh_althwyl')}</span>
 									<strong className="text-foreground">
 										{
 											PAYMENT_METHOD_AR[
@@ -199,7 +197,7 @@ export default function BookingDetails({
 							)}
 							{payment?.paidAt && (
 								<div className="flex justify-between">
-									<span>تاريخ تأكيد التحويل:</span>
+									<span>{t('tarykh_takyd_althwyl')}</span>
 									<strong className="text-foreground">
 										{new Date(payment.paidAt).toLocaleDateString("ar-EG")}
 									</strong>
@@ -214,33 +212,29 @@ export default function BookingDetails({
 			{booking.status === "CONFIRMED" && (
 				<div className="p-4 border border-border bg-card rounded-xl space-y-2">
 					<span className="font-bold text-primary block text-[11px]">
-						رابط القاعة الافتراضية (Jitsi Meet):
-					</span>
+						{t('rabt_alqaah_alaftradyh_jitsi')}</span>
 
 					{sessionTimeState.status === "active" ||
 					sessionTimeState.status === "ready_to_join" ||
 					sessionTimeState.status === "grace_period" ? (
 						<div className="flex items-center justify-between gap-4 flex-wrap bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-950/40 p-3 rounded-lg">
 							<span className="text-[11px] text-emerald-800 dark:text-emerald-400">
-								القاعة الافتراضية جاهزة للتحضير والدخول.
-							</span>
+								{t('alqaah_alaftradyh_jahzh_llthdyr')}</span>
 							<JoinMeetingButton
 								bookingId={booking.id}
 								variant="small"
-								label="انضم للجلسة (قاعة ويب)"
+								label={t('andm_lljlsh_qaah_wyb')}
 							/>
 						</div>
 					) : sessionTimeState.status === "upcoming" ? (
 						<div className="flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 border border-border p-3 rounded-lg">
 							<span className="text-[11px] text-muted-foreground font-medium">
-								سيظهر رابط الدخول الخاص بك هنا قبل بدء الجلسة بـ 5 دقائق.
-							</span>
+								{t('sydhhr_rabt_aldkhwl_alkhas')}</span>
 						</div>
 					) : (
 						<div className="flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 border border-border p-3 rounded-lg">
 							<span className="text-[11px] text-muted-foreground font-medium">
-								انتهى وقت الجلسة. رابط القاعة غير متاح حالياً.
-							</span>
+								{t('antha_wqt_aljlsh_rabt')}</span>
 						</div>
 					)}
 				</div>
@@ -255,8 +249,7 @@ export default function BookingDetails({
 					{booking.questionTitle && (
 						<div className="p-4 border border-border bg-background rounded-xl">
 							<span className="font-bold text-primary block mb-1">
-								موضوع الجلسة:
-							</span>
+								{t('mwdwa_aljlsh')}</span>
 							<p className="text-foreground/80 leading-relaxed font-semibold">
 								{booking.questionTitle}
 							</p>
@@ -270,8 +263,7 @@ export default function BookingDetails({
 					{booking.parentNotes && (
 						<div className="p-4 border border-border bg-accent/20 rounded-xl">
 							<span className="font-bold text-foreground/80 block mb-1">
-								ملاحظات حجز ولي الأمر:
-							</span>
+								{t('mlahdhat_hjz_wly_alamr')}</span>
 							<p className="text-foreground/75 leading-relaxed italic">
 								"{booking.parentNotes}"
 							</p>
@@ -280,8 +272,7 @@ export default function BookingDetails({
 					{booking.teacherNotes && (
 						<div className="p-4 border border-border bg-accent/20 rounded-xl">
 							<span className="font-bold text-foreground/80 block mb-1">
-								ملاحظات المعلم:
-							</span>
+								{t('mlahdhat_almalm')}</span>
 							<p className="text-foreground/75 leading-relaxed italic">
 								"{booking.teacherNotes}"
 							</p>
@@ -290,8 +281,7 @@ export default function BookingDetails({
 					{booking.cancellationReason && (
 						<div className="p-4 border border-destructive/20 bg-destructive/5 rounded-xl text-destructive">
 							<span className="font-bold block mb-1 text-xs">
-								سبب إلغاء الجلسة:
-							</span>
+								{t('sbb_ilghaa_aljlsh')}</span>
 							<p className="leading-relaxed italic">
 								"{booking.cancellationReason}"
 							</p>
@@ -305,14 +295,12 @@ export default function BookingDetails({
 				<div className="p-5 border border-primary/20 bg-primary/5 rounded-xl space-y-4">
 					<h4 className="font-extrabold text-sm border-b border-primary/10 pb-2 text-primary flex items-center gap-1">
 						<FileText className="h-4.5 w-4.5" />
-						تقرير انتهاء الجلسة التعليمية المرفوع
-					</h4>
+						{t('tqryr_anthaa_aljlsh_altalymyh')}</h4>
 					<div className="space-y-3 text-xs">
 						<div className="flex justify-between items-center bg-card border border-border p-3 rounded-lg">
 							<div>
 								<span className="text-muted-foreground block text-[10px]">
-									حضور الطالب:
-								</span>
+									{t('hdwr_altalb_1')}</span>
 								<strong
 									className={
 										report.studentAttended
@@ -320,14 +308,13 @@ export default function BookingDetails({
 											: "text-rose-500 font-bold"
 									}
 								>
-									{report.studentAttended ? "✓ حضر الجلسة" : "✗ غاب عن الجلسة"}
+									{report.studentAttended ? t('hdr_aljlsh') : t('ghab_an_aljlsh')}
 								</strong>
 							</div>
 							{report.studentAttended && report.studentPerformance && (
 								<div className="text-left">
 									<span className="text-muted-foreground block text-[10px]">
-										تقييم أداء الطالب:
-									</span>
+										{t('tqyym_adaa_altalb')}</span>
 									<div className="flex justify-end items-center gap-0.5 mt-0.5">
 										{[1, 2, 3, 4, 5].map((s: number) => (
 											<Star
@@ -352,8 +339,7 @@ export default function BookingDetails({
 
 						<div>
 							<span className="font-bold text-foreground/80 block mb-1">
-								المواضيع والدروس التي تم شرحها:
-							</span>
+								{t('almwadya_waldrws_alty_tm')}</span>
 							<p className="bg-card border border-border p-3 rounded-lg text-foreground/75 leading-relaxed whitespace-pre-wrap">
 								{report.topicsCovered}
 							</p>
@@ -362,8 +348,7 @@ export default function BookingDetails({
 						{report.homeworkAssigned && (
 							<div>
 								<span className="font-bold text-foreground/80 block mb-1">
-									الواجبات والتدريبات المنزلية المقررة:
-								</span>
+									{t('alwajbat_waltdrybat_almnzlyh_almqrrh')}</span>
 								<p className="bg-card border border-border p-3 rounded-lg text-foreground/75 leading-relaxed whitespace-pre-wrap">
 									{report.homeworkAssigned}
 								</p>
@@ -373,8 +358,7 @@ export default function BookingDetails({
 						{report.teacherNotes && (
 							<div>
 								<span className="font-bold text-foreground/80 block mb-1">
-									توصيات وملاحظات المعلم للأهالي:
-								</span>
+									{t('twsyat_wmlahdhat_almalm_llahaly')}</span>
 								<p className="bg-card border border-border p-3 rounded-lg text-foreground/75 leading-relaxed whitespace-pre-wrap">
 									{report.teacherNotes}
 								</p>
@@ -388,8 +372,7 @@ export default function BookingDetails({
 			{booking.status === "COMPLETED" && review && (
 				<div className="p-4 border border-violet-500/20 bg-violet-500/5 rounded-xl space-y-2">
 					<span className="font-bold text-violet-600 dark:text-violet-400 block text-xs">
-						تقييم ولي الأمر للمعلم:
-					</span>
+						{t('tqyym_wly_alamr_llmalm')}</span>
 					<div className="flex items-center gap-1 mt-1">
 						{[1, 2, 3, 4, 5].map((s: number) => (
 							<Star
@@ -404,8 +387,7 @@ export default function BookingDetails({
 							/>
 						))}
 						<span className="text-[10px] text-muted-foreground me-2">
-							({review.rating} من 5)
-						</span>
+							({review.rating} {t('mn_5')}</span>
 					</div>
 					{review.comment && (
 						<p className="text-foreground/75 italic leading-relaxed pt-1">

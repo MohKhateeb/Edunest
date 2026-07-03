@@ -1,6 +1,7 @@
 "use client";
 
 import type { HeroSectionContent } from "@/types/homepage";
+import { useTranslations } from "next-intl";
 
 interface Props {
 	content: HeroSectionContent;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 export default function HeroEditor({ content, onChange }: Props) {
+    const t = useTranslations('common');
 	const updateField = (field: keyof HeroSectionContent, value: string) => {
 		onChange({ ...content, [field]: value });
 	};
@@ -16,8 +18,7 @@ export default function HeroEditor({ content, onChange }: Props) {
 		<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 			<div className="space-y-1.5">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					شارة البانر الترويجية (مثال: جديد)
-				</label>
+					{t('sharh_albanr_altrwyjyh_mthal')}</label>
 				<input
 					type="text"
 					value={content.badge}
@@ -27,8 +28,7 @@ export default function HeroEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					نص الشارة الترويجية
-				</label>
+					{t('ns_alsharh_altrwyjyh')}</label>
 				<input
 					type="text"
 					value={content.badgeMessage}
@@ -38,8 +38,7 @@ export default function HeroEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5 md:col-span-2">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					العنوان العريض الرئيسي
-				</label>
+					{t('alanwan_alaryd_alreysy')}</label>
 				<input
 					type="text"
 					value={content.headline}
@@ -49,8 +48,7 @@ export default function HeroEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5 md:col-span-2">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					الكلمة المميزة باللون (جزء من العنوان)
-				</label>
+					{t('alklmh_almmyzh_ballwn_jza')}</label>
 				<input
 					type="text"
 					value={content.highlightedWord}
@@ -60,8 +58,7 @@ export default function HeroEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5 md:col-span-2">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					الوصف (الفقرة تحت العنوان)
-				</label>
+					{t('alwsf_alfqrh_tht_alanwan')}</label>
 				<textarea
 					rows={3}
 					value={content.subheadline}
@@ -71,8 +68,7 @@ export default function HeroEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					نص زر الدعوة الرئيسي
-				</label>
+					{t('ns_zr_aldawh_alreysy')}</label>
 				<input
 					type="text"
 					value={content.primaryBtnText}
@@ -82,8 +78,7 @@ export default function HeroEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					رابط زر الدعوة الرئيسي
-				</label>
+					{t('rabt_zr_aldawh_alreysy')}</label>
 				<input
 					type="text"
 					value={content.primaryBtnLink}
@@ -93,8 +88,7 @@ export default function HeroEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					نص الزر الثانوي
-				</label>
+					{t('ns_alzr_althanwy')}</label>
 				<input
 					type="text"
 					value={content.secondaryBtnText}
@@ -104,8 +98,7 @@ export default function HeroEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					رابط الزر الثانوي
-				</label>
+					{t('rabt_alzr_althanwy')}</label>
 				<input
 					type="text"
 					value={content.secondaryBtnLink}
@@ -115,8 +108,7 @@ export default function HeroEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					رسالة الشخصية الأولى (حكيم)
-				</label>
+					{t('rsalh_alshkhsyh_alawla_hkym')}</label>
 				<input
 					type="text"
 					value={content.character1Message}
@@ -126,8 +118,7 @@ export default function HeroEditor({ content, onChange }: Props) {
 			</div>
 			<div className="space-y-1.5">
 				<label className="text-[11px] font-bold text-muted-foreground block">
-					رسالة الشخصية الثانية (نجيب)
-				</label>
+					{t('rsalh_alshkhsyh_althanyh_njyb')}</label>
 				<input
 					type="text"
 					value={content.character2Message}

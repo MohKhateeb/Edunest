@@ -2,7 +2,10 @@ interface LiveSessionBannerProps {
 	liveSession: any | null;
 }
 
+import { useTranslations } from "next-intl";
+
 export default function LiveSessionBanner({ liveSession }: LiveSessionBannerProps) {
+    const t = useTranslations('dashboard');
 	if (!liveSession) return null;
 
 	return (
@@ -15,11 +18,10 @@ export default function LiveSessionBanner({ liveSession }: LiveSessionBannerProp
 							<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
 							<span className="relative inline-flex rounded-full h-3 w-3 bg-white"></span>
 						</span>
-						<h2 className="font-black text-xl text-white">الجلسة الفورية بدأت الآن!</h2>
+						<h2 className="font-black text-xl text-white">{t('aljlsh_alfwryh_bdat_alan')}</h2>
 					</div>
 					<p className="text-white/90 text-sm font-semibold">
-						تم الدفع بنجاح. الطالب {liveSession.student.name} بانتظارك في الجلسة.
-					</p>
+						{t('tm_aldfa_bnjah_altalb')}{liveSession.student.name} {t('bantdhark_fy_aljlsh')}</p>
 				</div>
 				{liveSession.meetingUrl ? (
 					<a
@@ -28,10 +30,9 @@ export default function LiveSessionBanner({ liveSession }: LiveSessionBannerProp
 						rel="noreferrer"
 						className="bg-white text-rose-600 hover:bg-rose-50 px-8 py-3 rounded-xl font-black shadow-lg transition-transform hover:scale-105 whitespace-nowrap text-center"
 					>
-						ادخل الجلسة الآن
-					</a>
+						{t('adkhl_aljlsh_alan')}</a>
 				) : (
-					<div className="bg-white/20 text-white px-6 py-3 rounded-xl font-bold">جاري تجهيز الرابط...</div>
+					<div className="bg-white/20 text-white px-6 py-3 rounded-xl font-bold">{t('jary_tjhyz_alrabt')}</div>
 				)}
 			</div>
 		</div>

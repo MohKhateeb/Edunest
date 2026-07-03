@@ -1,6 +1,7 @@
 import Link from "next/link";
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import TeacherOnlineToggle from "@/components/shared/TeacherOnlineToggle";
+import { useTranslations } from "next-intl";
 
 interface WelcomeHeaderProps {
 	teacherName: string;
@@ -9,12 +10,13 @@ interface WelcomeHeaderProps {
 }
 
 export default function WelcomeHeader({ teacherName, teacherSlug, isAvailableNow }: WelcomeHeaderProps) {
+    const t = useTranslations('dashboard');
 	return (
 		<div className="mt-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
 			<InteractiveMessage
 				character="najeeb"
 				title={`أهلاً بك، أ. ${teacherName} 👋`}
-				message="من لوحة التحكم يمكنك قبول حجوزات الطلاب، إدارة أوقات فراغك، ومتابعة أرباحك بسلاسة."
+				message={t('mn_lwhh_althkm_ymknk')}
 				najeebMode="welcome"
 				className="lg:w-1/2"
 			/>
@@ -22,7 +24,7 @@ export default function WelcomeHeader({ teacherName, teacherSlug, isAvailableNow
 				<TeacherOnlineToggle initialStatus={isAvailableNow} />
 
 				<div className="text-left bg-gradient-to-l from-primary to-blue-400 px-6 py-4 rounded-2xl shadow-md text-white animate-pulse-soft">
-					<span className="text-xs text-white/80 block mb-1">رابط صفحتك العامة للطلاب</span>
+					<span className="text-xs text-white/80 block mb-1">{t('rabt_sfhtk_alaamh_lltlab')}</span>
 					<Link
 						href={`/teachers/${teacherSlug}`}
 						className="text-sm font-black hover:underline flex items-center gap-1"

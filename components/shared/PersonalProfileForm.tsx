@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { changeUserPassword, updateUserProfile } from "@/lib/actions/user";
+import { useTranslations } from "next-intl";
 
 type PersonalProfileFormProps = {
 	initialUser: {
@@ -24,6 +25,7 @@ type PersonalProfileFormProps = {
 export default function PersonalProfileForm({
 	initialUser,
 }: PersonalProfileFormProps) {
+    const t = useTranslations('common');
 	const { update } = useSession();
 	const [activeTab, setActiveTab] = useState<"info" | "security">("info");
 	const [loading, setLoading] = useState(false);
@@ -53,8 +55,8 @@ export default function PersonalProfileForm({
 		try {
 			const res = await updateUserProfile(profileForm);
 			if (res.success) {
-				setSuccessMsg("تم تحديث بيانات الحساب بنجاح ✓");
-				toast.success("تم تحديث الملف الشخصي");
+				setSuccessMsg(t('tm_thdyth_byanat_alhsab'));
+				toast.success(t('tm_thdyth_almlf_alshkhsy'));
 				// Update next-auth session to reflect the new name/email
 				await update({
 					name: profileForm.name,
@@ -64,7 +66,7 @@ export default function PersonalProfileForm({
 				setErrorMsg(res.error);
 			}
 		} catch (err) {
-			setErrorMsg("حدث خطأ غير متوقع أثناء تحديث البيانات.");
+			setErrorMsg(t('hdth_khta_ghyr_mtwqa_1'));
 		} finally {
 			setLoading(false);
 		}
@@ -73,7 +75,7 @@ export default function PersonalProfileForm({
 	const handlePasswordSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-			setErrorMsg("كلمة المرور الجديدة وتأكيدها غير متطابقين.");
+			setErrorMsg(t('klmh_almrwr_aljdydh_wtakydha'));
 			return;
 		}
 
@@ -89,8 +91,8 @@ export default function PersonalProfileForm({
 			});
 
 			if (res.success) {
-				setSuccessMsg("تم تغيير كلمة المرور بنجاح ✓");
-				toast.success("تم تحديث كلمة المرور");
+				setSuccessMsg(t('tm_tghyyr_klmh_almrwr'));
+				toast.success(t('tm_thdyth_klmh_almrwr'));
 				setPasswordForm({
 					currentPassword: "",
 					newPassword: "",
@@ -100,7 +102,7 @@ export default function PersonalProfileForm({
 				setErrorMsg(res.error);
 			}
 		} catch (err) {
-			setErrorMsg("حدث خطأ غير متوقع أثناء تغيير كلمة المرور.");
+			setErrorMsg(t('hdth_khta_ghyr_mtwqa_2'));
 		} finally {
 			setLoading(false);
 		}
@@ -123,8 +125,7 @@ export default function PersonalProfileForm({
 					}`}
 				>
 					<User className="h-4.5 w-4.5" />
-					تعديل البيانات الأساسية
-				</button>
+					{t('tadyl_albyanat_alasasyh')}</button>
 				<button
 					onClick={() => {
 						setActiveTab("security");
@@ -138,8 +139,7 @@ export default function PersonalProfileForm({
 					}`}
 				>
 					<Lock className="h-4.5 w-4.5" />
-					تغيير كلمة المرور
-				</button>
+					{t('tghyyr_klmh_almrwr')}</button>
 			</div>
 
 			<div className="p-6 md:p-8 space-y-6">
@@ -164,8 +164,7 @@ export default function PersonalProfileForm({
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-5">
 							<div className="space-y-1.5">
 								<label className="text-xs font-bold text-foreground/80 block">
-									الاسم بالكامل
-								</label>
+									{t('alasm_balkaml')}</label>
 								<input
 									type="text"
 									required
@@ -174,14 +173,13 @@ export default function PersonalProfileForm({
 										setProfileForm({ ...profileForm, name: e.target.value })
 									}
 									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl"
-									placeholder="أدخل اسمك بالكامل"
+									placeholder={t('adkhl_asmk_balkaml')}
 								/>
 							</div>
 
 							<div className="space-y-1.5">
 								<label className="text-xs font-bold text-foreground/80 block">
-									رقم الهاتف
-								</label>
+									{t('rqm_alhatf')}</label>
 								<input
 									type="tel"
 									value={profileForm.phone}
@@ -196,8 +194,7 @@ export default function PersonalProfileForm({
 
 							<div className="space-y-1.5 md:col-span-2">
 								<label className="text-xs font-bold text-foreground/80 block">
-									البريد الإلكتروني
-								</label>
+									{t('albryd_alilktrwny')}</label>
 								<input
 									type="email"
 									required
@@ -210,9 +207,7 @@ export default function PersonalProfileForm({
 									dir="ltr"
 								/>
 								<span className="text-[10px] text-muted-foreground block mt-1">
-									تنبيه: ستقوم باستخدام البريد الإلكتروني الجديد لتسجيل الدخول
-									في المرات القادمة.
-								</span>
+									{t('tnbyh_stqwm_bastkhdam_albryd')}</span>
 							</div>
 						</div>
 
@@ -227,8 +222,7 @@ export default function PersonalProfileForm({
 								) : (
 									<Save className="h-4 w-4" />
 								)}
-								حفظ التغييرات
-							</button>
+								{t('hfdh_altghyyrat')}</button>
 						</div>
 					</form>
 				)}
@@ -239,8 +233,7 @@ export default function PersonalProfileForm({
 						<div className="space-y-5 max-w-lg">
 							<div className="space-y-1.5">
 								<label className="text-xs font-bold text-foreground/80 block">
-									كلمة المرور الحالية
-								</label>
+									{t('klmh_almrwr_alhalyh')}</label>
 								<input
 									type="password"
 									required
@@ -259,8 +252,7 @@ export default function PersonalProfileForm({
 
 							<div className="space-y-1.5">
 								<label className="text-xs font-bold text-foreground/80 block">
-									كلمة المرور الجديدة
-								</label>
+									{t('klmh_almrwr_aljdydh')}</label>
 								<input
 									type="password"
 									required
@@ -279,8 +271,7 @@ export default function PersonalProfileForm({
 
 							<div className="space-y-1.5">
 								<label className="text-xs font-bold text-foreground/80 block">
-									تأكيد كلمة المرور الجديدة
-								</label>
+									{t('takyd_klmh_almrwr_aljdydh')}</label>
 								<input
 									type="password"
 									required
@@ -309,8 +300,7 @@ export default function PersonalProfileForm({
 								) : (
 									<Save className="h-4 w-4" />
 								)}
-								تحديث كلمة المرور
-							</button>
+								{t('thdyth_klmh_almrwr')}</button>
 						</div>
 					</form>
 				)}

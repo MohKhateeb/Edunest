@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import BaseModal from "@/components/shared/BaseModal";
 import { createDispute } from "@/lib/actions/disputes";
+import { useTranslations } from "next-intl";
 
 export function DisputeModal({
 	bookingId,
@@ -12,6 +13,7 @@ export function DisputeModal({
 	bookingId: string;
 	onClose: () => void;
 }) {
+    const t = useTranslations('common');
 	const [reason, setReason] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState("");
@@ -20,7 +22,7 @@ export function DisputeModal({
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (reason.length < 10) {
-			setError("يرجى كتابة تفاصيل الاعتراض بشكل واضح (10 أحرف على الأقل).");
+			setError(t('yrja_ktabh_tfasyl_alaatrad'));
 			return;
 		}
 
@@ -32,7 +34,7 @@ export function DisputeModal({
 			router.refresh();
 			onClose();
 		} else {
-			setError(res.error || "حدث خطأ أثناء إرسال الاعتراض");
+			setError(res.error || t('hdth_khta_athnaa_irsal'));
 			setLoading(false);
 		}
 	};
@@ -57,25 +59,22 @@ export function DisputeModal({
 				</div>
 				<div>
 					<h3 className="text-xl font-bold text-gray-900 dark:text-white">
-						تقديم اعتراض على الجلسة
-					</h3>
+						{t('tqdym_aatrad_ala_aljlsh')}</h3>
 					<p className="text-gray-500 dark:text-gray-400 text-sm">
-						سيتم تجميد الدفع للمعلم حتى تفصل الإدارة في الأمر.
-					</p>
+						{t('sytm_tjmyd_aldfa_llmalm')}</p>
 				</div>
 			</div>
 
 			<form onSubmit={handleSubmit}>
 				<div className="mb-4">
 					<label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-						تفاصيل المشكلة
-					</label>
+						{t('tfasyl_almshklh')}</label>
 					<textarea
 						value={reason}
 						onChange={(e) => setReason(e.target.value)}
 						className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none transition-all resize-none text-gray-900 dark:text-white"
 						rows={5}
-						placeholder="يرجى كتابة سبب الاعتراض بوضوح (مثال: المعلم لم يحضر، انقطاع متكرر للاتصال، الخ...)"
+						placeholder={t('yrja_ktabh_sbb_alaatrad')}
 						disabled={loading}
 					></textarea>
 				</div>
@@ -92,7 +91,7 @@ export function DisputeModal({
 						disabled={loading}
 						className="flex-1 bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-4 rounded-xl transition-all duration-200 flex justify-center items-center disabled:opacity-70"
 					>
-						{loading ? "جاري الإرسال..." : "تأكيد إرسال الاعتراض"}
+						{loading ? t('jary_alirsal') : t('takyd_irsal_alaatrad')}
 					</button>
 					<button
 						type="button"
@@ -100,8 +99,7 @@ export function DisputeModal({
 						disabled={loading}
 						className="px-6 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded-xl transition-all duration-200"
 					>
-						إلغاء
-					</button>
+						{t('cancel')}</button>
 				</div>
 			</form>
 		</BaseModal>

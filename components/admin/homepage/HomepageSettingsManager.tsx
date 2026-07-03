@@ -13,12 +13,14 @@ import FooterCtaEditor from "./FooterCtaEditor";
 import HeroEditor from "./HeroEditor";
 import JourneyEditor from "./JourneyEditor";
 import PersuasionEditor from "./PersuasionEditor";
+import { useTranslations } from "next-intl";
 
 interface Props {
 	initialLayoutJson: string | null;
 }
 
 export default function HomepageSettingsManager({ initialLayoutJson }: Props) {
+    const t = useTranslations('common');
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -48,25 +50,25 @@ export default function HomepageSettingsManager({ initialLayoutJson }: Props) {
 			const res = await updateHomepageLayout(jsonString);
 
 			if (res.success) {
-				toast.success("تم حفظ إعدادات الصفحة الرئيسية بنجاح");
+				toast.success(t('tm_hfdh_iadadat_alsfhh'));
 				router.refresh();
 			} else {
-				toast.error(res.error || "حدث خطأ أثناء الحفظ");
+				toast.error(res.error || t('hdth_khta_athnaa_alhfdh'));
 			}
 		} catch (error) {
-			toast.error("حدث خطأ غير متوقع");
+			toast.error(t('hdth_khta_ghyr_mtwqa_4'));
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
 	const tabs = [
-		{ id: "announcementBanner", label: "الشريط الإعلاني" },
-		{ id: "hero", label: "القسم الافتتاحي (Hero)" },
-		{ id: "persuasion", label: "قسم الإقناع" },
-		{ id: "journey", label: "رحلة التعلم" },
-		{ id: "assurance", label: "الضمانات" },
-		{ id: "footerCta", label: "الدعوة الختامية" },
+		{ id: "announcementBanner", label: t('alshryt_alialany') },
+		{ id: "hero", label: t('alqsm_alafttahy_hero') },
+		{ id: "persuasion", label: t('qsm_aliqnaa') },
+		{ id: "journey", label: t('rhlh_altalm') },
+		{ id: "assurance", label: t('aldmanat') },
+		{ id: "footerCta", label: t('aldawh_alkhtamyh') },
 	] as const;
 
 	return (
@@ -104,8 +106,7 @@ export default function HomepageSettingsManager({ initialLayoutJson }: Props) {
 						) : (
 							<Save className="w-4 h-4" />
 						)}
-						حفظ التعديلات
-					</button>
+						{t('hfdh_altadylat')}</button>
 				</div>
 
 				<div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -153,9 +154,7 @@ export default function HomepageSettingsManager({ initialLayoutJson }: Props) {
 			<div className="flex items-start gap-2 p-4 bg-amber-50 dark:bg-amber-950/20 text-amber-700 dark:text-amber-400 rounded-xl text-xs">
 				<AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
 				<p className="font-medium leading-relaxed">
-					التعديلات التي تقوم بحفظها ستظهر مباشرة على الصفحة الرئيسية للزوار.
-					تأكد من مراجعة النصوص والروابط قبل الحفظ.
-				</p>
+					{t('altadylat_alty_tqwm_bhfdhha')}</p>
 			</div>
 		</div>
 	);

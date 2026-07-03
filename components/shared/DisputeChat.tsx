@@ -17,6 +17,7 @@ import {
 	sendDisputeMessage,
 } from "@/lib/actions/disputes";
 import { DISPUTE_TURN_AR } from "@/lib/translations";
+import { useTranslations } from "next-intl";
 
 type Message = {
 	id: string;
@@ -43,6 +44,7 @@ export function DisputeChat({
 	currentUserId,
 	currentUserType,
 }: DisputeChatProps) {
+    const t = useTranslations('common');
 	const [msgText, setMsgText] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [pendingTurn, setPendingTurn] = useState<DisputeTurn | null>(null);
@@ -74,7 +76,7 @@ export function DisputeChat({
 	const handleResolve = async (
 		decision: "RESOLVED_IN_FAVOR_OF_PARENT" | "RESOLVED_IN_FAVOR_OF_TEACHER",
 	) => {
-		if (!confirm("هل أنت متأكد من قرارك؟ لا يمكن التراجع بعد الإغلاق.")) return;
+		if (!confirm(t('hl_ant_mtakd_mn_1'))) return;
 
 		setResolving(true);
 		const res = await resolveDispute({ disputeId, decision, adminNotes });
@@ -105,11 +107,11 @@ export function DisputeChat({
 
 	const getTurnMessage = () => {
 		if (currentUserType === "ADMIN") return "";
-		if (allowedTurn === "NONE") return "المحادثة مقفلة مؤقتاً من قبل الإدارة.";
+		if (allowedTurn === "NONE") return t('almhadthh_mqflh_moqta_mn');
 		if (allowedTurn === "PARENT" && currentUserType === "TEACHER")
-			return "الإدارة بانتظار رد ولي الأمر حالياً. لا يمكنك الإرسال.";
+			return t('alidarh_bantdhar_rd_wly');
 		if (allowedTurn === "TEACHER" && currentUserType === "PARENT")
-			return "الإدارة بانتظار رد المعلم حالياً. لا يمكنك الإرسال.";
+			return t('alidarh_bantdhar_rd_almalm');
 		return "";
 	};
 
@@ -121,11 +123,9 @@ export function DisputeChat({
 				<div className="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-900/80 flex justify-between items-center shrink-0">
 					<div>
 						<h3 className="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-							محادثة النزاع
-							{status === "OPEN" ? (
+							{t('mhadthh_alnzaa')}{status === "OPEN" ? (
 								<span className="text-xs bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">
-									مفتوح
-								</span>
+									{t('mftwh')}</span>
 							) : (
 								<span className="text-xs bg-gray-200 text-gray-800 px-2 py-0.5 rounded-full flex items-center gap-1">
 									<svg
@@ -141,8 +141,7 @@ export function DisputeChat({
 											d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
 										></path>
 									</svg>
-									مغلق (للقراءة فقط)
-								</span>
+									{t('mghlq_llqraah_fqt')}</span>
 							)}
 						</h3>
 					</div>
@@ -153,20 +152,20 @@ export function DisputeChat({
 					{messages.map((msg) => {
 						const isMe = msg.senderId === currentUserId;
 						const isAdminMsg =
-							msg.message.startsWith("[رسالة إدارية") ||
-							msg.message.startsWith("[رسالة النظام");
+							msg.message.startsWith(t('rsalh_idaryh')) ||
+							msg.message.startsWith(t('rsalh_alndham'));
 						const isSenderAdmin = msg.sender.userType === "ADMIN";
 						const isSenderTeacher = msg.sender.userType === "TEACHER";
 
 						let roleIcon = <User className="w-3 h-3" />;
-						let roleLabel = "ولي الأمر";
+						let roleLabel = t('wly_alamr');
 
 						if (isSenderAdmin) {
 							roleIcon = <Shield className="w-3 h-3 text-red-500" />;
-							roleLabel = "الإدارة";
+							roleLabel = t('alidarh');
 						} else if (isSenderTeacher) {
 							roleIcon = <GraduationCap className="w-3 h-3 text-emerald-500" />;
-							roleLabel = "المعلم";
+							roleLabel = t('almalm_1');
 						}
 
 						return (
@@ -227,7 +226,7 @@ export function DisputeChat({
 										type="text"
 										value={msgText}
 										onChange={(e) => setMsgText(e.target.value)}
-										placeholder="اكتب رسالتك هنا..."
+										placeholder={t('aktb_rsaltk_hna')}
 										className="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500 transition-all disabled:opacity-50"
 										disabled={loading}
 									/>
@@ -236,7 +235,7 @@ export function DisputeChat({
 										disabled={loading || !msgText.trim()}
 										className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl transition-colors disabled:opacity-50"
 									>
-										{loading ? "..." : "إرسال"}
+										{loading ? "..." : t('submit')}
 									</button>
 								</>
 							)}
@@ -252,8 +251,7 @@ export function DisputeChat({
 					<div className="p-5 border border-blue-200 bg-blue-50/50 dark:bg-blue-900/10 rounded-3xl shadow-sm flex flex-col justify-between">
 						<h4 className="font-bold text-blue-800 dark:text-blue-400 mb-4 flex items-center gap-2">
 							<Shield className="w-5 h-5" />
-							التحكم في المحادثة (من يُسمح له بالرد؟)
-						</h4>
+							{t('althkm_fy_almhadthh_mn')}</h4>
 						<div className="grid grid-cols-2 gap-3">
 							<button
 								type="button"
@@ -268,8 +266,7 @@ export function DisputeChat({
 										<CheckCircle2 className="w-3.5 h-3.5" />
 									)
 								)}
-								الجميع
-							</button>
+								{t('aljmya')}</button>
 							<button
 								type="button"
 								onClick={() => handleTurnChange("PARENT")}
@@ -283,7 +280,7 @@ export function DisputeChat({
 										<CheckCircle2 className="w-3.5 h-3.5" />
 									)
 								)}
-								انتظار {DISPUTE_TURN_AR.PARENT}
+								{t('antdhar')}{DISPUTE_TURN_AR.PARENT}
 							</button>
 							<button
 								type="button"
@@ -298,7 +295,7 @@ export function DisputeChat({
 										<CheckCircle2 className="w-3.5 h-3.5" />
 									)
 								)}
-								انتظار {DISPUTE_TURN_AR.TEACHER}
+								{t('antdhar')}{DISPUTE_TURN_AR.TEACHER}
 							</button>
 							<button
 								type="button"
@@ -313,7 +310,7 @@ export function DisputeChat({
 										<CheckCircle2 className="w-3.5 h-3.5" />
 									)
 								)}
-								تحويل لـ {DISPUTE_TURN_AR.NONE}
+								{t('thwyl_l')}{DISPUTE_TURN_AR.NONE}
 							</button>
 						</div>
 					</div>
@@ -322,13 +319,12 @@ export function DisputeChat({
 					<div className="p-5 border border-red-200 bg-red-50/50 dark:bg-red-900/10 rounded-3xl shadow-sm flex flex-col justify-between">
 						<h4 className="font-bold text-red-800 dark:text-red-400 mb-4 flex items-center gap-2">
 							<Shield className="w-5 h-5" />
-							قرار الإدارة (حسم النزاع نهائياً)
-						</h4>
+							{t('qrar_alidarh_hsm_alnzaa')}</h4>
 						<input
 							type="text"
 							value={adminNotes}
 							onChange={(e) => setAdminNotes(e.target.value)}
-							placeholder="ملاحظات الإدارة (تظهر للطرفين عند الإغلاق)"
+							placeholder={t('mlahdhat_alidarh_tdhhr_lltrfyn')}
 							className="w-full bg-white dark:bg-gray-900 border border-red-200 dark:border-red-800 rounded-xl px-4 py-3 text-sm mb-4 outline-none focus:ring-2 focus:ring-red-500 transition-all"
 						/>
 						<div className="flex flex-col sm:flex-row gap-3">
@@ -339,8 +335,7 @@ export function DisputeChat({
 								className="flex-1 bg-red-600 hover:bg-red-700 text-white text-sm py-3 rounded-xl font-bold transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2"
 							>
 								{resolving && <Loader2 className="w-4 h-4 animate-spin" />}
-								استرداد لولي الأمر
-							</button>
+								{t('astrdad_lwly_alamr')}</button>
 							<button
 								type="button"
 								onClick={() => handleResolve("RESOLVED_IN_FAVOR_OF_TEACHER")}
@@ -348,8 +343,7 @@ export function DisputeChat({
 								className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white text-sm py-3 rounded-xl font-bold transition-colors shadow-md disabled:opacity-50 flex justify-center items-center gap-2"
 							>
 								{resolving && <Loader2 className="w-4 h-4 animate-spin" />}
-								دفع للمعلم
-							</button>
+								{t('dfa_llmalm')}</button>
 						</div>
 					</div>
 				</div>

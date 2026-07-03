@@ -28,6 +28,7 @@ import HakeemCharacter from "@/components/shared/HakeemCharacter";
 import NajeebCharacter from "@/components/shared/NajeebCharacter";
 import { adminLinks, parentLinks, teacherLinks } from "@/lib/config/navigation";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 const ADVISOR_TIPS: Record<
 	"PARENT" | "TEACHER" | "ADMIN",
@@ -82,6 +83,7 @@ const ADVISOR_TIPS: Record<
 };
 
 export default function Sidebar() {
+    const t = useTranslations('common');
 	const { data: session } = useSession();
 	const pathname = usePathname();
 	const [isCollapsed, setIsCollapsed] = useState(false);
@@ -146,10 +148,10 @@ export default function Sidebar() {
 						)}
 					>
 						{role === "ADMIN"
-							? "لوحة المشرف"
+							? t('lwhh_almshrf')
 							: role === "TEACHER"
-								? "لوحة المعلم"
-								: "لوحة ولي الأمر"}
+								? t('lwhh_almalm')
+								: t('lwhh_wly_alamr')}
 					</span>
 				)}
 				<button
@@ -158,7 +160,7 @@ export default function Sidebar() {
 						"p-1.5 rounded-xl text-slate-400 hover:text-primary hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors cursor-pointer",
 						isCollapsed && "mx-auto",
 					)}
-					title={isCollapsed ? "توسيع القائمة" : "تصغير القائمة"}
+					title={isCollapsed ? t('twsya_alqaemh') : t('tsghyr_alqaemh')}
 				>
 					{isCollapsed ? (
 						<ChevronLeft className="h-4.5 w-4.5" />
@@ -213,15 +215,14 @@ export default function Sidebar() {
 							<span className="text-[10px] font-black text-primary flex items-center gap-1">
 								<Sparkles className="h-3 w-3" />
 								{activeTip.advisor === "hakeem"
-									? "مستشارنا الحكيم"
-									: "الملهم نجيب"}
+									? t('mstsharna_alhkym')
+									: t('almlhm_njyb')}
 							</span>
 							<button
 								onClick={cycleTip}
 								className="text-[9px] font-black text-muted-foreground hover:text-primary cursor-pointer transition-colors"
 							>
-								نصيحة أخرى ⟳
-							</button>
+								{t('nsyhh_akhra')}</button>
 						</div>
 						<div className="flex gap-2.5 items-center">
 							<div className="flex-shrink-0 bg-white/40 dark:bg-slate-800/40 rounded-xl p-1 border border-primary/10">
@@ -245,7 +246,7 @@ export default function Sidebar() {
 						<button
 							onClick={cycleTip}
 							className="cursor-pointer hover:scale-110 transition-transform duration-200 focus:outline-none w-10 h-10 flex items-center justify-center bg-gradient-to-br from-indigo-50/50 to-primary/5 dark:from-slate-900/60 dark:to-primary/10 border border-primary/15 rounded-xl p-1"
-							title="نصيحة اليوم"
+							title={t('nsyhh_alywm')}
 						>
 							{activeTip.advisor === "hakeem" ? (
 								<HakeemCharacter size="sm" className="w-8 h-8" />
@@ -259,8 +260,8 @@ export default function Sidebar() {
 							<div className="font-black text-primary mb-2 border-b border-border/50 pb-1 flex items-center gap-1">
 								<Sparkles className="h-3 w-3" />
 								{activeTip.advisor === "hakeem"
-									? "مستشارنا الحكيم"
-									: "الملهم نجيب"}
+									? t('mstsharna_alhkym')
+									: t('almlhm_njyb')}
 							</div>
 							<div className="flex gap-2 items-center">
 								<div className="flex-shrink-0 bg-slate-50 dark:bg-slate-800 rounded-lg p-0.5 border border-primary/10">

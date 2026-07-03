@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import HakeemCharacter from "./HakeemCharacter";
 import NajeebCharacter from "./NajeebCharacter";
+import { useTranslations } from "next-intl";
 
 export type CharacterType = "najeeb" | "hakeem";
 export type MessageMood =
@@ -31,6 +32,7 @@ export default function InteractiveMessage({
 	className,
 	najeebMode = "welcome",
 }: InteractiveMessageProps) {
+    const t = useTranslations('common');
 	const [mounted, setMounted] = useState(false);
 
 	useEffect(() => {
@@ -90,7 +92,7 @@ export default function InteractiveMessage({
 						)}
 						suppressHydrationWarning
 					>
-						{title || (isHakeem ? "الحكيم يقول:" : "نجيب يقول:")}
+						{title || (isHakeem ? t('alhkym_yqwl') : t('njyb_yqwl'))}
 					</h4>
 					<div
 						className="text-sm leading-relaxed font-semibold text-slate-700 dark:text-slate-300"

@@ -16,6 +16,7 @@ import {
 	getDetailedSessionState,
 } from "@/lib/utils/booking-state";
 import { formatTimeOnly } from "@/lib/utils/time";
+import { useTranslations } from "next-intl";
 
 interface DailyScheduleProps {
 	dateStr: string;
@@ -38,6 +39,7 @@ export function DailySchedule({
 	handleRejectShortcut,
 	handleCancelShortcut,
 }: DailyScheduleProps) {
+    const t = useTranslations('bookings');
 	const now = Date.now();
 
 	const getBookingTimeState = (booking: DetailedBooking) => {
@@ -63,11 +65,9 @@ export function DailySchedule({
 				</div>
 				<div>
 					<h3 className="font-extrabold text-lg text-foreground">
-						لا توجد جلسات مجدولة
-					</h3>
+						{t('la_twjd_jlsat_mjdwlh')}</h3>
 					<p className="text-sm text-muted-foreground mt-1 max-w-[250px] mx-auto">
-						يوم {displayDate} فارغ ولا يحتوي على أي حجوزات أو حصص دراسية.
-					</p>
+						{t('ywm')}{displayDate} {t('fargh_wla_yhtwy_ala')}</p>
 				</div>
 			</div>
 		);
@@ -77,12 +77,11 @@ export function DailySchedule({
 		<div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm min-h-full">
 			<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border/80 pb-4 mb-6">
 				<div>
-					<h2 className="font-black text-lg">جلسات اليوم</h2>
+					<h2 className="font-black text-lg">{t('jlsat_alywm')}</h2>
 					<p className="text-xs text-primary font-bold">{displayDate}</p>
 				</div>
 				<div className="text-xs font-bold bg-accent/40 px-3 py-1.5 rounded-lg border border-border">
-					{bookings.length} جلسات
-				</div>
+					{bookings.length} {t('jlsat')}</div>
 			</div>
 
 			<div className="space-y-4">
@@ -117,8 +116,7 @@ export function DailySchedule({
 										{formatTimeOnly(b.startTime)}
 									</div>
 									<div className="text-[10px] font-bold text-muted-foreground mt-1">
-										{b.duration} دقيقة
-									</div>
+										{b.duration} {t('dqyqh')}</div>
 								</div>
 
 								<div className="space-y-1.5 flex-1 min-w-0">
@@ -133,18 +131,15 @@ export function DailySchedule({
 										</span>
 										{b.isTrial && (
 											<span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200 dark:bg-purple-950/50 dark:text-purple-400">
-												ترايل مجاني
-											</span>
+												{t('trayl_mjany')}</span>
 										)}
 										{b.adminEscrow?.status === "PENDING" && (
-											<span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-950/50 dark:text-rose-400" title="الأرباح محتجزة بانتظار قرار إداري">
-												أموال مجمدة
-											</span>
+											<span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-950/50 dark:text-rose-400" title={t('alarbah_mhtjzh_bantdhar_qrar')}>
+												{t('amwal_mjmdh')}</span>
 										)}
 										{b.dispute?.status === "OPEN" && (
 											<span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200 dark:bg-red-950/50 dark:text-red-400">
-												نزاع مفتوح
-											</span>
+												{t('nzaa_mftwh')}</span>
 										)}
 									</div>
 
@@ -163,8 +158,7 @@ export function DailySchedule({
 											<FileText className="h-3.5 w-3.5 mt-0.5 shrink-0 text-primary/70" />
 											<span className="truncate" title={b.questionTitle}>
 												<span className="font-semibold text-foreground/80 me-1">
-													موضوع الجلسة:
-												</span>
+													{t('mwdwa_aljlsh')}</span>
 												{b.questionTitle}
 											</span>
 										</div>
@@ -181,8 +175,7 @@ export function DailySchedule({
 								>
 									{b.status === "EXPIRED" && (
 										<div className="text-[11px] text-rose-600 font-bold bg-rose-50 px-2 py-1 rounded-lg text-center max-w-[120px]">
-											انتهت مهلة الدفع وتم تحرير الموعد
-										</div>
+											{t('antht_mhlh_aldfa_wtm')}</div>
 									)}
 
 									{b.status === "AWAITING_PAYMENT" && !b.isTrial && (
@@ -198,8 +191,7 @@ export function DailySchedule({
 												) : (
 													<X className="h-3 w-3" />
 												)}
-												إلغاء الموعد
-											</button>
+												{t('ilghaa_almwad')}</button>
 										</div>
 									)}
 
@@ -216,8 +208,7 @@ export function DailySchedule({
 												) : (
 													<X className="h-3 w-3" />
 												)}
-												رفض
-											</button>
+												{t('rfd')}</button>
 											<button
 												onClick={(e) => handleAcceptShortcut(b.id, e)}
 												disabled={loadingId === b.id}
@@ -228,8 +219,7 @@ export function DailySchedule({
 												) : (
 													<Check className="h-3 w-3" />
 												)}
-												قبول
-											</button>
+												{t('qbwl')}</button>
 										</div>
 									)}
 
@@ -242,7 +232,7 @@ export function DailySchedule({
 												<JoinMeetingButton
 													bookingId={b.id}
 													variant="small"
-													label="انضم للقاعة"
+													label={t('andm_llqaah')}
 												/>
 											)}
 											{showReportButton && (
@@ -254,8 +244,7 @@ export function DailySchedule({
 													className="px-4 py-2 bg-primary hover:bg-primary/95 text-primary-foreground rounded-xl text-[11px] font-bold transition-all shadow-sm flex items-center gap-1.5"
 												>
 													<FileText className="h-3.5 w-3.5" />
-													رفع التقرير
-												</button>
+													{t('rfa_altqryr')}</button>
 											)}
 										</>
 									)}
