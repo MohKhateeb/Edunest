@@ -31,7 +31,7 @@ export default function AssuranceSection({
 }) {
 	return (
 		<section className="py-24 bg-white dark:bg-slate-950">
-			<div className="max-w-6xl mx-auto px-6" dir="rtl">
+			<div className="max-w-6xl mx-auto px-6">
 				<SectionHeader title={content.title} subtitle={content.subtitle} />
 
 				<div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 rounded-[3rem] p-8 md:p-12 shadow-premium relative overflow-hidden">

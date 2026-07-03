@@ -247,7 +247,7 @@ export default async function AdminFinancialsPage({
 	}
 
 	return (
-		<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10" dir="rtl">
+		<div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
 			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/20 dark:to-indigo-950/20 p-6 rounded-3xl border border-blue-100 dark:border-blue-900/30">
 				<div>
 					<h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 flex items-center gap-2 mb-2">

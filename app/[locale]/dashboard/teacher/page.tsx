@@ -34,7 +34,7 @@ export default async function TeacherDashboard() {
 	const live = data.liveSession ? sanitizePrismaData(data.liveSession) : null;
 
 	return (
-		<div className="space-y-8 text-right pb-10" dir="rtl">
+		<div className="space-y-8 text-right pb-10">
 			<WelcomeHeader teacherName={session.user.name || ""} teacherSlug={data.teacher.slug} isAvailableNow={data.teacher.isAvailableNow} />
 			<UrgentMattersSection isVerified={data.teacher.isVerified} openDisputes={data.openDisputes} urgentAlerts={data.urgentAlerts} />
 			<LiveSessionBanner liveSession={live} />

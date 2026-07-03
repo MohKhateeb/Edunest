@@ -20,7 +20,7 @@ export default async function ParentFAQPage() {
 	const res = await getFAQs(FAQCategory.PARENT);
 
 	return (
-		<div className="space-y-6 text-right" dir="rtl">
+		<div className="space-y-6 text-right">
 			<div className="border-b border-border/40 pb-4">
 				<h1 className="text-2xl font-black mb-1">الأسئلة الشائعة</h1>
 				<p className="text-xs text-muted-foreground">

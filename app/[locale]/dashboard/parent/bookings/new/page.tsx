@@ -13,7 +13,7 @@ export default async function NewBookingPageRoute() {
 	if (!session) redirect("/login");
 
 	return (
-		<div className="space-y-4 relative min-h-[500px]" dir="rtl">
+		<div className="space-y-4 relative min-h-[500px]">
 			{/* عنوان الصفحة (يظهر دائماً) */}
 			<div className="text-center space-y-1 mb-8">
 				<h1 className="text-3xl font-black text-slate-900 dark:text-white">

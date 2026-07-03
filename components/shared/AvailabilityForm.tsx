@@ -237,7 +237,7 @@ export default function AvailabilityForm({
 	};
 
 	return (
-		<div className="space-y-6" dir="rtl">
+		<div className="space-y-6">
 			{/* Top Banner and Quick Presets */}
 			<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-4 transition-all hover:shadow-md">
 				<div>
@@ -445,7 +445,6 @@ export default function AvailabilityForm({
 				<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm animate-in fade-in duration-200">
 					<div
 						className="bg-card border border-border rounded-2xl max-w-sm w-full p-6 space-y-4 shadow-xl animate-in zoom-in-95 duration-200"
-						dir="rtl"
 					>
 						<div className="flex justify-between items-start">
 							<div>

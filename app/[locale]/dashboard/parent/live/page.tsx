@@ -22,7 +22,7 @@ export default async function ParentLiveRadarPage() {
 	}
 
 	return (
-		<div className="space-y-6" dir="rtl">
+		<div className="space-y-6">
 			<ParentLiveRadarClient
 				students={students}
 				serviceTypes={serviceTypes}

@@ -14,7 +14,7 @@ export default function PersuasionSection({
 }) {
 	return (
 		<section className="py-24 bg-white dark:bg-slate-950 overflow-hidden">
-			<div className="max-w-5xl mx-auto px-6 relative" dir="rtl">
+			<div className="max-w-5xl mx-auto px-6 relative">
 				{/* Title */}
 				<SectionHeader title={content.title} subtitle={content.subtitle} />
 

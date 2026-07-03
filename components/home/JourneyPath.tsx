@@ -32,7 +32,7 @@ export default function JourneyPath({
 			{/* Decorative path line in background */}
 			<div className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-800 to-transparent hidden md:block z-0"></div>
 
-			<div className="max-w-6xl mx-auto px-6 relative z-10" dir="rtl">
+			<div className="max-w-6xl mx-auto px-6 relative z-10">
 				<div className="text-center mb-20 space-y-4">
 					<motion.h2
 						initial={{ opacity: 0, y: 20 }}

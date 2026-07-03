@@ -41,7 +41,7 @@ export default async function SessionLobbyPage({
 	}
 
 	return (
-		<div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-10" dir="rtl">
+		<div className="bg-slate-50 dark:bg-slate-950 min-h-screen py-10">
 			<SessionLobbyClient
 				bookingId={booking.id}
 				isParent={isParent}

@@ -29,7 +29,6 @@ export default function FAQAccordion({ faqs }: { faqs: FAQ[] }) {
 				</div>
 				<input
 					type="text"
-					dir="rtl"
 					placeholder={t('abhth_fy_alaselh_alshaeah')}
 					value={searchTerm}
 					onChange={(e) => setSearchTerm(e.target.value)}

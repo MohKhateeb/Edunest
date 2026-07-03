@@ -28,7 +28,7 @@ export default function PendingReportsClient({
 	}
 
 	return (
-		<div className="space-y-6 text-right" dir="rtl">
+		<div className="space-y-6 text-right">
 			{bookings.length === 0 ? (
 				<div className="bg-card border border-border rounded-3xl p-12 text-center text-muted-foreground">
 					<CheckCircle2 className="h-12 w-12 mx-auto text-green-500 mb-4 opacity-75" />

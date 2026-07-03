@@ -133,7 +133,7 @@ export default function TeacherBookingsList({
 	};
 
 	return (
-		<div className="space-y-6" dir="rtl">
+		<div className="space-y-6">
 			{/* 1. Summary Stats */}
 			<TeacherBookingsSummary bookings={bookings} />
 

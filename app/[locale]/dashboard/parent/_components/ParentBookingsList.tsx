@@ -63,7 +63,7 @@ export default function ParentBookingsList({
 	const filtered = getFilteredData();
 
 	return (
-		<div className="space-y-6 text-right" dir="rtl">
+		<div className="space-y-6 text-right">
 			<InteractiveMessage
 				character="najeeb"
 				najeebMode={

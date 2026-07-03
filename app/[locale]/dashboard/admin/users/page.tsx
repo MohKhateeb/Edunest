@@ -20,7 +20,7 @@ export default async function AdminUsersPage({
 	// TODO: wire up pagination UI
 
 	return (
-		<div className="space-y-6" dir="rtl">
+		<div className="space-y-6">
 			<div>
 				<h1 className="text-2xl font-extrabold mb-1">إدارة مستخدمي المنصة</h1>
 				<p className="text-xs text-muted-foreground">

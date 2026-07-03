@@ -69,7 +69,7 @@ export default function HelpPage() {
 	});
 
 	return (
-		<div className="min-h-screen flex flex-col bg-background" dir="rtl">
+		<div className="min-h-screen flex flex-col bg-background">
 			<Header />
 
 			{/* 🌟 Hero Section */}

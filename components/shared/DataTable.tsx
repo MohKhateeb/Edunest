@@ -39,7 +39,7 @@ export default function DataTable<T>({
 }: DataTableProps<T>) {
     const t = useTranslations('common');
 	return (
-		<div className="space-y-4" dir="rtl">
+		<div className="space-y-4">
 			{/* Search & Filters Toolbar */}
 			{(setSearchQuery !== undefined || toolbarChildren) && (
 				<div className="flex flex-col sm:flex-row gap-4 bg-card border border-border p-4 rounded-xl shadow-sm">

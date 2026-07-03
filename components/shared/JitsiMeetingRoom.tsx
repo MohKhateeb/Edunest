@@ -87,7 +87,6 @@ export default function JitsiMeetingRoom({
 		return (
 			<div
 				className="flex flex-col items-center justify-center min-h-[70vh] text-center p-6 animate-in fade-in zoom-in duration-500"
-				dir="rtl"
 			>
 				<div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mb-6 shadow-lg">
 					<CheckCircle2 className="w-12 h-12" />
@@ -220,7 +219,6 @@ export default function JitsiMeetingRoom({
 				<button
 					onClick={toggleScreenShare}
 					className={`px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg flex items-center gap-2 transition-all cursor-pointer border ${isSharingScreen ? "bg-emerald-600 hover:bg-emerald-500 text-white border-emerald-400/20" : "bg-white/10 hover:bg-white/20 text-white border-white/10"}`}
-					dir="rtl"
 					title={t('msharkh_alshashh')}
 				>
 					<Monitor className={`w-4 h-4 ${isSharingScreen ? "animate-pulse" : ""}`} />
@@ -234,7 +232,6 @@ export default function JitsiMeetingRoom({
 				<button
 					onClick={endSession}
 					className="bg-rose-600 hover:bg-rose-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg flex items-center gap-2 transition-all hover:scale-105 cursor-pointer border border-rose-400/20"
-					dir="rtl"
 				>
 					<AlertTriangle className="w-4 h-4" />
 					<span className="hidden sm:inline">{t('inhaa_aljlsh')}</span>

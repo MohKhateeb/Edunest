@@ -19,7 +19,6 @@ export default function HeroSection({
 
 			<div
 				className="max-w-6xl mx-auto px-6 relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center"
-				dir="rtl"
 			>
 				{/* Texts & Call to action */}
 				<div className="lg:col-span-6 flex flex-col space-y-8 text-center lg:text-right">

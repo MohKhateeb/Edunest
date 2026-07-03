@@ -18,7 +18,6 @@ export default function DashboardError({
 	return (
 		<div
 			className="flex flex-col items-center justify-center min-h-[60vh] gap-6 text-center px-4"
-			dir="rtl"
 		>
 			<div className="bg-red-50 dark:bg-red-950/30 p-6 rounded-full border border-red-100 dark:border-red-900">
 				<AlertCircle className="w-16 h-16 text-red-500" />

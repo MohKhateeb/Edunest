@@ -15,7 +15,6 @@ export default function FooterCTA({ content }: { content: FooterCtaContent }) {
 
 			<div
 				className="max-w-4xl mx-auto px-6 relative z-10 text-center space-y-10"
-				dir="rtl"
 			>
 				<motion.div
 					initial={{ opacity: 0, y: 20 }}

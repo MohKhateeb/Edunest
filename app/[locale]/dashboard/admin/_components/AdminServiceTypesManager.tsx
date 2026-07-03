@@ -109,7 +109,7 @@ export default function AdminServiceTypesManager({
 	};
 
 	return (
-		<div className="space-y-6" dir="rtl">
+		<div className="space-y-6">
 			<div>
 				<h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3 mb-2">
 					إدارة أنواع الخدمات والجلسات{" "}

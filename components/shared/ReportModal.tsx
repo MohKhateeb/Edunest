@@ -70,7 +70,6 @@ export default function ReportModal({
 		<Portal>
 			<div
 				className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/75 overflow-y-auto animate-in fade-in duration-200"
-				dir="rtl"
 			>
 				<div
 					className="w-full max-w-lg relative bg-card border border-border rounded-2xl shadow-2xl p-1 animate-in zoom-in-95 duration-200 my-8"

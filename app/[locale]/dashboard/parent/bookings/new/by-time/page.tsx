@@ -19,7 +19,7 @@ export default async function BookByTimePage() {
 		await BookingService.getBookByTimeData(userId);
 
 	return (
-		<div className="space-y-4 relative min-h-[500px]" dir="rtl">
+		<div className="space-y-4 relative min-h-[500px]">
 			<div className="max-w-4xl mx-auto space-y-6 pb-20">
 				<BookingJourneyHeader
 					title="حجز جلسة جديدة"

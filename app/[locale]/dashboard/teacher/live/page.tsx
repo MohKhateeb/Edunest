@@ -19,7 +19,7 @@ export default async function TeacherLiveRadarPage() {
 		await SessionService.getTeacherLiveRadarData(session.user.id);
 
 	return (
-		<div className="space-y-6" dir="rtl">
+		<div className="space-y-6">
 			<div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
 				<div>
 					<h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">

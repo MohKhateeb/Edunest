@@ -171,7 +171,6 @@ export default function ParentStudentsList({
 						<form
 							onSubmit={handleEditSubmit}
 							className="bg-card border border-border rounded-xl max-w-md w-full p-6 space-y-4 shadow-xl my-8 text-right"
-							dir="rtl"
 						>
 							<div className="flex justify-between items-center border-b border-border pb-2.5">
 								<h3 className="font-extrabold text-base flex items-center gap-2">

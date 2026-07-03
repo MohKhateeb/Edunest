@@ -19,7 +19,7 @@ export default async function ParentBookingsPage() {
 	const hakeemMsg = insights.hakeemMsg;
 
 	return (
-		<div className="space-y-8" dir="rtl">
+		<div className="space-y-8">
 			<div>
 				<h1 className="text-2xl font-black mb-4 text-primary">
 					حجوزاتي وجلساتي

@@ -86,7 +86,6 @@ export default function DetailsModal({
 			<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
 				<div
 					className="relative w-full max-w-lg max-h-[85vh] flex flex-col bg-white dark:bg-slate-900 text-foreground border border-border/50 shadow-premium rounded-3xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-300"
-					dir="rtl"
 				>
 					{/* Top Header */}
 					<div className="flex justify-between items-center px-5 py-4 border-b border-border/50 bg-slate-50/50 dark:bg-slate-800/20">

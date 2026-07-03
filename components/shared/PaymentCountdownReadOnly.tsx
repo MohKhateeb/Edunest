@@ -52,7 +52,7 @@ export function PaymentCountdownReadOnly({
 			className={`flex items-center justify-center gap-1.5 text-xs font-bold ${isExpired ? "text-red-500" : "text-amber-600"} ${className}`}
 		>
 			<Clock className="w-3.5 h-3.5" />
-			<span dir="rtl">
+			<span>
 				{isExpired ? t('antha_wqt_aldfa') : `متبقي للدفع: ${timeLeft}`}
 			</span>
 		</div>

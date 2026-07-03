@@ -100,7 +100,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 	});
 
 	return (
-		<div className="space-y-4" dir="rtl">
+		<div className="space-y-4">
 			<DataTable
 				data={filteredUsers}
 				headers={[

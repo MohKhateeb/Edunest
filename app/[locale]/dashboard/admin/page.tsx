@@ -52,7 +52,7 @@ export default async function AdminDashboard() {
 		pendingEscrowsCount > 0;
 
 	return (
-		<div className="space-y-8 text-right pb-10" dir="rtl">
+		<div className="space-y-8 text-right pb-10">
 			{/* Welcome header & Interactive Message */}
 			<div className="mt-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
 				<InteractiveMessage

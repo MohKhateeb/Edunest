@@ -6,7 +6,6 @@ export default function ToastProvider() {
 	return (
 		<Toaster
 			position="top-center"
-			dir="rtl"
 			richColors
 			expand={false}
 			toastOptions={{
