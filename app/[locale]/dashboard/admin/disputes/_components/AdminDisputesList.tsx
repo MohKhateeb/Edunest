@@ -63,13 +63,13 @@ export default function AdminDisputesList({
 			{/* Filters Bar */}
 			<div className="flex flex-col sm:flex-row gap-3">
 				<div className="relative flex-1">
-					<div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+					<div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
 						<Search className="h-4 w-4 text-muted-foreground" />
 					</div>
 					<input
 						type="text"
 						placeholder="البحث باسم المعلم، ولي الأمر، أو سبب النزاع..."
-						className="block w-full rounded-2xl border-0 py-3 pr-10 pl-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-slate-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:bg-slate-800 dark:text-white sm:text-sm sm:leading-6 transition-all"
+						className="block w-full rounded-2xl border-0 py-3 ps-10 pe-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-slate-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:bg-slate-800 dark:text-white sm:text-sm sm:leading-6 transition-all"
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
 					/>
@@ -132,7 +132,7 @@ export default function AdminDisputesList({
 			{/* Disputes List */}
 			<div className="bg-white dark:bg-slate-900 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] border border-gray-100/50 dark:border-gray-700/50 overflow-hidden relative z-10">
 				<div className="overflow-x-auto">
-					<table className="w-full text-right">
+					<table className="w-full text-start">
 						<thead>
 							<tr className="bg-gray-50/50 dark:bg-gray-900/30 border-b border-gray-100/50 dark:border-gray-700/50">
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">

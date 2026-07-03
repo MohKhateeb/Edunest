@@ -126,7 +126,7 @@ export default async function TeacherEarningsPage({
 							/>
 							{tab.label}
 							{tab.badge !== undefined && tab.badge > 0 && (
-								<span className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-2 py-0.5 rounded-full text-xs font-black ml-1 border border-red-200 dark:border-red-800/50">
+								<span className="bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 px-2 py-0.5 rounded-full text-xs font-black me-1 border border-red-200 dark:border-red-800/50">
 									{tab.badge}
 								</span>
 							)}
@@ -140,7 +140,7 @@ export default async function TeacherEarningsPage({
 				<div className="grid grid-cols-1 md:grid-cols-3 gap-6 animate-in fade-in duration-300">
 					{/* Total Paid Card */}
 					<div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] border border-gray-100/50 dark:border-gray-700/50 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-						<div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+						<div className="absolute top-0 start-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
 							<Landmark className="w-24 h-24 text-indigo-600" />
 						</div>
 						<div className="flex items-center gap-3 mb-4">
@@ -159,7 +159,7 @@ export default async function TeacherEarningsPage({
 
 					{/* Available Card */}
 					<div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-[0_8px_30px_rgb(16,185,129,0.2)] relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-						<div className="absolute top-0 right-0 -mt-8 -mr-8 w-40 h-40 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all duration-500"></div>
+						<div className="absolute top-0 start-0 -mt-8 -ms-8 w-40 h-40 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all duration-500"></div>
 						<div className="relative z-10">
 							<div className="flex items-center gap-3 mb-4">
 								<div className="p-3 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/20">
@@ -180,7 +180,7 @@ export default async function TeacherEarningsPage({
 
 					{/* Held Amount Card */}
 					<div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] border border-amber-200 dark:border-amber-900/30 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-						<div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+						<div className="absolute top-0 start-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
 							<Clock className="w-24 h-24 text-amber-600" />
 						</div>
 						<div className="flex items-center gap-3 mb-4">
@@ -241,11 +241,11 @@ export default async function TeacherEarningsPage({
 													{booking.student.name}
 												</p>
 											</div>
-											<div className="text-left shrink-0">
+											<div className="text-end shrink-0">
 												<span className="font-black text-xl text-gray-900 dark:text-white">
 													{net.toFixed(2)}
 												</span>
-												<span className="text-[10px] text-gray-500 mr-1">
+												<span className="text-[10px] text-gray-500 ms-1">
 													شيكل
 												</span>
 												{booking.isTrial && (
@@ -356,7 +356,7 @@ export default async function TeacherEarningsPage({
 										<span className="font-extrabold text-3xl text-gray-900 dark:text-white">
 											{Number(payout.netAmount).toFixed(2)}
 										</span>
-										<span className="text-sm text-gray-500 mr-1 font-bold">
+										<span className="text-sm text-gray-500 ms-1 font-bold">
 											شيكل
 										</span>
 									</div>
@@ -405,8 +405,8 @@ export default async function TeacherEarningsPage({
 										key={booking.id}
 										className="bg-white dark:bg-gray-800 p-4 rounded-xl border border-red-100 dark:border-red-900/30 shadow-sm hover:shadow-md transition-all flex flex-col justify-between gap-3 relative overflow-hidden group"
 									>
-										<div className="absolute top-0 right-0 w-1 h-full bg-red-400 dark:bg-red-600"></div>
-										<div className="flex justify-between items-start pr-3">
+										<div className="absolute top-0 start-0 w-1 h-full bg-red-400 dark:bg-red-600"></div>
+										<div className="flex justify-between items-start ps-3">
 											<div>
 												<h3 className="font-bold text-sm text-gray-900 dark:text-white line-clamp-1">
 													{booking.teacherService.serviceType.name}
@@ -418,17 +418,17 @@ export default async function TeacherEarningsPage({
 													{booking.student.name}
 												</p>
 											</div>
-											<div className="text-left shrink-0">
+											<div className="text-end shrink-0">
 												<span className="font-black text-xl text-gray-900 dark:text-white">
 													{net.toFixed(2)}
 												</span>
-												<span className="text-[10px] text-gray-500 mr-1">
+												<span className="text-[10px] text-gray-500 ms-1">
 													شيكل
 												</span>
 											</div>
 										</div>
 
-										<div className="flex justify-between items-center border-t border-gray-100 dark:border-gray-700 pt-3 mt-1 pr-3">
+										<div className="flex justify-between items-center border-t border-gray-100 dark:border-gray-700 pt-3 mt-1 ps-3">
 											<span
 												className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold ${
 													booking.dispute!.status === "OPEN"

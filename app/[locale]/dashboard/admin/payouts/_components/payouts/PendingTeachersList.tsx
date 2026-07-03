@@ -55,7 +55,7 @@ export function PendingTeachersList({
 							key={g.teacherId}
 							onClick={() => handleSelectTeacher(g.teacherId)}
 							className={cn(
-								"text-right flex flex-col justify-between p-5 rounded-2xl border transition-all duration-300 relative overflow-hidden group outline-none",
+								"text-start flex flex-col justify-between p-5 rounded-2xl border transition-all duration-300 relative overflow-hidden group outline-none",
 								selectedTeacherId === g.teacherId
 									? "border-orange-500 bg-orange-50/50 dark:bg-orange-900/10 shadow-md ring-2 ring-orange-500/20 scale-[1.02]"
 									: "border-border bg-card hover:border-orange-300 dark:hover:border-orange-700/50 hover:shadow-sm",

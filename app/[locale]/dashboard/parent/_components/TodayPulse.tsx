@@ -33,7 +33,7 @@ export default function TodayPulse({ sessions }: TodayPulseProps) {
 				<div className="w-12 h-12 bg-white dark:bg-slate-800 rounded-full shadow-sm flex items-center justify-center shrink-0 border border-emerald-200 dark:border-emerald-800">
 					<NajeebCharacter size="xs" mode="study" animated={true} />
 				</div>
-				<div className="text-center sm:text-right">
+				<div className="text-center sm:text-start">
 					<h2 className="text-lg font-black text-emerald-800 dark:text-emerald-400">
 						نبض اليوم
 					</h2>
@@ -43,7 +43,7 @@ export default function TodayPulse({ sessions }: TodayPulseProps) {
 				</div>
 			</div>
 
-			<div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 dark:before:via-slate-700 before:to-transparent">
+			<div className="space-y-6 relative before:absolute before:inset-0 before:me-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 dark:before:via-slate-700 before:to-transparent">
 				{sessions.map((session) => {
 					const startUtc = new Date(session.startTime);
 					const endTime = new Date(startUtc.getTime() + session.duration * 60000);
@@ -69,7 +69,7 @@ export default function TodayPulse({ sessions }: TodayPulseProps) {
 					return (
 						<div key={session.id} className="relative flex items-center justify-between md:justify-start md:odd:justify-end group is-active py-2">
 							{/* Icon */}
-							<div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 ${statusColor} shrink-0 z-10 md:absolute md:left-1/2 md:-translate-x-1/2`}>
+							<div className={`flex items-center justify-center w-10 h-10 rounded-full border-4 border-white dark:border-slate-900 ${statusColor} shrink-0 z-10 md:absolute md:end-1/2 md:-translate-x-1/2`}>
 								{isOngoing && <span className="absolute w-full h-full rounded-full bg-green-400 animate-ping opacity-50"></span>}
 								<StatusIcon className="w-4 h-4 relative z-10" />
 							</div>
@@ -77,7 +77,7 @@ export default function TodayPulse({ sessions }: TodayPulseProps) {
 							{/* Card - Clickable */}
 							<button 
 								onClick={() => setSelectedBookingId(session.id)}
-								className="w-[calc(100%-3.5rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-border/50 hover:border-primary/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-right cursor-pointer shadow-sm hover:shadow group-hover:-translate-y-1"
+								className="w-[calc(100%-3.5rem)] md:w-[calc(50%-2.5rem)] p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-border/50 hover:border-primary/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-all text-start cursor-pointer shadow-sm hover:shadow group-hover:-translate-y-1"
 							>
 								<div className="flex items-center justify-between mb-2">
 									<span className={`text-xs font-bold px-2.5 py-1 rounded-full ${isOngoing ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" : isPast ? "bg-slate-200 text-slate-600 dark:bg-slate-700 dark:text-slate-400" : "bg-primary/10 text-primary"}`}>

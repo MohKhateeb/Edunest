@@ -297,7 +297,7 @@ export default function AdminSettingsForm({
 																	)
 																}
 															/>
-															<div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:-translate-x-[0.1rem] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-emerald-600 rtl:peer-checked:after:-translate-x-full"></div>
+															<div className="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-emerald-300 dark:peer-focus:ring-emerald-800 rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:-translate-x-[0.1rem] peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:end-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-slate-600 peer-checked:bg-emerald-600 rtl:peer-checked:after:-translate-x-full"></div>
 														</label>
 														<span
 															className={cn(
@@ -331,17 +331,17 @@ export default function AdminSettingsForm({
 															}
 															className={cn(
 																"w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-bold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all",
-																config.type === "percentage" && "pl-10 pr-4",
-																config.type === "currency" && "pl-14 pr-4",
+																config.type === "percentage" && "pe-10 ps-4",
+																config.type === "currency" && "pe-14 ps-4",
 															)}
 														/>
 														{config.type === "percentage" && (
-															<div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
+															<div className="absolute end-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold">
 																%
 															</div>
 														)}
 														{config.type === "currency" && (
-															<div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
+															<div className="absolute end-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
 																شيكل
 															</div>
 														)}

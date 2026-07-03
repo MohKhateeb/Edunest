@@ -18,7 +18,7 @@ export default async function ParentDashboard() {
 	const insights = await getParentDashboardInsights(userId, userName);
 
 	return (
-		<div className="space-y-8 text-right pb-10">
+		<div className="space-y-8 text-start pb-10">
 			
 			{/* 1. Status Header & Quick Actions */}
 			<div className="flex flex-col lg:flex-row gap-6 justify-between items-start mt-4">

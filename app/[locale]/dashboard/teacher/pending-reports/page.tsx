@@ -19,7 +19,7 @@ export default async function TeacherPendingReportsPage() {
 	const sanitizedBookings = sanitizePrismaData(pendingBookings);
 
 	return (
-		<div className="space-y-6 text-right">
+		<div className="space-y-6 text-start">
 			<div>
 				<h1 className="text-2xl font-black flex items-center gap-2">
 					<FileText className="h-7 w-7 text-primary" />

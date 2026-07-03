@@ -20,7 +20,7 @@ export default async function ParentFAQPage() {
 	const res = await getFAQs(FAQCategory.PARENT);
 
 	return (
-		<div className="space-y-6 text-right">
+		<div className="space-y-6 text-start">
 			<div className="border-b border-border/40 pb-4">
 				<h1 className="text-2xl font-black mb-1">الأسئلة الشائعة</h1>
 				<p className="text-xs text-muted-foreground">
@@ -36,7 +36,7 @@ export default async function ParentFAQPage() {
 			) : (
 				<div className="bg-card border border-border/80 rounded-3xl p-6 shadow-premium relative overflow-visible mt-12">
 					{/* نجيب يخرج رأسه من خلف بطاقة الأسئلة الشائعة (ثابت بدون حركة) */}
-					<div className="absolute -top-14 left-6 z-0">
+					<div className="absolute -top-14 end-6 z-0">
 						<NajeebCharacter mode="help" size="sm" animated={false} />
 					</div>
 					<div className="relative z-10">

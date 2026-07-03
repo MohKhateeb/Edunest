@@ -49,10 +49,10 @@ export default function CharacterDialogue({
 			<div
 				className={cn(
 					"relative bg-white dark:bg-slate-800 p-4 md:p-5 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 max-w-sm",
-					align === "right" ? "rounded-br-none" : "rounded-bl-none",
+					align === "right" ? "rounded-es-none" : "rounded-ee-none",
 					character === "hakeem"
-						? "border-r-4 border-r-blue-400"
-						: "border-l-4 border-l-amber-400",
+						? "border-s-4 border-s-blue-400"
+						: "border-e-4 border-e-amber-400",
 				)}
 			>
 				<p className="text-sm md:text-base font-semibold text-slate-700 dark:text-slate-200 leading-relaxed">

@@ -113,7 +113,7 @@ export default function AdminVerificationQueue({
 									setShowRejectForm(false);
 									setErrorMsg(null);
 								}}
-								className={`w-full text-right p-4 rounded-xl border transition-all flex items-center gap-3 cursor-pointer ${
+								className={`w-full text-start p-4 rounded-xl border transition-all flex items-center gap-3 cursor-pointer ${
 									selectedRequestId === r.id
 										? "border-primary bg-primary/5 shadow-sm"
 										: "border-border hover:bg-accent/40"

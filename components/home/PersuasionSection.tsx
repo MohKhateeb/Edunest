@@ -26,7 +26,7 @@ export default function PersuasionSection({
 						viewport={{ once: true }}
 						className="relative bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-[2.5rem] p-8 md:p-10 shadow-premium"
 					>
-						<div className="absolute -top-12 -right-6">
+						<div className="absolute -top-12 -start-6">
 							<HakeemCharacter size="md" />
 						</div>
 						<div className="mt-16 space-y-4">
@@ -47,7 +47,7 @@ export default function PersuasionSection({
 						transition={{ delay: 0.2 }}
 						className="relative bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100 dark:border-blue-900/30 rounded-[2.5rem] p-8 md:p-10 shadow-premium mt-12 md:mt-0"
 					>
-						<div className="absolute -top-12 -left-6">
+						<div className="absolute -top-12 -end-6">
 							<NajeebCharacter mode="success" size="md" animated={false} />
 						</div>
 						<div className="mt-16 space-y-4">

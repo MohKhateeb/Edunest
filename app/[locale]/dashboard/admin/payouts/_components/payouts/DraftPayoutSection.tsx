@@ -74,7 +74,7 @@ export function DraftPayoutSection({
 							</div>
 						</div>
 
-						<div className="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
+						<div className="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar ps-2">
 							{selectedTeacherGroup.bookings.map((b) => (
 								<div
 									key={b.id}
@@ -107,7 +107,7 @@ export function DraftPayoutSection({
 											</span>
 										</div>
 									</div>
-									<div className="mr-4 pr-4 border-r border-border/50 shrink-0">
+									<div className="ms-4 ps-4 border-s border-border/50 shrink-0">
 										{selectedBookingIds.has(b.id) ? (
 											<CheckSquare className="w-6 h-6 text-primary" />
 										) : (

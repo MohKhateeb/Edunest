@@ -91,10 +91,10 @@ export default function TeacherSlugForm({
 						<label className="text-sm font-bold block">الرابط المخصص</label>
 						<div className="flex flex-col sm:flex-row gap-3">
 							<div
-								className="relative flex-1 flex items-center rtl:flex-row-reverse text-left"
+								className="relative flex-1 flex items-center rtl:flex-row-reverse text-end"
 								dir="ltr"
 							>
-								<span className="bg-muted px-4 py-3 rounded-l-xl border border-r-0 border-border text-muted-foreground text-sm">
+								<span className="bg-muted px-4 py-3 rounded-e-xl border border-s-0 border-border text-muted-foreground text-sm">
 									edunest.com/teachers/
 								</span>
 								<input
@@ -102,7 +102,7 @@ export default function TeacherSlugForm({
 									value={slug}
 									onChange={(e) => setSlug(e.target.value.toLowerCase())}
 									disabled={slugUpdated || loading || !!success}
-									className="premium-input rounded-l-none flex-1 text-sm text-left"
+									className="premium-input rounded-e-none flex-1 text-sm text-end"
 									dir="ltr"
 									placeholder="john-doe"
 								/>

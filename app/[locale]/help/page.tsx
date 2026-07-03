@@ -464,7 +464,7 @@ export default function HelpPage() {
 												<span className="h-2 w-2 rounded-full bg-primary"></span>
 												{faq.question}
 											</h4>
-											<p className="text-xs text-muted-foreground leading-relaxed pr-3">
+											<p className="text-xs text-muted-foreground leading-relaxed ps-3">
 												{faq.answer}
 											</p>
 										</div>

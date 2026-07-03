@@ -132,7 +132,7 @@ export default function AdminServiceTypesManager({
 								onSubmit={handleSave}
 								className="bg-white dark:bg-slate-900 border-2 border-indigo-500 rounded-3xl p-6 shadow-lg relative overflow-hidden animate-in fade-in zoom-in-95"
 							>
-								<div className="absolute top-0 right-0 w-full h-1 bg-indigo-500" />
+								<div className="absolute top-0 start-0 w-full h-1 bg-indigo-500" />
 								<h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-100">
 									تعديل: {service.name}
 								</h3>

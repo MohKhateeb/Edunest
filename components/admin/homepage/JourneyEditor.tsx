@@ -106,7 +106,7 @@ export default function JourneyEditor({ content, onChange }: Props) {
 							</div>
 							<button
 								onClick={() => removeStep(idx)}
-								className="absolute top-2 left-2 p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 rounded-lg"
+								className="absolute top-2 end-2 p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/20 rounded-lg"
 							>
 								<Trash2 className="w-3.5 h-3.5" />
 							</button>

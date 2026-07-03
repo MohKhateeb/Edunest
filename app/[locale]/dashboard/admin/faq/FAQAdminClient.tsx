@@ -159,13 +159,13 @@ export default function FAQAdminClient({
 				<table className="min-w-full divide-y divide-gray-200 text-sm">
 					<thead className="bg-gray-50">
 						<tr>
-							<th className="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider">
+							<th className="px-6 py-3 text-start font-medium text-gray-500 uppercase tracking-wider">
 								الترتيب
 							</th>
-							<th className="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider w-1/3">
+							<th className="px-6 py-3 text-start font-medium text-gray-500 uppercase tracking-wider w-1/3">
 								السؤال
 							</th>
-							<th className="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider w-1/3">
+							<th className="px-6 py-3 text-start font-medium text-gray-500 uppercase tracking-wider w-1/3">
 								الإجابة
 							</th>
 							<th className="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider">

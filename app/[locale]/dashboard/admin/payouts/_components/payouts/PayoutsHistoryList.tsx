@@ -41,14 +41,14 @@ export function PayoutsHistoryList({
 					</p>
 				) : (
 					<div className="overflow-x-auto">
-						<table className="w-full text-right border-collapse text-sm">
+						<table className="w-full text-start border-collapse text-sm">
 							<thead>
 								<tr className="bg-muted/50 text-muted-foreground font-semibold border-b border-border">
 									<th className="p-4 whitespace-nowrap">رقم الفاتورة</th>
 									<th className="p-4">المعلم المستفيد</th>
 									<th className="p-4">الفترة الزمنية</th>
 									<th className="p-4">الصافي</th>
-									<th className="p-4 text-left">الحالة والإجراءات</th>
+									<th className="p-4 text-end">الحالة والإجراءات</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -72,7 +72,7 @@ export function PayoutsHistoryList({
 										<td className="p-4 font-bold text-primary whitespace-nowrap">
 											{formatPrice(p.netAmount)}
 										</td>
-										<td className="p-4 text-left">
+										<td className="p-4 text-end">
 											<div className="flex items-center justify-end gap-3">
 												<button
 													type="button"

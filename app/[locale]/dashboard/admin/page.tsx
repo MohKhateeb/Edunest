@@ -52,7 +52,7 @@ export default async function AdminDashboard() {
 		pendingEscrowsCount > 0;
 
 	return (
-		<div className="space-y-8 text-right pb-10">
+		<div className="space-y-8 text-start pb-10">
 			{/* Welcome header & Interactive Message */}
 			<div className="mt-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
 				<InteractiveMessage
@@ -65,7 +65,7 @@ export default async function AdminDashboard() {
 
 			{/* Action Center (Urgent Matters) */}
 			<section className="bg-white/80 dark:bg-card/80 backdrop-blur-md rounded-3xl p-6 border-2 border-red-100 dark:border-red-900/30 shadow-sm relative overflow-hidden">
-				<div className="absolute top-0 right-0 w-2 h-full bg-red-500"></div>
+				<div className="absolute top-0 start-0 w-2 h-full bg-red-500"></div>
 				<h2 className="text-xl font-bold flex items-center gap-2 mb-6 text-red-700 dark:text-red-400">
 					<AlertTriangle className="w-6 h-6" />
 					مركز العمليات العاجلة (Action Center)

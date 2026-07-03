@@ -36,13 +36,13 @@ export function ParentRefundsList({
 					</p>
 				) : (
 					<div className="overflow-x-auto">
-						<table className="w-full text-right border-collapse text-sm">
+						<table className="w-full text-start border-collapse text-sm">
 							<thead>
 								<tr className="bg-muted/50 text-muted-foreground font-semibold border-b border-border">
 									<th className="p-4">ولي الأمر المستحق</th>
 									<th className="p-4">تاريخ الاسترداد</th>
 									<th className="p-4">المبلغ المسترد</th>
-									<th className="p-4 text-left">الحالة</th>
+									<th className="p-4 text-end">الحالة</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -62,7 +62,7 @@ export function ParentRefundsList({
 										<td className="p-4 font-bold text-indigo-600 dark:text-indigo-400">
 											{formatPrice(r.amount)}
 										</td>
-										<td className="p-4 text-left">
+										<td className="p-4 text-end">
 											<div className="flex items-center justify-end gap-3">
 												{r.isPaid ? (
 													<span className="inline-flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 dark:text-emerald-400 font-bold px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800/50">

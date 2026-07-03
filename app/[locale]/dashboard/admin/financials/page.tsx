@@ -117,7 +117,7 @@ export default async function AdminFinancialsPage({
 				) : (
 					<div className="bg-white dark:bg-card border border-border rounded-3xl overflow-hidden">
 						<div className="overflow-x-auto">
-							<table className="w-full text-right">
+							<table className="w-full text-start">
 								<thead className="bg-muted/50 text-muted-foreground">
 									<tr>
 										<th className="p-4 font-bold">التاريخ</th>

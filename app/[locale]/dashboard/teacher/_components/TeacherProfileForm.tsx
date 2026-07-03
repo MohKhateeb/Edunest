@@ -188,7 +188,7 @@ export default function TeacherProfileForm({
 				<div className="min-h-[300px]">
 					{/* STEP 1: Personal Info */}
 					{currentStep === 1 && (
-						<div className="space-y-6 animate-in fade-in slide-in-from-right-4">
+						<div className="space-y-6 animate-in fade-in slide-in-from-start-4">
 							<div className="flex items-center gap-6 flex-wrap mb-6">
 								<div className="relative h-24 w-24 rounded-2xl overflow-hidden bg-accent border border-border flex-shrink-0">
 									{formData.profileImageUrl ? (
@@ -270,7 +270,7 @@ export default function TeacherProfileForm({
 
 					{/* STEP 2: Experience & Specialization */}
 					{currentStep === 2 && (
-						<div className="space-y-6 animate-in fade-in slide-in-from-right-4">
+						<div className="space-y-6 animate-in fade-in slide-in-from-start-4">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
@@ -391,7 +391,7 @@ export default function TeacherProfileForm({
 
 					{/* STEP 3: Pricing & Bio */}
 					{currentStep === 3 && (
-						<div className="space-y-6 animate-in fade-in slide-in-from-right-4">
+						<div className="space-y-6 animate-in fade-in slide-in-from-start-4">
 							<div className="space-y-1.5 max-w-sm">
 								<label className="text-xs font-semibold text-muted-foreground block">
 									سعر الساعة الافتراضي (شيكل) *

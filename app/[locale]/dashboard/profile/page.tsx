@@ -18,7 +18,7 @@ export default async function PersonalProfilePage() {
 	}
 
 	return (
-		<div className="space-y-6 text-right">
+		<div className="space-y-6 text-start">
 			<div>
 				<h1 className="text-2xl font-black mb-1.5 text-primary flex items-center gap-2">
 					<User className="h-7 w-7" />

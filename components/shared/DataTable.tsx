@@ -64,13 +64,13 @@ export default function DataTable<T>({
 			{/* Table Content */}
 			<div className="bg-card border border-border rounded-xl shadow-sm overflow-hidden">
 				<div className="overflow-x-auto">
-					<table className="w-full text-right border-collapse text-xs sm:text-sm">
+					<table className="w-full text-start border-collapse text-xs sm:text-sm">
 						<thead>
 							<tr className="bg-muted/55 text-muted-foreground font-semibold border-b border-border">
 								{headers.map((h, i) => (
 									<th
 										key={i}
-										className={`p-4 ${i === headers.length - 1 ? "text-left" : ""}`}
+										className={`p-4 ${i === headers.length - 1 ? "text-end" : ""}`}
 									>
 										{h}
 									</th>

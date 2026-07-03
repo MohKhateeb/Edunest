@@ -117,7 +117,7 @@ export default async function ParentFinancialsPage({
 			{/* Summary Cards */}
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 				<div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-md rounded-3xl p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] border border-gray-100/50 dark:border-gray-700/50 relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-					<div className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
+					<div className="absolute top-0 start-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity">
 						<CreditCard className="w-24 h-24 text-blue-600" />
 					</div>
 					<div className="flex items-center gap-3 mb-4">
@@ -134,7 +134,7 @@ export default async function ParentFinancialsPage({
 					</h3>
 				</div>
 				<div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-[0_8px_30px_rgb(16,185,129,0.2)] relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
-					<div className="absolute top-0 right-0 -mt-8 -mr-8 w-40 h-40 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all duration-500"></div>
+					<div className="absolute top-0 start-0 -mt-8 -ms-8 w-40 h-40 bg-white/10 rounded-full blur-2xl group-hover:bg-white/20 transition-all duration-500"></div>
 					<div className="relative z-10">
 						<div className="flex items-center gap-3 mb-4">
 							<div className="p-3 bg-white/20 backdrop-blur-sm rounded-2xl border border-white/20">
@@ -215,7 +215,7 @@ export default async function ParentFinancialsPage({
 					</h2>
 				</div>
 				<div className="overflow-x-auto">
-					<table className="w-full text-right">
+					<table className="w-full text-start">
 						<thead>
 							<tr className="bg-gray-50/50 dark:bg-gray-900/30 border-b border-gray-100/50 dark:border-gray-700/50">
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
@@ -280,7 +280,7 @@ export default async function ParentFinancialsPage({
 											<span className="font-extrabold text-gray-900 dark:text-white">
 												{booking.price}
 											</span>
-											<span className="text-xs text-gray-500 mr-1">شيكل</span>
+											<span className="text-xs text-gray-500 ms-1">شيكل</span>
 										</td>
 										<td className="px-6 py-4">
 											{renderPaymentStatus(booking)}

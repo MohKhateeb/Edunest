@@ -170,7 +170,7 @@ export default function ParentStudentsList({
 					<div className="fixed inset-0 z-50 flex items-start justify-center bg-black/75 p-4 overflow-y-auto">
 						<form
 							onSubmit={handleEditSubmit}
-							className="bg-card border border-border rounded-xl max-w-md w-full p-6 space-y-4 shadow-xl my-8 text-right"
+							className="bg-card border border-border rounded-xl max-w-md w-full p-6 space-y-4 shadow-xl my-8 text-start"
 						>
 							<div className="flex justify-between items-center border-b border-border pb-2.5">
 								<h3 className="font-extrabold text-base flex items-center gap-2">

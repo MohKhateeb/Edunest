@@ -79,7 +79,7 @@ export default function InteractiveMessage({
 				{/* Triangle pointer for the bubble */}
 				<div
 					className={cn(
-						"absolute top-4 -right-2 w-4 h-4 rotate-45 border-t border-r z-10",
+						"absolute top-4 -start-2 w-4 h-4 rotate-45 border-t border-s z-10",
 						pointerBg,
 					)}
 				></div>

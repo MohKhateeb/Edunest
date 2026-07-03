@@ -252,7 +252,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 									)}
 								</td>
 
-								<td className="p-4 text-left">
+								<td className="p-4 text-end">
 									{loadingUserId === u.id ? (
 										<Loader2 className="h-5 w-5 animate-spin ms-4 text-primary inline-block" />
 									) : (

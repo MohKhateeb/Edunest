@@ -99,7 +99,7 @@ export default async function TeacherBookingDetailsPage({
 				<div className="lg:col-span-2 space-y-6">
 					{/* Main Info Card */}
 					<div className="bg-white dark:bg-gray-800 rounded-3xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden">
-						<div className="absolute top-0 right-0 w-1.5 h-full bg-blue-500"></div>
+						<div className="absolute top-0 start-0 w-1.5 h-full bg-blue-500"></div>
 						<h2 className="text-xl font-bold text-gray-900 dark:text-white mb-6 flex items-center gap-2">
 							<FileText className="w-5 h-5 text-blue-500" />
 							معلومات الجلسة
@@ -246,7 +246,7 @@ export default async function TeacherBookingDetailsPage({
 					{/* Dispute Card */}
 					{booking.dispute && (
 						<div className="bg-red-50 dark:bg-red-900/10 rounded-3xl p-6 border border-red-100 dark:border-red-900/30 shadow-sm relative overflow-hidden group">
-							<div className="absolute top-0 right-0 w-1.5 h-full bg-red-400 dark:bg-red-600"></div>
+							<div className="absolute top-0 start-0 w-1.5 h-full bg-red-400 dark:bg-red-600"></div>
 							<h2 className="text-xl font-bold text-red-800 dark:text-red-400 mb-4 flex items-center gap-2">
 								<AlertCircle className="w-5 h-5" />
 								حالة النزاع

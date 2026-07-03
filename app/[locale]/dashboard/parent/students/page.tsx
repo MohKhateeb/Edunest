@@ -16,7 +16,7 @@ export default async function ParentStudentsPage() {
 	const students = await UserService.getParentStudents(session.user.id);
 
 	return (
-		<div className="space-y-8 text-right pb-10">
+		<div className="space-y-8 text-start pb-10">
 			<div>
 				<h1 className="text-2xl font-black mb-4 text-primary">
 					أبطال المستقبل (إدارة الأبناء)

@@ -63,7 +63,7 @@ export default function ParentBookingsList({
 	const filtered = getFilteredData();
 
 	return (
-		<div className="space-y-6 text-right">
+		<div className="space-y-6 text-start">
 			<InteractiveMessage
 				character="najeeb"
 				najeebMode={
@@ -99,13 +99,13 @@ export default function ParentBookingsList({
 				</div>
 
 				<div className="relative w-full md:w-72">
-					<div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
+					<div className="absolute inset-y-0 start-3 flex items-center pointer-events-none">
 						<Search className="h-4 w-4 text-muted-foreground" />
 					</div>
 					<input
 						type="text"
 						placeholder="ابحث هنا..."
-						className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-border/50 rounded-xl pr-9 pl-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+						className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-border/50 rounded-xl ps-9 pe-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
 					/>

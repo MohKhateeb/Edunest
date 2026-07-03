@@ -186,7 +186,7 @@ export default function PersonalProfileForm({
 									onChange={(e) =>
 										setProfileForm({ ...profileForm, phone: e.target.value })
 									}
-									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl text-left"
+									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl text-end"
 									placeholder="05xxxxxxx"
 									dir="ltr"
 								/>
@@ -202,7 +202,7 @@ export default function PersonalProfileForm({
 									onChange={(e) =>
 										setProfileForm({ ...profileForm, email: e.target.value })
 									}
-									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl text-left"
+									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl text-end"
 									placeholder="email@example.com"
 									dir="ltr"
 								/>
@@ -244,7 +244,7 @@ export default function PersonalProfileForm({
 											currentPassword: e.target.value,
 										})
 									}
-									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl text-left"
+									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl text-end"
 									placeholder="••••••••"
 									dir="ltr"
 								/>
@@ -263,7 +263,7 @@ export default function PersonalProfileForm({
 											newPassword: e.target.value,
 										})
 									}
-									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl text-left"
+									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl text-end"
 									placeholder="••••••••"
 									dir="ltr"
 								/>
@@ -282,7 +282,7 @@ export default function PersonalProfileForm({
 											confirmPassword: e.target.value,
 										})
 									}
-									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl text-left"
+									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl text-end"
 									placeholder="••••••••"
 									dir="ltr"
 								/>

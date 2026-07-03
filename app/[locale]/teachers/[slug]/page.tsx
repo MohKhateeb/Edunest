@@ -96,7 +96,7 @@ export default async function TeacherProfilePage({
 					</div>
 
 					{/* Info */}
-					<div className="flex-1 text-center sm:text-right">
+					<div className="flex-1 text-center sm:text-start">
 						<div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-1 justify-center sm:justify-start">
 							<h1 className="text-3xl font-extrabold">{teacher.user.name}</h1>
 							{teacher.verificationLevel !== "NONE" && (
@@ -190,7 +190,7 @@ export default async function TeacherProfilePage({
 														` · ${svc.customDescription}`}
 												</p>
 											</div>
-											<div className="text-right">
+											<div className="text-start">
 												<p className="font-bold text-primary text-base">
 													{Number(svc.price)} ₪
 												</p>

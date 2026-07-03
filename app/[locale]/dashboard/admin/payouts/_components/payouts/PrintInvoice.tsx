@@ -13,7 +13,7 @@ export function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 					<h1 className="text-3xl font-extrabold text-gray-800">EduNest</h1>
 					<p className="text-sm text-gray-500 mt-1">منصة التعليم الرائدة</p>
 				</div>
-				<div className="text-left">
+				<div className="text-end">
 					<h2 className="text-2xl font-bold text-gray-700">
 						فاتورة تسوية مستحقات
 					</h2>
@@ -47,13 +47,13 @@ export function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 				</div>
 			</div>
 
-			<table className="w-full text-right border-collapse mb-8 border border-gray-300">
+			<table className="w-full text-start border-collapse mb-8 border border-gray-300">
 				<thead>
 					<tr className="bg-gray-100">
 						<th className="p-4 border-b border-gray-300 font-bold text-gray-700">
 							البيان
 						</th>
-						<th className="p-4 border-b border-gray-300 font-bold text-left text-gray-700">
+						<th className="p-4 border-b border-gray-300 font-bold text-end text-gray-700">
 							المبلغ
 						</th>
 					</tr>
@@ -63,7 +63,7 @@ export function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 						<td className="p-4 border-b border-gray-200 text-gray-800">
 							إجمالي رسوم الحصص الخصوصية
 						</td>
-						<td className="p-4 border-b border-gray-200 text-left font-semibold text-gray-800">
+						<td className="p-4 border-b border-gray-200 text-end font-semibold text-gray-800">
 							{formatPrice(payoutToPrint.totalAmount)}
 						</td>
 					</tr>
@@ -71,7 +71,7 @@ export function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 						<td className="p-4 border-b border-gray-200 text-gray-800">
 							عمولة المنصة (مخصومة)
 						</td>
-						<td className="p-4 border-b border-gray-200 text-left font-semibold text-red-600">
+						<td className="p-4 border-b border-gray-200 text-end font-semibold text-red-600">
 							-{formatPrice(payoutToPrint.commissionAmount)}
 						</td>
 					</tr>
@@ -80,7 +80,7 @@ export function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 							<td className="p-4 border-b border-gray-200 text-gray-800">
 								تعويضات الحصص المجانية (مضافة)
 							</td>
-							<td className="p-4 border-b border-gray-200 text-left font-semibold text-green-600">
+							<td className="p-4 border-b border-gray-200 text-end font-semibold text-green-600">
 								+{formatPrice(payoutToPrint.trialCompensation)}
 							</td>
 						</tr>
@@ -91,7 +91,7 @@ export function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 						<td className="p-5 font-extrabold text-xl text-gray-900 border-t-2 border-gray-300">
 							الصافي المستحق للتحويل
 						</td>
-						<td className="p-5 font-extrabold text-xl text-left text-gray-900 border-t-2 border-gray-300">
+						<td className="p-5 font-extrabold text-xl text-end text-gray-900 border-t-2 border-gray-300">
 							{formatPrice(payoutToPrint.netAmount)}
 						</td>
 					</tr>
