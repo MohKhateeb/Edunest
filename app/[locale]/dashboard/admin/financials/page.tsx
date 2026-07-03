@@ -14,6 +14,7 @@ import FinancialTabs from "./_components/FinancialTabs";
 import AdminPayoutsEngine from "../payouts/_components/AdminPayoutsEngine";
 import { EscrowActions } from "../escrow/escrow-actions";
 import { formatPrice } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
 export const metadata = {
 	title: "الإدارة المالية الشاملة | EduNest",
@@ -24,6 +25,7 @@ export default async function AdminFinancialsPage({
 }: {
 	searchParams: Promise<{ tab?: string; from?: string; to?: string; cursor?: string }>;
 }) {
+    const t = await getTranslations('admin')
 	await requireAuth([UserType.ADMIN]);
 
 	const resolvedSearchParams = await searchParams;
@@ -49,12 +51,11 @@ export default async function AdminFinancialsPage({
 								<Banknote className="w-6 h-6 text-blue-600 dark:text-blue-400" />
 							</div>
 							<p className="text-sm font-bold text-muted-foreground">
-								إجمالي التداول (Gross)
-							</p>
+								{t('gross')}</p>
 						</div>
 						<h3 className="text-4xl font-extrabold flex items-baseline gap-1">
 							{totalRevenue.toFixed(2)}
-							<span className="text-lg text-muted-foreground font-medium">شيكل</span>
+							<span className="text-lg text-muted-foreground font-medium">{t('key_1783109431203_nwey')}</span>
 						</h3>
 					</div>
 
@@ -64,12 +65,11 @@ export default async function AdminFinancialsPage({
 								<Landmark className="w-6 h-6 text-emerald-50" />
 							</div>
 							<p className="text-sm font-bold text-emerald-50">
-								أرباح المنصة الصافية
-							</p>
+								{t('key_1783109433952_oom9')}</p>
 						</div>
 						<h3 className="text-4xl font-extrabold flex items-baseline gap-1">
 							{totalCommission.toFixed(2)}
-							<span className="text-lg text-emerald-100/80 font-medium">شيكل</span>
+							<span className="text-lg text-emerald-100/80 font-medium">{t('key_1783109431203_nwey')}</span>
 						</h3>
 					</div>
 				</div>
@@ -78,16 +78,14 @@ export default async function AdminFinancialsPage({
 					<section className="bg-white dark:bg-card border-2 border-red-100 dark:border-red-900/30 rounded-3xl p-6">
 						<h2 className="text-xl font-bold flex items-center gap-2 mb-4 text-red-700 dark:text-red-400">
 							<ShieldAlert className="w-6 h-6" />
-							أحدث النزاعات المفتوحة
-						</h2>
+							{t('key_1783109433975_vni7')}</h2>
 						<div className="grid gap-4 md:grid-cols-2">
 							{openDisputes.map(d => (
 								<div key={d.id} className="border border-border p-4 rounded-xl">
-									<h4 className="font-bold">ولي الأمر: {d.booking.parent.name}</h4>
+									<h4 className="font-bold">{t('key_1783109429934_7ewj')}{d.booking.parent.name}</h4>
 									<p className="text-sm text-muted-foreground mt-2 line-clamp-2">{d.reason}</p>
 									<Link href={`/dashboard/admin/disputes/${d.id}`} className="text-primary text-sm font-bold mt-2 inline-block">
-										عرض النزاع
-									</Link>
+										{t('key_1783109434009_3cso')}</Link>
 								</div>
 							))}
 						</div>
@@ -102,28 +100,27 @@ export default async function AdminFinancialsPage({
 			<div className="space-y-6 animate-in fade-in duration-500">
 				<div className="bg-emerald-50 dark:bg-emerald-900/20 border-2 border-emerald-100 dark:border-emerald-900/50 rounded-3xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
 					<div>
-						<h2 className="text-2xl font-black text-emerald-800 dark:text-emerald-400">تفاصيل أرباح المنصة</h2>
-						<p className="text-emerald-600 dark:text-emerald-500 font-medium">إجمالي الأرباح للفترة المحددة: {totalCommission.toFixed(2)} شيكل</p>
+						<h2 className="text-2xl font-black text-emerald-800 dark:text-emerald-400">{t('key_1783109434023_f2go')}</h2>
+						<p className="text-emerald-600 dark:text-emerald-500 font-medium">{t('key_1783109434039_26tr')}{totalCommission.toFixed(2)} {t('key_1783109431203_nwey')}</p>
 					</div>
 					<div className="p-4 bg-white dark:bg-card rounded-2xl shadow-sm font-mono text-xl font-bold text-emerald-700">
-						{revenueDetails.length} عملية
-					</div>
+						{revenueDetails.length} {t('key_1783109434065_u8k0')}</div>
 				</div>
 
 				{revenueDetails.length === 0 ? (
 					<div className="text-center py-12 text-muted-foreground bg-card border-2 border-dashed border-border rounded-3xl">
-						<p className="font-bold">لا توجد عمليات ربحية في هذه الفترة.</p>
+						<p className="font-bold">{t('key_1783109434083_1ybv')}</p>
 					</div>
 				) : (
 					<div className="bg-white dark:bg-card border border-border rounded-3xl overflow-hidden">
 						<div className="overflow-x-auto">
-							<table className="w-full text-right">
+							<table className="w-full text-end">
 								<thead className="bg-muted/50 text-muted-foreground">
 									<tr>
-										<th className="p-4 font-bold">التاريخ</th>
-										<th className="p-4 font-bold">النوع</th>
-										<th className="p-4 font-bold">المبلغ</th>
-										<th className="p-4 font-bold">الوصف</th>
+										<th className="p-4 font-bold">{t('key_1783109434102_cwh7')}</th>
+										<th className="p-4 font-bold">{t('key_1783109434133_77ow')}</th>
+										<th className="p-4 font-bold">{t('key_1783109434148_3kox')}</th>
+										<th className="p-4 font-bold">{t('key_1783109434166_anph')}</th>
 									</tr>
 								</thead>
 								<tbody className="divide-y divide-border">
@@ -170,7 +167,7 @@ export default async function AdminFinancialsPage({
 				{pendingEscrows.length === 0 && resolvedEscrows.length === 0 ? (
 					<div className="bg-card border-2 border-dashed border-border rounded-3xl p-12 text-center text-muted-foreground">
 						<CheckCircle2 className="h-12 w-12 mx-auto text-green-500 mb-4 opacity-50" />
-						<p className="font-bold">الصندوق فارغ حالياً. لم يتم تجميد أو مصادرة أي جلسات.</p>
+						<p className="font-bold">{t('key_1783109434181_tdi2')}</p>
 					</div>
 				) : (
 					<div className="grid gap-6">
@@ -178,7 +175,7 @@ export default async function AdminFinancialsPage({
 							<div className="space-y-4">
 								<h2 className="text-lg font-bold flex items-center gap-2 text-red-600">
 									<ShieldAlert className="h-5 w-5" />
-									بانتظار القرار الإداري ({pendingEscrows.length})
+									{t('key_1783109434196_y7zw')}{pendingEscrows.length})
 								</h2>
 								<div className="grid gap-4">
 									{pendingEscrows.map((escrow) => (
@@ -193,16 +190,15 @@ export default async function AdminFinancialsPage({
 															{formatPrice(Number(escrow.amount))}
 														</span>
 														<span className="text-xs bg-red-100 dark:bg-red-900/30 text-red-700 px-2 py-1 rounded-md font-bold">
-															رصيد مجمد
-														</span>
+															{t('key_1783109434212_sdu9')}</span>
 													</div>
 													<div className="text-sm text-foreground space-y-1">
-														<p><strong>المعلم:</strong> {escrow.booking.teacherService.teacher.user.name}</p>
-														<p><strong>الطالب:</strong> {escrow.booking.student.name}</p>
-														<p><strong>تاريخ الجلسة:</strong> {escrow.booking.startTime.toLocaleDateString("ar-SA")}</p>
+														<p><strong>{t('key_1783109434229_r87a')}</strong> {escrow.booking.teacherService.teacher.user.name}</p>
+														<p><strong>{t('key_1783109434256_9pns')}</strong> {escrow.booking.student.name}</p>
+														<p><strong>{t('key_1783109434272_xcqt')}</strong> {escrow.booking.startTime.toLocaleDateString("ar-SA")}</p>
 													</div>
 													<p className="mt-3 text-sm text-red-800 dark:text-red-300 bg-red-50 dark:bg-red-900/20 p-3 rounded-xl border border-red-100 dark:border-red-900/30">
-														<strong>السبب:</strong> {escrow.reason}
+														<strong>{t('key_1783109434291_sl0o')}</strong> {escrow.reason}
 													</p>
 												</div>
 												<div className="flex-shrink-0 flex items-center md:items-start">
@@ -221,14 +217,14 @@ export default async function AdminFinancialsPage({
 							<div className="space-y-4 mt-8">
 								<h2 className="text-lg font-bold flex items-center gap-2 text-muted-foreground">
 									<CheckCircle2 className="h-5 w-5" />
-									سجل القرارات السابقة ({resolvedEscrows.length})
+									{t('key_1783109434335_a8w2')}{resolvedEscrows.length})
 								</h2>
 								<div className="grid gap-3 opacity-75">
 									{resolvedEscrows.map((escrow) => (
 										<div key={escrow.id} className="bg-muted/30 border border-border rounded-2xl p-4 flex justify-between items-center">
 											<div>
-												<span className="font-bold text-sm">المعلم: {escrow.booking.teacherService.teacher.user.name}</span>
-												<p className="text-xs text-muted-foreground mt-1">المبلغ: {formatPrice(Number(escrow.amount))}</p>
+												<span className="font-bold text-sm">{t('key_1783109434229_r87a')}{escrow.booking.teacherService.teacher.user.name}</span>
+												<p className="text-xs text-muted-foreground mt-1">{t('key_1783109434360_lqdz')}{formatPrice(Number(escrow.amount))}</p>
 											</div>
 											<div className="text-xs font-bold px-3 py-1.5 rounded-lg bg-background border border-border">
 												{escrow.status === "REFUNDED_TO_PARENT" && "تم استرداد المبلغ لولي الأمر"}
@@ -252,8 +248,7 @@ export default async function AdminFinancialsPage({
 				<div>
 					<h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 flex items-center gap-2 mb-2">
 						<Activity className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-						المركز المالي الشامل
-					</h1>
+						{t('key_1783109434381_hb9t')}</h1>
 					<p className="text-sm text-blue-800 dark:text-blue-300 font-medium">
 						مراقبة إيرادات المنصة، المهام المالية، تسويات المعلمين، والأموال المجمدة بلمحة بصر.
 					</p>

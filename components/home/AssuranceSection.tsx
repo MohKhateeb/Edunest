@@ -36,8 +36,8 @@ export default function AssuranceSection({
 
 				<div className="bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/30 rounded-[3rem] p-8 md:p-12 shadow-premium relative overflow-hidden">
 					{/* Background decorative elements */}
-					<div className="absolute -top-24 -left-24 w-64 h-64 bg-emerald-200/40 dark:bg-emerald-800/20 rounded-full blur-3xl pointer-events-none"></div>
-					<div className="absolute -bottom-24 -right-24 w-64 h-64 bg-emerald-200/40 dark:bg-emerald-800/20 rounded-full blur-3xl pointer-events-none"></div>
+					<div className="absolute -top-24 -start-24 w-64 h-64 bg-emerald-200/40 dark:bg-emerald-800/20 rounded-full blur-3xl pointer-events-none"></div>
+					<div className="absolute -bottom-24 -end-24 w-64 h-64 bg-emerald-200/40 dark:bg-emerald-800/20 rounded-full blur-3xl pointer-events-none"></div>
 
 					<div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
 						{/* Hakeem illustration */}

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 import { DISPUTE_STATUS_AR, DISPUTE_STATUS_STYLES } from "@/lib/translations";
+import { useTranslations } from "next-intl";
 
 type AdminDispute = Awaited<
 	ReturnType<typeof SystemAdminService.getAdminDisputes>
@@ -34,6 +35,7 @@ const renderDisputeStatus = (status: DisputeStatus) => {
 export default function AdminDisputesList({
 	initialData,
 }: AdminDisputesListProps) {
+    const t = useTranslations('admin')
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState<DisputeStatus | "ALL">(
 		"ALL",
@@ -63,13 +65,13 @@ export default function AdminDisputesList({
 			{/* Filters Bar */}
 			<div className="flex flex-col sm:flex-row gap-3">
 				<div className="relative flex-1">
-					<div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+					<div className="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none">
 						<Search className="h-4 w-4 text-muted-foreground" />
 					</div>
 					<input
 						type="text"
-						placeholder="البحث باسم المعلم، ولي الأمر، أو سبب النزاع..."
-						className="block w-full rounded-2xl border-0 py-3 pr-10 pl-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-slate-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:bg-slate-800 dark:text-white sm:text-sm sm:leading-6 transition-all"
+						placeholder={t('key_1783109439186_53iw')}
+						className="block w-full rounded-2xl border-0 py-3 pe-10 ps-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-slate-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:bg-slate-800 dark:text-white sm:text-sm sm:leading-6 transition-all"
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
 					/>
@@ -85,8 +87,7 @@ export default function AdminDisputesList({
 									: "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-700/50"
 							}`}
 						>
-							الكل
-						</button>
+							{t('key_1783109439065_r7j8')}</button>
 						<button
 							onClick={() => setStatusFilter("OPEN")}
 							className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
@@ -124,7 +125,7 @@ export default function AdminDisputesList({
 			{/* Results Summary */}
 			{searchQuery && (
 				<div className="text-sm font-semibold text-slate-500 dark:text-slate-400">
-					العثور على {filteredDisputes.length} نتيجة مطابقة لبحثك "{searchQuery}
+					{t('key_1783109439077_stjx')}{filteredDisputes.length} {t('key_1783109439088_k63n')}{searchQuery}
 					"
 				</div>
 			)}
@@ -132,24 +133,19 @@ export default function AdminDisputesList({
 			{/* Disputes List */}
 			<div className="bg-white dark:bg-slate-900 backdrop-blur-md rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.1)] border border-gray-100/50 dark:border-gray-700/50 overflow-hidden relative z-10">
 				<div className="overflow-x-auto">
-					<table className="w-full text-right">
+					<table className="w-full text-end">
 						<thead>
 							<tr className="bg-gray-50/50 dark:bg-gray-900/30 border-b border-gray-100/50 dark:border-gray-700/50">
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
-									تاريخ الجلسة
-								</th>
+									{t('key_1783109439108_z6ha')}</th>
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
-									الأطراف
-								</th>
+									{t('key_1783109439116_j83k')}</th>
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
-									سبب النزاع
-								</th>
+									{t('key_1783109439123_hmin')}</th>
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
-									الحالة
-								</th>
+									{t('key_1783109430292_au5h')}</th>
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
-									إجراء
-								</th>
+									{t('key_1783109439138_cyoa')}</th>
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-gray-100/50 dark:divide-gray-700/50">
@@ -164,11 +160,9 @@ export default function AdminDisputesList({
 												<CheckCircle2 className="w-8 h-8" />
 											</div>
 											<p className="font-bold text-lg text-slate-800 dark:text-slate-200">
-												لا توجد نزاعات مطابقة
-											</p>
+												{t('key_1783109439146_3g9a')}</p>
 											<p className="text-sm text-slate-500 mt-1">
-												جرب تغيير حالة الفلتر أو مصطلحات البحث.
-											</p>
+												{t('key_1783109439155_aj1l')}</p>
 										</div>
 									</td>
 								</tr>
@@ -186,14 +180,12 @@ export default function AdminDisputesList({
 										<td className="px-6 py-4">
 											<div className="font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
 												<span className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 text-[10px]">
-													م
-												</span>
+													{t('key_1783109439163_xsht')}</span>
 												{dispute.booking.teacherService.teacher.user.name}
 											</div>
 											<div className="font-bold text-gray-900 dark:text-white flex items-center gap-1.5 mt-2">
 												<span className="w-5 h-5 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 text-[10px]">
-													أ
-												</span>
+													{t('key_1783109439170_2xvp')}</span>
 												{dispute.booking.parent.name}
 											</div>
 										</td>
@@ -210,8 +202,7 @@ export default function AdminDisputesList({
 												href={`/dashboard/disputes/${dispute.id}`}
 												className="text-blue-600 hover:text-white hover:bg-blue-600 border border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20 text-xs font-bold px-4 py-2 rounded-xl flex items-center justify-center gap-1 transition-all max-w-fit"
 											>
-												التفاصيل
-												<ChevronLeft className="w-3 h-3" />
+												{t('key_1783109439177_9m8v')}<ChevronLeft className="w-3 h-3" />
 											</Link>
 										</td>
 									</tr>

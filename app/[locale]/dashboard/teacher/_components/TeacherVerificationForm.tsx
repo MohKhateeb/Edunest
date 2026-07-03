@@ -12,6 +12,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { submitVerificationDocuments } from "@/lib/actions/teacher";
+import { useTranslations } from "next-intl";
 
 type VerificationData = {
 	nationalIdUrl: string | null;
@@ -30,6 +31,7 @@ export default function TeacherVerificationForm({
 	initialData,
 	isVerified,
 }: TeacherVerificationFormProps) {
+    const t = useTranslations('teachers')
 	const router = useRouter();
 	const [formData, setFormData] = useState({
 		nationalIdUrl: initialData?.nationalIdUrl || "",
@@ -142,7 +144,7 @@ export default function TeacherVerificationForm({
 	return (
 		<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-8 space-y-6 shadow-sm hover:shadow-md transition-all">
 			<div>
-				<h2 className="font-extrabold text-xl mb-1">توثيق الملف الأكاديمي</h2>
+				<h2 className="font-extrabold text-xl mb-1">{t('key_1783109437532_wlsu')}</h2>
 				<p className="text-xs text-muted-foreground">
 					ارفع وثائقك الرسمية لتتم مراجعتها وتوثيق ملفك بbadge برونزي/فضي/ذهبي،
 					مما يزيد من ظهورك وثقة الأهالي بك.
@@ -154,7 +156,7 @@ export default function TeacherVerificationForm({
 				<div className="flex items-start gap-3 p-4 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 rounded-xl border border-emerald-100 dark:border-emerald-900">
 					<CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" />
 					<div className="text-xs space-y-1">
-						<span className="font-bold block">الملف موثق ومفعل</span>
+						<span className="font-bold block">{t('key_1783109437579_1ikd')}</span>
 						<p>
 							لقد تمت مراجعة ملفك وتوثيقه بنجاح من إدارة المنصة. حسابك الآن يظهر
 							للأهالي في نتائج البحث.
@@ -165,7 +167,7 @@ export default function TeacherVerificationForm({
 				<div className="flex items-start gap-3 p-4 bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 rounded-xl border border-yellow-100 dark:border-yellow-900">
 					<Loader2 className="h-5 w-5 flex-shrink-0 mt-0.5 animate-spin" />
 					<div className="text-xs space-y-1">
-						<span className="font-bold block">قيد المراجعة</span>
+						<span className="font-bold block">{t('key_1783109437597_84u6')}</span>
 						<p>
 							تم استلام وثائقك وهي قيد المراجعة حالياً من قبل الإدارة. سيتم
 							إشعارك فور اكتمال التوثيق.
@@ -176,21 +178,20 @@ export default function TeacherVerificationForm({
 				<div className="flex items-start gap-3 p-4 bg-rose-50 dark:bg-rose-950/20 text-rose-700 dark:text-rose-400 rounded-xl border border-rose-100 dark:border-rose-900">
 					<ShieldAlert className="h-5 w-5 flex-shrink-0 mt-0.5" />
 					<div className="text-xs space-y-1">
-						<span className="font-bold block">طلب التوثيق مرفوض</span>
+						<span className="font-bold block">{t('key_1783109437618_1zdj')}</span>
 						<p>
-							تم رفض طلبك للسبب التالي:{" "}
+							{t('key_1783109437630_dcit')}{" "}
 							<strong className="text-foreground">
 								{initialData.rejectionReason}
 							</strong>
-							. يرجى رفع وثائق صحيحة وإعادة التقديم.
-						</p>
+							{t('key_1783109437641_jego')}</p>
 					</div>
 				</div>
 			) : (
 				<div className="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 rounded-xl border border-border">
 					<ShieldAlert className="h-5 w-5 flex-shrink-0 mt-0.5" />
 					<div className="text-xs space-y-1">
-						<span className="font-bold block">غير موثق بعد</span>
+						<span className="font-bold block">{t('key_1783109437653_xmsv')}</span>
 						<p>
 							يرجى رفع الوثائق المطلوبة أدناه للبدء في مراجعة ملفك الشخصي وتفعيل
 							حسابك.
@@ -220,11 +221,9 @@ export default function TeacherVerificationForm({
 						<FileText className="h-8 w-8 text-primary mx-auto" />
 						<div>
 							<span className="text-xs font-bold block mb-1">
-								الهوية الوطنية / جواز السفر *
-							</span>
+								{t('key_1783109437671_r1ow')}</span>
 							<p className="text-[10px] text-muted-foreground">
-								صورة واضحة لبطاقة الهوية الشخصية لتأكيد الاسم والمواطنة.
-							</p>
+								{t('key_1783109437684_fhhl')}</p>
 						</div>
 						<div className="space-y-2">
 							<input
@@ -259,8 +258,7 @@ export default function TeacherVerificationForm({
 									className="inline-flex items-center justify-center gap-1 w-full text-[11px] text-primary hover:underline font-semibold"
 								>
 									<Eye className="h-3.5 w-3.5" />
-									معاينة الهوية المرفوعة
-								</a>
+									{t('key_1783109437697_a576')}</a>
 							)}
 						</div>
 					</div>
@@ -270,11 +268,9 @@ export default function TeacherVerificationForm({
 						<FileText className="h-8 w-8 text-primary mx-auto" />
 						<div>
 							<span className="text-xs font-bold block mb-1">
-								الشهادة الجامعية / التخصص *
-							</span>
+								{t('key_1783109437718_jkbw')}</span>
 							<p className="text-[10px] text-muted-foreground">
-								شهادة التخرج أو ما يثبت تخصصك الأكاديمي والتعليمي.
-							</p>
+								{t('key_1783109437730_557k')}</p>
 						</div>
 						<div className="space-y-2">
 							<input
@@ -309,8 +305,7 @@ export default function TeacherVerificationForm({
 									className="inline-flex items-center justify-center gap-1 w-full text-[11px] text-primary hover:underline font-semibold"
 								>
 									<Eye className="h-3.5 w-3.5" />
-									معاينة الشهادة المرفوعة
-								</a>
+									{t('key_1783109437741_g8qs')}</a>
 							)}
 						</div>
 					</div>
@@ -320,12 +315,9 @@ export default function TeacherVerificationForm({
 						<UploadCloud className="h-8 w-8 text-primary mx-auto" />
 						<div>
 							<span className="text-xs font-bold block mb-1">
-								مقطع فيديو تعريفي (اختياري)
-							</span>
+								{t('key_1783109437754_wh8g')}</span>
 							<p className="text-[10px] text-muted-foreground">
-								مقطع فيديو دقيقة واحدة تشرح فيها طريقتك في التدريس لزيادة
-								القبول.
-							</p>
+								{t('key_1783109437766_gzfd')}</p>
 						</div>
 						<div className="space-y-2">
 							<input
@@ -360,8 +352,7 @@ export default function TeacherVerificationForm({
 									className="inline-flex items-center justify-center gap-1 w-full text-[11px] text-primary hover:underline font-semibold"
 								>
 									<Eye className="h-3.5 w-3.5" />
-									معاينة الفيديو المرفوع
-								</a>
+									{t('key_1783109437778_3f90')}</a>
 							)}
 						</div>
 					</div>

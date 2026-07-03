@@ -6,12 +6,14 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { createFAQ, deleteFAQ, updateFAQ } from "@/lib/actions/faq";
 import { FAQ_CATEGORY_AR } from "@/lib/translations";
+import { useTranslations } from "next-intl";
 
 export default function FAQAdminClient({
 	initialFaqs,
 }: {
 	initialFaqs: FAQ[];
 }) {
+    const t = useTranslations('admin')
 	const [faqs, setFaqs] = useState<FAQ[]>(initialFaqs);
 	const [activeTab, setActiveTab] = useState<FAQCategory>("PARENT");
 	const [isModalOpen, setIsModalOpen] = useState(false);
@@ -138,7 +140,7 @@ export default function FAQAdminClient({
 									: "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
 							} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors`}
 						>
-							أسئلة {label}
+							{t('key_1783109433349_cor2')}{label}
 						</button>
 					))}
 				</nav>
@@ -150,7 +152,7 @@ export default function FAQAdminClient({
 					className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
 				>
 					<Plus className="w-4 h-4" />
-					<span>إضافة سؤال جديد</span>
+					<span>{t('key_1783109433369_009j')}</span>
 				</button>
 			</div>
 
@@ -159,21 +161,16 @@ export default function FAQAdminClient({
 				<table className="min-w-full divide-y divide-gray-200 text-sm">
 					<thead className="bg-gray-50">
 						<tr>
-							<th className="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider">
-								الترتيب
-							</th>
-							<th className="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider w-1/3">
-								السؤال
-							</th>
-							<th className="px-6 py-3 text-right font-medium text-gray-500 uppercase tracking-wider w-1/3">
-								الإجابة
-							</th>
+							<th className="px-6 py-3 text-end font-medium text-gray-500 uppercase tracking-wider">
+								{t('key_1783109433388_5pv3')}</th>
+							<th className="px-6 py-3 text-end font-medium text-gray-500 uppercase tracking-wider w-1/3">
+								{t('key_1783109433413_g91l')}</th>
+							<th className="px-6 py-3 text-end font-medium text-gray-500 uppercase tracking-wider w-1/3">
+								{t('key_1783109433433_kqvk')}</th>
 							<th className="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider">
-								الحالة
-							</th>
+								{t('key_1783109430292_au5h')}</th>
 							<th className="px-6 py-3 text-center font-medium text-gray-500 uppercase tracking-wider">
-								إجراءات
-							</th>
+								{t('key_1783109430300_mzxn')}</th>
 						</tr>
 					</thead>
 					<tbody className="bg-white divide-y divide-gray-200">
@@ -205,14 +202,14 @@ export default function FAQAdminClient({
 											<button
 												onClick={() => handleOpenModal(faq)}
 												className="text-blue-600 hover:text-blue-900 transition-colors"
-												title="تعديل"
+												title={t('key_1783109433671_arg9')}
 											>
 												<Edit2 className="w-5 h-5" />
 											</button>
 											<button
 												onClick={() => handleDelete(faq.id)}
 												className="text-red-600 hover:text-red-900 transition-colors"
-												title="حذف"
+												title={t('str_2K3YsNmB')}
 											>
 												<Trash2 className="w-5 h-5" />
 											</button>
@@ -223,8 +220,7 @@ export default function FAQAdminClient({
 						) : (
 							<tr>
 								<td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-									لا توجد أسئلة شائعة في هذا القسم حتى الآن.
-								</td>
+									{t('key_1783109433483_pfu3')}</td>
 							</tr>
 						)}
 					</tbody>
@@ -253,8 +249,7 @@ export default function FAQAdminClient({
 						>
 							<div>
 								<label className="block text-sm font-medium text-gray-700 mb-2">
-									السؤال
-								</label>
+									{t('key_1783109433413_g91l')}</label>
 								<input
 									type="text"
 									required
@@ -263,14 +258,13 @@ export default function FAQAdminClient({
 										setFormData({ ...formData, question: e.target.value })
 									}
 									className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-									placeholder="أدخل السؤال هنا..."
+									placeholder={t('str_2KPYr9iu')}
 								/>
 							</div>
 
 							<div>
 								<label className="block text-sm font-medium text-gray-700 mb-2">
-									الإجابة
-								</label>
+									{t('key_1783109433433_kqvk')}</label>
 								<textarea
 									required
 									rows={4}
@@ -279,15 +273,14 @@ export default function FAQAdminClient({
 										setFormData({ ...formData, answer: e.target.value })
 									}
 									className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-none"
-									placeholder="أدخل الإجابة هنا..."
+									placeholder={t('str_2KPYr9iu')}
 								/>
 							</div>
 
 							<div className="grid grid-cols-2 gap-6">
 								<div>
 									<label className="block text-sm font-medium text-gray-700 mb-2">
-										القسم
-									</label>
+										{t('key_1783109433516_cqir')}</label>
 									<select
 										value={formData.category}
 										onChange={(e) =>
@@ -307,8 +300,7 @@ export default function FAQAdminClient({
 								</div>
 								<div>
 									<label className="block text-sm font-medium text-gray-700 mb-2">
-										الترتيب (الأقل يظهر أولاً)
-									</label>
+										{t('key_1783109433540_63t6')}</label>
 									<input
 										type="number"
 										min="1"
@@ -341,11 +333,9 @@ export default function FAQAdminClient({
 								</label>
 								<div>
 									<p className="text-sm font-medium text-gray-900">
-										حالة السؤال
-									</p>
+										{t('key_1783109433555_j52n')}</p>
 									<p className="text-xs text-gray-500">
-										هل ترغب في عرض هذا السؤال للمستخدمين؟
-									</p>
+										{t('key_1783109433579_5u4k')}</p>
 								</div>
 							</div>
 
@@ -355,8 +345,7 @@ export default function FAQAdminClient({
 									onClick={handleCloseModal}
 									className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
 								>
-									إلغاء
-								</button>
+									{t('key_1783109430705_7b9h')}</button>
 								<button
 									type="submit"
 									disabled={isLoading}

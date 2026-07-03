@@ -29,7 +29,7 @@ export default function UrgentMattersSection({ isVerified, openDisputes, urgentA
 						</div>
 						<Link
 							href="/dashboard/teacher/profile"
-							className="text-xs font-bold text-primary hover:underline whitespace-nowrap mr-4"
+							className="text-xs font-bold text-primary hover:underline whitespace-nowrap me-4"
 						>
 							{t('ikmal_almlf')}</Link>
 					</div>
@@ -48,7 +48,7 @@ export default function UrgentMattersSection({ isVerified, openDisputes, urgentA
 						</div>
 						<Link
 							href={`/dashboard/disputes/${dispute.id}`}
-							className="text-xs font-bold text-primary hover:underline whitespace-nowrap mr-4"
+							className="text-xs font-bold text-primary hover:underline whitespace-nowrap me-4"
 						>
 							{t('ard_alnzaa_walrd')}</Link>
 					</div>

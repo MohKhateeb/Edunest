@@ -42,7 +42,7 @@ export default function PayoutDetails({ payout }: PayoutDetailsProps) {
 						{new Date(payout.periodEnd).toLocaleDateString("ar-EG")}
 					</span>
 				</div>
-				<div className="text-right">
+				<div className="text-end">
 					<span className="text-[10px] text-muted-foreground block font-bold">
 						{t('alhalh_almalyh')}</span>
 					{payout.isPaid ? (
@@ -94,14 +94,14 @@ export default function PayoutDetails({ payout }: PayoutDetailsProps) {
 					{t('tfasyl_aljlsat_almshmwlh_fy')}{payout.bookings.length})
 				</h4>
 				<div className="border border-border rounded-xl overflow-hidden bg-card">
-					<table className="w-full text-right border-collapse text-xs">
+					<table className="w-full text-end border-collapse text-xs">
 						<thead>
 							<tr className="bg-muted/50 text-muted-foreground font-semibold border-b border-border">
 								<th className="p-3">{t('altalb_walkhdmh')}</th>
 								<th className="p-3">{t('tarykh_wwqt_aljlsh')}</th>
 								<th className="p-3">{t('rswm_alhsh')}</th>
 								<th className="p-3">{t('alamwlh_almqttah')}</th>
-								<th className="p-3 text-left">{t('almblgh_alsafy')}</th>
+								<th className="p-3 text-start">{t('almblgh_alsafy')}</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -146,7 +146,7 @@ export default function PayoutDetails({ payout }: PayoutDetailsProps) {
 												? "-"
 												: `-${formatPrice(commission)} (${Number(booking.appliedCommissionRate)}%)`}
 										</td>
-										<td className="p-3 font-bold text-foreground text-left">
+										<td className="p-3 font-bold text-foreground text-start">
 											{formatPrice(netAmount)}
 										</td>
 									</tr>

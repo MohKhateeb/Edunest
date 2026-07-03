@@ -49,7 +49,7 @@ export default function FAQAccordion({ faqs }: { faqs: FAQ[] }) {
 								onClick={() => toggleOpen(faq.id)}
 								className="w-full px-6 py-4 flex justify-between items-center bg-white hover:bg-gray-50 transition-colors focus:outline-none"
 							>
-								<h3 className="text-lg font-medium text-gray-900 text-right">
+								<h3 className="text-lg font-medium text-gray-900 text-end">
 									{faq.question}
 								</h3>
 								<ChevronDown

@@ -4,6 +4,7 @@ import { CreditCard, Clock, Star, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { formatTimeOnly } from "@/lib/utils/time";
 import type { DetailedBooking } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 type ActionType = "PAYMENT" | "APPROVAL" | "REVIEW";
 
@@ -19,6 +20,7 @@ interface ActionCenterProps {
 }
 
 export default function ActionCenter({ actions }: ActionCenterProps) {
+    const t = useTranslations('parent')
 	if (!actions || actions.length === 0) return null;
 
 	const getActionConfig = (type: ActionType) => {
@@ -69,7 +71,7 @@ export default function ActionCenter({ actions }: ActionCenterProps) {
 					<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
 					<span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
 				</div>
-				<h2 className="text-xl font-black text-slate-900 dark:text-white">أشياء بسيطة تحتاج لمستك لاستكمالها ✨</h2>
+				<h2 className="text-xl font-black text-slate-900 dark:text-white">{t('key_1783109434628_b9xt')}</h2>
 			</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

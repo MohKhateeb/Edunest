@@ -1,0 +1,737 @@
+ERROR in /app/[locale]/help/page.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/help/page.tsx[0m:[93m92[0m:[93m20[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m92[0m        placeholder=t('key_1783109427380_1w23')
+[7m  [0m [91m                   ~[0m
+[96mapp/[locale]/help/page.tsx[0m:[93m92[0m:[93m21[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m92[0m        placeholder=t('key_1783109427380_1w23')
+[7m  [0m [91m                    ~[0m
+[96mapp/[locale]/help/page.tsx[0m:[93m96[0m:[93m8[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m96[0m       />
+[7m  [0m [91m       ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:9).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/help/page.tsx
+Text: "...d-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground/60\" />\r\n\t\t\t\t\t\t<input\r\n\t\t\t\t\t\t\ttype=\"text\"\r\n\t\t\t\t\t\t\tplaceholder=t('key_1783109427380_1w23')\r\n\t\t\t\t\t\t\tclassName=\"w-full premium-input ps-4 pe-11 py-3 text-sm rounded-xl shadow-xs\"\r\n\t\t\t\t\t\t\tvalue=..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:9).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/teachers/page.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/teachers/page.tsx[0m:[93m100[0m:[93m20[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m100[0m        placeholder=t('key_1783109428045_auuq')
+[7m   [0m [91m                   ~[0m
+[96mapp/[locale]/teachers/page.tsx[0m:[93m100[0m:[93m21[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m100[0m        placeholder=t('key_1783109428045_auuq')
+[7m   [0m [91m                    ~[0m
+[96mapp/[locale]/teachers/page.tsx[0m:[93m102[0m:[93m8[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m102[0m       />
+[7m   [0m [91m       ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/teachers/page.tsx
+Text: "...\t\t\t\t<input\r\n\t\t\t\t\t\t\tname=\"subject\"\r\n\t\t\t\t\t\t\tid=\"search-subject\"\r\n\t\t\t\t\t\t\tdefaultValue={params.subject}\r\n\t\t\t\t\t\t\tplaceholder=t('key_1783109428045_auuq')\r\n\t\t\t\t\t\t\tclassName=\"flex-1 rounded-xl px-4 py-3 text-foreground bg-white/95 text-sm focus:outline-non..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/(auth)/register/page.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/(auth)/register/page.tsx[0m:[93m184[0m:[93m22[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m184[0m          placeholder=t('key_1783109428559_ytn1')
+[7m   [0m [91m                     ~[0m
+[96mapp/[locale]/(auth)/register/page.tsx[0m:[93m184[0m:[93m23[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m184[0m          placeholder=t('key_1783109428559_ytn1')
+[7m   [0m [91m                      ~[0m
+[96mapp/[locale]/(auth)/register/page.tsx[0m:[93m186[0m:[93m10[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m186[0m         />
+[7m   [0m [91m         ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/(auth)/register/page.tsx
+Text: "...\t\t\tname=\"name\"\r\n\t\t\t\t\t\t\t\t\trequired\r\n\t\t\t\t\t\t\t\t\tvalue={formData.name}\r\n\t\t\t\t\t\t\t\t\tonChange={handleChange}\r\n\t\t\t\t\t\t\t\t\tplaceholder=t('key_1783109428559_ytn1')\r\n\t\t\t\t\t\t\t\t\tclassName=\"w-full premium-input text-sm\"\r\n\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t</div>\r\n\r\n\t\t\t\t\t\t\t<div classNa..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/admin/_components/AdminBookingsList.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/admin/_components/AdminBookingsList.tsx[0m:[93m134[0m:[93m23[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m134[0m     searchPlaceholder=t('key_1783109430309_finn')
+[7m   [0m [91m                      ~[0m
+[96mapp/[locale]/dashboard/admin/_components/AdminBookingsList.tsx[0m:[93m134[0m:[93m24[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m134[0m     searchPlaceholder=t('key_1783109430309_finn')
+[7m   [0m [91m                       ~[0m
+[96mapp/[locale]/dashboard/admin/_components/AdminBookingsList.tsx[0m:[93m318[0m:[93m5[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m318[0m    />
+[7m   [0m [91m    ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (15:19).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/admin/_components/AdminBookingsList.tsx
+Text: "...hQuery}\r\n\t\t\t\tsetSearchQuery={(val) => {\r\n\t\t\t\t\tsetSearchQuery(val);\r\n\t\t\t\t\tsetCurrentPage(1);\r\n\t\t\t\t}}\r\n\t\t\t\tsearchPlaceholder=t('key_1783109430309_finn')\r\n\t\t\t\ttoolbarChildren={\r\n\t\t\t\t\t<div className=\"flex items-center gap-2 w-full sm:w-auto\">\r\n\t\t\t\t\t\t<Filt..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (15:19).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/admin/_components/AdminServiceTypesManager.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/admin/_components/AdminServiceTypesManager.tsx[0m:[93m223[0m:[93m26[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m223[0m              placeholder=t('key_1783109430916_61au')
+[7m   [0m [91m                         ~[0m
+[96mapp/[locale]/dashboard/admin/_components/AdminServiceTypesManager.tsx[0m:[93m223[0m:[93m27[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m223[0m              placeholder=t('key_1783109430916_61au')
+[7m   [0m [91m                          ~[0m
+[96mapp/[locale]/dashboard/admin/_components/AdminServiceTypesManager.tsx[0m:[93m225[0m:[93m14[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m225[0m             />
+[7m   [0m [91m             ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/admin/_components/AdminServiceTypesManager.tsx
+Text: "...\t...editForm,\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tfazaaPrice: Number(e.target.value),\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t})\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t\t\t\t\t\t\t\tplaceholder=t('key_1783109430916_61au')\r\n\t\t\t\t\t\t\t\t\t\t\t\t\tclassName=\"w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-sl..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/admin/_components/AdminTeachersList.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/admin/_components/AdminTeachersList.tsx[0m:[93m77[0m:[93m23[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m77[0m     searchPlaceholder=t('key_1783109431664_hsq5')
+[7m  [0m [91m                      ~[0m
+[96mapp/[locale]/dashboard/admin/_components/AdminTeachersList.tsx[0m:[93m77[0m:[93m24[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m77[0m     searchPlaceholder=t('key_1783109431664_hsq5')
+[7m  [0m [91m                       ~[0m
+[96mapp/[locale]/dashboard/admin/_components/AdminTeachersList.tsx[0m:[93m179[0m:[93m5[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m179[0m    />
+[7m   [0m [91m    ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:9).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/admin/_components/AdminTeachersList.tsx
+Text: "...\t\"تعديل مستوى التوثيق\",\r\n\t\t\t\t]}\r\n\t\t\t\tsearchQuery={searchQuery}\r\n\t\t\t\tsetSearchQuery={setSearchQuery}\r\n\t\t\t\tsearchPlaceholder=t('key_1783109431664_hsq5')\r\n\t\t\t\ttoolbarChildren={\r\n\t\t\t\t\t<select\r\n\t\t\t\t\t\tclassName=\"premium-input text-sm sm:w-48 cursor-pointer\"..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:9).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/admin/_components/AdminUsersList.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/admin/_components/AdminUsersList.tsx[0m:[93m116[0m:[93m23[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m116[0m     searchPlaceholder=t('key_1783109432439_8q2i')
+[7m   [0m [91m                      ~[0m
+[96mapp/[locale]/dashboard/admin/_components/AdminUsersList.tsx[0m:[93m116[0m:[93m24[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m116[0m     searchPlaceholder=t('key_1783109432439_8q2i')
+[7m   [0m [91m                       ~[0m
+[96mapp/[locale]/dashboard/admin/_components/AdminUsersList.tsx[0m:[93m361[0m:[93m5[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m361[0m    />
+[7m   [0m [91m    ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (3:7).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/admin/_components/AdminUsersList.tsx
+Text: "...\t\t\t\t\"التحكم والعمليات\",\r\n\t\t\t\t]}\r\n\t\t\t\tsearchQuery={searchQuery}\r\n\t\t\t\tsetSearchQuery={setSearchQuery}\r\n\t\t\t\tsearchPlaceholder=t('key_1783109432439_8q2i')\r\n\t\t\t\ttoolbarChildren={\r\n\t\t\t\t\t<>\r\n\t\t\t\t\t\t<select\r\n\t\t\t\t\t\t\tclassName=\"premium-input text-xs sm:text-sm w..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (3:7).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/admin/_components/AdminVerificationQueue.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/admin/_components/AdminVerificationQueue.tsx[0m:[93m283[0m:[93m24[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m283[0m            placeholder=t('key_1783109433115_06dz')
+[7m   [0m [91m                       ~[0m
+[96mapp/[locale]/dashboard/admin/_components/AdminVerificationQueue.tsx[0m:[93m283[0m:[93m25[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m283[0m            placeholder=t('key_1783109433115_06dz')
+[7m   [0m [91m                        ~[0m
+[96mapp/[locale]/dashboard/admin/_components/AdminVerificationQueue.tsx[0m:[93m286[0m:[93m12[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m286[0m           />
+[7m   [0m [91m           ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:7).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/admin/_components/AdminVerificationQueue.tsx
+Text: "...ired\r\n\t\t\t\t\t\t\t\t\t\t\tvalue={rejectReason}\r\n\t\t\t\t\t\t\t\t\t\t\tonChange={(e) => setRejectReason(e.target.value)}\r\n\t\t\t\t\t\t\t\t\t\t\tplaceholder=t('key_1783109433115_06dz')\r\n\t\t\t\t\t\t\t\t\t\t\tclassName=\"w-full text-xs premium-input resize-none\"\r\n\t\t\t\t\t\t\t\t\t\t\trows={2}\r\n\t\t\t\t\t\t\t\t\t\t/>\r..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:7).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/admin/faq/FAQAdminClient.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m203[0m:[93m19[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m203[0m             title=t('key_1783109433671_arg9')
+[7m   [0m [91m                  ~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m203[0m:[93m20[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m203[0m             title=t('key_1783109433671_arg9')
+[7m   [0m [91m                   ~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m204[0m:[93m12[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m204[0m            >
+[7m   [0m [91m           ~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m206[0m:[93m14[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'div'.
+
+[7m206[0m            </button>
+[7m   [0m [91m             ~~~~~~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m214[0m:[93m13[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'td'.
+
+[7m214[0m           </div>
+[7m   [0m [91m            ~~~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m215[0m:[93m12[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'tr'.
+
+[7m215[0m          </td>
+[7m   [0m [91m           ~~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m216[0m:[93m9[0m - [91merror[0m[90m TS1005: [0m')' expected.
+
+[7m216[0m         </tr>
+[7m   [0m [91m        ~~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m216[0m:[93m11[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'tbody'.
+
+[7m216[0m         </tr>
+[7m   [0m [91m          ~~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m223[0m:[93m8[0m - [91merror[0m[90m TS1381: [0mUnexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+[7m223[0m       )}
+[7m   [0m [91m       ~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m224[0m:[93m8[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'table'.
+
+[7m224[0m      </tbody>
+[7m   [0m [91m       ~~~~~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m225[0m:[93m7[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'div'.
+
+[7m225[0m     </table>
+[7m   [0m [91m      ~~~~~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m228[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m')' expected.
+
+[7m228[0m    {/* Modal */}
+[7m   [0m [91m   ~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m359[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m359[0m   </div>
+[7m   [0m [91m  ~~[0m
+[96mapp/[locale]/dashboard/admin/faq/FAQAdminClient.tsx[0m:[93m360[0m:[93m2[0m - [91merror[0m[90m TS1109: [0mExpression expected.
+
+[7m360[0m  );
+[7m   [0m [91m ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (13:20).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/admin/faq/FAQAdminClient.tsx
+Text: "... handleOpenModal(faq)}\r\n\t\t\t\t\t\t\t\t\t\t\t\tclassName=\"text-blue-600 hover:text-blue-900 transition-colors\"\r\n\t\t\t\t\t\t\t\t\t\t\t\ttitle=t('key_1783109433671_arg9')\r\n\t\t\t\t\t\t\t\t\t\t\t>\r\n\t\t\t\t\t\t\t\t\t\t\t\t<Edit2 className=\"w-5 h-5\" />\r\n\t\t\t\t\t\t\t\t\t\t\t</button>\r\n\t\t\t\t\t\t\t\t\t\t\t<button\r\n..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (13:20).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/parent/_components/AddStudentForm.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/parent/_components/AddStudentForm.tsx[0m:[93m85[0m:[93m18[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m85[0m      placeholder=t('key_1783109434723_1suw')
+[7m  [0m [91m                 ~[0m
+[96mapp/[locale]/dashboard/parent/_components/AddStudentForm.tsx[0m:[93m85[0m:[93m19[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m85[0m      placeholder=t('key_1783109434723_1suw')
+[7m  [0m [91m                  ~[0m
+[96mapp/[locale]/dashboard/parent/_components/AddStudentForm.tsx[0m:[93m87[0m:[93m6[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m87[0m     />
+[7m  [0m [91m     ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/parent/_components/AddStudentForm.tsx
+Text: "...e=\"text\"\r\n\t\t\t\t\tname=\"name\"\r\n\t\t\t\t\trequired\r\n\t\t\t\t\tvalue={formData.name}\r\n\t\t\t\t\tonChange={handleChange}\r\n\t\t\t\t\tplaceholder=t('key_1783109434723_1suw')\r\n\t\t\t\t\tclassName=\"w-full premium-input text-xs\"\r\n\t\t\t\t/>\r\n\t\t\t</div>\r\n\r\n\t\t\t<div className=\"space-y-1\">\r..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/parent/_components/ParentBookingsList.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/parent/_components/ParentBookingsList.tsx[0m:[93m107[0m:[93m19[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m107[0m       placeholder=t('key_1783109434939_hfb7')
+[7m   [0m [91m                  ~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentBookingsList.tsx[0m:[93m107[0m:[93m20[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m107[0m       placeholder=t('key_1783109434939_hfb7')
+[7m   [0m [91m                   ~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentBookingsList.tsx[0m:[93m111[0m:[93m7[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m111[0m      />
+[7m   [0m [91m      ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:9).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/parent/_components/ParentBookingsList.tsx
+Text: "...\t\t<Search className=\"h-4 w-4 text-muted-foreground\" />\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<input\r\n\t\t\t\t\t\ttype=\"text\"\r\n\t\t\t\t\t\tplaceholder=t('key_1783109434939_hfb7')\r\n\t\t\t\t\t\tclassName=\"w-full text-sm bg-slate-50 dark:bg-slate-800 border border-border/50 rounded-xl pr..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:9).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/parent/_components/ParentStudentsList.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m141[0m:[93m18[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m141[0m            title=t('key_1783109435290_q6y6')
+[7m   [0m [91m                 ~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m141[0m:[93m19[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m141[0m            title=t('key_1783109435290_q6y6')
+[7m   [0m [91m                  ~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m144[0m:[93m12[0m - [91merror[0m[90m TS1005: [0m':' expected.
+
+[7m144[0m            {t('key_1783109435202_23i7')}</button>
+[7m   [0m [91m           ~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m144[0m:[93m43[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'div'.
+
+[7m144[0m            {t('key_1783109435202_23i7')}</button>
+[7m   [0m [91m                                          ~~~~~~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m152[0m:[93m11[0m - [91merror[0m[90m TS1381: [0mUnexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+[7m152[0m          )}
+[7m   [0m [91m          ~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m154[0m:[93m8[0m - [91merror[0m[90m TS1005: [0m')' expected.
+
+[7m154[0m        </div>
+[7m   [0m [91m       ~~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m155[0m:[93m8[0m - [91merror[0m[90m TS1005: [0m'}' expected.
+
+[7m155[0m       );
+[7m   [0m [91m       ~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m156[0m:[93m6[0m - [91merror[0m[90m TS1381: [0mUnexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+[7m156[0m      })}
+[7m   [0m [91m     ~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m156[0m:[93m8[0m - [91merror[0m[90m TS1381: [0mUnexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+[7m156[0m      })}
+[7m   [0m [91m       ~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m157[0m:[93m7[0m - [91merror[0m[90m TS17015: [0mExpected corresponding closing tag for JSX fragment.
+
+[7m157[0m     </div>
+[7m   [0m [91m      ~~~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m158[0m:[93m4[0m - [91merror[0m[90m TS1109: [0mExpression expected.
+
+[7m158[0m    )}
+[7m   [0m [91m   ~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m264[0m:[93m3[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m264[0m   </>
+[7m   [0m [91m  ~~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m264[0m:[93m5[0m - [91merror[0m[90m TS1109: [0mExpression expected.
+
+[7m264[0m   </>
+[7m   [0m [91m    ~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m265[0m:[93m2[0m - [91merror[0m[90m TS1109: [0mExpression expected.
+
+[7m265[0m  );
+[7m   [0m [91m ~[0m
+[96mapp/[locale]/dashboard/parent/_components/ParentStudentsList.tsx[0m:[93m266[0m:[93m1[0m - [91merror[0m[90m TS1128: [0mDeclaration or statement expected.
+
+[7m266[0m }
+[7m   [0m [91m~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (11:20).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/parent/_components/ParentStudentsList.tsx
+Text: "... border border-border px-3 py-1.5 rounded-lg flex items-center gap-1 cursor-not-allowed opacity-60\"\r\n\t\t\t\t\t\t\t\t\t\t\ttitle=t('key_1783109435290_q6y6')\r\n\t\t\t\t\t\t\t\t\t\t>\r\n\t\t\t\t\t\t\t\t\t\t\t<Edit3 className=\"h-3.5 w-3.5\" />\r\n\t\t\t\t\t\t\t\t\t\t\t{t('key_1783109435202_23i7')}..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (11:20).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at doManipulation (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:2390:21)
+    at insertIntoParentTextRange (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:2424:5)
+    at StringLiteral.replaceWithText (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:3753:9)
+ERROR in /app/[locale]/dashboard/teacher/_components/TeacherBookingsList.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/teacher/_components/TeacherBookingsList.tsx[0m:[93m145[0m:[93m19[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m145[0m       placeholder=t('key_1783109436219_0vpu')
+[7m   [0m [91m                  ~[0m
+[96mapp/[locale]/dashboard/teacher/_components/TeacherBookingsList.tsx[0m:[93m145[0m:[93m20[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m145[0m       placeholder=t('key_1783109436219_0vpu')
+[7m   [0m [91m                   ~[0m
+[96mapp/[locale]/dashboard/teacher/_components/TeacherBookingsList.tsx[0m:[93m149[0m:[93m7[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m149[0m      />
+[7m   [0m [91m      ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:9).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/teacher/_components/TeacherBookingsList.tsx
+Text: "... p-4 rounded-3xl shadow-sm\">\r\n\t\t\t\t<div className=\"relative flex-1\">\r\n\t\t\t\t\t<input\r\n\t\t\t\t\t\ttype=\"text\"\r\n\t\t\t\t\t\tplaceholder=t('key_1783109436219_0vpu')\r\n\t\t\t\t\t\tclassName=\"premium-input w-full text-sm ps-10 pe-4 py-3 rounded-2xl border border-border/80 b..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:9).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/teacher/_components/TeacherProfileForm.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/teacher/_components/TeacherProfileForm.tsx[0m:[93m244[0m:[93m23[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m244[0m           placeholder=t('key_1783109436938_ohzk')
+[7m   [0m [91m                      ~[0m
+[96mapp/[locale]/dashboard/teacher/_components/TeacherProfileForm.tsx[0m:[93m244[0m:[93m24[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m244[0m           placeholder=t('key_1783109436938_ohzk')
+[7m   [0m [91m                       ~[0m
+[96mapp/[locale]/dashboard/teacher/_components/TeacherProfileForm.tsx[0m:[93m246[0m:[93m11[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m246[0m          />
+[7m   [0m [91m          ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/teacher/_components/TeacherProfileForm.tsx
+Text: "...nChange={(e) =>\r\n\t\t\t\t\t\t\t\t\t\t\tsetFormData({ ...formData, city: e.target.value || null })\r\n\t\t\t\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t\t\t\t\tplaceholder=t('key_1783109436938_ohzk')\r\n\t\t\t\t\t\t\t\t\t\tclassName=\"w-full premium-input text-sm\"\r\n\t\t\t\t\t\t\t\t\t/>\r\n\t\t\t\t\t\t\t\t</div>\r\n\t\t\t\t\t\t\t\t<div class..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/teacher/_components/TeacherServicesForm.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/teacher/_components/TeacherServicesForm.tsx[0m:[93m199[0m:[93m20[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m199[0m        placeholder=t('key_1783109437278_kp6r')
+[7m   [0m [91m                   ~[0m
+[96mapp/[locale]/dashboard/teacher/_components/TeacherServicesForm.tsx[0m:[93m199[0m:[93m21[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m199[0m        placeholder=t('key_1783109437278_kp6r')
+[7m   [0m [91m                    ~[0m
+[96mapp/[locale]/dashboard/teacher/_components/TeacherServicesForm.tsx[0m:[93m201[0m:[93m8[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m201[0m       />
+[7m   [0m [91m       ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/teacher/_components/TeacherServicesForm.tsx
+Text: "...iption\"\r\n\t\t\t\t\t\t\trows={2}\r\n\t\t\t\t\t\t\tvalue={formData.customDescription}\r\n\t\t\t\t\t\t\tonChange={handleChange}\r\n\t\t\t\t\t\t\tplaceholder=t('key_1783109437278_kp6r')\r\n\t\t\t\t\t\t\tclassName=\"w-full text-xs premium-input resize-none\"\r\n\t\t\t\t\t\t/>\r\n\t\t\t\t\t</div>\r\n\r\n\t\t\t\t\t<button\r..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/teacher/earnings/page.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/teacher/earnings/page.tsx[0m:[93m94[0m:[93m14[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m94[0m        title=t('key_1783109438869_b9xr')
+[7m  [0m [91m             ~[0m
+[96mapp/[locale]/dashboard/teacher/earnings/page.tsx[0m:[93m94[0m:[93m15[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m94[0m        title=t('key_1783109438869_b9xr')
+[7m  [0m [91m              ~[0m
+[96mapp/[locale]/dashboard/teacher/earnings/page.tsx[0m:[93m95[0m:[93m8[0m - [91merror[0m[90m TS1005: [0m'}' expected.
+
+[7m95[0m        message="هنا نعرض الجلسات التي تم فتح نزاع حولها. المبالغ المعلقة يتم الاحتفاظ بها بأمان حتى تتم المراجعة الدقيقة من قبل فريق الإدارة لضمان حق الجميع."
+[7m  [0m [91m       ~~~~~~~[0m
+[96mapp/[locale]/dashboard/teacher/earnings/page.tsx[0m:[93m97[0m:[93m8[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m97[0m       />
+[7m  [0m [91m       ~[0m
+[96mapp/[locale]/dashboard/teacher/earnings/page.tsx[0m:[93m98[0m:[93m7[0m - [91merror[0m[90m TS1381: [0mUnexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+[7m98[0m      )}
+[7m  [0m [91m      ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (3:2).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/teacher/earnings/page.tsx
+Text: "...\t\t\t\t\t)}\r\n\t\t\t\t\t{currentTab === \"disputes\" && (\r\n\t\t\t\t\t\t<InteractiveMessage\r\n\t\t\t\t\t\t\tcharacter=\"najeeb\"\r\n\t\t\t\t\t\t\ttitle=t('key_1783109438869_b9xr')\r\n\t\t\t\t\t\t\tmessage=\"هنا نعرض الجلسات التي تم فتح نزاع حولها. المبالغ المعلقة يتم الاحتفاظ بها بأمان حتى..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (3:2).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/admin/disputes/_components/AdminDisputesList.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/admin/disputes/_components/AdminDisputesList.tsx[0m:[93m71[0m:[93m19[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m71[0m       placeholder=t('key_1783109439186_53iw')
+[7m  [0m [91m                  ~[0m
+[96mapp/[locale]/dashboard/admin/disputes/_components/AdminDisputesList.tsx[0m:[93m71[0m:[93m20[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m71[0m       placeholder=t('key_1783109439186_53iw')
+[7m  [0m [91m                   ~[0m
+[96mapp/[locale]/dashboard/admin/disputes/_components/AdminDisputesList.tsx[0m:[93m75[0m:[93m7[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m75[0m      />
+[7m  [0m [91m      ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:9).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/admin/disputes/_components/AdminDisputesList.tsx
+Text: "...\t\t<Search className=\"h-4 w-4 text-muted-foreground\" />\r\n\t\t\t\t\t</div>\r\n\t\t\t\t\t<input\r\n\t\t\t\t\t\ttype=\"text\"\r\n\t\t\t\t\t\tplaceholder=t('key_1783109439186_53iw')\r\n\t\t\t\t\t\tclassName=\"block w-full rounded-2xl border-0 py-3 pr-10 pl-4 text-gray-900 shadow-sm ring-1 r..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:9).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m78[0m:[93m20[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m78[0m              title=t('key_1783109440145_ip9o')
+[7m  [0m [91m                   ~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m78[0m:[93m21[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m78[0m              title=t('key_1783109440145_ip9o')
+[7m  [0m [91m                    ~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m79[0m:[93m13[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m79[0m             >
+[7m  [0m [91m            ~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m81[0m:[93m15[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'div'.
+
+[7m81[0m             </button>
+[7m  [0m [91m              ~~~~~~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m101[0m:[93m14[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'td'.
+
+[7m101[0m            </div>
+[7m   [0m [91m             ~~~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m102[0m:[93m13[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'tr'.
+
+[7m102[0m           </td>
+[7m   [0m [91m            ~~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m103[0m:[93m10[0m - [91merror[0m[90m TS1005: [0m')' expected.
+
+[7m103[0m          </tr>
+[7m   [0m [91m         ~~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m103[0m:[93m12[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'tbody'.
+
+[7m103[0m          </tr>
+[7m   [0m [91m           ~~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m104[0m:[93m11[0m - [91merror[0m[90m TS1381: [0mUnexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+[7m104[0m         ))}
+[7m   [0m [91m          ~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m105[0m:[93m10[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'table'.
+
+[7m105[0m        </tbody>
+[7m   [0m [91m         ~~~~~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m106[0m:[93m9[0m - [91merror[0m[90m TS17002: [0mExpected corresponding JSX closing tag for 'div'.
+
+[7m106[0m       </table>
+[7m   [0m [91m        ~~~~~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m107[0m:[93m6[0m - [91merror[0m[90m TS1005: [0m')' expected.
+
+[7m107[0m      </div>
+[7m   [0m [91m     ~~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m108[0m:[93m6[0m - [91merror[0m[90m TS1381: [0mUnexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+[7m108[0m     )}
+[7m   [0m [91m     ~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m110[0m:[93m3[0m - [91merror[0m[90m TS1005: [0m')' expected.
+
+[7m110[0m   </div>
+[7m   [0m [91m  ~~[0m
+[96mapp/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx[0m:[93m111[0m:[93m2[0m - [91merror[0m[90m TS1109: [0mExpression expected.
+
+[7m111[0m  );
+[7m   [0m [91m ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (1:6).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/admin/payouts/_components/payouts/PayoutsHistoryList.tsx
+Text: "...Name=\"text-muted-foreground hover:text-foreground transition-colors p-2 rounded-lg hover:bg-accent\"\r\n\t\t\t\t\t\t\t\t\t\t\t\t\ttitle=t('key_1783109440145_ip9o')\r\n\t\t\t\t\t\t\t\t\t\t\t\t>\r\n\t\t\t\t\t\t\t\t\t\t\t\t\t<Printer className=\"w-4 h-4\" />\r\n\t\t\t\t\t\t\t\t\t\t\t\t</button>\r\n\t\t\t\t\t\t\t\t\t\t\t\t<bu..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (1:6).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+ERROR in /app/[locale]/dashboard/parent/bookings/new/by-time/page.tsx: Manipulation error: A syntax error was inserted.
+
+[96mapp/[locale]/dashboard/parent/bookings/new/by-time/page.tsx[0m:[93m25[0m:[93m12[0m - [91merror[0m[90m TS1145: [0m'{' or JSX element expected.
+
+[7m25[0m      title=t('key_1783109439408_ghgg')
+[7m  [0m [91m           ~[0m
+[96mapp/[locale]/dashboard/parent/bookings/new/by-time/page.tsx[0m:[93m25[0m:[93m13[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m25[0m      title=t('key_1783109439408_ghgg')
+[7m  [0m [91m            ~[0m
+[96mapp/[locale]/dashboard/parent/bookings/new/by-time/page.tsx[0m:[93m29[0m:[93m6[0m - [91merror[0m[90m TS1382: [0mUnexpected token. Did you mean `{'>'}` or `&gt;`?
+
+[7m29[0m     />
+[7m  [0m [91m     ~[0m
+
+Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+
+-- Details --
+Path: D:/OIC Files/Personal/Projects/EduNest/app/[locale]/dashboard/parent/bookings/new/by-time/page.tsx
+Text: "...0px]\" dir=\"rtl\">\r\n\t\t\t<div className=\"max-w-4xl mx-auto space-y-6 pb-20\">\r\n\t\t\t\t<BookingJourneyHeader\r\n\t\t\t\t\ttitle=t('key_1783109439408_ghgg')\r\n\t\t\t\t\tsubtitle=\"البحث بالوقت والمادة\"\r\n\t\t\t\t\tcharacter=\"hakeem\"\r\n\t\t\t\t\tcharacterMessage=\"خيار حكيم لحف..."
+Stack: Error: Error replacing tree: The children of the old and new trees were expected to have the same count (5:3).
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1495:19)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1646:19)
+    at NodeHandlerHelper.handleForValues (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1430:21)
+    at #handleChildren (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1499:25)
+    at ParentFinderReplacementNodeHandler.handleNode (D:\OIC Files\Personal\Projects\EduNest\node_modules\ts-morph\dist\ts-morph.js:1489:33)

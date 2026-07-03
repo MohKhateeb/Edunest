@@ -5,6 +5,7 @@ import FAQAccordion from "@/components/shared/FAQAccordion";
 import { getFAQs } from "@/lib/actions/faq";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
 	title: "الأسئلة الشائعة | منصة إديونست",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function TeacherFAQPage() {
+    const t = await getTranslations('teachers')
 	const session = await auth();
 	await requireAuth([UserType.TEACHER]);
 	if (!session) redirect("/login");
@@ -21,7 +23,7 @@ export default async function TeacherFAQPage() {
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-2xl font-extrabold mb-1">الأسئلة الشائعة</h1>
+				<h1 className="text-2xl font-extrabold mb-1">{t('key_1783109439043_i879')}</h1>
 				<p className="text-xs text-muted-foreground">
 					تجد هنا إجابات لأكثر الأسئلة شيوعاً حول إدارة الحساب، الحجوزات، والأمور
 					المالية الخاصة بالمعلمين.

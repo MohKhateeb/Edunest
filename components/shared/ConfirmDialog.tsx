@@ -64,7 +64,7 @@ export default function ConfirmDialog({
 						onSubmit={handleSubmit}
 						className="bg-card rounded-xl p-6 space-y-5"
 					>
-						<h4 className="font-extrabold text-lg text-foreground flex items-center gap-2 border-b border-border/50 pb-3 pt-2 pr-2">
+						<h4 className="font-extrabold text-lg text-foreground flex items-center gap-2 border-b border-border/50 pb-3 pt-2 pe-2">
 							{title}
 						</h4>
 

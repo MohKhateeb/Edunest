@@ -4,6 +4,7 @@ import Link from "next/link";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 import { UserService } from "@/lib/services/domain/user-service";
+import { getTranslations } from "next-intl/server";
 
 export const metadata = {
 	title: "ابحث عن معلم | إديونست",
@@ -52,6 +53,7 @@ export default async function TeachersPage({
 }: {
 	searchParams: Promise<SearchParams>;
 }) {
+    const tCommon = await getTranslations('common')
 	const params = await searchParams;
 	const { teachers, total, page, PAGE_SIZE } = await getTeachers(params);
 	const totalPages = Math.ceil(total / PAGE_SIZE);
@@ -79,8 +81,7 @@ export default async function TeachersPage({
 			<section className="bg-gradient-to-br from-[hsl(172,66%,10%)] via-[hsl(172,60%,18%)] to-[hsl(200,50%,14%)] text-white py-14">
 				<div className="max-w-6xl mx-auto px-6 text-center">
 					<h1 className="text-4xl font-extrabold mb-4">
-						ابحث عن معلمك المثالي
-					</h1>
+						{tCommon('key_1783109427676_y5yv')}</h1>
 					<p className="text-white/70 mb-8">
 						{total > 0
 							? `${total} معلم موثّق في انتظارك`
@@ -98,7 +99,7 @@ export default async function TeachersPage({
 							name="subject"
 							id="search-subject"
 							defaultValue={params.subject}
-							placeholder="التخصص (رياضيات، فيزياء...)"
+							placeholder={tCommon('key_1783109428045_auuq')}
 							className="flex-1 rounded-xl px-4 py-3 text-foreground bg-white/95 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
 						/>
 						<select
@@ -107,7 +108,7 @@ export default async function TeachersPage({
 							defaultValue={params.city}
 							className="rounded-xl px-4 py-3 text-foreground bg-white/95 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
 						>
-							<option value="">جميع المدن</option>
+							<option value="">{tCommon('key_1783109427694_xbk8')}</option>
 							{CITIES.map((c) => (
 								<option key={c} value={c}>
 									{c}
@@ -119,8 +120,7 @@ export default async function TeachersPage({
 							id="search-submit-btn"
 							className="bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl px-6 py-3 text-sm transition-colors"
 						>
-							بحث
-						</button>
+							{tCommon('search')}</button>
 					</form>
 
 					{/* Active filters */}
@@ -152,8 +152,7 @@ export default async function TeachersPage({
 								href="/teachers"
 								className="bg-red-500/20 hover:bg-red-500/30 border border-red-400/30 rounded-full px-3 py-1 text-xs text-red-200"
 							>
-								مسح الكل
-							</Link>
+								{tCommon('key_1783109427722_yuwk')}</Link>
 						</div>
 					)}
 				</div>
@@ -166,17 +165,14 @@ export default async function TeachersPage({
 						<div className="text-center py-24">
 							<div className="text-6xl mb-4">🔍</div>
 							<h2 className="text-2xl font-bold mb-2">
-								لم يتم العثور على معلمين
-							</h2>
+								{tCommon('key_1783109427736_99ff')}</h2>
 							<p className="text-muted-foreground mb-6">
-								حاول تغيير معايير البحث أو تصفح جميع المعلمين.
-							</p>
+								{tCommon('key_1783109427747_43fd')}</p>
 							<Link
 								href="/teachers"
 								className="inline-flex items-center gap-2 bg-primary text-primary-foreground rounded-xl px-6 py-3 font-semibold hover:opacity-90 transition-opacity"
 							>
-								عرض جميع المعلمين
-							</Link>
+								{tCommon('key_1783109427760_qcyq')}</Link>
 						</div>
 					) : (
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -235,7 +231,7 @@ export default async function TeachersPage({
 											)}
 											{t.gradeLevels.length > 0 && (
 												<p className="text-xs text-muted-foreground mb-3">
-													الصفوف:{" "}
+													{tCommon('key_1783109427774_cfcr')}{" "}
 													{t.gradeLevels
 														.slice(0, 3)
 														.map((g) => GRADE_LABELS[g] ?? g)
@@ -253,7 +249,7 @@ export default async function TeachersPage({
 												</span>
 												{minPrice !== null && (
 													<span className="font-bold text-primary">
-														من {minPrice} ₪
+														{tCommon('mn')}{minPrice} ₪
 													</span>
 												)}
 											</div>
@@ -272,8 +268,7 @@ export default async function TeachersPage({
 									href={buildUrl({ page: String(page - 1) })}
 									className="bg-card border border-border rounded-xl px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary transition-colors"
 								>
-									السابق →
-								</Link>
+									{tCommon('key_1783109427855_u1z3')}</Link>
 							)}
 							{Array.from({ length: totalPages }, (_, i) => i + 1)
 								.filter(
@@ -310,8 +305,7 @@ export default async function TeachersPage({
 									href={buildUrl({ page: String(page + 1) })}
 									className="bg-card border border-border rounded-xl px-4 py-2 text-sm font-semibold hover:border-primary hover:text-primary transition-colors"
 								>
-									← التالي
-								</Link>
+									{tCommon('key_1783109427877_dax6')}</Link>
 							)}
 						</div>
 					)}

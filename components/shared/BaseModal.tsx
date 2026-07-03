@@ -19,7 +19,7 @@ export default function BaseModal({
 				<button
 					type="button"
 					onClick={onClose}
-					className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
+					className="absolute top-4 end-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200"
 				>
 					<svg
 						className="w-6 h-6"

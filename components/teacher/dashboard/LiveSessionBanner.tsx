@@ -10,7 +10,7 @@ export default function LiveSessionBanner({ liveSession }: LiveSessionBannerProp
 
 	return (
 		<div className="bg-gradient-to-r from-rose-500 to-pink-600 rounded-3xl p-6 shadow-xl shadow-rose-500/20 text-white animate-in zoom-in duration-300 relative overflow-hidden border border-rose-400/30">
-			<div className="absolute -left-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+			<div className="absolute -start-10 -top-10 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
 			<div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4">
 				<div>
 					<div className="flex items-center gap-2 mb-2">

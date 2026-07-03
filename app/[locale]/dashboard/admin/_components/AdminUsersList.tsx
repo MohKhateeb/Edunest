@@ -20,6 +20,7 @@ import { Fragment, useState } from "react";
 import { toast } from "sonner";
 import DataTable from "@/components/shared/DataTable";
 import { toggleUserActive } from "@/lib/actions/admin";
+import { useTranslations } from "next-intl";
 
 type StudentRow = {
 	id: string;
@@ -48,6 +49,7 @@ type AdminUsersListProps = {
 };
 
 export default function AdminUsersList({ users }: AdminUsersListProps) {
+    const t = useTranslations('admin')
 	const router = useRouter();
 	const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -113,7 +115,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 				]}
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
-				searchPlaceholder="ابحث باسم المستخدم، البريد أو الهاتف..."
+				searchPlaceholder={t('key_1783109432439_8q2i')}
 				toolbarChildren={
 					<>
 						<select
@@ -121,10 +123,10 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 							value={filterType}
 							onChange={(e) => setFilterType(e.target.value)}
 						>
-							<option value="ALL">جميع الأنواع</option>
-							<option value="PARENT">أولياء الأمور</option>
-							<option value="TEACHER">المعلمون</option>
-							<option value="ADMIN">المدراء</option>
+							<option value="ALL">{t('key_1783109431967_qlrg')}</option>
+							<option value="PARENT">{t('key_1783109431988_r3ry')}</option>
+							<option value="TEACHER">{t('key_1783109432006_8ahq')}</option>
+							<option value="ADMIN">{t('key_1783109432029_m0uy')}</option>
 						</select>
 
 						<select
@@ -132,13 +134,13 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 							value={filterStatus}
 							onChange={(e) => setFilterStatus(e.target.value)}
 						>
-							<option value="ALL">جميع الحالات</option>
-							<option value="ACTIVE">النشطين فقط</option>
-							<option value="BANNED">المحظورين فقط</option>
+							<option value="ALL">{t('key_1783109432045_13wq')}</option>
+							<option value="ACTIVE">{t('key_1783109432062_tckq')}</option>
+							<option value="BANNED">{t('key_1783109432083_qr4p')}</option>
 						</select>
 					</>
 				}
-				emptyMessage="لا يوجد مستخدمين مطابقين لمعايير البحث الحالية."
+				emptyMessage={t('str_2YTYpyDZ')}
 				renderRow={(u) => {
 					const typeDetails = {
 						ADMIN: {
@@ -176,7 +178,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 											type="button"
 											onClick={() => toggleExpand(u.id)}
 											className="p-1 rounded-lg hover:bg-accent text-muted-foreground transition-colors cursor-pointer"
-											title="عرض تفاصيل إضافية"
+											title={t('str_2LnYsdi2')}
 										>
 											{isExpanded ? (
 												<ChevronUp className="h-4.5 w-4.5 text-primary" />
@@ -200,7 +202,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 											</span>
 											<span className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
 												<Calendar className="h-3 w-3" />
-												انضم في{" "}
+												{t('key_1783109432106_0mlc')}{" "}
 												{new Date(u.createdAt).toLocaleDateString("ar-PS", {
 													year: "numeric",
 													month: "short",
@@ -224,8 +226,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 											</span>
 										) : (
 											<span className="text-[10px] text-muted-foreground/40 italic block pe-5">
-												لا يوجد هاتف
-											</span>
+												{t('key_1783109432128_wya1')}</span>
 										)}
 									</div>
 								</td>
@@ -242,17 +243,15 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 									{u.isActive ? (
 										<span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
 											<span className="h-1.5 w-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-											نشط
-										</span>
+											{t('key_1783109432145_059y')}</span>
 									) : (
 										<span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300">
 											<span className="h-1.5 w-1.5 rounded-full bg-rose-600"></span>
-											محظور
-										</span>
+											{t('key_1783109432161_2ot2')}</span>
 									)}
 								</td>
 
-								<td className="p-4 text-left">
+								<td className="p-4 text-start">
 									{loadingUserId === u.id ? (
 										<Loader2 className="h-5 w-5 animate-spin ms-4 text-primary inline-block" />
 									) : (
@@ -262,21 +261,19 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 													type="button"
 													onClick={() => handleToggleStatus(u.id, u.isActive)}
 													className="text-xs font-bold text-rose-600 hover:text-white border border-rose-600/20 hover:bg-rose-600 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
-													title="حظر الحساب ومنع تسجيل الدخول"
+													title={t('str_2K3YuNix')}
 												>
 													<UserX className="h-4 w-4" />
-													حظر الحساب
-												</button>
+													{t('key_1783109432179_b96b')}</button>
 											) : (
 												<button
 													type="button"
 													onClick={() => handleToggleStatus(u.id, u.isActive)}
 													className="text-xs font-bold text-emerald-600 hover:text-white border border-emerald-600/20 hover:bg-emerald-600 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
-													title="تفعيل وتنشيط الحساب"
+													title={t('str_2KrZgdi5')}
 												>
 													<UserCheck className="h-4 w-4" />
-													تفعيل الحساب
-												</button>
+													{t('key_1783109432195_zcrb')}</button>
 											)}
 										</div>
 									)}
@@ -296,13 +293,12 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 													{u.userType === "PARENT" ? (
 														<>
 															<Users className="h-4.5 w-4.5" />
-															قائمة الطلاب المسجلين ({u.students.length})
+															{t('key_1783109432220_nxuo')}{u.students.length})
 														</>
 													) : (
 														<>
 															<GraduationCap className="h-4.5 w-4.5" />
-															معلومات المعلم المهنية
-														</>
+															{t('key_1783109432237_t3il')}</>
 													)}
 												</h4>
 											</div>
@@ -312,8 +308,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 												<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
 													{u.students.length === 0 ? (
 														<p className="text-xs text-muted-foreground italic col-span-full">
-															لا يوجد طلاب مضافين لهذا الحساب بعد.
-														</p>
+															{t('key_1783109432255_pz5h')}</p>
 													) : (
 														u.students.map((student) => (
 															<div
@@ -328,7 +323,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 																		{student.name}
 																	</p>
 																	<p className="text-[10px] text-muted-foreground">
-																		الصف {student.grade} -{" "}
+																		{t('key_1783109432274_gnyj')}{student.grade} -{" "}
 																		{student.school || "مدرسة غير محددة"}
 																	</p>
 																</div>
@@ -343,8 +338,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 												<div className="p-4 bg-white dark:bg-slate-900 border border-border/80 rounded-3xl space-y-2 max-w-md">
 													<div className="text-xs flex justify-between border-b border-border/40 pb-2">
 														<span className="text-muted-foreground font-semibold">
-															التخصص الأساسي:
-														</span>
+															{t('key_1783109432291_vomn')}</span>
 														<span className="font-bold text-foreground">
 															{u.teacher?.subjects
 																?.map((s) => s.subject.name)
@@ -353,11 +347,9 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 													</div>
 													<div className="text-xs flex justify-between">
 														<span className="text-muted-foreground font-semibold">
-															الملف التعريفي:
-														</span>
+															{t('key_1783109432309_qzq8')}</span>
 														<span className="font-bold text-primary">
-															حساب مسجل نشط في نظام المعلمين
-														</span>
+															{t('key_1783109432329_s42d')}</span>
 													</div>
 												</div>
 											)}

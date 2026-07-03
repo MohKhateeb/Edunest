@@ -152,9 +152,9 @@ export default function AdminTeachersList({
 									{badge.label}
 								</span>
 							</td>
-							<td className="p-4 text-left">
+							<td className="p-4 text-start">
 								{loadingId === t.id ? (
-									<Loader2 className="h-4.5 w-4.5 animate-spin ml-auto" />
+									<Loader2 className="h-4.5 w-4.5 animate-spin ms-auto" />
 								) : (
 									<select
 										value={t.verificationLevel}

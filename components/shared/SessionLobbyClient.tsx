@@ -109,7 +109,7 @@ export default function SessionLobbyClient({
 			<div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-200 dark:border-slate-800 p-8 shadow-2xl relative overflow-hidden">
 				{/* Background glow based on status */}
 				<div
-					className={`absolute -top-32 -right-32 w-64 h-64 rounded-full blur-3xl opacity-20 ${isPaid ? "bg-emerald-500" : "bg-amber-500"}`}
+					className={`absolute -top-32 -end-32 w-64 h-64 rounded-full blur-3xl opacity-20 ${isPaid ? "bg-emerald-500" : "bg-amber-500"}`}
 				></div>
 
 				<div className="relative z-10 space-y-6">

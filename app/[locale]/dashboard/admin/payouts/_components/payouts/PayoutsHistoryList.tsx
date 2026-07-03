@@ -1,6 +1,7 @@
 import { BadgeDollarSign, CheckCircle2, Printer, Receipt } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
 import type { PayoutRecord } from "@/types/payout";
+import { getTranslations } from "next-intl/server";
 
 type PayoutsHistoryListProps = {
 	existingPayouts: PayoutRecord[];
@@ -10,13 +11,14 @@ type PayoutsHistoryListProps = {
 	loading: boolean;
 };
 
-export function PayoutsHistoryList({
+export async function PayoutsHistoryList({
 	existingPayouts,
 	handlePrint,
 	setSelectedPayoutId,
 	handleMarkAsPaid,
 	loading,
 }: PayoutsHistoryListProps) {
+    const t = await getTranslations('admin')
 	return (
 		<div>
 			<div className="flex items-center gap-3 mb-6 mt-12">
@@ -25,11 +27,9 @@ export function PayoutsHistoryList({
 				</div>
 				<div>
 					<h2 className="text-xl font-bold text-foreground">
-						سجل التسويات والفواتير
-					</h2>
+						{t('key_1783109440077_qglf')}</h2>
 					<p className="text-sm text-muted-foreground mt-1">
-						التسويات الصادرة سابقاً وحالتها المالية
-					</p>
+						{t('key_1783109440084_t5yg')}</p>
 				</div>
 			</div>
 
@@ -37,18 +37,17 @@ export function PayoutsHistoryList({
 				{existingPayouts.length === 0 ? (
 					<p className="text-sm text-muted-foreground py-12 text-center flex flex-col items-center">
 						<Receipt className="w-12 h-12 mb-3 text-muted-foreground/30" />
-						لم يتم إصدار أي تسويات مالية بعد.
-					</p>
+						{t('key_1783109440089_4o30')}</p>
 				) : (
 					<div className="overflow-x-auto">
-						<table className="w-full text-right border-collapse text-sm">
+						<table className="w-full text-end border-collapse text-sm">
 							<thead>
 								<tr className="bg-muted/50 text-muted-foreground font-semibold border-b border-border">
-									<th className="p-4 whitespace-nowrap">رقم الفاتورة</th>
-									<th className="p-4">المعلم المستفيد</th>
-									<th className="p-4">الفترة الزمنية</th>
-									<th className="p-4">الصافي</th>
-									<th className="p-4 text-left">الحالة والإجراءات</th>
+									<th className="p-4 whitespace-nowrap">{t('key_1783109440096_axrb')}</th>
+									<th className="p-4">{t('key_1783109440104_ibzq')}</th>
+									<th className="p-4">{t('key_1783109440110_xdj2')}</th>
+									<th className="p-4">{t('key_1783109440116_kbmf')}</th>
+									<th className="p-4 text-start">{t('key_1783109440121_41a7')}</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -72,13 +71,13 @@ export function PayoutsHistoryList({
 										<td className="p-4 font-bold text-primary whitespace-nowrap">
 											{formatPrice(p.netAmount)}
 										</td>
-										<td className="p-4 text-left">
+										<td className="p-4 text-start">
 											<div className="flex items-center justify-end gap-3">
 												<button
 													type="button"
 													onClick={() => handlePrint(p)}
 													className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-lg hover:bg-accent"
-													title="طباعة الفاتورة"
+													title={t('key_1783109440145_ip9o')}
 												>
 													<Printer className="w-4 h-4" />
 												</button>
@@ -87,13 +86,11 @@ export function PayoutsHistoryList({
 													onClick={() => setSelectedPayoutId(p.id)}
 													className="text-xs font-semibold text-primary hover:underline px-2 py-1"
 												>
-													تفاصيل
-												</button>
+													{t('key_1783109440127_463g')}</button>
 												{p.isPaid ? (
 													<span className="inline-flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 dark:text-emerald-400 font-bold px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800/50">
 														<CheckCircle2 className="w-3.5 h-3.5" />
-														تم الدفع
-													</span>
+														{t('key_1783109440063_0ckm')}</span>
 												) : (
 													<button
 														type="button"
@@ -101,8 +98,7 @@ export function PayoutsHistoryList({
 														disabled={loading}
 														className="bg-primary/10 hover:bg-primary text-primary hover:text-primary-foreground text-xs font-bold px-4 py-2 rounded-full transition-colors cursor-pointer disabled:opacity-50"
 													>
-														تأكيد التحويل
-													</button>
+														{t('key_1783109440069_ubbe')}</button>
 												)}
 											</div>
 										</td>

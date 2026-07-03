@@ -5,10 +5,12 @@ import LiveRadar from "@/components/shared/LiveRadar";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { SessionService } from "@/lib/services/domain/session-service";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 
 export default async function TeacherLiveRadarPage() {
+    const t = await getTranslations('teachers')
 	const session = await auth();
 	await requireAuth([UserType.TEACHER]);
 	if (!session || session.user.userType !== "TEACHER") {
@@ -23,11 +25,9 @@ export default async function TeacherLiveRadarPage() {
 			<div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
 				<div>
 					<h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
-						الرادار الحي 📡
-					</h1>
+						{t('key_1783109439049_dnwl')}</h1>
 					<p className="text-slate-500 mt-2">
-						التقط طلبات الفزعة الفورية للطلاب، وادخل الجلسة في ثوانٍ معدودة.
-					</p>
+						{t('key_1783109439052_aytt')}</p>
 				</div>
 
 				<InteractiveMessage

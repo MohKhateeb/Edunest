@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { cn, formatPrice } from "@/lib/utils";
 import type { TeacherGroup } from "./PendingTeachersList";
+import { getTranslations } from "next-intl/server";
 
 type DraftPayoutSectionProps = {
 	selectedTeacherGroup: TeacherGroup;
@@ -29,7 +30,7 @@ type DraftPayoutSectionProps = {
 	successMsg: string | null;
 };
 
-export function DraftPayoutSection({
+export async function DraftPayoutSection({
 	selectedTeacherGroup,
 	selectedBookingIds,
 	setSelectedBookingIds,
@@ -40,6 +41,7 @@ export function DraftPayoutSection({
 	errorMsg,
 	successMsg,
 }: DraftPayoutSectionProps) {
+    const t = await getTranslations('admin')
 	return (
 		<div className="animate-in fade-in slide-in-from-top-4 duration-500">
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
@@ -49,7 +51,7 @@ export function DraftPayoutSection({
 						<div className="flex justify-between items-center mb-5 pb-4 border-b border-border">
 							<h3 className="font-bold flex items-center gap-2">
 								<Search className="w-5 h-5 text-orange-500" />
-								تفاصيل الحصص للمعلم: {selectedTeacherGroup.teacherName}
+								{t('key_1783109439851_y2mx')}{selectedTeacherGroup.teacherName}
 							</h3>
 							<div className="flex items-center gap-2 text-sm">
 								<button
@@ -61,20 +63,18 @@ export function DraftPayoutSection({
 									}
 									className="text-primary hover:underline font-medium text-xs"
 								>
-									تحديد الكل
-								</button>
+									{t('key_1783109439891_nvzo')}</button>
 								<span className="text-muted-foreground">|</span>
 								<button
 									type="button"
 									onClick={() => setSelectedBookingIds(new Set())}
 									className="text-muted-foreground hover:text-foreground font-medium text-xs"
 								>
-									إلغاء التحديد
-								</button>
+									{t('key_1783109439900_mwj1')}</button>
 							</div>
 						</div>
 
-						<div className="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar pr-2">
+						<div className="space-y-3 max-h-[500px] overflow-y-auto custom-scrollbar pe-2">
 							{selectedTeacherGroup.bookings.map((b) => (
 								<div
 									key={b.id}
@@ -92,7 +92,7 @@ export function DraftPayoutSection({
 											<span className="font-semibold text-sm">
 												{b.isTrial ? (
 													<span className="text-purple-600 dark:text-purple-400">
-														مجانية ({formatPrice(b.trialCostToPlatform)})
+														{t('key_1783109439908_1ife')}{formatPrice(b.trialCostToPlatform)})
 													</span>
 												) : (
 													<span>{formatPrice(b.price)}</span>
@@ -100,14 +100,13 @@ export function DraftPayoutSection({
 											</span>
 										</div>
 										<div className="flex items-center justify-between text-xs text-muted-foreground">
-											<span>الطالب: {b.studentName}</span>
+											<span>{t('key_1783109434256_9pns')}{b.studentName}</span>
 											<span>
 												{new Date(b.startTime).toLocaleDateString("ar-EG")} -{" "}
-												{b.duration} دقيقة
-											</span>
+												{b.duration} {t('key_1783109430790_rhf0')}</span>
 										</div>
 									</div>
-									<div className="mr-4 pr-4 border-r border-border/50 shrink-0">
+									<div className="me-4 pe-4 border-e border-border/50 shrink-0">
 										{selectedBookingIds.has(b.id) ? (
 											<CheckSquare className="w-6 h-6 text-primary" />
 										) : (
@@ -125,35 +124,32 @@ export function DraftPayoutSection({
 					<div className="bg-gradient-to-b from-card to-accent/20 border border-border rounded-2xl p-6 shadow-sm sticky top-6">
 						<h3 className="font-bold text-base mb-6 flex items-center gap-2">
 							<Calculator className="w-5 h-5 text-primary" />
-							مسودة التسوية
-						</h3>
+							{t('key_1783109439934_6hg6')}</h3>
 
 						{draftResult ? (
 							<div className="space-y-4">
 								<div className="flex justify-between items-center text-sm">
-									<span className="text-muted-foreground">الحصص المحددة:</span>
+									<span className="text-muted-foreground">{t('key_1783109439942_uiqu')}</span>
 									<span className="font-bold bg-primary/10 text-primary px-2 py-0.5 rounded-full">
 										{draftResult.bookingCount}
 									</span>
 								</div>
 								<div className="flex justify-between items-center text-sm">
-									<span className="text-muted-foreground">إجمالي الرسوم:</span>
+									<span className="text-muted-foreground">{t('key_1783109439950_dxpy')}</span>
 									<span className="font-bold">
 										{formatPrice(draftResult.totalAmount)}
 									</span>
 								</div>
 								<div className="flex justify-between items-center text-sm">
 									<span className="text-muted-foreground">
-										عمولة المنصة (-):
-									</span>
+										{t('key_1783109439959_i31v')}</span>
 									<span className="font-bold text-rose-600 dark:text-rose-400">
 										-{formatPrice(draftResult.commissionAmount)}
 									</span>
 								</div>
 								<div className="flex justify-between items-center text-sm">
 									<span className="text-muted-foreground">
-										تعويضات مجانية (+):
-									</span>
+										{t('key_1783109439970_lhgq')}</span>
 									<span className="font-bold text-purple-600 dark:text-purple-400">
 										+{formatPrice(draftResult.trialCompensation)}
 									</span>
@@ -162,8 +158,7 @@ export function DraftPayoutSection({
 								<div className="pt-4 border-t border-border mt-2">
 									<div className="flex justify-between items-center">
 										<span className="font-bold text-foreground">
-											الصافي المستحق:
-										</span>
+											{t('key_1783109439978_7fot')}</span>
 										<span className="font-extrabold text-xl text-primary">
 											{formatPrice(draftResult.netAmount)}
 										</span>
@@ -200,8 +195,7 @@ export function DraftPayoutSection({
 							</div>
 						) : (
 							<div className="text-center py-10 text-muted-foreground text-sm">
-								يرجى تحديد حصص لحساب مسودة التسوية
-							</div>
+								{t('key_1783109439989_963d')}</div>
 						)}
 					</div>
 				</div>

@@ -7,8 +7,10 @@ import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { UserService } from "@/lib/services/domain/user-service";
+import { getTranslations } from "next-intl/server";
 
 export default async function ParentStudentsPage() {
+    const t = await getTranslations('parent')
 	const session = await auth();
 	await requireAuth([UserType.PARENT]);
 	if (!session) redirect("/login");
@@ -16,11 +18,10 @@ export default async function ParentStudentsPage() {
 	const students = await UserService.getParentStudents(session.user.id);
 
 	return (
-		<div className="space-y-8 text-right pb-10" dir="rtl">
+		<div className="space-y-8 text-end pb-10" dir="rtl">
 			<div>
 				<h1 className="text-2xl font-black mb-4 text-primary">
-					أبطال المستقبل (إدارة الأبناء)
-				</h1>
+					{t('key_1783109435942_3wbp')}</h1>
 				<InteractiveMessage
 					character="hakeem"
 					message="إضافة بيانات أبنائك وتحديث مستوياتهم الدراسية بدقة، هي الخطوة الأولى لاختيار المعلم الأنسب وتخصيص تجربة التعلم لكل بطل منهم."
@@ -33,8 +34,7 @@ export default async function ParentStudentsPage() {
 					<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
 						<h2 className="font-black text-lg border-b border-border/50 pb-3 flex items-center gap-2">
 							<Users className="h-6 w-6 text-secondary" />
-							أبطالنا المضافين حالياً
-						</h2>
+							{t('key_1783109435945_z7ru')}</h2>
 
 						<ParentStudentsList students={students} />
 					</div>

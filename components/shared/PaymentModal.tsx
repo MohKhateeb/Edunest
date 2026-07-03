@@ -39,7 +39,7 @@ export function PaymentModal({
 	return (
 		<BaseModal onClose={onClose} className="max-w-md overflow-hidden">
 			{/* Decorative Header */}
-			<div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+			<div className="absolute top-0 start-0 w-full h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
 
 			<div className="text-center mb-6 mt-2">
 				<div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -97,7 +97,7 @@ export function PaymentModal({
 					{loading ? (
 						<>
 							<svg
-								className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+								className="animate-spin -ms-1 me-3 h-5 w-5 text-white"
 								fill="none"
 								viewBox="0 0 24 24"
 							>

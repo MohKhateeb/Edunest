@@ -133,7 +133,7 @@ export default function Header() {
 
 											<div className="absolute end-0 mt-2 w-56 rounded-2xl bg-white dark:bg-slate-900 border border-border/85 p-2 shadow-premium z-45 animate-in fade-in slide-in-from-top-2 duration-200">
 												{/* Profile Summary */}
-												<div className="px-3 py-2.5 border-b border-border/50 text-right">
+												<div className="px-3 py-2.5 border-b border-border/50 text-end">
 													<span className="text-xs font-black text-foreground block truncate">
 														{session.user.name}
 													</span>
@@ -155,7 +155,7 @@ export default function Header() {
 																	: "/dashboard/parent"
 														}
 														onClick={() => setShowDropdown(false)}
-														className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground/80 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-primary transition-colors text-right"
+														className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground/80 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-primary transition-colors text-end"
 													>
 														<LayoutDashboard className="h-4 w-4 text-muted-foreground" />
 														<span>{t('lwhh_althkm')}</span>
@@ -164,7 +164,7 @@ export default function Header() {
 													<Link
 														href="/dashboard/profile"
 														onClick={() => setShowDropdown(false)}
-														className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground/80 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-primary transition-colors text-right"
+														className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-foreground/80 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-primary transition-colors text-end"
 													>
 														<User className="h-4 w-4 text-muted-foreground" />
 														<span>{t('tadyl_almlf_alshkhsy')}</span>
@@ -177,7 +177,7 @@ export default function Header() {
 															setShowDropdown(false);
 															handleLogout();
 														}}
-														className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors text-right cursor-pointer"
+														className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors text-end cursor-pointer"
 													>
 														<LogOut className="h-4 w-4 text-rose-500" />
 														<span>{t('tsjyl_alkhrwj')}</span>
@@ -313,7 +313,7 @@ export default function Header() {
 											setIsOpen(false);
 											handleLogout();
 										}}
-										className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-destructive hover:bg-destructive/10 transition-colors text-right"
+										className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-base font-medium text-destructive hover:bg-destructive/10 transition-colors text-end"
 									>
 										<LogOut className="h-5 w-5" />
 										{t('tsjyl_alkhrwj')}</button>

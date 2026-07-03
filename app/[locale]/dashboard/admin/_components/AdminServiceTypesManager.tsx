@@ -23,6 +23,7 @@ import {
 	updateServiceType,
 } from "@/lib/actions/admin/service-types";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 type ServiceType = {
 	id: string;
@@ -41,6 +42,7 @@ export default function AdminServiceTypesManager({
 }: {
 	initialServices: ServiceType[];
 }) {
+    const t = useTranslations('admin')
 	const router = useRouter();
 	const [services, setServices] = useState<ServiceType[]>(initialServices);
 	const [editingId, setEditingId] = useState<string | null>(null);
@@ -112,7 +114,7 @@ export default function AdminServiceTypesManager({
 		<div className="space-y-6" dir="rtl">
 			<div>
 				<h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3 mb-2">
-					إدارة أنواع الخدمات والجلسات{" "}
+					{t('key_1783109430532_6v7i')}{" "}
 					<Settings2 className="w-8 h-8 text-primary" />
 				</h1>
 				<p className="text-slate-500">
@@ -132,16 +134,15 @@ export default function AdminServiceTypesManager({
 								onSubmit={handleSave}
 								className="bg-white dark:bg-slate-900 border-2 border-indigo-500 rounded-3xl p-6 shadow-lg relative overflow-hidden animate-in fade-in zoom-in-95"
 							>
-								<div className="absolute top-0 right-0 w-full h-1 bg-indigo-500" />
+								<div className="absolute top-0 end-0 w-full h-1 bg-indigo-500" />
 								<h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-slate-100">
-									تعديل: {service.name}
+									{t('key_1783109430561_wmzl')}{service.name}
 								</h3>
 
 								<div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
 									<div className="space-y-1">
 										<label className="text-xs font-bold text-slate-600 dark:text-slate-400">
-											الاسم (عربي)
-										</label>
+											{t('key_1783109430578_bxe8')}</label>
 										<input
 											type="text"
 											required
@@ -154,8 +155,7 @@ export default function AdminServiceTypesManager({
 									</div>
 									<div className="space-y-1">
 										<label className="text-xs font-bold text-slate-600 dark:text-slate-400">
-											الاسم (انجليزي)
-										</label>
+											{t('key_1783109430595_gqym')}</label>
 										<input
 											type="text"
 											value={editForm.nameEnglish || ""}
@@ -170,8 +170,7 @@ export default function AdminServiceTypesManager({
 									</div>
 									<div className="space-y-1">
 										<label className="text-xs font-bold text-slate-600 dark:text-slate-400">
-											المدة الافتراضية (دقائق)
-										</label>
+											{t('key_1783109430611_wxyb')}</label>
 										<input
 											type="number"
 											required
@@ -187,8 +186,7 @@ export default function AdminServiceTypesManager({
 									</div>
 									<div className="space-y-1">
 										<label className="text-xs font-bold text-slate-600 dark:text-slate-400">
-											عمولة المنصة (%)
-										</label>
+											{t('key_1783109430629_pmar')}</label>
 										<input
 											type="number"
 											required
@@ -209,13 +207,11 @@ export default function AdminServiceTypesManager({
 										<>
 											<div className="space-y-1 mt-4 md:col-span-2">
 												<h4 className="text-sm font-bold text-amber-600 dark:text-amber-500 mb-2 border-b border-slate-100 dark:border-slate-800 pb-2">
-													⚡ إعدادات الفزعة (Live Radar)
-												</h4>
+													{t('str_4pqhINil')}</h4>
 											</div>
 											<div className="space-y-1">
 												<label htmlFor={`fazaaPrice-${service.id}`} className="text-xs font-bold text-slate-600 dark:text-slate-400">
-													سعر الفزعة الموحد (شيكل)
-												</label>
+													{t('key_1783109430673_lbor')}</label>
 												<input
 													id={`fazaaPrice-${service.id}`}
 													type="number"
@@ -226,14 +222,13 @@ export default function AdminServiceTypesManager({
 															fazaaPrice: Number(e.target.value),
 														})
 													}
-													placeholder="يترك فارغاً لتعطيل الفزعة لهذه الخدمة"
+													placeholder={t('key_1783109430916_61au')}
 													className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 placeholder:text-xs"
 												/>
 											</div>
 											<div className="space-y-1">
 												<label htmlFor={`fazaaDuration-${service.id}`} className="text-xs font-bold text-slate-600 dark:text-slate-400">
-													مدة الفزعة (دقائق)
-												</label>
+													{t('key_1783109430689_g6pn')}</label>
 												<input
 													id={`fazaaDuration-${service.id}`}
 													type="number"
@@ -244,7 +239,7 @@ export default function AdminServiceTypesManager({
 															fazaaDuration: Number(e.target.value),
 														})
 													}
-													placeholder="مثال: 30"
+													placeholder={t('str_2YXYq9in')}
 													className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-indigo-500 placeholder:text-xs"
 												/>
 											</div>
@@ -258,8 +253,7 @@ export default function AdminServiceTypesManager({
 										onClick={cancelEditing}
 										className="px-4 py-2 text-sm font-bold text-slate-500 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-300 rounded-xl transition-colors"
 									>
-										إلغاء
-									</button>
+										{t('key_1783109430705_7b9h')}</button>
 									<button
 										type="submit"
 										disabled={isSaving}
@@ -270,8 +264,7 @@ export default function AdminServiceTypesManager({
 										) : (
 											<Save className="w-4 h-4" />
 										)}
-										حفظ التغييرات
-									</button>
+										{t('key_1783109430727_4eof')}</button>
 								</div>
 							</form>
 						);
@@ -294,8 +287,7 @@ export default function AdminServiceTypesManager({
 										{service.name}
 										{!service.isActive && (
 											<span className="text-xs font-bold bg-rose-100 text-rose-600 dark:bg-rose-900/30 dark:text-rose-400 px-2 py-1 rounded-md">
-												معطلة
-											</span>
+												{t('key_1783109430750_4mgj')}</span>
 										)}
 										{service.isRecurring && (
 											<RefreshCw className="w-4 h-4 text-purple-500" />
@@ -311,7 +303,7 @@ export default function AdminServiceTypesManager({
 										type="button"
 										onClick={() => startEditing(service)}
 										className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-xl transition-colors"
-										title="تعديل"
+										title={t('key_1783109433671_arg9')}
 									>
 										<Edit3 className="w-5 h-5" />
 									</button>
@@ -343,19 +335,16 @@ export default function AdminServiceTypesManager({
 									<Clock className="w-5 h-5 text-slate-400" />
 									<div>
 										<div className="text-xs text-slate-500 dark:text-slate-400">
-											المدة الافتراضية
-										</div>
+											{t('key_1783109430771_jnxu')}</div>
 										<div className="font-bold text-slate-700 dark:text-slate-200">
-											{service.defaultDuration} دقيقة
-										</div>
+											{service.defaultDuration} {t('key_1783109430790_rhf0')}</div>
 									</div>
 								</div>
 								<div className="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-4 flex items-center gap-3 border border-slate-100 dark:border-slate-800">
 									<Percent className="w-5 h-5 text-slate-400" />
 									<div>
 										<div className="text-xs text-slate-500 dark:text-slate-400">
-											نسبة العمولة
-										</div>
+											{t('key_1783109430813_5diy')}</div>
 										<div className="font-bold text-slate-700 dark:text-slate-200">
 											{service.commissionRate}%
 										</div>
@@ -368,8 +357,7 @@ export default function AdminServiceTypesManager({
 											<Zap className="w-5 h-5 text-amber-500" />
 											<div>
 												<div className="text-xs text-amber-700/70 dark:text-amber-500/70 font-bold">
-													الفزعة (Live Radar)
-												</div>
+													{t('live_radar')}</div>
 												<div className="font-bold text-amber-700 dark:text-amber-500">
 													{service.fazaaPrice
 														? `${service.fazaaPrice} شيكل`
@@ -379,8 +367,7 @@ export default function AdminServiceTypesManager({
 										</div>
 										{service.fazaaDuration && (
 											<div className="text-sm font-bold text-amber-600 bg-amber-100 dark:bg-amber-900/30 px-3 py-1 rounded-lg">
-												{service.fazaaDuration} دقيقة
-											</div>
+												{service.fazaaDuration} {t('key_1783109430790_rhf0')}</div>
 										)}
 									</div>
 								)}

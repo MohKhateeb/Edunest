@@ -30,7 +30,7 @@ export default function JourneyPath({
 	return (
 		<section className="py-24 bg-slate-50 dark:bg-slate-900/50 relative overflow-hidden">
 			{/* Decorative path line in background */}
-			<div className="absolute top-1/2 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-800 to-transparent hidden md:block z-0"></div>
+			<div className="absolute top-1/2 start-0 w-full h-[2px] bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-800 to-transparent hidden md:block z-0"></div>
 
 			<div className="max-w-6xl mx-auto px-6 relative z-10" dir="rtl">
 				<div className="text-center mb-20 space-y-4">
@@ -55,7 +55,7 @@ export default function JourneyPath({
 
 				<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-12 md:gap-8 relative justify-center">
 					{/* Najeeb guiding the way */}
-					<div className="hidden md:block absolute -top-16 -right-16 z-20">
+					<div className="hidden md:block absolute -top-16 -end-16 z-20">
 						<NajeebCharacter mode="success" size="md" animated={true} />
 					</div>
 
@@ -74,7 +74,7 @@ export default function JourneyPath({
 							>
 								{/* Step Number Bubble */}
 								<div
-									className={`absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-xl font-black text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}
+									className={`absolute -top-6 start-1/2 -translate-x-1/2 w-12 h-12 rounded-2xl bg-gradient-to-br ${gradient} flex items-center justify-center text-xl font-black text-white shadow-lg group-hover:scale-110 transition-transform duration-300`}
 								>
 									{idx + 1}
 								</div>

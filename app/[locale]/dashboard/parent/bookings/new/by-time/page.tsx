@@ -5,11 +5,13 @@ import TimeFirstBookingForm from "@/components/shared/TimeFirstBookingForm";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { BookingService } from "@/lib/services/domain/booking-service";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function BookByTimePage() {
+    const t = await getTranslations('parent')
 	const session = await auth();
 	await requireAuth([UserType.PARENT]);
 	if (!session) redirect("/login");
@@ -22,10 +24,10 @@ export default async function BookByTimePage() {
 		<div className="space-y-4 relative min-h-[500px]" dir="rtl">
 			<div className="max-w-4xl mx-auto space-y-6 pb-20">
 				<BookingJourneyHeader
-					title="حجز جلسة جديدة"
-					subtitle="البحث بالوقت والمادة"
+					title={t('key_1783109439408_ghgg')}
+					subtitle={t('str_2KfZhNio')}
 					character="hakeem"
-					characterMessage="خيار حكيم لحفظ وقتك. حدد موعدك ومادتك، وسأقوم بترشيح أفضل المعلمين المتاحين لك."
+					characterMessage={t('str_2K7Zitin')}
 				/>
 
 				<TimeFirstBookingForm

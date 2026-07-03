@@ -22,7 +22,7 @@ export default function HeroSection({
 				dir="rtl"
 			>
 				{/* Texts & Call to action */}
-				<div className="lg:col-span-6 flex flex-col space-y-8 text-center lg:text-right">
+				<div className="lg:col-span-6 flex flex-col space-y-8 text-center lg:text-end">
 					{content.badge && (
 						<motion.div
 							initial={{ opacity: 0, y: 20 }}
@@ -85,10 +85,10 @@ export default function HeroSection({
 						initial={{ opacity: 0, scale: 0.9, x: -30 }}
 						animate={{ opacity: 1, scale: 1, x: 0 }}
 						transition={{ duration: 0.8, delay: 0.3 }}
-						className="absolute right-0 md:right-12 z-20"
+						className="absolute end-0 md:end-12 z-20"
 					>
 						<HakeemCharacter size="lg" className="drop-shadow-2xl" />
-						<div className="absolute -top-12 -right-4 md:-right-8 bg-white dark:bg-slate-800 rounded-2xl rounded-br-none p-4 shadow-xl border border-slate-100 dark:border-slate-700 animate-[bounce_3s_ease-in-out_infinite]">
+						<div className="absolute -top-12 -end-4 md:-end-8 bg-white dark:bg-slate-800 rounded-2xl rounded-ee-none p-4 shadow-xl border border-slate-100 dark:border-slate-700 animate-[bounce_3s_ease-in-out_infinite]">
 							<p className="text-xs font-bold text-slate-700 dark:text-slate-200">
 								{content.character1Message}
 							</p>
@@ -99,7 +99,7 @@ export default function HeroSection({
 						initial={{ opacity: 0, scale: 0.9, x: 30 }}
 						animate={{ opacity: 1, scale: 1, x: 0 }}
 						transition={{ duration: 0.8, delay: 0.4 }}
-						className="absolute left-0 md:left-12 z-10"
+						className="absolute start-0 md:start-12 z-10"
 					>
 						<NajeebCharacter
 							mode="welcome"
@@ -107,7 +107,7 @@ export default function HeroSection({
 							animated={false}
 							className="drop-shadow-2xl"
 						/>
-						<div className="absolute -top-16 -left-4 md:-left-8 bg-amber-50 dark:bg-slate-800 rounded-2xl rounded-bl-none p-4 shadow-xl border border-amber-100 dark:border-slate-700 animate-[bounce_3.5s_ease-in-out_infinite]">
+						<div className="absolute -top-16 -start-4 md:-start-8 bg-amber-50 dark:bg-slate-800 rounded-2xl rounded-es-none p-4 shadow-xl border border-amber-100 dark:border-slate-700 animate-[bounce_3.5s_ease-in-out_infinite]">
 							<p className="text-xs font-bold text-amber-700 dark:text-amber-400">
 								{content.character2Message}
 							</p>

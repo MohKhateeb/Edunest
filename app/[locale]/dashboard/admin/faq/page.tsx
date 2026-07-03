@@ -5,6 +5,7 @@ import { getFAQs } from "@/lib/actions/faq";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import FAQAdminClient from "./FAQAdminClient";
+import { getTranslations } from "next-intl/server";
 
 export const metadata: Metadata = {
 	title: "إدارة الأسئلة الشائعة | منصة إديونست",
@@ -12,6 +13,7 @@ export const metadata: Metadata = {
 };
 
 export default async function AdminFAQPage() {
+    const t = await getTranslations('admin')
 	const session = await auth();
 	await requireAuth([UserType.ADMIN]);
 	if (!session) redirect("/login");
@@ -21,7 +23,7 @@ export default async function AdminFAQPage() {
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-2xl font-extrabold mb-1">إدارة الأسئلة الشائعة</h1>
+				<h1 className="text-2xl font-extrabold mb-1">{t('key_1783109433863_kzwq')}</h1>
 				<p className="text-xs text-muted-foreground">
 					يمكنك هنا إضافة، تعديل، وحذف الأسئلة الشائعة الخاصة بأولياء الأمور،
 					المعلمين، والإدارة.
