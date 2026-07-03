@@ -610,7 +610,10 @@
     "dysmbr": "December",
     "altqwym": "Calendar",
     "alywm": "Today",
-    "hl_trghb_fy_hjz": "Do you want to book this as a free trial session? (30 mins - once per parent)"
+    "hl_trghb_fy_hjz": "Do you want to book this as a free trial session? (30 mins - once per parent)",
+    "hjz_jlsh_jdydh": "New session booking",
+    "albhth_balmhlm": "Search by teacher",
+    "akhtyar_mmtaz_tsfh_qaymh_almhlmyn": "Excellent choice! Browse the list of teachers, choose the one that meets your goals, complete the booking details and we will take care of the rest."
   },
   "dashboard": {
     "hsab_ghyr_mktml": "Incomplete account",

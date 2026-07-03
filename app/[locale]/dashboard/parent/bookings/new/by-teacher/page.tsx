@@ -5,6 +5,7 @@ import NewBookingForm from "@/components/shared/NewBookingForm";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { BookingService } from "@/lib/services/domain/booking-service";
+import { getTranslations } from "next-intl/server";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -15,18 +16,19 @@ export default async function BookByTeacherPage() {
 	if (!session) redirect("/login");
 
 	const userId = session.user.id;
+	const t = await getTranslations("bookings");
 
 	const { students, parentUser, teachersWithBookings } =
 		await BookingService.getBookByTeacherData(userId);
 
 	return (
-		<div className="space-y-4 relative min-h-[500px]" dir="rtl">
+		<div className="space-y-4 relative min-h-[500px]">
 			<div className="max-w-4xl mx-auto space-y-6 pb-20">
 				<BookingJourneyHeader
-					title="حجز جلسة جديدة"
-					subtitle="البحث بالمعلم"
+					title={t("hjz_jlsh_jdydh")}
+					subtitle={t("albhth_balmhlm")}
 					character="najeeb"
-					characterMessage="اختيار ممتاز! تصفح قائمة المعلمين، واختر من يلبي طموحك، وأكمل تفاصيل الحجز وسنتولى نحن الباقي."
+					characterMessage={t("akhtyar_mmtaz_tsfh_qaymh_almhlmyn")}
 					characterMode="success"
 				/>
 
