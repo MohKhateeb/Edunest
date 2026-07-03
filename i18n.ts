@@ -7,6 +7,15 @@ export const defaultLocale: Locale = 'ar'
 export default getRequestConfig(async ({requestLocale}) => {
   let locale = await requestLocale
 
+  if (!locale) {
+    const { headers } = await import('next/headers');
+    const h = await headers();
+    const pathname = h.get('x-invoke-path') || h.get('referer') || '';
+    if (pathname.includes('/en/') || pathname.endsWith('/en')) {
+      locale = 'en';
+    }
+  }
+
   if (!locale || !VALID_LOCALES.includes(locale as Locale)) {
     locale = defaultLocale
   }
