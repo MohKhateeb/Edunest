@@ -5,17 +5,26 @@ import Sidebar from "@/components/shared/Sidebar";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 
-export default async function DashboardLayout({
-	children,
-}: {
-	children: React.ReactNode;
-}) {
-	const session = await auth();
-	await requireAuth([UserType.ADMIN, UserType.TEACHER, UserType.PARENT]);
+	import { AuthError } from "@/lib/errors";
 
-	if (!session) {
-		redirect("/login");
-	}
+	export default async function DashboardLayout({
+		children,
+	}: {
+		children: React.ReactNode;
+	}) {
+		try {
+			await requireAuth([UserType.ADMIN, UserType.TEACHER, UserType.PARENT]);
+		} catch (error) {
+			if (error instanceof AuthError) {
+				if (error.code === "UNAUTHORIZED") {
+					redirect("/login");
+				}
+				if (error.code === "FORBIDDEN") {
+					redirect("/unauthorized");
+				}
+			}
+			throw error;
+		}
 
 	return (
 		<div className="min-h-screen flex flex-col bg-background">
