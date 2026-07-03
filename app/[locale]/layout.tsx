@@ -1,8 +1,17 @@
 import {NextIntlClientProvider} from 'next-intl'
 import {getMessages, setRequestLocale} from 'next-intl/server'
 import {notFound} from 'next/navigation'
+import type { Metadata } from "next";
+import "../globals.css";
+import ClientProvider from "@/components/shared/ClientProvider";
+import ToastProvider from "@/components/shared/ToastProvider";
 
 const LOCALES = ['ar', 'en']
+
+export const metadata: Metadata = {
+	title: "منصة إديونست | EduNest",
+	description: "المنصة الفلسطينية الأولى لربط أولياء الأمور بمعلمي الدروس الخصوصية الأكفاء في الضفة الغربية بطريقة منظمة وموثوقة.",
+};
 
 export default async function LocaleLayout({
   children,
@@ -14,11 +23,21 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (!LOCALES.includes(locale)) notFound()
   setRequestLocale(locale);
+  
   const messages = await getMessages()
+  const dir = locale === 'ar' ? 'rtl' : 'ltr'
+  
   return (
-    <NextIntlClientProvider messages={messages}>
-      {children}
-    </NextIntlClientProvider>
+    <html lang={locale} dir={dir}>
+      <body className="min-h-screen bg-background text-foreground antialiased selection:bg-primary/20">
+        <ClientProvider>
+          <NextIntlClientProvider messages={messages}>
+            {children}
+            <ToastProvider />
+          </NextIntlClientProvider>
+        </ClientProvider>
+      </body>
+    </html>
   )
 }
 

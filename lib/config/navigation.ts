@@ -17,114 +17,114 @@ import {
 } from "lucide-react";
 
 export const parentLinks = [
-	{ href: "/dashboard/parent", label: "الرئيسية", icon: LayoutDashboard },
-	{ href: "/dashboard/parent/students", label: "إدارة الطلاب", icon: Users },
-	{ href: "/dashboard/parent/bookings", label: "حجوزاتي", icon: Calendar },
+	{ href: "/dashboard/parent", label: "home", icon: LayoutDashboard },
+	{ href: "/dashboard/parent/students", label: "manage_students", icon: Users },
+	{ href: "/dashboard/parent/bookings", label: "my_bookings", icon: Calendar },
 	{
 		href: "/dashboard/parent/bookings/new",
-		label: "حجز جلسة جديدة",
+		label: "new_booking",
 		icon: CalendarPlus,
 	},
-	{ href: "/dashboard/parent/live", label: "فزعة سريعة (أوبر) ⚡", icon: Zap },
+	{ href: "/dashboard/parent/live", label: "quick_help", icon: Zap },
 	{
 		href: "/dashboard/parent/requests",
-		label: "طلبات المعلمين وعروضهم",
+		label: "teacher_requests",
 		icon: Briefcase,
 	},
 	{
 		href: "/dashboard/parent/financials",
-		label: "السجل المالي",
+		label: "financial_record",
 		icon: CreditCard,
 	},
 	{
 		href: "/dashboard/parent/faq",
-		label: "الأسئلة الشائعة",
+		label: "faq",
 		icon: HelpCircle,
 	},
 ];
 
 export const teacherLinks = [
-	{ href: "/dashboard/teacher", label: "الرئيسية", icon: LayoutDashboard },
+	{ href: "/dashboard/teacher", label: "home", icon: LayoutDashboard },
 	{
 		href: "/dashboard/teacher/profile",
-		label: "تعديل الملف الشخصي",
+		label: "edit_profile",
 		icon: UserCheck,
 	},
 	{
 		href: "/dashboard/teacher/services",
-		label: "إدارة الخدمات",
+		label: "manage_services",
 		icon: Briefcase,
 	},
 	{
 		href: "/dashboard/teacher/availability",
-		label: "أوقات التوفر الأسبوعية",
+		label: "weekly_availability",
 		icon: Clock,
 	},
 	{
 		href: "/dashboard/teacher/live",
-		label: "الرادار الحي 📡",
+		label: "live_radar",
 		icon: CalendarPlus,
 	},
 	{
 		href: "/dashboard/teacher/bookings",
-		label: "الحجوزات الواردة",
+		label: "incoming_bookings",
 		icon: Calendar,
 	},
 	{
 		href: "/dashboard/teacher/earnings",
-		label: "الأرباح والتسويات",
+		label: "earnings",
 		icon: BadgeDollarSign,
 	},
 	{
 		href: "/dashboard/teacher/verification",
-		label: "رفع وثائق التوثيق",
+		label: "upload_verification_docs",
 		icon: FileCheck,
 	},
 	{
 		href: "/dashboard/teacher/faq",
-		label: "الأسئلة الشائعة",
+		label: "faq",
 		icon: HelpCircle,
 	},
 ];
 
 export const adminLinks = [
-	{ href: "/dashboard/admin", label: "الرئيسية", icon: LayoutDashboard },
-	{ href: "/dashboard/admin/users", label: "إدارة المستخدمين", icon: Users },
-	{ href: "/dashboard/admin/teachers", label: "إدارة المعلمين", icon: Users },
-	{ href: "/dashboard/admin/bookings", label: "كل الحجوزات", icon: Calendar },
+	{ href: "/dashboard/admin", label: "home", icon: LayoutDashboard },
+	{ href: "/dashboard/admin/users", label: "manage_users", icon: Users },
+	{ href: "/dashboard/admin/teachers", label: "manage_teachers", icon: Users },
+	{ href: "/dashboard/admin/bookings", label: "all_bookings", icon: Calendar },
 	{
 		href: "/dashboard/admin/disputes",
-		label: "إدارة النزاعات",
+		label: "manage_disputes",
 		icon: ShieldAlert,
 	},
 	{
 		href: "/dashboard/admin/financials",
-		label: "الإدارة المالية الشاملة",
+		label: "financial_management",
 		icon: CreditCard,
 	},
 	{
 		href: "/dashboard/admin/services",
-		label: "إدارة أنواع الخدمات",
+		label: "manage_service_types",
 		icon: Briefcase,
 	},
 	{
 		href: "/dashboard/admin/settings",
-		label: "إعدادات النظام",
+		label: "system_settings",
 		icon: Settings,
 	},
 	{
 		href: "/dashboard/admin/settings/homepage",
-		label: "إعدادات الصفحة الرئيسية",
+		label: "homepage_settings",
 		icon: Settings,
 	},
 	{
 		href: "/dashboard/admin/verification",
-		label: "طلبات التوثيق",
+		label: "verification_requests",
 		icon: ShieldCheck,
 	},
 	{
 		href: "/dashboard/admin/faq",
-		label: "إدارة الأسئلة الشائعة",
+		label: "manage_faq",
 		icon: HelpCircle,
 	},
 ];

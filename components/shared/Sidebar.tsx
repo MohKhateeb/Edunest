@@ -84,6 +84,7 @@ const ADVISOR_TIPS: Record<
 
 export default function Sidebar() {
     const t = useTranslations('common');
+    const tNav = useTranslations('nav');
 	const { data: session } = useSession();
 	const pathname = usePathname();
 	const [isCollapsed, setIsCollapsed] = useState(false);
@@ -131,7 +132,6 @@ export default function Sidebar() {
 				"bg-white dark:bg-slate-950 border-l border-slate-100 dark:border-slate-900/60 h-[calc(100vh-4rem)] sticky top-16 hidden md:flex flex-col p-4 text-right transition-all duration-300 ease-in-out select-none shadow-sm",
 				isCollapsed ? "w-20" : "w-64",
 			)}
-			dir="rtl"
 		>
 			{/* Header and Collapse Trigger */}
 			<div className="flex items-center justify-between mb-5 border-b border-border/50 pb-3.5 gap-1">
@@ -187,7 +187,7 @@ export default function Sidebar() {
 									? "bg-gradient-to-r from-primary to-primary/80 text-white shadow-md shadow-primary/20 scale-[1.02] transform"
 									: "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-900/60 hover:text-primary dark:hover:text-white",
 							)}
-							title={isCollapsed ? link.label : undefined}
+							title={isCollapsed ? tNav(link.label) : undefined}
 						>
 							<Icon
 								className={cn(
@@ -199,7 +199,7 @@ export default function Sidebar() {
 							/>
 							{!isCollapsed && (
 								<span className="truncate animate-in fade-in duration-300">
-									{link.label}
+									{tNav(link.label)}
 								</span>
 							)}
 						</Link>

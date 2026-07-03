@@ -33,6 +33,7 @@ import { useTranslations } from "next-intl";
 
 export default function Header() {
     const t = useTranslations('common');
+    const tNav = useTranslations('nav');
 	const { data: session } = useSession();
 	const [isOpen, setIsOpen] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
@@ -300,7 +301,7 @@ export default function Header() {
 														}`}
 													>
 														<LinkIcon className="h-4 w-4 text-muted-foreground" />
-														<span>{link.label}</span>
+														<span>{tNav(link.label)}</span>
 													</Link>
 												);
 											})}
