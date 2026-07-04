@@ -4,6 +4,7 @@ import { CreditCard, Clock, Star, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { formatTimeOnly } from "@/lib/utils/time";
 import type { DetailedBooking } from "@/lib/types";
+import { useTranslations } from "next-intl";
 
 type ActionType = "PAYMENT" | "APPROVAL" | "REVIEW";
 
@@ -19,6 +20,8 @@ interface ActionCenterProps {
 }
 
 export default function ActionCenter({ actions }: ActionCenterProps) {
+	const t = useTranslations("parent");
+
 	if (!actions || actions.length === 0) return null;
 
 	const getActionConfig = (type: ActionType) => {
@@ -29,7 +32,7 @@ export default function ActionCenter({ actions }: ActionCenterProps) {
 					bgClass: "bg-gradient-to-r from-orange-500 to-amber-500",
 					badgeClass: "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300",
 					buttonClass: "bg-orange-600 hover:bg-orange-700 text-white",
-					buttonText: "ادفع الآن",
+					buttonText: t("key_1783109434639_t0vk"),
 					href: (bookingId: string) => `/dashboard/parent/financials?pay=${bookingId}`,
 				};
 			case "APPROVAL":
@@ -38,7 +41,7 @@ export default function ActionCenter({ actions }: ActionCenterProps) {
 					bgClass: "bg-gradient-to-r from-blue-500 to-indigo-500",
 					badgeClass: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
 					buttonClass: "bg-blue-600 hover:bg-blue-700 text-white",
-					buttonText: "مراجعة الطلب",
+					buttonText: t("key_1783109434642_122t"),
 					href: (bookingId: string) => `/dashboard/parent/requests?booking=${bookingId}`,
 				};
 			case "REVIEW":
@@ -47,7 +50,7 @@ export default function ActionCenter({ actions }: ActionCenterProps) {
 					bgClass: "bg-gradient-to-r from-emerald-500 to-teal-500",
 					badgeClass: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300",
 					buttonClass: "bg-emerald-600 hover:bg-emerald-700 text-white",
-					buttonText: "قيّم الجلسة",
+					buttonText: t("key_1783109434645_gc6d"),
 					href: (bookingId: string) => `/dashboard/parent/bookings/${bookingId}/review`,
 				};
 			default:
@@ -56,7 +59,7 @@ export default function ActionCenter({ actions }: ActionCenterProps) {
 					bgClass: "bg-slate-500",
 					badgeClass: "bg-slate-100 text-slate-800",
 					buttonClass: "bg-slate-600 hover:bg-slate-700 text-white",
-					buttonText: "عرض التفاصيل",
+					buttonText: t("key_1783109434648_5oo9"),
 					href: (bookingId: string) => `/dashboard/parent/bookings/${bookingId}`,
 				};
 		}
@@ -69,7 +72,7 @@ export default function ActionCenter({ actions }: ActionCenterProps) {
 					<span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
 					<span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
 				</div>
-				<h2 className="text-xl font-black text-slate-900 dark:text-white">أشياء بسيطة تحتاج لمستك لاستكمالها ✨</h2>
+				<h2 className="text-xl font-black text-slate-900 dark:text-white">{t("key_1783109434628_b9xt")}</h2>
 			</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -89,9 +92,9 @@ export default function ActionCenter({ actions }: ActionCenterProps) {
 								<div className="flex-1 space-y-2">
 									<div className="flex items-center justify-between">
 										<span className={`text-xs font-bold px-2 py-1 rounded-full ${config.badgeClass}`}>
-											{action.type === "PAYMENT" && "بانتظار الدفع"}
-											{action.type === "APPROVAL" && "بانتظار الموافقة"}
-											{action.type === "REVIEW" && "التقييم مطلوب"}
+											{action.type === "PAYMENT" && t("key_1783109434651_bfp9")}
+											{action.type === "APPROVAL" && t("key_1783109434654_koiv")}
+											{action.type === "REVIEW" && t("key_1783109434656_x4ry")}
 										</span>
 										{action.dueDate && (
 											<span className="text-[10px] text-muted-foreground font-semibold flex items-center gap-1">

@@ -143,7 +143,7 @@ describe("Booking Flow Integration", () => {
 		// ---------------------------------------------------------
 		// STEP 2: Student Pays
 		// ---------------------------------------------------------
-		let currentBookingState = {
+		let currentBookingState: any = {
 			id: "booking-123",
 			status: BookingStatus.PENDING,
 			paymentStatus: PaymentStatus.UNPAID,

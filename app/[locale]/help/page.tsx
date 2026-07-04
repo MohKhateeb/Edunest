@@ -13,8 +13,10 @@ import {
 import { useState } from "react";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
+import { useTranslations } from "next-intl";
 
 export default function HelpPage() {
+	const t = useTranslations("help");
 	const [activeTab, setActiveTab] = useState<
 		"GENERAL" | "PARENT" | "TEACHER" | "ADMIN" | "FAQ"
 	>("GENERAL");
@@ -37,8 +39,7 @@ export default function HelpPage() {
 		{
 			category: "PARENT",
 			question: "كيف أقوم بتأكيد الدفع للمعلم بعد حجز الحصة؟",
-			answer:
-				'بعد حجز الحصة من جدول المعلم المتاح، انتقل إلى "حصصي"، ستجد حالة الحجز "بانتظار الدفع". اضغط على "تفاصيل الدفع" وقم برفع صورة إيصال التحويل البنكي أو إثبات الدفع، وسيقوم الأدمن بتأكيدها فوراً.',
+			answer: t("key_1783109427294_jm91"),
 		},
 		{
 			category: "TEACHER",

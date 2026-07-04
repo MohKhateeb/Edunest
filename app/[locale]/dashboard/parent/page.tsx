@@ -2,18 +2,27 @@ import { UserType } from "@prisma/client";
 import { Bell } from "lucide-react";
 import { requireAuth } from "@/lib/require-auth";
 import { getParentDashboardInsights } from "@/lib/services/parent-dashboard";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import ActionCenter from "./_components/ActionCenter";
 import SmartWidget from "./_components/SmartWidget";
 import QuickActions from "./_components/QuickActions";
 import TodayPulse from "./_components/TodayPulse";
 
-export default async function ParentDashboard() {
+export default async function ParentDashboard({
+	params,
+}: {
+	params: Promise<{ locale: string }>;
+}) {
+	const { locale } = await params;
+	setRequestLocale(locale);
+	const t = await getTranslations("parent");
+
 	const { userId } = await requireAuth([UserType.PARENT]);
 	
 	const { auth } = await import("@/lib/auth");
 	const session = await auth();
-	const userName = session?.user?.name || "ولي الأمر";
+	const userName = session?.user?.name || t("key_1783109428865_gcaj");
 
 	const insights = await getParentDashboardInsights(userId, userName);
 
@@ -24,12 +33,12 @@ export default async function ParentDashboard() {
 			<div className="flex flex-col lg:flex-row gap-6 justify-between items-start mt-4">
 				<div className="space-y-1">
 					<h1 className="text-2xl font-black text-slate-900 dark:text-white">
-						أهلاً بك، {userName} 👋
+						{t("key_1783109428847_62xo")} {userName} 👋
 					</h1>
 					<p className="text-sm font-semibold text-muted-foreground">
 						{insights.urgentActions.length === 0 
-							? "🟢 كل أمورك تمام، لا توجد مهام معلقة." 
-							: `🔴 لديك ${insights.urgentActions.length} مهام تتطلب انتباهك.`}
+							? t("key_1783109428866_o3mz") 
+							: t("urgent_tasks_count", { count: insights.urgentActions.length })}
 					</p>
 				</div>
 				<div className="w-full lg:w-auto lg:min-w-[400px]">
@@ -62,13 +71,13 @@ export default async function ParentDashboard() {
 				<div className="space-y-4">
 					<h2 className="font-black text-lg flex items-center gap-2">
 						<Bell className="h-6 w-6 text-secondary" />
-						آخر الإشعارات
+						{t("key_1783109428855_92o7")}
 					</h2>
 
 					<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-5 shadow-sm space-y-3">
 						{insights.notifications.length === 0 ? (
 							<p className="text-sm text-muted-foreground py-6 text-center font-semibold">
-								لا توجد إشعارات جديدة.
+								{t("key_1783109428860_3a1a")}
 							</p>
 						) : (
 							insights.notifications.map((n) => (

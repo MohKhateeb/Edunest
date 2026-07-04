@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import type React from "react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import DataTable from "@/components/shared/DataTable";
 import DetailsModal from "@/components/shared/DetailsModal";
 import Portal from "@/components/shared/Portal";
@@ -114,6 +115,8 @@ export default function AdminBookingsList({
 		}
 	};
 
+	const t = useTranslations("admin");
+
 	return (
 		<div className="space-y-4">
 			<DataTable
@@ -143,15 +146,15 @@ export default function AdminBookingsList({
 								setCurrentPage(1);
 							}}
 						>
-							<option value="ALL">كل الحالات ({initialData.totalCount ?? bookings.length})</option>
-							<option value="PENDING_APPROVAL">بانتظار موافقة المعلم</option>
-							<option value="AWAITING_PAYMENT">بانتظار الدفع</option>
-							<option value="PENDING">معلق (قديم)</option>
-							<option value="CONFIRMED">مؤكد</option>
-							<option value="COMPLETED">مكتمل</option>
-							<option value="CANCELLED">ملغي</option>
-							<option value="REJECTED">مرفوض</option>
-							<option value="EXPIRED">منتهي الصلاحية</option>
+							<option value="ALL">{t("key_1783109429491_5s51")}{initialData.totalCount ?? bookings.length})</option>
+							<option value="PENDING_APPROVAL">{t("key_1783109429544_2d61")}</option>
+							<option value="AWAITING_PAYMENT">{t("key_1783109429582_ekac")}</option>
+							<option value="PENDING">{t("key_1783109429606_jpx3")}</option>
+							<option value="CONFIRMED">{t("key_1783109429636_qq3o")}</option>
+							<option value="COMPLETED">{t("key_1783109429656_d939")}</option>
+							<option value="CANCELLED">{t("key_1783109429765_qmkz")}</option>
+							<option value="REJECTED">{t("key_1783109429791_gp5z")}</option>
+							<option value="EXPIRED">{t("key_1783109429825_g7ny")}</option>
 						</select>
 					</div>
 				}

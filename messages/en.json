@@ -1365,7 +1365,8 @@
     "str_2YTZhSDY": "You haven't scheduled any classes here yet.",
     "str_2K3Zgdi4": "Save changes",
     "str_2KfZhNio": "Search by time and material",
-    "str_2K7Zitin": "A wise choice to save your time. Select your date and subject, and I will nominate the best teachers available for you."
+    "str_2K7Zitin": "A wise choice to save your time. Select your date and subject, and I will nominate the best teachers available for you.",
+    "urgent_tasks_count": "🔴 You have {count} tasks that require your attention."
   },
   "teachers": {
     "24": "Warning: Late report (> 24 hours)",
