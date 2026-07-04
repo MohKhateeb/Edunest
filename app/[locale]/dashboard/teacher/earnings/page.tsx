@@ -14,6 +14,7 @@ import Link from "next/link";
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import { requireAuth } from "@/lib/require-auth";
 import { getTeacherEarningsWallet } from "@/lib/services/domain/financial-service";
+import { formatCurrency } from "@/lib/utils/currency";
 
 export const getMetadata = (t: any) => ({
 	title: t('edunest') ,
@@ -84,7 +85,7 @@ export default async function TeacherEarningsPage({
 							title={`أهلاً بك، ${teacher.user.name.split(" ")[0]}`}
 							message={
 								availableToPayout > 0
-									? `ممتاز! لديك رصيد متاح للسحب بقيمة ${availableToPayout.toFixed(2)} شيكل. استمر في تقديم جلسات رائعة لتحقيق المزيد!`
+									? `ممتاز! لديك رصيد متاح للسحب بقيمة ${formatCurrency(availableToPayout)}. استمر في تقديم جلسات رائعة لتحقيق المزيد!`
 									: "مرحباً بك في محفظتك. لا يوجد رصيد متاح للسحب حالياً، لكن كل جلسة تقدمها تقربك من أهدافك المالية!"
 							}
 						/>
@@ -152,8 +153,7 @@ export default async function TeacherEarningsPage({
 								{t('key_1783109437941_2f1v')}</p>
 						</div>
 						<h3 className="text-4xl font-extrabold text-gray-900 dark:text-white flex items-baseline gap-1">
-							{totalPaid.toFixed(2)}
-							<span className="text-lg font-medium text-gray-400">{t('key_1783109437260_rpev')}</span>
+							{formatCurrency(totalPaid)}
 						</h3>
 					</div>
 
@@ -169,9 +169,7 @@ export default async function TeacherEarningsPage({
 									{t('key_1783109438029_g6l6')}</p>
 							</div>
 							<h3 className="text-4xl font-extrabold flex items-baseline gap-1">
-								{availableToPayout.toFixed(2)}
-								<span className="text-lg font-medium text-emerald-100/80">
-									{t('key_1783109437260_rpev')}</span>
+								{formatCurrency(availableToPayout)}
 							</h3>
 						</div>
 					</div>
@@ -189,8 +187,7 @@ export default async function TeacherEarningsPage({
 								{t('key_1783109438059_kd0x')}</p>
 						</div>
 						<h3 className="text-4xl font-extrabold text-gray-900 dark:text-white flex items-baseline gap-1">
-							{(heldAmount + totalPendingPayouts).toFixed(2)}
-							<span className="text-lg font-medium text-gray-400">{t('key_1783109437260_rpev')}</span>
+							{formatCurrency(heldAmount + totalPendingPayouts)}
 						</h3>
 						<p className="text-[10px] text-amber-600 dark:text-amber-400 mt-3 font-medium bg-amber-50 dark:bg-amber-900/20 p-2 rounded-lg border border-amber-100 dark:border-amber-900/50 flex items-start gap-1.5">
 							<AlertCircle className="w-3 h-3 shrink-0 mt-0.5" />
@@ -237,10 +234,8 @@ export default async function TeacherEarningsPage({
 											</div>
 											<div className="text-end shrink-0">
 												<span className="font-black text-xl text-gray-900 dark:text-white">
-													{net.toFixed(2)}
+													{formatCurrency(net)}
 												</span>
-												<span className="text-[10px] text-gray-500 ms-1">
-													{t('key_1783109437260_rpev')}</span>
 												{booking.isTrial && (
 													<div className="text-[9px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded mt-0.5 font-medium text-center">
 														{t('key_1783109438383_r6ga')}</div>
@@ -337,10 +332,8 @@ export default async function TeacherEarningsPage({
 									</div>
 									<div>
 										<span className="font-extrabold text-3xl text-gray-900 dark:text-white">
-											{Number(payout.netAmount).toFixed(2)}
+											{formatCurrency(Number(payout.netAmount))}
 										</span>
-										<span className="text-sm text-gray-500 ms-1 font-bold">
-											{t('key_1783109437260_rpev')}</span>
 									</div>
 									<div className="border-t border-gray-100 dark:border-gray-700 pt-3 text-xs text-gray-500 flex justify-between items-center">
 										<span className="font-mono">
@@ -399,10 +392,8 @@ export default async function TeacherEarningsPage({
 											</div>
 											<div className="text-end shrink-0">
 												<span className="font-black text-xl text-gray-900 dark:text-white">
-													{net.toFixed(2)}
+													{formatCurrency(net)}
 												</span>
-												<span className="text-[10px] text-gray-500 ms-1">
-													{t('key_1783109437260_rpev')}</span>
 											</div>
 										</div>
 

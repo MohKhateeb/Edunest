@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import JoinMeetingButton from "@/components/shared/JoinMeetingButton";
 import { processPayment } from "@/lib/actions/bookings/pay";
+import { formatCurrency } from "@/lib/utils/currency";
 import { useTranslations } from "next-intl";
 
 interface SessionLobbyClientProps {
@@ -137,7 +138,7 @@ export default function SessionLobbyClient({
 										<p className="text-sm text-slate-500 mb-1">
 											{t('almblgh_almtlwb')}</p>
 										<p className="text-3xl font-black text-slate-800 dark:text-slate-100">
-											{price} ₪
+											{formatCurrency(price)}
 										</p>
 									</div>
 

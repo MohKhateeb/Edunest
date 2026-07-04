@@ -10,6 +10,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
 import type { ActionResponse } from "@/lib/types";
+import { formatCurrency } from "@/lib/utils/currency";
 import { tutoringRequestSchema } from "@/lib/validations/tutoring-request";
 
 /**
@@ -96,7 +97,7 @@ export async function createTutoringRequest(
 				matchingTeachers.map((t) => ({
 					userId: t.userId,
 					title: "⚡ طلب فوري جديد! (Live Radar) 📢",
-					message: `طلب عاجل من الطالب (${student.name} - الصف ${student.grade}). الطلب مدفوع مسبقاً (${price} شيكل - ${duration} دقيقة). أسرع والتقط الطلب الآن قبل غيرك!`,
+					message: `طلب عاجل من الطالب (${student.name} - الصف ${student.grade}). الطلب مدفوع مسبقاً (${formatCurrency(price)} - ${duration} دقيقة). أسرع والتقط الطلب الآن قبل غيرك!`,
 					link: "/dashboard/teacher/live",
 				})),
 			);

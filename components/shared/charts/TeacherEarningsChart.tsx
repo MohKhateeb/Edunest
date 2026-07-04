@@ -9,7 +9,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getCurrencySymbol } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
 interface ChartDataPoint {
@@ -109,7 +109,7 @@ export default function TeacherEarningsChart({
 						axisLine={false}
 						tickLine={false}
 						tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
-						tickFormatter={(value) => `₪${value}`}
+						tickFormatter={(value) => `${getCurrencySymbol()}${value}`}
 					/>
 					<YAxis
 						yAxisId="right"

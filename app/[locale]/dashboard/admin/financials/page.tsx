@@ -14,7 +14,7 @@ import DateFilter from "./_components/DateFilter";
 import FinancialTabs from "./_components/FinancialTabs";
 import AdminPayoutsEngine from "../payouts/_components/AdminPayoutsEngine";
 import { EscrowActions } from "../escrow/escrow-actions";
-import { formatPrice } from "@/lib/utils";
+import { formatCurrency, formatPrice } from "@/lib/utils";
 
 export const getMetadata = (t: any) => ({
 	title: t('str_2KfZhNil') ,
@@ -54,8 +54,7 @@ export default async function AdminFinancialsPage({
 								{t('gross')}</p>
 						</div>
 						<h3 className="text-4xl font-extrabold flex items-baseline gap-1">
-							{totalRevenue.toFixed(2)}
-							<span className="text-lg text-muted-foreground font-medium">{t('key_1783109431203_nwey')}</span>
+							{formatCurrency(totalRevenue)}
 						</h3>
 					</div>
 
@@ -68,8 +67,7 @@ export default async function AdminFinancialsPage({
 								{t('key_1783109433952_oom9')}</p>
 						</div>
 						<h3 className="text-4xl font-extrabold flex items-baseline gap-1">
-							{totalCommission.toFixed(2)}
-							<span className="text-lg text-emerald-100/80 font-medium">{t('key_1783109431203_nwey')}</span>
+							{formatCurrency(totalCommission)}
 						</h3>
 					</div>
 				</div>
@@ -101,7 +99,7 @@ export default async function AdminFinancialsPage({
 				<div className="bg-emerald-50 dark:bg-emerald-900/20 border-2 border-emerald-100 dark:border-emerald-900/50 rounded-3xl p-6 flex flex-col md:flex-row justify-between items-center gap-4">
 					<div>
 						<h2 className="text-2xl font-black text-emerald-800 dark:text-emerald-400">{t('key_1783109434023_f2go')}</h2>
-						<p className="text-emerald-600 dark:text-emerald-500 font-medium">{t('key_1783109434039_26tr')}{totalCommission.toFixed(2)} {t('key_1783109431203_nwey')}</p>
+						<p className="text-emerald-600 dark:text-emerald-500 font-medium">{t('key_1783109434039_26tr')}{formatCurrency(totalCommission)}</p>
 					</div>
 					<div className="p-4 bg-white dark:bg-card rounded-2xl shadow-sm font-mono text-xl font-bold text-emerald-700">
 						{revenueDetails.length} {t('key_1783109434065_u8k0')}</div>
@@ -132,7 +130,7 @@ export default async function AdminFinancialsPage({
 													{transaction.type === "COMMISSION" ? t('key_1783109434420_9x8x') : t('key_1783109434431_l8c0')}
 												</span>
 											</td>
-											<td className="p-4 font-black text-emerald-600">+{transaction.amount.toFixed(2)} ₪</td>
+											<td className="p-4 font-black text-emerald-600">+{formatCurrency(transaction.amount)}</td>
 											<td className="p-4 text-sm">{transaction.description}</td>
 										</tr>
 									))}

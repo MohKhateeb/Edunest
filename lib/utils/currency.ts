@@ -52,10 +52,18 @@ export function getCurrencySymbol(currency: Currency = Currency.ILS): string {
  * formatCurrency(3.141, "KWD") // "3.141 د.ك"
  */
 export function formatCurrency(
-	amount: number | string,
+	amount: number | string | any,
 	currency: Currency = Currency.ILS,
 ): string {
-	const num = typeof amount === "string" ? parseFloat(amount) : amount;
+	let num = amount;
+	if (typeof amount === "string") {
+		num = parseFloat(amount);
+	} else if (amount && typeof amount.toNumber === "function") {
+		num = amount.toNumber();
+	} else if (typeof amount === "object") {
+		num = Number(amount);
+	}
+	
 	if (isNaN(num)) return `0 ${getCurrencySymbol(currency)}`;
 	const decimalPlaces = CURRENCY_DECIMAL_PLACES[currency];
 	const formatted = Number.isInteger(num)

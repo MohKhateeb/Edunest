@@ -15,7 +15,7 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { formatPrice } from "@/lib/utils";
+import { formatPrice, getCurrencySymbol } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
 type DataItem = { name: string; value?: number; count?: number };
@@ -145,7 +145,7 @@ export default function AdminAnalyticsCharts({
 									axisLine={false}
 									tickLine={false}
 									tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }}
-									tickFormatter={(val) => `₪${val}`}
+									tickFormatter={(val) => `${getCurrencySymbol()}${val}`}
 								/>
 								<Tooltip content={<CustomRevenueTooltip />} />
 								<Area

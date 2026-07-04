@@ -23,7 +23,7 @@ import {
 	toggleServiceTypeStatus,
 	updateServiceType,
 } from "@/lib/actions/admin/service-types";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 
 type ServiceType = {
 	id: string;
@@ -360,7 +360,7 @@ export default function AdminServiceTypesManager({
 													{t('live_radar')}</div>
 												<div className="font-bold text-amber-700 dark:text-amber-500">
 													{service.fazaaPrice
-														? `${service.fazaaPrice} شيكل`
+														? formatCurrency(service.fazaaPrice)
 														: t('str_2LrZitix')}
 												</div>
 											</div>

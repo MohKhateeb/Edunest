@@ -5,6 +5,8 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
+import { formatCurrency } from "./utils/currency";
+
 export function formatPrice(amount: number | string): string {
 	return formatCurrency(amount);
 }

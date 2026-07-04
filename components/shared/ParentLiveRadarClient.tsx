@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { createTutoringRequest } from "@/lib/actions/tutoring-requests/create";
 import { checkLiveRequestMatch } from "@/lib/actions/tutoring-requests/status";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
 interface Student {
@@ -231,7 +231,7 @@ export default function ParentLiveRadarClient({
 									</div>
 								</div>
 								<div className="font-black text-indigo-600 dark:text-indigo-400">
-									{st.fazaaPrice} ₪
+									{formatCurrency(st.fazaaPrice)}
 								</div>
 							</label>
 						))}
@@ -258,7 +258,7 @@ export default function ParentLiveRadarClient({
 					className="w-full flex items-center justify-center gap-3 py-5 bg-slate-900 hover:bg-slate-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white rounded-2xl font-black text-xl transition-all hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-slate-900/20 dark:shadow-indigo-500/20"
 				>
 					<Search className="w-6 h-6 text-indigo-400 dark:text-white" />
-					{t('abhth_an_malm_alan')}{selectedServiceType?.fazaaPrice} ₪)
+					{t('abhth_an_malm_alan')}{formatCurrency(selectedServiceType?.fazaaPrice ?? 0)})
 				</button>
 			</form>
 		</div>

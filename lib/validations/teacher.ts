@@ -13,13 +13,13 @@ export const teacherProfileSchema = z.object({
 	yearsOfExperience: z.coerce.number().int().min(0, "سنوات الخبرة غير صالحة"),
 	defaultHourlyRate: z.coerce
 		.number()
-		.min(5, "الحد الأدنى لسعر الساعة هو 5 شيكل"),
+		.min(5, "الحد الأدنى لسعر الساعة هو 5 ₪"),
 	profileImageUrl: z.string().optional().nullable(),
 });
 
 export const teacherServiceSchema = z.object({
 	serviceTypeId: z.string().min(1, "نوع الخدمة مطلوب"),
-	price: z.coerce.number().min(5, "الحد الأدنى للسعر هو 5 شيكل"),
+	price: z.coerce.number().min(5, "الحد الأدنى للسعر هو 5 ₪"),
 	duration: z.coerce.number().int().min(5, "المدة يجب أن لا تقل عن 5 دقائق"),
 	customDescription: z.string().optional().nullable(),
 });

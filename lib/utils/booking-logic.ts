@@ -1,5 +1,6 @@
 import { getSettingBool, getSettingNumber } from "@/lib/settings";
 import { SERVICES } from "@/lib/translations";
+import { formatCurrency } from "./currency";
 export async function calculateBookingFinancials(
 	isTrial: boolean,
 	serviceName: string,
@@ -43,7 +44,7 @@ export async function calculateBookingFinancials(
 
 		const minPrice = await getSettingNumber("MinBookingPrice", 5);
 		if (price < minPrice) {
-			throw new Error(`الحد الأدنى لسعر الجلسة هو ${minPrice} شيكل`);
+			throw new Error(`الحد الأدنى لسعر الجلسة هو ${formatCurrency(minPrice)}`);
 		}
 	}
 

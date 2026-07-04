@@ -5,6 +5,7 @@ import Link from "next/link";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 import { UserService } from "@/lib/services/domain/user-service";
+import { formatCurrency } from "@/lib/utils/currency";
 
 export const metadata = {
 	title: "ابحث عن معلم | إديونست",
@@ -258,7 +259,7 @@ export default async function TeachersPage({
 												</span>
 												{minPrice !== null && (
 													<span className="font-bold text-primary">
-														من {minPrice} ₪
+														من {formatCurrency(minPrice)}
 													</span>
 												)}
 											</div>

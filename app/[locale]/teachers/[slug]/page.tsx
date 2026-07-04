@@ -9,6 +9,7 @@ import Header from "@/components/shared/Header";
 import StarRating from "@/components/shared/StarRating";
 import { auth } from "@/lib/auth";
 import { UserService } from "@/lib/services/domain/user-service";
+import { formatCurrency } from "@/lib/utils/currency";
 
 const getGradeLabels = (t: any): Record<number, string> => ({
 	1: t('key_1783109427957_e53t') ,
@@ -197,7 +198,7 @@ export default async function TeacherProfilePage({
 											</div>
 											<div className="text-start">
 												<p className="font-bold text-primary text-base">
-													{Number(svc.price)} ₪
+													{formatCurrency(Number(svc.price))}
 												</p>
 												<p className="text-xs text-muted-foreground">للجلسة</p>
 											</div>

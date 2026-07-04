@@ -7,7 +7,7 @@ import {
 	Star,
 } from "lucide-react";
 import { VERIFICATION_BADGES_CONFIG } from "@/lib/translations";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import type { AvailableTeacher } from "@/types/booking";
 import { useTranslations } from "next-intl";
 
@@ -168,7 +168,7 @@ export function TeacherSelectionStep({
 											<div className="flex items-center justify-between">
 												<div className="flex items-center gap-2">
 													<span className="text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
-														{t('ybda_mn')}{lowestPrice} ₪
+														{t('ybda_mn')}{formatCurrency(lowestPrice)}
 													</span>
 													<span className="text-[10px] text-muted-foreground">
 														{teacher.totalSessions} {t('jlsh_mktmlh')}</span>

@@ -14,7 +14,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { updateTeacherProfile } from "@/lib/actions/teacher";
-import { cn } from "@/lib/utils";
+import { cn, getCurrencySymbol } from "@/lib/utils";
 import { teacherProfileSchema } from "@/lib/validations/teacher";
 
 type ProfileData = {
@@ -388,7 +388,7 @@ export default function TeacherProfileForm({
 									{t('key_1783109436725_v7oa')}</label>
 								<div className="relative">
 									<span className="absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium">
-										₪
+										{getCurrencySymbol()}
 									</span>
 									<input
 										type="number"
