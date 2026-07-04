@@ -18,8 +18,10 @@ export interface BookingListResult {
 }
 
 export class BookingService {
-	static async getParentBookings(parentId: string) {
+	static async getParentBookings(parentId: string, locale: string = 'ar') {
 		await requireAuth([UserType.PARENT]);
+		const { getTranslations } = await import("next-intl/server");
+		const t = await getTranslations({ locale, namespace: 'parent' });
 		const bookings = await prisma.booking.findMany({
 			where: { parentUserId: parentId },
 			include: bookingDetailsInclude,
@@ -43,8 +45,8 @@ export class BookingService {
 
 		const hakeemMsg =
 			upcomingCount > 0
-				? `ممتاز، لديك ${upcomingCount} جلسة قادمة مؤكدة. المتابعة المستمرة لجدول الجلسات وحضورها في الوقت المحدد هو مفتاح التفوق والتميز لأبنائك.`
-				: "ليس لديك أي جلسات قادمة مؤكدة حالياً. متابعة التقارير للجلسات السابقة يساعدك في تحديد ما يحتاجه أبناؤك في الجلسات القادمة.";
+				? t('hakeem_bookings_upcoming', { count: upcomingCount })
+				: t('hakeem_bookings_none');
 
 		return {
 			bookings,

@@ -1425,7 +1425,23 @@
     "str_mr6bipgz_2KrYrN": "تجد هنا إجابات لأكثر الأسئلة شيوعاً حول استخدام المنصة، الحج",
     "str_mr6bipu1_2KXYtt": "إضافة بيانات أبنائك وتحديث مستوياتهم الدراسية بدقة، هي الخطو",
     "str_mr6bipu2_2YPZhN": "كلما أضفنا بطلاً جديداً لعائلتنا هنا، زادت فرصتنا في تحقيق ا",
-    "str_mr6biucf_2K7Zit": "خيار حكيم لحفظ وقتك. حدد موعدك ومادتك، وسأقوم بترشيح أفضل ال"
+    "str_mr6biucf_2K7Zit": "خيار حكيم لحفظ وقتك. حدد موعدك ومادتك، وسأقوم بترشيح أفضل ال",
+    "awaiting_payment_booking": "Awaiting Payment: {service} session for {student}",
+    "pending_approval_booking": "Pending Approval: {service} session for {student}",
+    "pending_review_booking": "Review Required: {service} session for {student}",
+    "hakeem_notes_advice": "Reports indicate a note from the {subjectName} teacher regarding {studentName}: \"{notes}\". I advise you to follow up on this to ensure continued improvement.",
+    "hakeem_homework_advice": "Reports show a {subjectName} homework assignment for {studentName}: \"{homework}\". Helping them solve it will greatly reinforce their learning.",
+    "hakeem_performance_advice": "I noticed a slight drop in {studentName}'s performance in their recent {subjectName} session. Booking an extra session to clarify concepts could be beneficial.",
+    "hakeem_excellent_advice": "Excellent performance by {studentName} in {subjectName}! Regular review is the key to excellence, keep it up.",
+    "hakeem_no_sessions_advice": "Welcome, {userName}. Based on our data, no completed sessions have been recorded yet. Starting early is a wise step to assess academic levels and set goals.",
+    "hakeem_welcome_advice": "We are delighted you joined the platform. The essential first step is to add your children and update their profiles so I can provide accurate performance analytics later.",
+    "najeeb_upcoming_sessions": "Wow! We have {count} upcoming sessions! 🚀 I'm so excited to start learning, make sure to prepare your notebooks and pens!",
+    "najeeb_no_sessions": "No sessions are currently scheduled. How about booking a new session to continue our fun learning journey? 💡",
+    "najeeb_welcome": "Welcome! I'm Najeeb, your companion on this wonderful journey. Are you ready to start? ✨",
+    "hakeem_bookings_upcoming": "Excellent, you have {count} confirmed upcoming sessions. Continuous follow-up and attending on time is the key to excellence for your children.",
+    "hakeem_bookings_none": "You have no confirmed upcoming sessions currently. Following up on reports for previous sessions helps you determine what your children need in upcoming sessions.",
+    "najeeb_bookings_ghost": "Attention! There are {count} sessions that ended a while ago and the teacher has not closed them or submitted a report. Please follow up with the teacher.",
+    "najeeb_bookings_stats": "We have {upcomingCount} upcoming sessions and {reportsCount} educational reports to view. You can switch between tabs below to see details easily!"
   },
   "teachers": {
     "24": "Warning: Late report (> 24 hours)",
@@ -1650,5 +1666,23 @@
     "str_mr6bisyv_2KfZhN": "الرادار يعمل! أي طالب يطلب فزعة في مادتك سيظهر هنا. كن أسرع",
     "str_mr6bisyw_2YTYqt": "لتفعيل الرادار واستقبال الطلبات، يجب عليك تفعيل خيار 'متاح ا",
     "str_mr6bisz6_2KfZhN": "الرجاء كتابة تقارير الأداء فوراً لتفادي تجميد أو مصادرة أربا"
+  },
+  "advisors": {
+    "hakeem_sidebar_parent_1": "Education is not the filling of a pail, but the lighting of a fire. Check your child's performance regularly!",
+    "najeeb_sidebar_parent_1": "Awesome! Your continuous follow-up makes the biggest difference in their learning journey!",
+    "hakeem_sidebar_parent_2": "A calm dialogue with the teacher after each session helps bridge learning gaps faster.",
+    "najeeb_sidebar_parent_2": "Have you checked today's reports? Our kids are excelling day by day!",
+    "hakeem_sidebar_teacher_1": "A successful teacher listens more than they speak. Make sure to take accurate notes after each session.",
+    "hakeem_sidebar_teacher_2": "Updating your weekly availability makes it easier for parents to coordinate with you early.",
+    "najeeb_sidebar_teacher_2": "Great! Your precise reports make parents happy and build deep trust.",
+    "hakeem_sidebar_admin_1": "A stable system starts with careful monitoring. Check verification requests regularly to ensure quality.",
+    "najeeb_sidebar_admin_1": "You are EduNest's safety valve! Your efforts in managing the system drive us forward!",
+    "hakeem_booking_time_tip": "A wise choice to save your time. Select your date and subject, and I will recommend the best available teachers for you.",
+    "homepage_quotes_subtitle": "Let's listen to what Hakeem and Najeeb have to say...",
+    "hakeem_advice_tag": "Hakeem's Advice",
+    "hakeem_homepage_quote": "\"My son, time is our most precious asset. Personalized tutoring shortens distances, focuses on weaknesses, and builds self-confidence much faster than traditional methods.\"",
+    "najeeb_opinion_tag": "Najeeb's Opinion",
+    "najeeb_homepage_quote": "\"Absolutely right! The best part is that I can choose the teacher who understands me, at a time that suits me perfectly without changing my busy daily schedule.\"",
+    "najeeb_sidebar_teacher_1": "Your passion inspires the energies of the future! At EduNest, we enjoy every moment we spend with you!"
   }
 }

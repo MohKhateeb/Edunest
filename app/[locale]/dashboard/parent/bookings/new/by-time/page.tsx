@@ -11,7 +11,8 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function BookByTimePage() {
-    const t = await getTranslations('parent')
+    const t = await getTranslations('parent');
+    const tAdvisors = await getTranslations('advisors');
 	const session = await auth();
 	await requireAuth([UserType.PARENT]);
 	if (!session) redirect("/login");
@@ -27,7 +28,7 @@ export default async function BookByTimePage() {
 					title="حجز جلسة جديدة"
 					subtitle={t('str_2KfZhNio')}
 					character="hakeem"
-					characterMessage="خيار حكيم لحفظ وقتك. حدد موعدك ومادتك، وسأقوم بترشيح أفضل المعلمين المتاحين لك."
+					characterMessage={tAdvisors('hakeem_booking_time_tip')}
 				/>
 
 				<TimeFirstBookingForm

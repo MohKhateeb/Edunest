@@ -24,7 +24,7 @@ export default async function ParentDashboard({
 	const session = await auth();
 	const userName = session?.user?.name || t("key_1783109428865_gcaj");
 
-	const insights = await getParentDashboardInsights(userId, userName);
+	const insights = await getParentDashboardInsights(userId, userName, locale);
 
 	return (
 		<div className="space-y-8 text-start pb-10">

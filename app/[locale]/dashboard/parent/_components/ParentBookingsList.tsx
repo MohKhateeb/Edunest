@@ -73,8 +73,8 @@ export default function ParentBookingsList({
 				}
 				message={
 					ghostCount > 0
-						? `انتباه! هناك ${ghostCount} جلسة انتهت منذ فترة ولم يقم المعلم بإنهاء إغلاقها ورفع التقرير. يرجى المتابعة مع المعلم.`
-						: `لدينا ${upcomingCount} حصص قادمة، و ${reportsCount} تقارير تعليمية للاطلاع عليها. يمكنك التبديل بين التبويبات بالأسفل لرؤية التفاصيل بسهولة!`
+						? t('najeeb_bookings_ghost', { count: ghostCount })
+						: t('najeeb_bookings_stats', { upcomingCount, reportsCount })
 				}
 			/>
 

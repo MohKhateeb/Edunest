@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import type { DetailedBooking } from "@/lib/types";
 import { bookingDetailsInclude } from "@/lib/types";
 import { sanitizePrismaData } from "@/lib/utils";
+import { getTranslations } from "next-intl/server";
 
 export type DashboardInsights = {
 	hakeemMessage: string;
@@ -26,7 +27,10 @@ export type DashboardInsights = {
 export async function getParentDashboardInsights(
 	userId: string,
 	userName: string,
+	locale: string = "ar"
 ): Promise<DashboardInsights> {
+	const t = await getTranslations({ locale, namespace: "parent" });
+
 	const studentCount = await prisma.student.count({
 		where: { parentUserId: userId, isActive: true },
 	});
@@ -79,14 +83,14 @@ export async function getParentDashboardInsights(
 
 		if (b.status === "AWAITING_PAYMENT") {
 			type = "PAYMENT";
-			message = `بانتظار الدفع: جلسة ${b.teacherService.serviceType.name} للطالب ${b.student.name}`;
+			message = t("awaiting_payment_booking", { service: b.teacherService.serviceType.name, student: b.student.name });
 			dueDate = new Date(b.startTime.getTime() - 2 * 60 * 60 * 1000); // just an example due date
 		} else if (b.status === "PENDING_APPROVAL") {
 			type = "APPROVAL";
-			message = `بانتظار الموافقة: جلسة ${b.teacherService.serviceType.name} للطالب ${b.student.name}`;
+			message = t("pending_approval_booking", { service: b.teacherService.serviceType.name, student: b.student.name });
 		} else if (b.status === "COMPLETED" && !b.review) {
 			type = "REVIEW";
-			message = `الرجاء التقييم: جلسة ${b.teacherService.serviceType.name} للطالب ${b.student.name}`;
+			message = t("pending_review_booking", { service: b.teacherService.serviceType.name, student: b.student.name });
 		}
 
 		return {
@@ -152,22 +156,22 @@ export async function getParentDashboardInsights(
 		const subjectName = latestBooking.teacherService.serviceType.name;
 
 		if (report.teacherNotes && report.teacherNotes.trim() !== "") {
-			hakeemMessage = `تشير التقارير إلى ملاحظة من معلم ${subjectName} بشأن ${studentName}: "${report.teacherNotes}". أنصحك بمتابعة هذه النقطة لضمان استمرار التحسن.`;
+			hakeemMessage = t("hakeem_notes_advice", { subjectName, studentName, notes: report.teacherNotes });
 		} else if (
 			report.homeworkAssigned &&
 			report.homeworkAssigned.trim() !== "" &&
 			report.homeworkAssigned.toLowerCase() !== "no"
 		) {
-			hakeemMessage = `أظهرت التقارير وجود واجب مدرسي في ${subjectName} مطلوب من ${studentName}: "${report.homeworkAssigned}". متابعة حله ستساهم في ترسيخ المعلومات بشكل كبير.`;
+			hakeemMessage = t("hakeem_homework_advice", { subjectName, studentName, homework: report.homeworkAssigned });
 		} else if (report.studentPerformance && report.studentPerformance < 3) {
-			hakeemMessage = `لاحظت تراجعاً طفيفاً في أداء ${studentName} في الجلسة الأخيرة لمادة ${subjectName}. قد يكون من المفيد حجز جلسة إضافية للتركيز على المفاهيم غير الواضحة.`;
+			hakeemMessage = t("hakeem_performance_advice", { studentName, subjectName });
 		} else {
-			hakeemMessage = `أداء ممتاز من ${studentName} في ${subjectName}! المراجعة المنتظمة هي مفتاح التفوق، استمروا على هذا النهج.`;
+			hakeemMessage = t("hakeem_excellent_advice", { studentName, subjectName });
 		}
 	} else if (students.length > 0) {
-		hakeemMessage = `أهلاً بك يا ${userName}. بناءً على البيانات، لم يتم تسجيل أي جلسات مكتملة بعد. البدء مبكراً خطوة حكيمة لتقييم المستوى الدراسي وتحديد الأهداف.`;
+		hakeemMessage = t("hakeem_no_sessions_advice", { userName });
 	} else {
-		hakeemMessage = `يسعدنا انضمامك للمنصة. الخطوة الأولى والأساسية هي إضافة أبنائك وتحديث بياناتهم حتى أتمكن من تقديم تحليلات دقيقة لأدائهم لاحقاً.`;
+		hakeemMessage = t("hakeem_welcome_advice");
 	}
 
 	// --- صياغة رسالة نجيب التشجيعية (Najeeb's Encouragement) ---
@@ -175,13 +179,13 @@ export async function getParentDashboardInsights(
 	let najeebMode: "welcome" | "study" | "success" | "help";
 
 	if (upcomingBookingsCount > 0) {
-		najeebMessage = `يا سلام! لدينا ${upcomingBookingsCount} جلسة قادمة! 🚀 أنا متحمس جداً لبدء التعلم، تأكد من تجهيز الدفاتر والأقلام!`;
+		najeebMessage = t("najeeb_upcoming_sessions", { count: upcomingBookingsCount });
 		najeebMode = "study";
 	} else if (students.length > 0 && upcomingBookingsCount === 0) {
-		najeebMessage = `لا توجد جلسات مجدولة حالياً. ما رأيك أن نحجز جلسة جديدة لنستمر في رحلتنا التعليمية الممتعة؟ 💡`;
+		najeebMessage = t("najeeb_no_sessions");
 		najeebMode = "help";
 	} else {
-		najeebMessage = `مرحباً بك! أنا نجيب، سأكون رفيقكم في هذه الرحلة الرائعة. هل أنت مستعد للبدء؟ ✨`;
+		najeebMessage = t("najeeb_welcome");
 		najeebMode = "welcome";
 	}
 

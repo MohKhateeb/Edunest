@@ -8,13 +8,19 @@ import { auth } from "@/lib/auth";
 import { BookingService } from "@/lib/services/domain/booking-service";
 import { sanitizePrismaData } from "@/lib/utils";
 
-export default async function ParentBookingsPage() {
+export default async function ParentBookingsPage({
+	params,
+}: {
+	params: Promise<{ locale: string }>;
+}) {
+    const { locale } = await params;
     const t = await getTranslations('parent')
 	const session = await auth();
 	if (!session) redirect("/login");
 
 	const { bookings, insights } = await BookingService.getParentBookings(
 		session.user.id,
+		locale
 	);
 
 	const sanitizedBookings = sanitizePrismaData(bookings);

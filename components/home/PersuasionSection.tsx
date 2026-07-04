@@ -7,16 +7,39 @@ import NajeebCharacter from "@/components/shared/NajeebCharacter";
 import SectionHeader from "@/components/shared/SectionHeader";
 import type { PersuasionSectionContent } from "@/types/homepage";
 
+import { useTranslations } from "next-intl";
+
 export default function PersuasionSection({
 	content,
 }: {
 	content: PersuasionSectionContent;
 }) {
+	const tAdvisors = useTranslations("advisors");
+	
+	// Helper to translate default strings or fallback to admin custom text
+	const translateContent = (text: string, key: string) => {
+		// If text matches the default Arabic, default English, or the translation key itself, translate it.
+		// Otherwise, it means the admin has customized it, so return the custom text.
+		const isDefault = [
+			key,
+			tAdvisors(key, { fallback: "" }), // Arabic or English depending on current locale
+			"دعنا نستمع لما يقوله حكيم ونجيب...",
+			"نصيحة حكيم",
+			"\"يا بني، الوقت هو أثمن ما نملكه. والتعليم الفردي المخصص يختصر المسافات، يركز على نقاط الضعف، ويبني الثقة بالنفس بشكل أسرع بكثير من الطرق التقليدية.\"",
+			"رأي نجيب",
+			"\"صحيح جداً! وأفضل ما في الأمر أنني أستطيع اختيار المعلم الذي يفهمني، في الوقت الذي يناسبني تماماً دون أن أضطر لتغيير جدول يومي المليء بالأنشطة.\""
+		].includes(text);
+		
+		return isDefault ? tAdvisors(key) : text;
+	};
 	return (
 		<section className="py-24 bg-white dark:bg-slate-950 overflow-hidden">
 			<div className="max-w-5xl mx-auto px-6 relative">
 				{/* Title */}
-				<SectionHeader title={content.title} subtitle={content.subtitle} />
+				<SectionHeader 
+					title={content.title} 
+					subtitle={translateContent(content.subtitle, "homepage_quotes_subtitle")} 
+				/>
 
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
 					{/* Hakeem's Side */}
@@ -31,10 +54,10 @@ export default function PersuasionSection({
 						</div>
 						<div className="mt-16 space-y-4">
 							<span className="inline-block px-3 py-1 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 font-bold text-xs rounded-full">
-								{content.hakeemTag}
+								{translateContent(content.hakeemTag, "hakeem_advice_tag")}
 							</span>
 							<p className="text-lg md:text-xl font-bold leading-relaxed text-slate-700 dark:text-slate-300">
-								{content.hakeemQuote}
+								{translateContent(content.hakeemQuote, "hakeem_homepage_quote")}
 							</p>
 						</div>
 					</motion.div>
@@ -52,10 +75,10 @@ export default function PersuasionSection({
 						</div>
 						<div className="mt-16 space-y-4">
 							<span className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 font-bold text-xs rounded-full">
-								{content.najeebTag}
+								{translateContent(content.najeebTag, "najeeb_opinion_tag")}
 							</span>
 							<p className="text-lg md:text-xl font-bold leading-relaxed text-slate-700 dark:text-slate-300">
-								{content.najeebQuote}
+								{translateContent(content.najeebQuote, "najeeb_homepage_quote")}
 							</p>
 						</div>
 					</motion.div>

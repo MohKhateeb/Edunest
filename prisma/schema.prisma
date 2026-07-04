@@ -9,15 +9,42 @@ datasource db {
 }
 
 // ════════════════════════════════════════════════════
+// العملات (Currencies)
+// ════════════════════════════════════════════════════
+enum Currency {
+  ILS
+  USD
+  EUR
+  JOD
+  EGP
+  SAR
+  AED
+  QAR
+  KWD
+}
+
+model CurrencyConfig {
+  currency        Currency @id
+  isActiveForUser Boolean  @default(false)
+  displaySymbol   String
+  decimalPlaces   Int      @default(2)
+  sortOrder       Int      @default(0)
+  updatedAt       DateTime @updatedAt
+
+  @@map("currency_configs")
+}
+
+// ════════════════════════════════════════════════════
 // إعدادات النظام الديناميكية
 // ════════════════════════════════════════════════════
 model SystemSetting {
-  id           String   @id @default(cuid())
-  settingKey   String   @unique
-  settingValue String   @db.Text
-  description  String?
-  updatedAt    DateTime @updatedAt
-  updatedBy    String?
+  id              String   @id @default(cuid())
+  settingKey      String   @unique
+  settingValue    String   @db.Text
+  description     String?
+  defaultCurrency Currency @default(ILS)
+  updatedAt       DateTime @updatedAt
+  updatedBy       String?
 
   @@map("system_settings")
 }
@@ -40,6 +67,7 @@ model User {
   passwordHash          String
   userType              UserType
   isActive              Boolean               @default(true)
+  preferredCurrency     Currency?
   createdAt             DateTime              @default(now())
   refundRequestsCount   Int                   @default(0)
   hasUsedFreeTrial      Boolean               @default(false)
@@ -268,6 +296,7 @@ model Booking {
   startTime             DateTime // UTC حصراً
   duration              Int // بالدقائق
   price                 Decimal        @db.Decimal(10, 2)
+  currency              Currency       @default(ILS)
   appliedCommissionRate Decimal        @db.Decimal(5, 2)
   status                BookingStatus  @default(PENDING)
   paymentStatus         PaymentStatus  @default(UNPAID)

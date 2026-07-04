@@ -32,56 +32,27 @@ import { useTranslations } from "next-intl";
 
 const getADVISORTIPS = (t: any): Record<"PARENT" | "TEACHER" | "ADMIN", Array<{ advisor: "hakeem" | "najeeb"; text: string }>> => ({
 	PARENT: [
-		{
-			advisor: "hakeem",
-			text: "التعليم ليس ملء دلو، بل إيقاد شعلة. تفقد أداء طفلك بانتظام للوقوف على نقاط قوته!",
-		},
-		{
-			advisor: "najeeb",
-			text: "رائع! متابعتك المستمرة لأطفالك تصنع الفارق الأكبر في رحلتهم التعليمية!",
-		},
-		{
-			advisor: "hakeem",
-			text: "الحوار الهادئ مع المعلم بعد كل حصة يساعد في سد الثغرات التعليمية بشكل أسرع.",
-		},
-		{
-			advisor: "najeeb",
-			text: "هل ألقيت نظرة على تقارير اليوم؟ أطفالنا يتفوقون يوماً بعد يوم!",
-		},
+		{ advisor: "hakeem", text: t('hakeem_sidebar_parent_1') },
+		{ advisor: "najeeb", text: t('najeeb_sidebar_parent_1') },
+		{ advisor: "hakeem", text: t('hakeem_sidebar_parent_2') },
+		{ advisor: "najeeb", text: t('najeeb_sidebar_parent_2') },
 	],
 	TEACHER: [
-		{
-			advisor: "hakeem",
-			text: "المعلم الناجح هو من يستمع أكثر مما يتحدث. احرص على تدوين ملاحظات دقيقة في نهاية كل حصة.",
-		},
-		{
-			advisor: "najeeb",
-			text: t('hssk_tlhm_taqat_almstqbl') ,
-		},
-		{
-			advisor: "hakeem",
-			text: "تحديث أوقات توفرك الأسبوعية يسهل على أولياء الأمور التنسيق معك مبكراً.",
-		},
-		{
-			advisor: "najeeb",
-			text: "رائع! تقاريرك الدقيقة تسعد أولياء الأمور وتبني ثقة عميقة بينكم.",
-		},
+		{ advisor: "hakeem", text: t('hakeem_sidebar_teacher_1') },
+		{ advisor: "najeeb", text: t('najeeb_sidebar_teacher_1') },
+		{ advisor: "hakeem", text: t('hakeem_sidebar_teacher_2') },
+		{ advisor: "najeeb", text: t('najeeb_sidebar_teacher_2') },
 	],
 	ADMIN: [
-		{
-			advisor: "hakeem",
-			text: "النظام المستقر يبدأ من المتابعة الدقيقة. تفقد قائمة طلبات التوثيق بانتظام لضمان الجودة.",
-		},
-		{
-			advisor: "najeeb",
-			text: "أنت صمام الأمان لمنصة إديونست! جهودك في إدارة النظام تدفعنا للأمام!",
-		},
+		{ advisor: "hakeem", text: t('hakeem_sidebar_admin_1') },
+		{ advisor: "najeeb", text: t('najeeb_sidebar_admin_1') },
 	],
 });
 
 export default function Sidebar() {
     const t = useTranslations('common');
     const tNav = useTranslations('nav');
+    const tAdvisors = useTranslations('advisors');
 	const { data: session } = useSession();
 	const pathname = usePathname();
 	const [isCollapsed, setIsCollapsed] = useState(false);
@@ -116,7 +87,7 @@ export default function Sidebar() {
 
 	// Advisor tips selection
 	const tips =
-		getADVISORTIPS(t)[role as keyof ReturnType<typeof getADVISORTIPS>] || getADVISORTIPS(t).PARENT;
+		getADVISORTIPS(tAdvisors)[role as keyof ReturnType<typeof getADVISORTIPS>] || getADVISORTIPS(tAdvisors).PARENT;
 	const activeTip = tips[tipIndex % tips.length];
 
 	const cycleTip = () => {
