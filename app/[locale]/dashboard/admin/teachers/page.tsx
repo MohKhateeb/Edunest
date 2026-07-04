@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import AdminTeachersList from "../_components/AdminTeachersList";
@@ -10,6 +11,7 @@ export default async function AdminTeachersPage({
 }: {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+    const t = await getTranslations('admin')
 	const resolvedParams = await searchParams;
 	const session = await auth();
 	await requireAuth([UserType.ADMIN]);
@@ -22,8 +24,8 @@ export default async function AdminTeachersPage({
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-2xl font-extrabold mb-1">إدارة معلمي المنصة</h1>
-				<p className="text-muted-foreground">استعرض وقم بإدارة المعلمين</p>
+				<h1 className="text-2xl font-extrabold mb-1">{t('key_1783109434502_p5vd')}</h1>
+				<p className="text-muted-foreground">{t('key_1783109434509_weot')}</p>
 			</div>
 
 			<AdminTeachersList teachers={teachers} />

@@ -1,5 +1,5 @@
 import {NextIntlClientProvider} from 'next-intl'
-import {getMessages, setRequestLocale} from 'next-intl/server'
+import {getMessages, setRequestLocale, getTranslations } from 'next-intl/server'
 import {notFound} from 'next/navigation'
 import type { Metadata } from "next";
 import "../globals.css";
@@ -8,10 +8,13 @@ import ToastProvider from "@/components/shared/ToastProvider";
 
 const LOCALES = ['ar', 'en']
 
-export const metadata: Metadata = {
-	title: "منصة إديونست | EduNest",
-	description: "المنصة الفلسطينية الأولى لربط أولياء الأمور بمعلمي الدروس الخصوصية الأكفاء في الضفة الغربية بطريقة منظمة وموثوقة.",
-};
+export async function generateMetadata({params}: any) {
+  const t = await getTranslations({locale: params?.locale || 'ar', namespace: 'common'});
+  return {
+    title: t('str_2YXZhti1'),
+    description: "EduNest platform"
+  };
+}
 
 export default async function LocaleLayout({
   children,
@@ -20,6 +23,7 @@ export default async function LocaleLayout({
   children: React.ReactNode
   params: Promise<{locale: string}>
 }) {
+    const t = await getTranslations('common')
   const { locale } = await params;
   if (!LOCALES.includes(locale)) notFound()
   setRequestLocale(locale);

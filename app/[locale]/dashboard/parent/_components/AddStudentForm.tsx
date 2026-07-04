@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import { AlertCircle, Loader2, Plus } from "lucide-react";
@@ -6,6 +8,7 @@ import { addStudent } from "@/lib/actions/user";
 import { studentSchema } from "@/lib/validations/user";
 
 export default function AddStudentForm() {
+    const t = useTranslations('parent')
 	const [formData, setFormData] = useState({
 		name: "",
 		grade: "1",
@@ -52,7 +55,7 @@ export default function AddStudentForm() {
 			}
 		} catch (err: unknown) {
 			console.error(err);
-			setErrorMsg("حدث خطأ غير متوقع أثناء إضافة الطالب");
+			setErrorMsg(t('key_1783109434721_pj7j'));
 		} finally {
 			setLoading(false);
 		}
@@ -64,8 +67,7 @@ export default function AddStudentForm() {
 			className="bg-card border border-border/80 rounded-3xl p-6 space-y-4 shadow-premium"
 		>
 			<h3 className="font-black text-base border-b border-border/60 pb-2.5 flex items-center gap-2">
-				إضافة طالب جديد للحساب
-			</h3>
+				{t('key_1783109434665_5yyt')}</h3>
 
 			{errorMsg && (
 				<div className="flex items-center gap-2 text-xs text-destructive bg-destructive/10 px-3 py-2.5 rounded-xl border border-destructive/20">
@@ -76,8 +78,7 @@ export default function AddStudentForm() {
 
 			<div className="space-y-1">
 				<label className="text-xs font-bold text-muted-foreground block">
-					اسم الطالب *
-				</label>
+					{t('key_1783109434675_cs3c')}</label>
 				<input
 					type="text"
 					name="name"
@@ -91,8 +92,7 @@ export default function AddStudentForm() {
 
 			<div className="space-y-1">
 				<label className="text-xs font-bold text-muted-foreground block">
-					الصف الدراسي *
-				</label>
+					{t('key_1783109434682_n7ap')}</label>
 				<select
 					name="grade"
 					value={formData.grade}
@@ -103,7 +103,7 @@ export default function AddStudentForm() {
 						const classNum = index + 1;
 						return (
 							<option key={classNum} value={classNum}>
-								الصف {classNum}
+								{t('key_1783109434688_iusf')}{classNum}
 							</option>
 						);
 					})}
@@ -112,8 +112,7 @@ export default function AddStudentForm() {
 
 			<div className="space-y-1">
 				<label className="text-xs font-bold text-muted-foreground block">
-					المدرسة (اختياري)
-				</label>
+					{t('key_1783109434693_b2kq')}</label>
 				<input
 					type="text"
 					name="school"
@@ -132,13 +131,11 @@ export default function AddStudentForm() {
 				{loading ? (
 					<>
 						<Loader2 className="h-4 w-4 animate-spin" />
-						جاري الإضافة...
-					</>
+						{t('key_1783109434698_w7hf')}</>
 				) : (
 					<>
 						<Plus className="h-4 w-4" />
-						إضافة الطالب
-					</>
+						{t('key_1783109434705_wd9w')}</>
 				)}
 			</button>
 		</form>

@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import { HelpCircle, Search } from "lucide-react";
@@ -21,6 +23,7 @@ export default function ParentBookingsList({
 	bookings,
 	insights,
 }: ParentBookingsListProps) {
+    const t = useTranslations('parent')
 	type TabType = "UPCOMING" | "PENDING" | "COMPLETED" | "ARCHIVED";
 	const [activeTab, setActiveTab] = useState<TabType>("UPCOMING");
 	const [searchQuery, setSearchQuery] = useState("");
@@ -81,8 +84,8 @@ export default function ParentBookingsList({
 					{[
 						{ id: "UPCOMING", label: `القادمة (${upcomingCount})` },
 						{ id: "PENDING", label: `المعلقة (${pendingCount})` },
-						{ id: "COMPLETED", label: "المنتهية" },
-						{ id: "ARCHIVED", label: "الأرشيف" },
+						{ id: "COMPLETED", label: t('key_1783109434934_ssvy') },
+						{ id: "ARCHIVED", label: t('key_1783109434936_vp1b') },
 					].map((tab) => (
 						<button
 							key={tab.id}
@@ -116,12 +119,11 @@ export default function ParentBookingsList({
 				<div className="flex flex-col items-center justify-center py-20 bg-white dark:bg-slate-900 border border-border/50 border-dashed rounded-3xl text-center shadow-sm">
 					<HelpCircle className="h-10 w-10 text-muted-foreground/40 mb-3 animate-pulse" />
 					<p className="text-sm font-bold text-foreground/80">
-						لا توجد حصص في هذا القسم
-					</p>
+						{t('key_1783109434914_l2ht')}</p>
 					<p className="text-xs text-muted-foreground mt-1">
 						{searchQuery
-							? "جرب البحث بكلمات أخرى أو تغيير تبويب الفلترة."
-							: "لم تقم بجدولة أي حصص هنا بعد."}
+							? t('str_2KzYsdio')
+							: t('str_2YTZhSDY')}
 					</p>
 				</div>
 			) : (
@@ -132,8 +134,7 @@ export default function ParentBookingsList({
 
 							{booking.status === "PENDING_APPROVAL" && (
 								<div className="text-center text-xs font-bold text-amber-700 bg-amber-50 dark:bg-amber-950/30 dark:text-amber-400 border border-amber-200 dark:border-amber-900 rounded-xl py-2.5 px-3 animate-in fade-in">
-									بانتظار رد المعلم على طلبك
-								</div>
+									{t('key_1783109434922_1ghm')}</div>
 							)}
 
 							{booking.status === "AWAITING_PAYMENT" && (
@@ -146,8 +147,7 @@ export default function ParentBookingsList({
 
 							{booking.status === "EXPIRED" && (
 								<div className="text-center text-xs font-bold text-slate-600 bg-slate-50 dark:bg-slate-900 dark:text-slate-400 border border-slate-200 dark:border-slate-800 rounded-xl py-2.5 px-3">
-									انتهت مهلة الدفع المحددة
-								</div>
+									{t('key_1783109434928_934u')}</div>
 							)}
 						</div>
 					))}

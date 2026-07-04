@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -27,6 +29,7 @@ export default function AdminPayoutsEngine({
 	existingPayouts,
 	parentRefunds,
 }: AdminPayoutsEngineProps) {
+    const t = useTranslations('admin')
 	const router = useRouter();
 
 	const [loading, setLoading] = useState(false);
@@ -114,12 +117,12 @@ export default function AdminPayoutsEngine({
 		setLoading(false);
 
 		if (res.success) {
-			setSuccessMsg("تم إصدار وثيقة التسوية المالية للمعلم بنجاح ✓");
+			setSuccessMsg(t('key_1783109439391_9mqi'));
 			setSelectedTeacherId(null);
 			setSelectedBookingIds(new Set());
 			router.refresh();
 		} else {
-			setErrorMsg(res.error || "حدث خطأ أثناء إصدار التسوية");
+			setErrorMsg(res.error || t('key_1783109439395_pxqf'));
 		}
 	};
 
@@ -131,7 +134,7 @@ export default function AdminPayoutsEngine({
 		if (res.success) {
 			router.refresh();
 		} else {
-			alert(res.error || "حدث خطأ غير معروف");
+			alert(res.error || t('key_1783109439398_mcr8'));
 		}
 	};
 
@@ -143,7 +146,7 @@ export default function AdminPayoutsEngine({
 		if (res.success) {
 			router.refresh();
 		} else {
-			alert(res.error || "حدث خطأ غير معروف");
+			alert(res.error || t('key_1783109439398_mcr8'));
 		}
 	};
 

@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import {
@@ -48,6 +50,7 @@ type AdminUsersListProps = {
 };
 
 export default function AdminUsersList({ users }: AdminUsersListProps) {
+    const t = useTranslations('admin')
 	const router = useRouter();
 	const [loadingUserId, setLoadingUserId] = useState<string | null>(null);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -58,7 +61,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 	const handleToggleStatus = async (userId: string, currentActive: boolean) => {
 		if (
 			confirm(
-				`هل أنت متأكد من رغبتك في ${currentActive ? "حظر" : "تفعيل"} هذا المستخدم؟`,
+				`هل أنت متأكد من رغبتك في ${currentActive ? t('key_1783109432345_18vy') : t('key_1783109432354_1085')} هذا المستخدم؟`,
 			)
 		) {
 			setLoadingUserId(userId);
@@ -68,12 +71,12 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 			if (res.success) {
 				toast.success(
 					currentActive
-						? "تم حظر المستخدم بنجاح"
-						: "تم تفعيل حساب المستخدم بنجاح",
+						? t('key_1783109432362_xhy1')
+						: t('key_1783109432370_y4p0'),
 				);
 				router.refresh();
 			} else {
-				toast.error(res.error || "حدث خطأ ما");
+				toast.error(res.error || t('key_1783109432394_g4oo'));
 			}
 		}
 	};
@@ -105,15 +108,15 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 				data={filteredUsers}
 				headers={[
 					"",
-					"المستخدم",
-					"البريد ورقم الهاتف",
-					"نوع الحساب",
-					"حالة الحساب",
-					"التحكم والعمليات",
+					t('key_1783109432403_aimr'),
+					t('key_1783109432410_1h5y'),
+					t('key_1783109432417_5ywn'),
+					t('key_1783109432423_8ywc'),
+					t('key_1783109432431_8226'),
 				]}
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
-				searchPlaceholder="ابحث باسم المستخدم، البريد أو الهاتف..."
+				searchPlaceholder={t('key_1783109432439_8q2i')}
 				toolbarChildren={
 					<>
 						<select
@@ -121,10 +124,10 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 							value={filterType}
 							onChange={(e) => setFilterType(e.target.value)}
 						>
-							<option value="ALL">جميع الأنواع</option>
-							<option value="PARENT">أولياء الأمور</option>
-							<option value="TEACHER">المعلمون</option>
-							<option value="ADMIN">المدراء</option>
+							<option value="ALL">{t('key_1783109431967_qlrg')}</option>
+							<option value="PARENT">{t('key_1783109431988_r3ry')}</option>
+							<option value="TEACHER">{t('key_1783109432006_8ahq')}</option>
+							<option value="ADMIN">{t('key_1783109432029_m0uy')}</option>
 						</select>
 
 						<select
@@ -132,27 +135,27 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 							value={filterStatus}
 							onChange={(e) => setFilterStatus(e.target.value)}
 						>
-							<option value="ALL">جميع الحالات</option>
-							<option value="ACTIVE">النشطين فقط</option>
-							<option value="BANNED">المحظورين فقط</option>
+							<option value="ALL">{t('key_1783109432045_13wq')}</option>
+							<option value="ACTIVE">{t('key_1783109432062_tckq')}</option>
+							<option value="BANNED">{t('key_1783109432083_qr4p')}</option>
 						</select>
 					</>
 				}
-				emptyMessage="لا يوجد مستخدمين مطابقين لمعايير البحث الحالية."
+				emptyMessage={t('str_2YTYpyDZ')}
 				renderRow={(u) => {
 					const typeDetails = {
 						ADMIN: {
-							label: "مدير النظام",
+							label: t('str_2YXYr9mK'),
 							badgeClass:
 								"bg-violet-100 text-violet-700 dark:bg-violet-950/45 dark:text-violet-300",
 						},
 						TEACHER: {
-							label: "معلم",
+							label: t('str_2YXYudmE'),
 							badgeClass:
 								"bg-blue-100 text-blue-700 dark:bg-blue-950/45 dark:text-blue-300",
 						},
 						PARENT: {
-							label: "ولي أمر",
+							label: t('str_2YjZhNmK'),
 							badgeClass:
 								"bg-emerald-100 text-emerald-700 dark:bg-emerald-950/45 dark:text-emerald-300",
 						},
@@ -200,7 +203,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 											</span>
 											<span className="text-[10px] text-muted-foreground flex items-center gap-1 mt-0.5">
 												<Calendar className="h-3 w-3" />
-												انضم في{" "}
+												{t('key_1783109432106_0mlc')}{" "}
 												{new Date(u.createdAt).toLocaleDateString("ar-PS", {
 													year: "numeric",
 													month: "short",
@@ -224,8 +227,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 											</span>
 										) : (
 											<span className="text-[10px] text-muted-foreground/40 italic block pe-5">
-												لا يوجد هاتف
-											</span>
+												{t('key_1783109432128_wya1')}</span>
 										)}
 									</div>
 								</td>
@@ -242,13 +244,11 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 									{u.isActive ? (
 										<span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
 											<span className="h-1.5 w-1.5 rounded-full bg-emerald-600 animate-pulse"></span>
-											نشط
-										</span>
+											{t('key_1783109432145_059y')}</span>
 									) : (
 										<span className="inline-flex items-center gap-1 text-[10px] font-bold px-2.5 py-1 rounded-full bg-rose-100 text-rose-800 dark:bg-rose-950/40 dark:text-rose-300">
 											<span className="h-1.5 w-1.5 rounded-full bg-rose-600"></span>
-											محظور
-										</span>
+											{t('key_1783109432161_2ot2')}</span>
 									)}
 								</td>
 
@@ -265,8 +265,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 													title="حظر الحساب ومنع تسجيل الدخول"
 												>
 													<UserX className="h-4 w-4" />
-													حظر الحساب
-												</button>
+													{t('key_1783109432179_b96b')}</button>
 											) : (
 												<button
 													type="button"
@@ -275,8 +274,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 													title="تفعيل وتنشيط الحساب"
 												>
 													<UserCheck className="h-4 w-4" />
-													تفعيل الحساب
-												</button>
+													{t('key_1783109432195_zcrb')}</button>
 											)}
 										</div>
 									)}
@@ -296,13 +294,12 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 													{u.userType === "PARENT" ? (
 														<>
 															<Users className="h-4.5 w-4.5" />
-															قائمة الطلاب المسجلين ({u.students.length})
+															{t('key_1783109432220_nxuo')}{u.students.length})
 														</>
 													) : (
 														<>
 															<GraduationCap className="h-4.5 w-4.5" />
-															معلومات المعلم المهنية
-														</>
+															{t('key_1783109432237_t3il')}</>
 													)}
 												</h4>
 											</div>
@@ -312,8 +309,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 												<div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
 													{u.students.length === 0 ? (
 														<p className="text-xs text-muted-foreground italic col-span-full">
-															لا يوجد طلاب مضافين لهذا الحساب بعد.
-														</p>
+															{t('key_1783109432255_pz5h')}</p>
 													) : (
 														u.students.map((student) => (
 															<div
@@ -328,8 +324,8 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 																		{student.name}
 																	</p>
 																	<p className="text-[10px] text-muted-foreground">
-																		الصف {student.grade} -{" "}
-																		{student.school || "مدرسة غير محددة"}
+																		{t('key_1783109432274_gnyj')}{student.grade} -{" "}
+																		{student.school || t('str_2YXYr9ix')}
 																	</p>
 																</div>
 															</div>
@@ -343,21 +339,18 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 												<div className="p-4 bg-white dark:bg-slate-900 border border-border/80 rounded-3xl space-y-2 max-w-md">
 													<div className="text-xs flex justify-between border-b border-border/40 pb-2">
 														<span className="text-muted-foreground font-semibold">
-															التخصص الأساسي:
-														</span>
+															{t('key_1783109432291_vomn')}</span>
 														<span className="font-bold text-foreground">
 															{u.teacher?.subjects
 																?.map((s) => s.subject.name)
-																.join(", ") || "غير محدد"}
+																.join(", ") || t('key_1783109433088_wcfa')}
 														</span>
 													</div>
 													<div className="text-xs flex justify-between">
 														<span className="text-muted-foreground font-semibold">
-															الملف التعريفي:
-														</span>
+															{t('key_1783109432309_qzq8')}</span>
 														<span className="font-bold text-primary">
-															حساب مسجل نشط في نظام المعلمين
-														</span>
+															{t('key_1783109432329_s42d')}</span>
 													</div>
 												</div>
 											)}

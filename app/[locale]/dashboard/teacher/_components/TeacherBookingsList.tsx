@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import { Search } from "lucide-react";
@@ -20,6 +22,7 @@ interface TeacherBookingsListProps {
 export default function TeacherBookingsList({
 	bookings,
 }: TeacherBookingsListProps) {
+    const t = useTranslations('teachers')
 	// Search and Filter
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState("ALL");
@@ -71,13 +74,13 @@ export default function TeacherBookingsList({
 		try {
 			const res = await acceptBooking(bookingId);
 			if (!res.success) {
-				toast.error("فشل قبول الحجز", { description: res.error });
+				toast.error(t('key_1783109436156_pg1f'), { description: res.error });
 			} else {
-				toast.success("تم قبول الحجز بنجاح");
+				toast.success(t('key_1783109436164_hug4'));
 			}
 		} catch (err) {
 			console.error(err);
-			toast.error("حدث خطأ غير متوقع أثناء قبول الحجز");
+			toast.error(t('key_1783109436171_aid5'));
 		} finally {
 			setLoadingId(null);
 		}
@@ -92,13 +95,13 @@ export default function TeacherBookingsList({
 		try {
 			const res = await rejectBooking(bookingId);
 			if (!res.success) {
-				toast.error("فشل رفض الحجز", { description: res.error });
+				toast.error(t('key_1783109436178_f8ot'), { description: res.error });
 			} else {
-				toast.success("تم رفض الحجز");
+				toast.success(t('key_1783109436185_tdvv'));
 			}
 		} catch (err) {
 			console.error(err);
-			toast.error("حدث خطأ غير متوقع أثناء رفض الحجز");
+			toast.error(t('key_1783109436192_mjtp'));
 		} finally {
 			setLoadingId(null);
 		}
@@ -119,13 +122,13 @@ export default function TeacherBookingsList({
 		try {
 			const res = await cancelBooking({ bookingId: cancelDialogBookingId, reason });
 			if (!res.success) {
-				toast.error("فشل إلغاء الحجز", { description: res.error });
+				toast.error(t('key_1783109436199_bqof'), { description: res.error });
 			} else {
-				toast.success("تم إلغاء الحجز وتحرير الموعد بنجاح");
+				toast.success(t('key_1783109436205_oven'));
 			}
 		} catch (err) {
 			console.error(err);
-			toast.error("حدث خطأ غير متوقع أثناء الإلغاء");
+			toast.error(t('key_1783109436212_eb76'));
 		} finally {
 			setLoadingId(null);
 			setCancelDialogBookingId(null);
@@ -156,14 +159,14 @@ export default function TeacherBookingsList({
 					value={statusFilter}
 					onChange={(e) => setStatusFilter(e.target.value)}
 				>
-					<option value="ALL">كل حالات الحصص</option>
-					<option value="PENDING_APPROVAL">طلبات جديدة بانتظار ردك</option>
-					<option value="AWAITING_PAYMENT">بانتظار دفع ولي الأمر</option>
-					<option value="PENDING">بانتظار موافقتي (معلق - قديم)</option>
-					<option value="CONFIRMED">مؤكد ومجدول</option>
-					<option value="COMPLETED">مكتمل ومنتهي</option>
-					<option value="CANCELLED">ملغي</option>
-					<option value="REJECTED">مرفوض</option>
+					<option value="ALL">{t('key_1783109435963_qre0')}</option>
+					<option value="PENDING_APPROVAL">{t('key_1783109436012_61yy')}</option>
+					<option value="AWAITING_PAYMENT">{t('key_1783109436034_y43e')}</option>
+					<option value="PENDING">{t('key_1783109436053_d0rc')}</option>
+					<option value="CONFIRMED">{t('key_1783109436069_i44p')}</option>
+					<option value="COMPLETED">{t('key_1783109436088_euwb')}</option>
+					<option value="CANCELLED">{t('key_1783109436108_6h96')}</option>
+					<option value="REJECTED">{t('key_1783109436130_m0sj')}</option>
 				</select>
 			</div>
 
@@ -212,8 +215,8 @@ export default function TeacherBookingsList({
 				title="إلغاء الموعد"
 				description="هل أنت متأكد من رغبتك في إلغاء هذا الحجز؟ سيتم تحرير الموعد للطلاب الآخرين."
 				requireReason={true}
-				reasonLabel="سبب الإلغاء"
-				confirmLabel="تأكيد الإلغاء"
+				reasonLabel={t('str_2LPYqNio')}
+				confirmLabel={t('str_2KrYo9mD')}
 				isLoading={loadingId === cancelDialogBookingId}
 				onConfirm={(reason) => executeCancelBooking(reason)}
 				onCancel={() => setCancelDialogBookingId(null)}

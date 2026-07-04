@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import {
@@ -39,6 +41,7 @@ export default function TeacherServicesForm({
 	serviceTypes,
 	configuredServices,
 }: TeacherServicesFormProps) {
+    const t = useTranslations('teachers')
 	const router = useRouter();
 	const [formData, setFormData] = useState({
 		selectedServiceTypeId: "",
@@ -91,7 +94,7 @@ export default function TeacherServicesForm({
 
 			const res = await addOrUpdateTeacherService(data);
 			if (res.success) {
-				setSuccessMsg("تم حفظ وتحديث الخدمة بنجاح ✓");
+				setSuccessMsg(t('key_1783109437269_ydsi'));
 				setFormData({
 					selectedServiceTypeId: "",
 					price: "50",
@@ -104,7 +107,7 @@ export default function TeacherServicesForm({
 			}
 		} catch (err: unknown) {
 			console.error(err);
-			setErrorMsg("حدث خطأ غير متوقع أثناء حفظ وتحديث الخدمة");
+			setErrorMsg(t('key_1783109437274_usvz'));
 		} finally {
 			setLoading(false);
 		}
@@ -113,7 +116,7 @@ export default function TeacherServicesForm({
 	return (
 		<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-8 space-y-8 shadow-sm hover:shadow-md transition-all">
 			<div>
-				<h2 className="font-extrabold text-xl mb-1">إدارة الخدمات والأسعار</h2>
+				<h2 className="font-extrabold text-xl mb-1">{t('key_1783109437131_6115')}</h2>
 				<p className="text-xs text-muted-foreground">
 					اختر نوع الحصة، حدد مدتها بالدقائق وسعرها بالشيكل ليتمكن الأهالي من
 					حجزها.
@@ -129,8 +132,7 @@ export default function TeacherServicesForm({
 				>
 					<h3 className="font-bold text-sm border-b border-border pb-2.5 flex items-center gap-1.5 text-primary">
 						<Plus className="h-4.5 w-4.5" />
-						إضافة / تحديث خدمة
-					</h3>
+						{t('key_1783109437153_iwkf')}</h3>
 
 					{errorMsg && (
 						<div className="flex items-center gap-2 text-xs text-destructive bg-destructive/10 px-3 py-2.5 rounded-lg border border-destructive/20">
@@ -147,15 +149,14 @@ export default function TeacherServicesForm({
 
 					<div className="space-y-1">
 						<label className="text-xs font-semibold text-muted-foreground block">
-							نوع الخدمة *
-						</label>
+							{t('key_1783109437162_xwz9')}</label>
 						<select
 							value={formData.selectedServiceTypeId}
 							onChange={(e) => handleServiceTypeChange(e.target.value)}
 							className="w-full premium-input text-xs"
 							required
 						>
-							<option value="">-- اختر نوع الخدمة --</option>
+							<option value="">{t('key_1783109437172_ti8k')}</option>
 							{serviceTypes.map((st) => (
 								<option key={st.id} value={st.id}>
 									{st.name}
@@ -166,8 +167,7 @@ export default function TeacherServicesForm({
 
 					<div className="space-y-1">
 						<label className="text-xs font-semibold text-muted-foreground block">
-							رسوم الخدمة (شيكل) *
-						</label>
+							{t('key_1783109437179_skvv')}</label>
 						<input
 							type="number"
 							name="price"
@@ -181,8 +181,7 @@ export default function TeacherServicesForm({
 
 					<div className="space-y-1">
 						<label className="text-xs font-semibold text-muted-foreground block">
-							المدة المقررة (بالدقائق) *
-						</label>
+							{t('key_1783109437199_kfd1')}</label>
 						<input
 							type="number"
 							name="duration"
@@ -196,8 +195,7 @@ export default function TeacherServicesForm({
 
 					<div className="space-y-1">
 						<label className="text-xs font-semibold text-muted-foreground block">
-							تفاصيل إضافية (اختياري)
-						</label>
+							{t('key_1783109437208_8wj8')}</label>
 						<textarea
 							name="customDescription"
 							rows={2}
@@ -216,13 +214,11 @@ export default function TeacherServicesForm({
 						{loading ? (
 							<>
 								<Loader2 className="h-4 w-4 animate-spin" />
-								جاري الحفظ...
-							</>
+								{t('key_1783109437221_stis')}</>
 						) : (
 							<>
 								<Check className="h-4 w-4" />
-								حفظ الخدمة
-							</>
+								{t('key_1783109437230_mtj7')}</>
 						)}
 					</button>
 				</form>
@@ -231,7 +227,7 @@ export default function TeacherServicesForm({
 				<div className="lg:col-span-2 space-y-4">
 					<h3 className="font-bold text-sm flex items-center gap-1.5">
 						<Briefcase className="h-4.5 w-4.5 text-muted-foreground" />
-						الخدمات المفعلة في حسابك حالياً ({configuredServices.length})
+						{t('key_1783109437239_bhst')}{configuredServices.length})
 					</h3>
 
 					{configuredServices.length === 0 ? (
@@ -253,12 +249,10 @@ export default function TeacherServicesForm({
 									<div className="flex gap-4 text-xs text-muted-foreground">
 										<span className="flex items-center gap-1">
 											<Clock className="h-3.5 w-3.5" />
-											{cs.duration} دقيقة
-										</span>
+											{cs.duration} {t('key_1783109437251_4omh')}</span>
 										<span className="flex items-center gap-1 text-primary font-semibold">
 											<DollarSign className="h-3.5 w-3.5" />
-											{cs.price} شيكل
-										</span>
+											{cs.price} {t('key_1783109437260_rpev')}</span>
 									</div>
 
 									{cs.customDescription && (

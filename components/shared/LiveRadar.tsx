@@ -160,8 +160,7 @@ export default function LiveRadar({
 											{t('almdh')}</span>
 										<span className="font-bold flex items-center justify-center gap-1">
 											<Clock className="w-3 h-3 text-emerald-500" />{" "}
-											{req.duration} د
-										</span>
+											{req.duration} {t('key_1783109425977_9h4x')}</span>
 									</div>
 									<div className="flex-1 text-center">
 										<span className="block text-xs text-slate-500 mb-1">

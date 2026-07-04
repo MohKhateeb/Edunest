@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import {
@@ -43,106 +45,111 @@ type SettingConfig = {
 	category: "FINANCIAL" | "POLICY" | "TRIAL" | "OTHER";
 };
 
-const SETTINGS_DICT: Record<string, SettingConfig> = {
-	DefaultCommissionRate: {
-		label: "نسبة العمولة الافتراضية",
-		type: "percentage",
-		icon: Percent,
-		category: "FINANCIAL",
-	},
-	QuickHelpCommissionRate: {
-		label: "عمولة طلبات الفزعة السريعة",
-		type: "percentage",
-		icon: Zap,
-		category: "FINANCIAL",
-	},
-	MonthlyPackageCommissionRate: {
-		label: "عمولة الحقيبة الشهرية",
-		type: "percentage",
-		icon: Briefcase,
-		category: "FINANCIAL",
-	},
-	MinBookingPrice: {
-		label: "الحد الأدنى لسعر الجلسة",
-		type: "currency",
-		icon: Banknote,
-		category: "FINANCIAL",
-	},
-	FreeTrialEnabled: {
-		label: "تفعيل الجلسات المجانية",
-		type: "boolean",
-		icon: BadgeCheck,
-		category: "TRIAL",
-	},
-	FreeTrialDurationMinutes: {
-		label: "مدة الجلسة المجانية (دقائق)",
-		type: "number",
-		icon: Clock,
-		category: "TRIAL",
-	},
-	FreeTrialCostToPlatform: {
-		label: "تكلفة الجلسة المجانية (على المنصة)",
-		type: "currency",
-		icon: HandCoins,
-		category: "TRIAL",
-	},
-	MaxRefundRequests: {
-		label: "الحد الأقصى لطلبات الاسترداد",
-		type: "number",
-		icon: ShieldAlert,
-		category: "POLICY",
-	},
-	CancellationRefundHours: {
-		label: "فترة الإلغاء المجاني (ساعات)",
-		type: "number",
-		icon: Clock,
-		category: "POLICY",
-	},
-	MinBookingLeadHours: {
-		label: "الحد الأدنى للوقت قبل الحجز (ساعات)",
-		type: "number",
-		icon: Clock,
-		category: "POLICY",
-	},
-	PAYMENT_HOLD_MINUTES: {
-		label: "مهلة الدفع بعد موافقة المعلم (بالدقائق)",
-		type: "number",
-		icon: Clock,
-		category: "POLICY",
-	},
-};
 
-const CATEGORIES = {
-	FINANCIAL: {
-		label: "الإدارة المالية والعمولات",
-		icon: Banknote,
-		color: "text-emerald-600 dark:text-emerald-400",
-		bg: "bg-emerald-50 dark:bg-emerald-950/20",
-	},
-	TRIAL: {
-		label: "إعدادات الجلسات المجانية",
-		icon: BadgeCheck,
-		color: "text-indigo-600 dark:text-indigo-400",
-		bg: "bg-indigo-50 dark:bg-indigo-950/20",
-	},
-	POLICY: {
-		label: "سياسات الحجز والإلغاء",
-		icon: ShieldAlert,
-		color: "text-rose-600 dark:text-rose-400",
-		bg: "bg-rose-50 dark:bg-rose-950/20",
-	},
-	OTHER: {
-		label: "إعدادات أخرى",
-		icon: Settings2,
-		color: "text-slate-600 dark:text-slate-400",
-		bg: "bg-slate-50 dark:bg-slate-800",
-	},
-};
+
+
 
 export default function AdminSettingsForm({
 	initialSettings,
 	groupedSettings: initialGroupedSettings,
 }: AdminSettingsFormProps) {
+    const t = useTranslations('admin')
+
+	const SETTINGS_DICT: Record<string, SettingConfig> = {
+		DefaultCommissionRate: {
+			label: t('key_1783109431253_ro7j') ,
+			type: "percentage",
+			icon: Percent,
+			category: "FINANCIAL",
+		},
+		QuickHelpCommissionRate: {
+			label: t('key_1783109431258_w77p') ,
+			type: "percentage",
+			icon: Zap,
+			category: "FINANCIAL",
+		},
+		MonthlyPackageCommissionRate: {
+			label: t('key_1783109431263_k1m2') ,
+			type: "percentage",
+			icon: Briefcase,
+			category: "FINANCIAL",
+		},
+		MinBookingPrice: {
+			label: t('key_1783109431268_hwq9') ,
+			type: "currency",
+			icon: Banknote,
+			category: "FINANCIAL",
+		},
+		FreeTrialEnabled: {
+			label: t('key_1783109431273_wqz0') ,
+			type: "boolean",
+			icon: BadgeCheck,
+			category: "TRIAL",
+		},
+		FreeTrialDurationMinutes: {
+			label: t('key_1783109431277_s8cp') ,
+			type: "number",
+			icon: Clock,
+			category: "TRIAL",
+		},
+		FreeTrialCostToPlatform: {
+			label: t('key_1783109431282_dgh8') ,
+			type: "currency",
+			icon: HandCoins,
+			category: "TRIAL",
+		},
+		MaxRefundRequests: {
+			label: t('key_1783109431287_ukuz') ,
+			type: "number",
+			icon: ShieldAlert,
+			category: "POLICY",
+		},
+		CancellationRefundHours: {
+			label: t('key_1783109431309_hggs') ,
+			type: "number",
+			icon: Clock,
+			category: "POLICY",
+		},
+		MinBookingLeadHours: {
+			label: t('key_1783109431322_2aej') ,
+			type: "number",
+			icon: Clock,
+			category: "POLICY",
+		},
+		PAYMENT_HOLD_MINUTES: {
+			label: t('key_1783109431341_csxp') ,
+			type: "number",
+			icon: Clock,
+			category: "POLICY",
+		},
+	};
+
+	const CATEGORIES = {
+		FINANCIAL: {
+			label: t('key_1783109431355_p6te') ,
+			icon: Banknote,
+			color: "text-emerald-600 dark:text-emerald-400",
+			bg: "bg-emerald-50 dark:bg-emerald-950/20",
+		},
+		TRIAL: {
+			label: t('key_1783109431375_b6lw') ,
+			icon: BadgeCheck,
+			color: "text-indigo-600 dark:text-indigo-400",
+			bg: "bg-indigo-50 dark:bg-indigo-950/20",
+		},
+		POLICY: {
+			label: t('key_1783109431493_em8j') ,
+			icon: ShieldAlert,
+			color: "text-rose-600 dark:text-rose-400",
+			bg: "bg-rose-50 dark:bg-rose-950/20",
+		},
+		OTHER: {
+			label: t('key_1783109431500_d2px') ,
+			icon: Settings2,
+			color: "text-slate-600 dark:text-slate-400",
+			bg: "bg-slate-50 dark:bg-slate-800",
+		},
+	};
 	const router = useRouter();
 	const [settings, setSettings] = useState<SystemSetting[]>(initialSettings);
 	const [loading, setLoading] = useState(false);
@@ -178,7 +185,7 @@ export default function AdminSettingsForm({
 		setLoading(false);
 
 		if (res.success) {
-			setSuccessMsg("تم حفظ وتحديث إعدادات النظام بنجاح 🎉");
+			setSuccessMsg(t('key_1783109431506_i0an'));
 			router.refresh();
 			window.scrollTo({ top: 0, behavior: "smooth" });
 		} else {
@@ -197,7 +204,7 @@ export default function AdminSettingsForm({
 		<div className="space-y-8">
 			<div>
 				<h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3 mb-2">
-					إعدادات النظام الديناميكية{" "}
+					{t('key_1783109431174_p68f')}{" "}
 					<Settings2 className="w-8 h-8 text-primary" />
 				</h1>
 				<p className="text-slate-500">
@@ -307,7 +314,7 @@ export default function AdminSettingsForm({
 																	: "text-slate-400",
 															)}
 														>
-															{currentValue === "true" ? "مفعل نشط" : "معطل"}
+															{currentValue === "true" ? t('key_1783109431512_y8p5') : t('key_1783109431517_tx1v')}
 														</span>
 													</div>
 												) : (
@@ -342,8 +349,7 @@ export default function AdminSettingsForm({
 														)}
 														{config.type === "currency" && (
 															<div className="absolute end-4 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-xs">
-																شيكل
-															</div>
+																{t('key_1783109431203_nwey')}</div>
 														)}
 													</div>
 												)}
@@ -369,8 +375,7 @@ export default function AdminSettingsForm({
 				<div className="sticky bottom-6 z-20 flex justify-end">
 					<div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-md p-4 rounded-3xl shadow-2xl border border-slate-200/50 dark:border-slate-700/50 w-full md:w-auto flex flex-col sm:flex-row items-center gap-4">
 						<p className="text-xs font-medium text-slate-500 px-4 hidden sm:block">
-							تأكد من مراجعة الإعدادات، التغييرات تطبق فوراً على النظام.
-						</p>
+							{t('key_1783109431215_pqoi')}</p>
 						<button
 							type="submit"
 							disabled={loading}
@@ -379,13 +384,11 @@ export default function AdminSettingsForm({
 							{loading ? (
 								<>
 									<Loader2 className="h-5 w-5 animate-spin" />
-									جاري التطبيق...
-								</>
+									{t('key_1783109431228_mser')}</>
 							) : (
 								<>
 									<Save className="h-5 w-5" />
-									حفظ الإعدادات الجديدة
-								</>
+									{t('key_1783109431241_4oxt')}</>
 							)}
 						</button>
 					</div>

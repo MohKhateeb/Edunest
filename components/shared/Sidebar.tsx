@@ -30,10 +30,7 @@ import { adminLinks, parentLinks, teacherLinks } from "@/lib/config/navigation";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
-const ADVISOR_TIPS: Record<
-	"PARENT" | "TEACHER" | "ADMIN",
-	Array<{ advisor: "hakeem" | "najeeb"; text: string }>
-> = {
+const getADVISORTIPS = (t: any): Record<"PARENT" | "TEACHER" | "ADMIN", Array<{ advisor: "hakeem" | "najeeb"; text: string }>> => ({
 	PARENT: [
 		{
 			advisor: "hakeem",
@@ -59,7 +56,7 @@ const ADVISOR_TIPS: Record<
 		},
 		{
 			advisor: "najeeb",
-			text: "حصصك تلهم طاقات المستقبل! استمر في إبهار طلابك بشغفك وعطائك!",
+			text: t('hssk_tlhm_taqat_almstqbl') ,
 		},
 		{
 			advisor: "hakeem",
@@ -80,7 +77,7 @@ const ADVISOR_TIPS: Record<
 			text: "أنت صمام الأمان لمنصة إديونست! جهودك في إدارة النظام تدفعنا للأمام!",
 		},
 	],
-};
+});
 
 export default function Sidebar() {
     const t = useTranslations('common');
@@ -119,7 +116,7 @@ export default function Sidebar() {
 
 	// Advisor tips selection
 	const tips =
-		ADVISOR_TIPS[role as keyof typeof ADVISOR_TIPS] || ADVISOR_TIPS.PARENT;
+		getADVISORTIPS(tNav)[role as keyof ReturnType<typeof getADVISORTIPS>] || getADVISORTIPS(tNav).PARENT;
 	const activeTip = tips[tipIndex % tips.length];
 
 	const cycleTip = () => {

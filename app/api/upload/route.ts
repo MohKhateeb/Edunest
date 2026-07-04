@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import { type NextRequest, NextResponse } from "next/server";
@@ -18,7 +19,7 @@ async function validateUploadRequest(
 	if (!session?.user?.id) {
 		return {
 			error: NextResponse.json(
-				{ error: "غير مصرح لك برفع ملفات" },
+				{ error: "Translation needed" },
 				{ status: 401 },
 			),
 		};
@@ -30,7 +31,7 @@ async function validateUploadRequest(
 
 	if (!file) {
 		return {
-			error: NextResponse.json({ error: "لم يتم إرسال أي ملف" }, { status: 400 }),
+			error: NextResponse.json({ error: "Translation needed" }, { status: 400 }),
 		};
 	}
 
@@ -38,7 +39,7 @@ async function validateUploadRequest(
 	if (file.size > MAX_FILE_SIZE) {
 		return {
 			error: NextResponse.json(
-				{ error: "حجم الملف يتجاوز الحد الأقصى المسموح به (50MB)" },
+				{ error: "Translation needed" },
 				{ status: 400 },
 			),
 		};
@@ -67,7 +68,7 @@ async function validateUploadRequest(
 	const ALLOWED_BUCKETS = ["verifications", "payment-proofs", "profiles", "uploads"];
 	if (bucketParam && !ALLOWED_BUCKETS.includes(bucketParam)) {
 		return {
-			error: NextResponse.json({ error: "مجلد الرفع غير صالح" }, { status: 400 }),
+			error: NextResponse.json({ error: "Translation needed" }, { status: 400 }),
 		};
 	}
 
@@ -77,7 +78,7 @@ async function validateUploadRequest(
 	if (bucket === "verifications" && userType === "PARENT") {
 		return {
 			error: NextResponse.json(
-				{ error: "غير مصرح لك برفع ملفات توثيق" },
+				{ error: "Translation needed" },
 				{ status: 403 },
 			),
 		};
@@ -89,7 +90,7 @@ async function validateUploadRequest(
 
 	if (!ALLOWED_EXTENSIONS.includes(safeExt)) {
 		return {
-			error: NextResponse.json({ error: "امتداد الملف غير مسموح به" }, { status: 400 }),
+			error: NextResponse.json({ error: "Translation needed" }, { status: 400 }),
 		};
 	}
 
@@ -144,14 +145,14 @@ async function uploadToLocalStorage(
 	const parts = fileName.split("/");
 	if (parts.length !== 2) {
 		return {
-			error: NextResponse.json({ error: "مسار رفع غير صالح" }, { status: 400 }),
+			error: NextResponse.json({ error: "Translation needed" }, { status: 400 }),
 		};
 	}
 	const [userId, localFileName] = parts;
 
 	if (!/^[a-zA-Z0-9-]+$/.test(userId)) {
 		return {
-			error: NextResponse.json({ error: "معرف مستخدم غير صالح" }, { status: 400 }),
+			error: NextResponse.json({ error: "Translation needed" }, { status: 400 }),
 		};
 	}
 
@@ -160,7 +161,7 @@ async function uploadToLocalStorage(
 
 	if (!uploadDir.startsWith(baseUploadsDir)) {
 		return {
-			error: NextResponse.json({ error: "مسار رفع غير صالح" }, { status: 400 }),
+			error: NextResponse.json({ error: "Translation needed" }, { status: 400 }),
 		};
 	}
 
@@ -175,6 +176,7 @@ async function uploadToLocalStorage(
 }
 
 export async function POST(req: NextRequest) {
+    const t = await getTranslations('common')
 	try {
 		const session = await auth();
 		const { file, bucket, fileName, error } = await validateUploadRequest(req, session);
@@ -194,7 +196,7 @@ export async function POST(req: NextRequest) {
 	} catch (err: unknown) {
 		console.error("Upload API error:", err);
 		return NextResponse.json(
-			{ error: "حدث خطأ غير متوقع أثناء الرفع" },
+			{ error: "Translation needed" },
 			{ status: 500 },
 		);
 	}

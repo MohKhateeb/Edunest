@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import type { UserType } from "@prisma/client";
@@ -21,6 +23,7 @@ import { cn } from "@/lib/utils";
 import { registerSchema } from "@/lib/validations/user";
 
 export default function RegisterPage() {
+    const t = useTranslations('common')
 	const router = useRouter();
 	const [formData, setFormData] = useState({
 		role: "PARENT" as "PARENT" | "TEACHER",
@@ -94,7 +97,7 @@ export default function RegisterPage() {
 			}
 		} catch (err: unknown) {
 			console.error(err);
-			setErrorMsg("حدث خطأ غير متوقع أثناء التسجيل");
+			setErrorMsg(t('key_1783109428552_3vhd'));
 		} finally {
 			setLoading(false);
 		}
@@ -119,11 +122,9 @@ export default function RegisterPage() {
 						/>
 					</Link>
 					<h2 className="text-2xl font-bold tracking-tight text-foreground/90">
-						إنشاء حساب جديد
-					</h2>
+						{t('inshaa_hsab_jdyd')}</h2>
 					<p className="text-xs text-muted-foreground">
-						انضم إلى مجتمعنا التعليمي الموثوق اليوم
-					</p>
+						{t('key_1783109428389_tdde')}</p>
 				</div>
 
 				{/* Card Form */}
@@ -134,11 +135,9 @@ export default function RegisterPage() {
 								<Check className="h-6 w-6" />
 							</div>
 							<h3 className="text-lg font-bold text-foreground">
-								تم إنشاء الحساب بنجاح!
-							</h3>
+								{t('key_1783109428400_x7xo')}</h3>
 							<p className="text-xs text-muted-foreground">
-								جاري تحويلك إلى صفحة تسجيل الدخول...
-							</p>
+								{t('key_1783109428417_xwc6')}</p>
 						</div>
 					) : (
 						<form onSubmit={handleSubmit} className="space-y-4">
@@ -161,8 +160,7 @@ export default function RegisterPage() {
 											: "text-muted-foreground hover:text-foreground",
 									)}
 								>
-									ولي أمر طالب
-								</button>
+									{t('key_1783109428429_nly2')}</button>
 								<button
 									type="button"
 									onClick={() => handleRoleChange("TEACHER")}
@@ -173,15 +171,13 @@ export default function RegisterPage() {
 											: "text-muted-foreground hover:text-foreground",
 									)}
 								>
-									معلم خصوصي
-								</button>
+									{t('key_1783109428441_8rzb')}</button>
 							</div>
 
 							<div className="space-y-1.5">
 								<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 									<User className="h-3.5 w-3.5" />
-									الاسم الكامل
-								</label>
+									{t('key_1783109428452_skjn')}</label>
 								<input
 									type="text"
 									name="name"
@@ -196,8 +192,7 @@ export default function RegisterPage() {
 							<div className="space-y-1.5">
 								<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 									<Mail className="h-3.5 w-3.5" />
-									البريد الإلكتروني
-								</label>
+									{t('albryd_alilktrwny')}</label>
 								<input
 									type="email"
 									name="email"
@@ -212,8 +207,7 @@ export default function RegisterPage() {
 							<div className="space-y-1.5">
 								<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 									<Phone className="h-3.5 w-3.5" />
-									رقم الهاتف (اختياري)
-								</label>
+									{t('key_1783109428476_kadm')}</label>
 								<input
 									type="tel"
 									name="phone"
@@ -229,8 +223,7 @@ export default function RegisterPage() {
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 										<Briefcase className="h-3.5 w-3.5" />
-										المواد التي تدرسها
-									</label>
+										{t('key_1783109428487_dcaz')}</label>
 									<div className="flex flex-wrap gap-2 mt-2">
 										{subjects.map((sub) => {
 											const isSelected = formData.subjectIds.includes(sub.id);
@@ -264,8 +257,7 @@ export default function RegisterPage() {
 							<div className="space-y-1.5">
 								<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 									<Lock className="h-3.5 w-3.5" />
-									كلمة المرور
-								</label>
+									{t('key_1783109428308_b9aj')}</label>
 								<input
 									type="password"
 									name="password"
@@ -285,10 +277,9 @@ export default function RegisterPage() {
 								{loading ? (
 									<>
 										<Loader2 className="h-4.5 w-4.5 animate-spin" />
-										جاري إنشاء الحساب...
-									</>
+										{t('key_1783109428519_1ctn')}</>
 								) : (
-									"تسجيل حساب جديد"
+									t('str_2KrYs9is')
 								)}
 							</button>
 						</form>
@@ -297,13 +288,12 @@ export default function RegisterPage() {
 
 				{/* Footer info */}
 				<p className="text-center text-xs text-muted-foreground">
-					لديك حساب بالفعل؟{" "}
+					{t('key_1783109428530_i57n')}{" "}
 					<Link
 						href="/login"
 						className="font-semibold text-primary hover:underline"
 					>
-						سجل دخولك هنا
-					</Link>
+						{t('key_1783109428542_p0se')}</Link>
 				</p>
 			</div>
 		</div>

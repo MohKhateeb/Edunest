@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { UserType } from "@prisma/client";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -5,15 +6,16 @@ import { DisputeChat } from "@/components/shared/DisputeChat";
 import { getSecureDisputeDetails } from "@/lib/actions/disputes";
 import { requireAuth } from "@/lib/require-auth";
 
-export const metadata = {
-	title: "تفاصيل النزاع | EduNest",
-};
+export const getMetadata = (t: any) => ({
+	title: t('edunest') ,
+});
 
 export default async function DisputePage({
 	params,
 }: {
 	params: Promise<{ id: string }>;
 }) {
+    const t = await getTranslations('common')
 	const { userId, userType } = await requireAuth([
 		UserType.ADMIN,
 		UserType.PARENT,
@@ -58,10 +60,9 @@ export default async function DisputePage({
 				</Link>
 				<div>
 					<h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-						تفاصيل ومحادثة النزاع
-					</h1>
+						{t('key_1783109434534_ebnp')}</h1>
 					<p className="text-sm text-gray-500">
-						رقم الحجز: {dispute.bookingId}
+						{t('key_1783109434542_t7lg')}{dispute.bookingId}
 					</p>
 				</div>
 			</div>
@@ -71,46 +72,43 @@ export default async function DisputePage({
 				<div className="space-y-6">
 					<div className="bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-sm border border-gray-100 dark:border-gray-700">
 						<h3 className="font-bold text-gray-900 dark:text-white mb-4 border-b border-gray-100 dark:border-gray-700 pb-2">
-							معلومات الجلسة
-						</h3>
+							{t('key_1783109434550_5pcd')}</h3>
 						<ul className="space-y-3 text-sm">
 							<li className="flex justify-between">
-								<span className="text-gray-500">المعلم:</span>
+								<span className="text-gray-500">{t('almalm')}</span>
 								<span className="font-medium text-gray-900 dark:text-white">
 									{dispute.booking.teacherService.teacher.user.name}
 								</span>
 							</li>
 							<li className="flex justify-between">
-								<span className="text-gray-500">ولي الأمر:</span>
+								<span className="text-gray-500">{t('wly_alamr_1')}</span>
 								<span className="font-medium text-gray-900 dark:text-white">
 									{dispute.booking.parent.name}
 								</span>
 							</li>
 							<li className="flex justify-between">
-								<span className="text-gray-500">الخدمة:</span>
+								<span className="text-gray-500">{t('key_1783109434580_r3vo')}</span>
 								<span className="font-medium text-gray-900 dark:text-white">
 									{dispute.booking.teacherService.serviceType.name}
 								</span>
 							</li>
 							<li className="flex justify-between">
-								<span className="text-gray-500">التاريخ:</span>
+								<span className="text-gray-500">{t('key_1783109434588_16k8')}</span>
 								<span className="font-medium text-gray-900 dark:text-white">
 									{dispute.booking.startTime.toLocaleDateString("ar-SA")}
 								</span>
 							</li>
 							<li className="flex justify-between">
-								<span className="text-gray-500">المبلغ المدفوع:</span>
+								<span className="text-gray-500">{t('key_1783109434598_q9rr')}</span>
 								<span className="font-bold text-blue-600">
-									{Number(dispute.booking.price)} شيكل
-								</span>
+									{Number(dispute.booking.price)} {t('shykl_1')}</span>
 							</li>
 						</ul>
 					</div>
 
 					<div className="bg-red-50 dark:bg-red-900/10 rounded-3xl p-6 border border-red-100 dark:border-red-900/50">
 						<h3 className="font-bold text-red-800 dark:text-red-400 mb-2">
-							سبب الاعتراض الأولي
-						</h3>
+							{t('key_1783109434613_8m9j')}</h3>
 						<p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
 							{dispute.reason}
 						</p>

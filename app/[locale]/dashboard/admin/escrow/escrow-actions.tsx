@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import { EscrowResolution } from "@prisma/client";
@@ -6,17 +8,18 @@ import { useState } from "react";
 import { resolveEscrow } from "@/lib/actions/admin-escrow";
 
 export function EscrowActions({ escrowId }: { escrowId: string }) {
+    const t = useTranslations('admin')
 	const [isLoading, setIsLoading] = useState(false);
 
 	async function handleResolve(resolution: EscrowResolution) {
-		if (!confirm("هل أنت متأكد من هذا الإجراء؟ لا يمكن التراجع عنه.")) return;
+		if (!confirm(t('key_1783109433344_k12v'))) return;
 
 		try {
 			setIsLoading(true);
 			await resolveEscrow(escrowId, resolution);
 		} catch (error) {
 			console.error(error);
-			alert("حدث خطأ أثناء تنفيذ الإجراء");
+			alert(t('key_1783109433345_340a'));
 		} finally {
 			setIsLoading(false);
 		}
@@ -26,7 +29,7 @@ export function EscrowActions({ escrowId }: { escrowId: string }) {
 		return (
 			<div className="flex items-center gap-2 text-muted-foreground">
 				<Loader2 className="h-4 w-4 animate-spin" />
-				<span className="text-sm">جاري التنفيذ...</span>
+				<span className="text-sm">{t('key_1783109433333_w0bq')}</span>
 			</div>
 		);
 	}
@@ -38,22 +41,19 @@ export function EscrowActions({ escrowId }: { escrowId: string }) {
 				onClick={() => handleResolve(EscrowResolution.REFUNDED_TO_PARENT)}
 				className="bg-red-50 text-red-600 hover:bg-red-100 border border-red-200 px-3 py-2 rounded-lg text-xs font-bold transition-colors"
 			>
-				إرجاع لولي الأمر
-			</button>
+				{t('key_1783109433337_fyz6')}</button>
 			<button
 				type="button"
 				onClick={() => handleResolve(EscrowResolution.PAID_TO_TEACHER)}
 				className="bg-green-50 text-green-600 hover:bg-green-100 border border-green-200 px-3 py-2 rounded-lg text-xs font-bold transition-colors"
 			>
-				دفع للمعلم
-			</button>
+				{t('key_1783109433340_wcy4')}</button>
 			<button
 				type="button"
 				onClick={() => handleResolve(EscrowResolution.PLATFORM_PROFIT)}
 				className="bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200 px-3 py-2 rounded-lg text-xs font-bold transition-colors"
 			>
-				تحويل لأرباح المنصة
-			</button>
+				{t('key_1783109433342_zhkc')}</button>
 		</div>
 	);
 }

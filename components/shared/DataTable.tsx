@@ -26,16 +26,16 @@ export default function DataTable<T>({
 	headers,
 	searchQuery,
 	setSearchQuery,
-	searchPlaceholder = "بحث...",
+	searchPlaceholder = "",
 	toolbarChildren,
 	renderRow,
-	emptyMessage = "لا توجد نتائج مطابقة للبحث.",
+	emptyMessage = "",
 	currentPage = 1,
 	totalPages = 1,
 	totalItems = 0,
 	itemsPerPage = 10,
 	onPageChange,
-	paginationLabel = "عنصر",
+	paginationLabel = "",
 }: DataTableProps<T>) {
     const t = useTranslations('common');
 	return (

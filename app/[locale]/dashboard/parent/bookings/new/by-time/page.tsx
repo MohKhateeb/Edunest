@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import BookingJourneyHeader from "@/components/shared/booking-journey/BookingJourneyHeader";
@@ -10,6 +11,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function BookByTimePage() {
+    const t = await getTranslations('parent')
 	const session = await auth();
 	await requireAuth([UserType.PARENT]);
 	if (!session) redirect("/login");
@@ -23,7 +25,7 @@ export default async function BookByTimePage() {
 			<div className="max-w-4xl mx-auto space-y-6 pb-20">
 				<BookingJourneyHeader
 					title="حجز جلسة جديدة"
-					subtitle="البحث بالوقت والمادة"
+					subtitle={t('str_2KfZhNio')}
 					character="hakeem"
 					characterMessage="خيار حكيم لحفظ وقتك. حدد موعدك ومادتك، وسأقوم بترشيح أفضل المعلمين المتاحين لك."
 				/>

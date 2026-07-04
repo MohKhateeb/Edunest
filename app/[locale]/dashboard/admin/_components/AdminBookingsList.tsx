@@ -94,7 +94,7 @@ export default function AdminBookingsList({
 		if (!selectedBookingId) return;
 
 		if (cancelReason.trim().length < 5) {
-			toast.warning("سبب الإلغاء قصير جداً");
+			toast.warning(t('key_1783109430208_d394'));
 			return;
 		}
 
@@ -106,12 +106,12 @@ export default function AdminBookingsList({
 		setLoading(false);
 
 		if (res.success) {
-			toast.success("تم الإلغاء بنجاح");
+			toast.success(t('key_1783109430217_gv0k'));
 			setShowCancelModal(false);
 			setCancelReason("");
 			router.refresh();
 		} else {
-			toast.error("فشل الإلغاء", { description: res.error });
+			toast.error(t('key_1783109430226_v1iu'), { description: res.error });
 		}
 	};
 
@@ -122,19 +122,19 @@ export default function AdminBookingsList({
 			<DataTable
 				data={filteredBookings}
 				headers={[
-					"معلومات الجلسة",
-					"المعلم والخدمة",
-					"الطالب وولي الأمر",
-					"الدفع",
-					"الحالة",
-					"إجراءات",
+					t('key_1783109430235_94ld'),
+					t('key_1783109430266_f6op'),
+					t('key_1783109430275_rzoy'),
+					t('key_1783109430283_p7go'),
+					t('key_1783109430292_au5h'),
+					t('key_1783109430300_mzxn'),
 				]}
 				searchQuery={searchQuery}
 				setSearchQuery={(val) => {
 					setSearchQuery(val);
 					setCurrentPage(1);
 				}}
-				searchPlaceholder="بحث بالاسم، أو رقم الحجز..."
+				searchPlaceholder={t('key_1783109430309_finn')}
 				toolbarChildren={
 					<div className="flex items-center gap-2 w-full sm:w-auto">
 						<Filter className="h-4 w-4 text-muted-foreground hidden sm:block" />
@@ -158,7 +158,7 @@ export default function AdminBookingsList({
 						</select>
 					</div>
 				}
-				emptyMessage="لا توجد حجوزات مطابقة لمعايير البحث الحالية."
+				emptyMessage={t('str_mr6bilqp_2YTYpy')}
 				renderRow={(booking) => (
 					<tr key={booking.id} className="hover:bg-muted/30 transition-colors">
 						{/* Date & Time */}
@@ -173,8 +173,7 @@ export default function AdminBookingsList({
 										hour: "2-digit",
 										minute: "2-digit",
 									})}{" "}
-									({booking.duration} دقيقة)
-								</span>
+									({booking.duration} {t('key_1783109429850_yqe2')}</span>
 								<span
 									className="text-[10px] text-muted-foreground/60 font-mono mt-1"
 									title={booking.id}
@@ -196,8 +195,7 @@ export default function AdminBookingsList({
 								</span>
 								{booking.isTrial && (
 									<span className="text-[10px] font-bold text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded w-fit mt-0.5">
-										جلسة تجريبية
-									</span>
+										{t('key_1783109429878_vt1y')}</span>
 								)}
 							</div>
 						</td>
@@ -209,11 +207,11 @@ export default function AdminBookingsList({
 									<UserIcon className="h-3.5 w-3.5 text-primary" />
 									{booking.student.name}{" "}
 									<span className="text-xs font-normal text-muted-foreground">
-										(الصف {booking.student.grade})
+										{t('key_1783109429897_ym1r')}{booking.student.grade})
 									</span>
 								</span>
 								<span className="text-xs text-muted-foreground">
-									ولي الأمر: {booking.parent.name}
+									{t('key_1783109429934_7ewj')}{booking.parent.name}
 								</span>
 							</div>
 						</td>
@@ -223,7 +221,7 @@ export default function AdminBookingsList({
 							<div className="flex flex-col gap-1">
 								<span className="font-extrabold text-foreground">
 									{booking.isTrial
-										? "مجانية"
+										? t('str_2YXYrNin')
 										: formatPrice(Number(booking.price))}
 								</span>
 								{!booking.isTrial && (
@@ -275,8 +273,7 @@ export default function AdminBookingsList({
 											className="w-full px-4 py-2 text-xs font-semibold text-foreground hover:bg-accent flex items-center gap-2 transition-colors border-b border-border/40 cursor-pointer"
 										>
 											<Search className="h-4 w-4 text-primary" />
-											عرض التفاصيل كاملة
-										</button>
+											{t('key_1783109429952_hnom')}</button>
 
 										{(booking.status === "PENDING" ||
 											booking.status === "PENDING_APPROVAL" ||
@@ -291,8 +288,7 @@ export default function AdminBookingsList({
 												className="w-full px-4 py-2 text-xs font-semibold text-destructive hover:bg-destructive/10 flex items-center gap-2 transition-colors cursor-pointer"
 											>
 												<XCircle className="h-4 w-4" />
-												إلغاء إداري
-											</button>
+												{t('key_1783109429971_8w73')}</button>
 										)}
 
 										{booking.status === "COMPLETED" && booking.report && (
@@ -305,8 +301,7 @@ export default function AdminBookingsList({
 												className="w-full px-4 py-2 text-xs font-semibold text-foreground hover:bg-accent flex items-center gap-2 transition-colors cursor-pointer"
 											>
 												<FileText className="h-4 w-4 text-blue-500" />
-												عرض التقرير
-											</button>
+												{t('key_1783109429989_as67')}</button>
 										)}
 
 										{booking.status !== "PENDING" &&
@@ -315,8 +310,7 @@ export default function AdminBookingsList({
 											booking.status !== "CONFIRMED" &&
 											!booking.report && (
 												<div className="px-4 py-3 text-xs text-muted-foreground italic text-center">
-													لا توجد إجراءات إضافية
-												</div>
+													{t('key_1783109430007_nnup')}</div>
 											)}
 									</div>
 								</>
@@ -341,7 +335,7 @@ export default function AdminBookingsList({
 								setHasMore(res.hasMore);
 								setNextCursor(res.nextCursor);
 							} catch (err) {
-								toast.error("حدث خطأ أثناء تحميل المزيد");
+								toast.error(t('str_2K3Yr9ir'));
 							} finally {
 								setIsLoadingMore(false);
 							}
@@ -349,7 +343,7 @@ export default function AdminBookingsList({
 						disabled={isLoadingMore}
 						className="px-6 py-2.5 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl font-bold transition-all disabled:opacity-50 cursor-pointer shadow-sm"
 					>
-						{isLoadingMore ? "جاري التحميل..." : "تحميل المزيد"}
+						{isLoadingMore ? t('loading') : t('str_2KrYrdmF')}
 					</button>
 				</div>
 			)}
@@ -364,8 +358,7 @@ export default function AdminBookingsList({
 						>
 							<h3 className="font-extrabold text-lg flex items-center gap-2">
 								<XCircle className="h-5 w-5 text-destructive" />
-								إلغاء حجز (إجراء إداري)
-							</h3>
+								{t('key_1783109430024_0xkk')}</h3>
 							<p className="text-xs text-muted-foreground leading-relaxed">
 								بصفتك مدير النظام، فإن إلغاءك لهذا الحجز سيتجاوز شروط الإلغاء
 								العادية وسيعتبر نهائياً. سيتم إشعار المعلم وولي الأمر.
@@ -388,14 +381,13 @@ export default function AdminBookingsList({
 									}}
 									className="text-xs font-semibold border border-border hover:bg-accent px-4 py-2 rounded-lg cursor-pointer"
 								>
-									تراجع
-								</button>
+									{t('key_1783109430052_d4am')}</button>
 								<button
 									type="submit"
 									disabled={loading}
 									className="text-xs font-semibold bg-destructive text-destructive-foreground hover:bg-destructive/90 px-4 py-2 rounded-lg shadow-sm cursor-pointer flex items-center gap-2"
 								>
-									{loading ? "جاري الإلغاء..." : "تنفيذ الإلغاء"}
+									{loading ? t('str_mr6biltq_2KzYp9') : t('str_2KrZhtmB')}
 								</button>
 							</div>
 						</form>
@@ -410,14 +402,12 @@ export default function AdminBookingsList({
 						<div className="bg-card border border-border rounded-xl max-w-md w-full p-6 space-y-5 shadow-xl relative my-8">
 							<h3 className="font-extrabold text-lg border-b border-border pb-3 flex items-center gap-2">
 								<FileText className="h-5 w-5 text-primary" />
-								تقرير الجلسة (للاطلاع الإداري)
-							</h3>
+								{t('key_1783109430098_g1w4')}</h3>
 
 							<div className="space-y-4 text-sm">
 								<div className="bg-accent/30 p-3 rounded-lg">
 									<span className="text-xs font-bold block mb-1">
-										حضور الطالب:
-									</span>
+										{t('key_1783109430118_o4bq')}</span>
 									<span
 										className={
 											selectedReport.studentAttended
@@ -426,15 +416,14 @@ export default function AdminBookingsList({
 										}
 									>
 										{selectedReport.studentAttended
-											? "✓ حضر الجلسة"
-											: "✗ غاب عن الجلسة"}
+											? t('str_4pyTINit')
+											: t('str_4pyXINi6')}
 									</span>
 								</div>
 
 								<div>
 									<span className="text-xs text-muted-foreground font-bold block mb-1">
-										المواضيع المغطاة:
-									</span>
+										{t('key_1783109430138_uiqs')}</span>
 									<p className="bg-card border border-border p-3 rounded-lg whitespace-pre-wrap">
 										{selectedReport.topicsCovered}
 									</p>
@@ -443,8 +432,7 @@ export default function AdminBookingsList({
 								{selectedReport.teacherNotes && (
 									<div>
 										<span className="text-xs text-muted-foreground font-bold block mb-1">
-											ملاحظات المعلم السفلية:
-										</span>
+											{t('key_1783109430162_o6ts')}</span>
 										<p className="bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-900/50 p-3 rounded-lg text-yellow-800 dark:text-yellow-400 whitespace-pre-wrap">
 											{selectedReport.teacherNotes}
 										</p>
@@ -458,8 +446,7 @@ export default function AdminBookingsList({
 									onClick={() => setShowReportModal(false)}
 									className="text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2.5 rounded-lg transition-colors shadow-sm cursor-pointer"
 								>
-									إغلاق
-								</button>
+									{t('key_1783109430185_ctz5')}</button>
 							</div>
 						</div>
 					</div>

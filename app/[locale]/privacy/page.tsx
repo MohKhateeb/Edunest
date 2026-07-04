@@ -1,21 +1,24 @@
+import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 
-export const metadata: Metadata = {
-	title: "سياسة الخصوصية | إديونست",
-	description:
-		"اقرأ سياسة خصوصية منصة إديونست لمعرفة كيف نحمي بياناتك الشخصية.",
-};
+export async function generateMetadata({params}: any) {
+  const t = await getTranslations({locale: params?.locale || 'ar', namespace: 'legal'});
+  return {
+    title: t('key_1783109427657_w8si'),
+    description: "EduNest platform"
+  };
+}
 
-const sections = [
+const getSections = (t: any) => [
 	{
-		title: "مقدمة",
+		title: t('key_1783109427659_ijkr') ,
 		content:
 			"تلتزم منصة إديونست بحماية خصوصيتك وبياناتك الشخصية. تصف هذه السياسة كيفية جمع المعلومات واستخدامها وحمايتها عند استخدامك للمنصة. باستخدامك لخدماتنا، فإنك توافق على الشروط الواردة في هذه الوثيقة.",
 	},
 	{
-		title: "البيانات التي نجمعها",
+		title: t('key_1783109427660_5sdf') ,
 		content: `نجمع البيانات التالية لتقديم خدماتنا بشكل صحيح:
 • الاسم الكامل وعنوان البريد الإلكتروني ورقم الهاتف عند التسجيل.
 • معلومات الطلاب (الاسم، الصف، المدرسة) التي يدخلها ولي الأمر.
@@ -24,7 +27,7 @@ const sections = [
 • بيانات الاستخدام والجلسات بهدف تحسين تجربة المنصة.`,
 	},
 	{
-		title: "كيف نستخدم بياناتك",
+		title: t('key_1783109427661_qh5o') ,
 		content: `نستخدم البيانات المجمّعة للأغراض التالية حصراً:
 • تشغيل خدمات الحجز وإدارة الجلسات التعليمية.
 • إرسال إشعارات متعلقة بحجوزاتك أو تحديثات الحساب.
@@ -33,17 +36,17 @@ const sections = [
 • تحسين جودة الخدمة وتجربة المستخدم.`,
 	},
 	{
-		title: "حفظ البيانات وأمانها",
+		title: t('key_1783109427662_b7s9') ,
 		content:
 			"يتم تخزين جميع البيانات على خوادم آمنة مشفّرة. نستخدم بروتوكول HTTPS لتشفير جميع الاتصالات. يتم تشفير كلمات المرور باستخدام خوارزمية bcrypt ولا يمكن لأحد الاطلاع عليها حتى لفريق إديونست. نحتفظ بحق حذف بياناتك بناءً على طلبك.",
 	},
 	{
-		title: "مشاركة البيانات مع أطراف ثالثة",
+		title: t('key_1783109427663_3tvr') ,
 		content:
 			"لا نبيع بياناتك أو نشاركها مع أطراف تجارية ثالثة. قد نشارك بيانات محدودة مع مزودي الخدمات التقنية (مثل خدمات التخزين السحابي) لأغراض تشغيلية فقط، وفق عقود صارمة تضمن سرية بياناتك.",
 	},
 	{
-		title: "حقوق المستخدم",
+		title: t('key_1783109427665_k1bq') ,
 		content: `يحق لك في أي وقت:
 • الاطلاع على البيانات الشخصية المحفوظة في حسابك.
 • تصحيح أي معلومات غير دقيقة أو تحديثها.
@@ -53,37 +56,38 @@ const sections = [
 للممارسة هذه الحقوق، تواصل معنا عبر البريد الإلكتروني: privacy@edunest.ps`,
 	},
 	{
-		title: "ملفات الكوكيز",
+		title: t('key_1783109427666_zwyo') ,
 		content:
 			"تستخدم المنصة ملفات تعريف الارتباط (Cookies) الضرورية للحفاظ على جلسة تسجيل الدخول وتحسين الأداء. لا نستخدم ملفات كوكيز للإعلانات أو التتبع التسويقي.",
 	},
 	{
-		title: "التعديلات على السياسة",
+		title: t('key_1783109427668_1rf0') ,
 		content:
 			"يحق لإديونست تعديل هذه السياسة في أي وقت. سيتم إخطارك بأي تغييرات جوهرية عبر البريد الإلكتروني المرتبط بحسابك أو عبر إشعار واضح في المنصة.",
 	},
 	{
-		title: "التواصل معنا",
+		title: t('key_1783109427670_l2h4') ,
 		content:
 			"إذا كان لديك أي استفسار بشأن سياسة الخصوصية، يمكنك مراسلتنا على: privacy@edunest.ps",
 	},
 ];
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+    const t = await getTranslations('legal')
 	return (
 		<div className="min-h-screen flex flex-col">
 			<Header />
 
 			<section className="bg-gradient-to-br from-[hsl(172,66%,10%)] via-[hsl(172,60%,18%)] to-[hsl(200,50%,14%)] text-white py-14">
 				<div className="max-w-4xl mx-auto px-6 text-center">
-					<h1 className="text-4xl font-extrabold mb-3">سياسة الخصوصية</h1>
-					<p className="text-white/70">آخر تحديث: مايو ٢٠٢٥</p>
+					<h1 className="text-4xl font-extrabold mb-3">{t('syash_alkhswsyh')}</h1>
+					<p className="text-white/70">{t('key_1783109428238_4n8o')}</p>
 				</div>
 			</section>
 
 			<main className="flex-1 py-12 bg-muted/20">
 				<div className="max-w-4xl mx-auto px-6 space-y-8">
-					{sections.map((section, i) => (
+					{getSections(t).map((section, i) => (
 						<div
 							key={i}
 							className="bg-card border border-border rounded-2xl p-6 md:p-8"

@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Prisma, UserType } from "@prisma/client";
 import { CreditCard, HandCoins, History, RefreshCcw } from "lucide-react";
 import Link from "next/link";
@@ -9,35 +10,33 @@ import { requireAuth } from "@/lib/require-auth";
 import type { ParentFinancialBooking } from "@/lib/services/domain/financial-service";
 import { getParentFinancials } from "@/lib/services/domain/financial-service";
 
-export const metadata = {
-	title: "السجل المالي | EduNest",
-};
+export const getMetadata = (t: any) => ({
+	title: t('edunest') ,
+});
 
 // Use the exported type from the service
 type FinancialBooking = ParentFinancialBooking;
 
 // Helper: Render Payment Status to avoid nested ternaries
-const renderPaymentStatus = (booking: FinancialBooking) => {
+const renderPaymentStatus = (booking: FinancialBooking, t: any) => {
 	if (booking.paymentStatus === "PAID") {
 		return (
 			<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 text-xs font-bold">
-				مدفوع
-			</span>
+				{t('key_1783109435571_6f8e')}</span>
 		);
 	}
 	if (booking.paymentStatus === "REFUNDED") {
 		return (
 			<div className="flex flex-col gap-1">
 				<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 dark:bg-purple-900/20 dark:text-purple-400 text-xs font-bold w-fit">
-					تم الاسترداد
-				</span>
+					{t('key_1783109435586_1hfb')}</span>
 				{booking.parentRefund && (
 					<span
 						className={`text-[10px] font-bold ${booking.parentRefund.isPaid ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"}`}
 					>
 						{booking.parentRefund.isPaid
-							? "✓ تم التحويل البنكي"
-							: "⏳ قيد التحويل للإدارة"}
+							? t('key_1783109435912_2336')
+							: t('key_1783109435917_bta7')}
 					</span>
 				)}
 			</div>
@@ -48,13 +47,12 @@ const renderPaymentStatus = (booking: FinancialBooking) => {
 	}
 	return (
 		<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-50 text-gray-700 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 text-xs font-bold">
-			غير مدفوع
-		</span>
+			{t('key_1783109435602_558t')}</span>
 	);
 };
 
 // Helper: Render Dispute Action to avoid nested ternaries
-const renderDisputeAction = (booking: FinancialBooking) => {
+const renderDisputeAction = (booking: FinancialBooking, t: any) => {
 	if (booking.dispute) {
 		return (
 			<div className="flex flex-col gap-2 items-start">
@@ -65,14 +63,13 @@ const renderDisputeAction = (booking: FinancialBooking) => {
 							: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
 					}`}
 				>
-					{booking.dispute.status === "OPEN" ? "قيد المراجعة" : "مغلق"}
+					{booking.dispute.status === "OPEN" ? t('key_1783109435921_6ps9') : t('key_1783109435926_v7xj')}
 				</span>
 				<Link
 					href={`/dashboard/disputes/${booking.dispute.id}`}
 					className="text-xs font-bold text-blue-600 hover:text-white bg-blue-50 hover:bg-blue-600 px-3 py-1.5 rounded-lg transition-all border border-blue-100 dark:border-blue-900/50"
 				>
-					متابعة النزاع
-				</Link>
+					{t('key_1783109435616_h0rt')}</Link>
 			</div>
 		);
 	}
@@ -81,8 +78,7 @@ const renderDisputeAction = (booking: FinancialBooking) => {
 	}
 	return (
 		<span className="text-gray-400 dark:text-gray-600 text-xs font-medium">
-			لا يوجد
-		</span>
+			{t('key_1783109435627_j07z')}</span>
 	);
 };
 
@@ -91,6 +87,7 @@ export default async function ParentFinancialsPage({
 }: {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+    const t = await getTranslations('parent')
 	const { userId } = await requireAuth([UserType.PARENT]);
 	const resolvedParams = await searchParams;
 
@@ -106,11 +103,9 @@ export default async function ParentFinancialsPage({
 				<div>
 					<h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 flex items-center gap-2">
 						<History className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-						السجل المالي
-					</h1>
+						{t('key_1783109435638_xzva')}</h1>
 					<p className="text-gray-500 dark:text-gray-400 mt-2 font-medium">
-						تابع جميع مدفوعاتك، واطلع على سجلات الاسترداد والنزاعات.
-					</p>
+						{t('key_1783109435647_bdqr')}</p>
 				</div>
 			</div>
 
@@ -125,12 +120,11 @@ export default async function ParentFinancialsPage({
 							<CreditCard className="w-6 h-6 text-blue-600 dark:text-blue-400" />
 						</div>
 						<p className="text-sm font-bold text-gray-500 dark:text-gray-400">
-							إجمالي المدفوعات
-						</p>
+							{t('key_1783109435658_fikd')}</p>
 					</div>
 					<h3 className="text-4xl font-extrabold text-gray-900 dark:text-white flex items-baseline gap-1">
 						{totalSpent}
-						<span className="text-lg font-medium text-gray-400">شيكل</span>
+						<span className="text-lg font-medium text-gray-400">{t('key_1783109435668_uuuk')}</span>
 					</h3>
 				</div>
 				<div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-3xl p-6 text-white shadow-[0_8px_30px_rgb(16,185,129,0.2)] relative overflow-hidden group hover:-translate-y-1 transition-all duration-300">
@@ -141,14 +135,12 @@ export default async function ParentFinancialsPage({
 								<RefreshCcw className="w-6 h-6 text-emerald-50" />
 							</div>
 							<p className="text-sm font-bold text-emerald-50">
-								المبالغ المستردة
-							</p>
+								{t('key_1783109435696_1gdy')}</p>
 						</div>
 						<h3 className="text-4xl font-extrabold flex items-baseline gap-1">
 							{totalRefunded}
 							<span className="text-lg font-medium text-emerald-100/80">
-								شيكل
-							</span>
+								{t('key_1783109435668_uuuk')}</span>
 						</h3>
 					</div>
 				</div>
@@ -159,8 +151,7 @@ export default async function ParentFinancialsPage({
 				<form className="flex-1 flex flex-col sm:flex-row gap-5 w-full">
 					<div className="flex-1">
 						<label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wide">
-							التاريخ
-						</label>
+							{t('key_1783109435711_vk59')}</label>
 						<input
 							type="date"
 							name="date"
@@ -170,14 +161,13 @@ export default async function ParentFinancialsPage({
 					</div>
 					<div className="flex-1">
 						<label className="block text-xs font-bold text-gray-500 mb-1.5 uppercase tracking-wide">
-							المعلم
-						</label>
+							{t('key_1783109435728_3w53')}</label>
 						<select
 							name="teacher"
 							defaultValue={teacherFilter}
 							className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 outline-none focus:ring-2 focus:ring-blue-500 transition-all"
 						>
-							<option value="">الجميع</option>
+							<option value="">{t('key_1783109435742_ulfn')}</option>
 							{teachers.map((t) => (
 								<option key={t.id} value={t.id}>
 									{t.name}
@@ -190,15 +180,13 @@ export default async function ParentFinancialsPage({
 							type="submit"
 							className="w-full sm:w-auto bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-8 py-2.5 rounded-xl font-bold hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors shadow-md"
 						>
-							تصفية
-						</button>
+							{t('key_1783109435753_9a9l')}</button>
 						{(dateFilter || teacherFilter) && (
 							<Link
 								href="/dashboard/parent/financials"
 								className="text-red-500 text-sm font-bold hover:underline self-center bg-red-50 dark:bg-red-900/20 px-3 py-1.5 rounded-lg border border-red-100 dark:border-red-900/50 mb-1"
 							>
-								إلغاء الفلتر
-							</Link>
+								{t('key_1783109435763_6xzs')}</Link>
 						)}
 					</div>
 				</form>
@@ -211,31 +199,24 @@ export default async function ParentFinancialsPage({
 						<div className="p-2 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl">
 							<HandCoins className="w-5 h-5" />
 						</div>
-						حركات الدفع والاسترداد
-					</h2>
+						{t('key_1783109435774_4x1g')}</h2>
 				</div>
 				<div className="overflow-x-auto">
 					<table className="w-full text-start">
 						<thead>
 							<tr className="bg-gray-50/50 dark:bg-gray-900/30 border-b border-gray-100/50 dark:border-gray-700/50">
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
-									التاريخ
-								</th>
+									{t('key_1783109435711_vk59')}</th>
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
-									المعلم / الخدمة
-								</th>
+									{t('key_1783109435789_4gl2')}</th>
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
-									الطالب
-								</th>
+									{t('key_1783109435799_dahc')}</th>
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
-									المبلغ
-								</th>
+									{t('key_1783109435809_o5gj')}</th>
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
-									حالة الدفع
-								</th>
+									{t('key_1783109435835_apr3')}</th>
 								<th className="px-6 py-4 text-xs font-bold text-gray-500 uppercase tracking-wider">
-									النزاع
-								</th>
+									{t('key_1783109435846_vm8l')}</th>
 							</tr>
 						</thead>
 						<tbody className="divide-y divide-gray-100/50 dark:divide-gray-700/50">
@@ -245,8 +226,7 @@ export default async function ParentFinancialsPage({
 										colSpan={6}
 										className="px-6 py-12 text-center text-gray-500"
 									>
-										لا توجد حركات مالية مسجلة.
-									</td>
+										{t('key_1783109435857_cx1j')}</td>
 								</tr>
 							) : (
 								bookings.map((booking) => (
@@ -260,8 +240,7 @@ export default async function ParentFinancialsPage({
 										<td className="px-6 py-4">
 											<div className="font-bold text-gray-900 dark:text-white flex items-center gap-1.5">
 												<span className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 text-[10px]">
-													م
-												</span>
+													{t('key_1783109435869_x31n')}</span>
 												{booking.teacherService.teacher.user.name}
 											</div>
 											<div className="text-xs text-gray-500 mt-1">
@@ -271,8 +250,7 @@ export default async function ParentFinancialsPage({
 										<td className="px-6 py-4 text-sm font-medium text-gray-700 dark:text-gray-200">
 											<div className="flex items-center gap-1.5">
 												<span className="w-4 h-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center text-[8px]">
-													ط
-												</span>
+													{t('key_1783109435885_euef')}</span>
 												{booking.student.name}
 											</div>
 										</td>
@@ -280,13 +258,13 @@ export default async function ParentFinancialsPage({
 											<span className="font-extrabold text-gray-900 dark:text-white">
 												{booking.price}
 											</span>
-											<span className="text-xs text-gray-500 ms-1">شيكل</span>
+											<span className="text-xs text-gray-500 ms-1">{t('key_1783109435668_uuuk')}</span>
 										</td>
 										<td className="px-6 py-4">
-											{renderPaymentStatus(booking)}
+											{renderPaymentStatus(booking, t)}
 										</td>
 										<td className="px-6 py-4">
-											{renderDisputeAction(booking)}
+											{renderDisputeAction(booking, t)}
 										</td>
 									</tr>
 								))

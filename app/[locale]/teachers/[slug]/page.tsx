@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,26 +10,26 @@ import StarRating from "@/components/shared/StarRating";
 import { auth } from "@/lib/auth";
 import { UserService } from "@/lib/services/domain/user-service";
 
-const GRADE_LABELS: Record<number, string> = {
-	1: "الأول",
-	2: "الثاني",
-	3: "الثالث",
-	4: "الرابع",
-	5: "الخامس",
-	6: "السادس",
-	7: "السابع",
-	8: "الثامن",
-	9: "التاسع",
-	10: "العاشر",
-	11: "الحادي عشر",
-	12: "الثاني عشر",
-};
+const getGradeLabels = (t: any): Record<number, string> => ({
+	1: t('key_1783109427957_e53t') ,
+	2: t('key_1783109427963_de9z') ,
+	3: t('key_1783109427968_jq6s') ,
+	4: t('key_1783109427987_kasc') ,
+	5: t('key_1783109427993_569z') ,
+	6: t('key_1783109427998_8ikp') ,
+	7: t('key_1783109428004_vcdi') ,
+	8: t('key_1783109428009_ffra') ,
+	9: t('key_1783109428016_rsv5') ,
+	10: t('key_1783109428022_dg13') ,
+	11: t('key_1783109428028_5si7') ,
+	12: t('key_1783109428033_85m6') ,
+});
 
-const VERIFICATION_LABELS: Record<string, string> = {
-	BRONZE: "🥉 برونزي",
-	SILVER: "🥈 فضي",
-	GOLD: "🥇 ذهبي",
-};
+const getVerificationLabels = (t: any): Record<string, string> => ({
+	BRONZE: t('key_1783109429415_wbip') ,
+	SILVER: t('key_1783109429422_1ndn') ,
+	GOLD: t('key_1783109429429_v3ds') ,
+});
 
 async function getTeacher(slug: string) {
 	const teacher = await UserService.getTeacherPublicProfile(slug);
@@ -40,9 +41,10 @@ async function getTeacher(slug: string) {
 export async function generateMetadata({
 	params,
 }: {
-	params: Promise<{ slug: string }>;
+	params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
-	const { slug } = await params;
+	const { slug, locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'teachers' });
 	const teacher = await UserService.getTeacherMetadata(slug);
 
 	if (!teacher || !teacher.user.isActive) {
@@ -50,7 +52,7 @@ export async function generateMetadata({
 	}
 
 	const spec =
-		teacher.subjects?.map((s) => s.subject.name).join(", ") || "غير محدد";
+		teacher.subjects?.map((s) => s.subject.name).join(", ") || t('ghyr_mhdd');
 
 	return {
 		title: `${teacher.user.name} - معلم ${spec} | إديونست`,
@@ -63,9 +65,12 @@ export async function generateMetadata({
 export default async function TeacherProfilePage({
 	params,
 }: {
-	params: Promise<{ slug: string }>;
+	params: Promise<{ slug: string; locale: string }>;
 }) {
-	const { slug } = await params;
+	const { slug, locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'teachers' });
+	const GRADE_LABELS = getGradeLabels(t);
+	const VERIFICATION_LABELS = getVerificationLabels(t);
 	const teacher = await getTeacher(slug);
 	const session = await auth();
 
@@ -107,7 +112,7 @@ export default async function TeacherProfilePage({
 						</div>
 						<p className="text-white/70 text-lg mb-3">
 							{teacher.subjects?.map((s) => s.subject.name).join(", ") ||
-								"غير محدد"}
+								t('ghyr_mhdd')}
 							{teacher.subSpecialization
 								? ` · ${teacher.subSpecialization}`
 								: ""}

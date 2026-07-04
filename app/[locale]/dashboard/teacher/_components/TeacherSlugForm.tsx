@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import {
@@ -21,6 +23,7 @@ export default function TeacherSlugForm({
 	currentSlug,
 	slugUpdated,
 }: TeacherSlugFormProps) {
+    const t = useTranslations('teachers')
 	const [slug, setSlug] = useState(currentSlug);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -43,25 +46,25 @@ export default function TeacherSlugForm({
 			}
 
 			if (slug === currentSlug) {
-				setError("الرابط مطابق للرابط الحالي.");
+				setError(t('key_1783109437507_8c3s'));
 				setLoading(false);
 				return;
 			}
 
 			const res = await updateTeacherSlug({ slug });
 			if (res.success) {
-				toast.success("تم تحديث الرابط بنجاح!", {
+				toast.success(t('key_1783109437508_0ozw'), {
 					description: `الرابط الجديد الخاص بك هو: ${slug}`,
 				});
-				setSuccess("تم التحديث بنجاح"); // just to freeze the UI
+				setSuccess(t('key_1783109437510_rp4j')); // just to freeze the UI
 			} else {
-				toast.error("حدث خطأ", {
-					description: res.error || "حدث خطأ غير متوقع",
+				toast.error(t('key_1783109436860_ynpf'), {
+					description: res.error || t('key_1783109437514_98vo'),
 				});
 			}
 		} catch (err) {
-			toast.error("خطأ في الاتصال", {
-				description: "حدث خطأ أثناء الاتصال بالخادم",
+			toast.error(t('key_1783109437518_6uag'), {
+				description: t('key_1783109437521_ve8j'),
 			});
 		} finally {
 			setLoading(false);
@@ -73,14 +76,12 @@ export default function TeacherSlugForm({
 			<div className="p-6 border-b border-border bg-muted/20">
 				<h2 className="text-xl font-extrabold flex items-center gap-2">
 					<LinkIcon className="h-5 w-5 text-primary" />
-					رابط الملف الشخصي (Slug)
-				</h2>
+					{t('slug')}</h2>
 				<p className="text-sm text-muted-foreground mt-2">
 					هذا هو الرابط الذي سيظهر للطلاب وأولياء الأمور للوصول إلى ملفك الشخصي.
 					{!slugUpdated && (
 						<strong className="text-amber-600 block mt-1">
-							تنبيه: يمكنك تعديل هذا الرابط لمرة واحدة فقط.
-						</strong>
+							{t('key_1783109437480_xfwy')}</strong>
 					)}
 				</p>
 			</div>
@@ -88,7 +89,7 @@ export default function TeacherSlugForm({
 			<div className="p-6">
 				<form onSubmit={handleSubmit} className="space-y-6">
 					<div className="space-y-2">
-						<label className="text-sm font-bold block">الرابط المخصص</label>
+						<label className="text-sm font-bold block">{t('key_1783109437488_y0zv')}</label>
 						<div className="flex flex-col sm:flex-row gap-3">
 							<div
 								className="relative flex-1 flex items-center rtl:flex-row-reverse text-end"
@@ -117,7 +118,7 @@ export default function TeacherSlugForm({
 									{loading ? (
 										<Loader2 className="h-5 w-5 animate-spin" />
 									) : (
-										"حفظ الرابط"
+										t('key_1783109437523_vryy')
 									)}
 								</button>
 							)}
@@ -126,12 +127,10 @@ export default function TeacherSlugForm({
 						{slugUpdated || success ? (
 							<p className="text-xs text-emerald-600 font-semibold flex items-center gap-1 mt-2">
 								<CheckCircle2 className="h-4 w-4" />
-								تم تحديد الرابط ولا يمكن تعديله.
-							</p>
+								{t('key_1783109437494_edxl')}</p>
 						) : (
 							<p className="text-xs text-muted-foreground">
-								يسمح باستخدام الأحرف الإنجليزية، الأرقام، والشرطات (-) فقط.
-							</p>
+								{t('key_1783109437501_i20y')}</p>
 						)}
 					</div>
 				</form>

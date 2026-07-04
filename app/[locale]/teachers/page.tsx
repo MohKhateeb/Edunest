@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import type { Prisma } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -49,18 +50,22 @@ const GRADE_LABELS: Record<number, string> = {
 
 export default async function TeachersPage({
 	searchParams,
+	params,
 }: {
 	searchParams: Promise<SearchParams>;
+	params: Promise<{ locale: string }>;
 }) {
-	const params = await searchParams;
-	const { teachers, total, page, PAGE_SIZE } = await getTeachers(params);
+	const resolvedSearchParams = await searchParams;
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'teachers' });
+	const { teachers, total, page, PAGE_SIZE } = await getTeachers(resolvedSearchParams);
 	const totalPages = Math.ceil(total / PAGE_SIZE);
 
 	function buildUrl(overrides: Record<string, string | undefined>) {
 		const qp = new URLSearchParams();
 		const merged = {
-			subject: params.subject,
-			city: params.city,
+			subject: resolvedSearchParams.subject,
+			city: resolvedSearchParams.city,
 			page: String(page),
 			...overrides,
 		};
@@ -97,14 +102,14 @@ export default async function TeachersPage({
 						<input
 							name="subject"
 							id="search-subject"
-							defaultValue={params.subject}
+							defaultValue={resolvedSearchParams.subject}
 							placeholder="التخصص (رياضيات، فيزياء...)"
 							className="flex-1 rounded-xl px-4 py-3 text-foreground bg-white/95 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
 						/>
 						<select
 							name="city"
 							id="search-city"
-							defaultValue={params.city}
+							defaultValue={resolvedSearchParams.city}
 							className="rounded-xl px-4 py-3 text-foreground bg-white/95 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
 						>
 							<option value="">جميع المدن</option>
@@ -124,11 +129,11 @@ export default async function TeachersPage({
 					</form>
 
 					{/* Active filters */}
-					{(params.subject || params.city) && (
+					{(resolvedSearchParams.subject || resolvedSearchParams.city) && (
 						<div className="flex flex-wrap justify-center gap-2 mt-4">
-							{params.subject && (
+							{resolvedSearchParams.subject && (
 								<span className="bg-white/15 border border-white/25 rounded-full px-3 py-1 text-xs flex items-center gap-2">
-									{params.subject}
+									{resolvedSearchParams.subject}
 									<Link
 										href={buildUrl({ subject: undefined, page: "1" })}
 										className="hover:text-red-300"
@@ -137,9 +142,9 @@ export default async function TeachersPage({
 									</Link>
 								</span>
 							)}
-							{params.city && (
+							{resolvedSearchParams.city && (
 								<span className="bg-white/15 border border-white/25 rounded-full px-3 py-1 text-xs flex items-center gap-2">
-									{params.city}
+									{resolvedSearchParams.city}
 									<Link
 										href={buildUrl({ city: undefined, page: "1" })}
 										className="hover:text-red-300"
@@ -180,37 +185,37 @@ export default async function TeachersPage({
 						</div>
 					) : (
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-							{teachers.map((t) => {
-								const minPrice = t.services[0]
-									? Number(t.services[0].price)
+							{teachers.map((teacher) => {
+								const minPrice = teacher.services[0]
+									? Number(teacher.services[0].price)
 									: null;
 								return (
 									<Link
-										key={t.id}
-										href={`/teachers/${t.slug}`}
-										id={`teacher-card-${t.id}`}
+										key={teacher.id}
+										href={`/teachers/${teacher.slug}`}
+										id={`teacher-card-${teacher.id}`}
 										className="hover-card glow-effect group bg-card border border-border rounded-2xl overflow-hidden flex flex-col"
 									>
 										{/* Avatar */}
 										<div className="relative h-28 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent flex items-center justify-center">
-											{t.profileImageUrl ? (
+											{teacher.profileImageUrl ? (
 												<Image
-													src={t.profileImageUrl}
-													alt={t.user.name}
+													src={teacher.profileImageUrl}
+													alt={teacher.user.name}
 													width={64}
 													height={64}
 													className="w-16 h-16 rounded-full object-cover border-4 border-white shadow-md"
 												/>
 											) : (
 												<div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-2xl font-bold text-primary border-4 border-white shadow-md">
-													{t.user.name.charAt(0)}
+													{teacher.user.name.charAt(0)}
 												</div>
 											)}
-											{t.verificationLevel !== "NONE" && (
+											{teacher.verificationLevel !== "NONE" && (
 												<span className="absolute top-2 start-2 text-xs bg-white/90 dark:bg-card/90 rounded-full px-2 py-0.5 font-bold shadow-sm">
-													{t.verificationLevel === "GOLD"
+													{teacher.verificationLevel === "GOLD"
 														? "🥇"
-														: t.verificationLevel === "SILVER"
+														: teacher.verificationLevel === "SILVER"
 															? "🥈"
 															: "🥉"}
 												</span>
@@ -220,35 +225,35 @@ export default async function TeachersPage({
 										{/* Info */}
 										<div className="p-4 flex flex-col flex-1">
 											<h2 className="font-bold text-sm group-hover:text-primary transition-colors mb-0.5 truncate">
-												{t.user.name}
+												{teacher.user.name}
 											</h2>
 											<p className="text-xs text-muted-foreground mb-1 truncate">
-												{t.subjects?.map((s) => s.subject.name).join(", ") ||
-													"غير محدد"}
-												{t.subSpecialization ? ` · ${t.subSpecialization}` : ""}
+												{teacher.subjects?.map((s) => s.subject.name).join(", ") ||
+													t('ghyr_mhdd')}
+												{teacher.subSpecialization ? ` · ${teacher.subSpecialization}` : ""}
 											</p>
-											{t.city && (
+											{teacher.city && (
 												<p className="text-xs text-muted-foreground mb-2">
-													📍 {t.city}
-													{t.area ? ` - ${t.area}` : ""}
+													📍 {teacher.city}
+													{teacher.area ? ` - ${teacher.area}` : ""}
 												</p>
 											)}
-											{t.gradeLevels.length > 0 && (
+											{teacher.gradeLevels.length > 0 && (
 												<p className="text-xs text-muted-foreground mb-3">
 													الصفوف:{" "}
-													{t.gradeLevels
+													{teacher.gradeLevels
 														.slice(0, 3)
 														.map((g) => GRADE_LABELS[g] ?? g)
 														.join("، ")}
-													{t.gradeLevels.length > 3 && " ..."}
+													{teacher.gradeLevels.length > 3 && " ..."}
 												</p>
 											)}
 
 											<div className="mt-auto flex items-center justify-between text-xs border-t border-border pt-3">
 												<span className="flex items-center gap-1 text-amber-500 font-semibold">
-													★ {Number(t.averageRating).toFixed(1)}
+													★ {Number(teacher.averageRating).toFixed(1)}
 													<span className="text-muted-foreground font-normal">
-														({t.totalReviews})
+														({teacher.totalReviews})
 													</span>
 												</span>
 												{minPrice !== null && (

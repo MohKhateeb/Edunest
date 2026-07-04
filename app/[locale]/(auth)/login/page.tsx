@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import { AlertCircle, Loader2, Lock, Mail } from "lucide-react";
@@ -9,6 +11,7 @@ import { useState } from "react";
 import { loginSchema } from "@/lib/validations/user";
 
 export default function LoginPage() {
+    const t = useTranslations('common')
 	const router = useRouter();
 	const [formData, setFormData] = useState({
 		email: "",
@@ -48,7 +51,7 @@ export default function LoginPage() {
 						"عذراً، تم إيقاف نشاط هذا الحساب. يرجى التواصل مع إدارة المنصة للاستفسار والدعم.",
 					);
 				} else {
-					setErrorMsg("البريد الإلكتروني أو كلمة المرور غير صحيحة");
+					setErrorMsg(t('key_1783109428350_uyay'));
 				}
 				setLoading(false);
 			} else {
@@ -68,7 +71,7 @@ export default function LoginPage() {
 			}
 		} catch (err: unknown) {
 			console.error(err);
-			setErrorMsg("حدث خطأ غير متوقع أثناء تسجيل الدخول");
+			setErrorMsg(t('key_1783109428355_pf24'));
 			setLoading(false);
 		}
 	};
@@ -92,11 +95,9 @@ export default function LoginPage() {
 						/>
 					</Link>
 					<h2 className="text-2xl font-bold tracking-tight text-foreground/90">
-						أهلاً بك مجدداً
-					</h2>
+						{t('key_1783109428284_xgiz')}</h2>
 					<p className="text-xs text-muted-foreground">
-						قم بتسجيل الدخول إلى حسابك للمتابعة
-					</p>
+						{t('key_1783109428294_9jzl')}</p>
 				</div>
 
 				{/* Card Form */}
@@ -112,8 +113,7 @@ export default function LoginPage() {
 						<div className="space-y-1.5">
 							<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 								<Mail className="h-3.5 w-3.5" />
-								البريد الإلكتروني
-							</label>
+								{t('albryd_alilktrwny')}</label>
 							<input
 								type="email"
 								name="email"
@@ -128,8 +128,7 @@ export default function LoginPage() {
 						<div className="space-y-1.5">
 							<label className="text-xs font-semibold text-muted-foreground flex items-center gap-1.5">
 								<Lock className="h-3.5 w-3.5" />
-								كلمة المرور
-							</label>
+								{t('key_1783109428308_b9aj')}</label>
 							<input
 								type="password"
 								name="password"
@@ -149,10 +148,9 @@ export default function LoginPage() {
 							{loading ? (
 								<>
 									<Loader2 className="h-4.5 w-4.5 animate-spin" />
-									جاري تسجيل الدخول...
-								</>
+									{t('key_1783109428316_742l')}</>
 							) : (
-								"تسجيل الدخول"
+								t('tsjyl_aldkhwl')
 							)}
 						</button>
 					</form>
@@ -160,13 +158,12 @@ export default function LoginPage() {
 
 				{/* Footer info */}
 				<p className="text-center text-xs text-muted-foreground">
-					ليس لديك حساب؟{" "}
+					{t('key_1783109428324_a7lm')}{" "}
 					<Link
 						href="/register"
 						className="font-semibold text-primary hover:underline"
 					>
-						أنشئ حساباً جديداً الآن
-					</Link>
+						{t('key_1783109428330_gl0e')}</Link>
 				</p>
 			</div>
 		</div>

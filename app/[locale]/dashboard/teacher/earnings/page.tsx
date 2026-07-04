@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { UserType } from "@prisma/client";
 import {
 	AlertCircle,
@@ -14,15 +15,16 @@ import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import { requireAuth } from "@/lib/require-auth";
 import { getTeacherEarningsWallet } from "@/lib/services/domain/financial-service";
 
-export const metadata = {
-	title: "الأرباح والتسويات | EduNest",
-};
+export const getMetadata = (t: any) => ({
+	title: t('edunest') ,
+});
 
 export default async function TeacherEarningsPage({
 	searchParams,
 }: {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+    const t = await getTranslations('teachers')
 	const { userId } = await requireAuth([UserType.TEACHER]);
 	const resolvedParams = await searchParams;
 	const currentTab = (resolvedParams.tab as string) || "overview";
@@ -31,7 +33,7 @@ export default async function TeacherEarningsPage({
 	try {
 		wallet = await getTeacherEarningsWallet(userId);
 	} catch (e) {
-		return <div>حدث خطأ، لا يوجد ملف معلم.</div>;
+		return <div>{t('key_1783109437881_3u10')}</div>;
 	}
 
 	const {
@@ -48,12 +50,12 @@ export default async function TeacherEarningsPage({
 
 	// Tab Navigation items
 	const tabs = [
-		{ id: "overview", label: "نظرة عامة", icon: Wallet },
-		{ id: "history", label: "سجل الجلسات", icon: History },
-		{ id: "payouts", label: "التسويات المالية", icon: Landmark },
+		{ id: "overview", label: t('key_1783109438826_378y'), icon: Wallet },
+		{ id: "history", label: t('key_1783109438834_3r4f'), icon: History },
+		{ id: "payouts", label: t('key_1783109438842_s0yd'), icon: Landmark },
 		{
 			id: "disputes",
-			label: "النزاعات",
+			label: t('key_1783109438851_6vos'),
 			icon: AlertCircle,
 			badge: openDisputesCount,
 		},
@@ -68,8 +70,7 @@ export default async function TeacherEarningsPage({
 				<div className="lg:w-1/2">
 					<h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 flex items-center gap-2">
 						<Wallet className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-						محفظتك المالية
-					</h1>
+						{t('key_1783109437911_u7mm')}</h1>
 					<p className="text-gray-500 dark:text-gray-400 mt-2 font-medium leading-relaxed">
 						محفظتك الذكية للتحكم بأموالك. راقب الجلسات المكتملة، وتتبع مستحقاتك
 						بكل بساطة وبطريقة خالية من التشتت!
@@ -148,12 +149,11 @@ export default async function TeacherEarningsPage({
 								<Landmark className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
 							</div>
 							<p className="text-sm font-bold text-gray-500 dark:text-gray-400">
-								إجمالي الأرباح المستلمة
-							</p>
+								{t('key_1783109437941_2f1v')}</p>
 						</div>
 						<h3 className="text-4xl font-extrabold text-gray-900 dark:text-white flex items-baseline gap-1">
 							{totalPaid.toFixed(2)}
-							<span className="text-lg font-medium text-gray-400">شيكل</span>
+							<span className="text-lg font-medium text-gray-400">{t('key_1783109437260_rpev')}</span>
 						</h3>
 					</div>
 
@@ -166,14 +166,12 @@ export default async function TeacherEarningsPage({
 									<Wallet className="w-6 h-6 text-emerald-50" />
 								</div>
 								<p className="text-sm font-bold text-emerald-50">
-									الرصيد المتاح للتسوية
-								</p>
+									{t('key_1783109438029_g6l6')}</p>
 							</div>
 							<h3 className="text-4xl font-extrabold flex items-baseline gap-1">
 								{availableToPayout.toFixed(2)}
 								<span className="text-lg font-medium text-emerald-100/80">
-									شيكل
-								</span>
+									{t('key_1783109437260_rpev')}</span>
 							</h3>
 						</div>
 					</div>
@@ -188,12 +186,11 @@ export default async function TeacherEarningsPage({
 								<Clock className="w-6 h-6 text-amber-600 dark:text-amber-400" />
 							</div>
 							<p className="text-sm font-bold text-gray-500 dark:text-gray-400">
-								رصيد معلق أو قيد التحويل
-							</p>
+								{t('key_1783109438059_kd0x')}</p>
 						</div>
 						<h3 className="text-4xl font-extrabold text-gray-900 dark:text-white flex items-baseline gap-1">
 							{(heldAmount + totalPendingPayouts).toFixed(2)}
-							<span className="text-lg font-medium text-gray-400">شيكل</span>
+							<span className="text-lg font-medium text-gray-400">{t('key_1783109437260_rpev')}</span>
 						</h3>
 						<p className="text-[10px] text-amber-600 dark:text-amber-400 mt-3 font-medium bg-amber-50 dark:bg-amber-900/20 p-2 rounded-lg border border-amber-100 dark:border-amber-900/50 flex items-start gap-1.5">
 							<AlertCircle className="w-3 h-3 shrink-0 mt-0.5" />
@@ -209,15 +206,13 @@ export default async function TeacherEarningsPage({
 					<div className="flex justify-between items-center bg-gray-50 dark:bg-gray-800/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-700">
 						<h2 className="font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2">
 							<History className="w-5 h-5 text-blue-500" />
-							بطاقات الجلسات السابقة (أحدث 100)
-						</h2>
+							{t('100')}</h2>
 					</div>
 
 					<div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
 						{normalBookings.length === 0 ? (
 							<div className="col-span-full py-12 text-center text-gray-500 bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700">
-								لا توجد جلسات مكتملة حتى الآن.
-							</div>
+								{t('key_1783109438161_b9gk')}</div>
 						) : (
 							normalBookings.map((booking) => {
 								const price = booking.price;
@@ -236,8 +231,7 @@ export default async function TeacherEarningsPage({
 												</h3>
 												<p className="text-xs text-gray-500 mt-1.5 flex items-center gap-1.5">
 													<span className="w-4 h-4 bg-blue-50 text-blue-600 dark:bg-blue-900/30 rounded-full flex items-center justify-center text-[9px] font-bold">
-														ط
-													</span>
+														{t('key_1783109438180_8x4w')}</span>
 													{booking.student.name}
 												</p>
 											</div>
@@ -246,12 +240,10 @@ export default async function TeacherEarningsPage({
 													{net.toFixed(2)}
 												</span>
 												<span className="text-[10px] text-gray-500 ms-1">
-													شيكل
-												</span>
+													{t('key_1783109437260_rpev')}</span>
 												{booking.isTrial && (
 													<div className="text-[9px] bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded mt-0.5 font-medium text-center">
-														تجريبية
-													</div>
+														{t('key_1783109438383_r6ga')}</div>
 												)}
 											</div>
 										</div>
@@ -265,23 +257,19 @@ export default async function TeacherEarningsPage({
 													href={`/dashboard/teacher/bookings/${booking.id}`}
 													className="text-[11px] font-bold text-blue-600 hover:text-blue-700 hover:underline"
 												>
-													عرض الجلسة &larr;
-												</Link>
+													{t('larr')}</Link>
 											</div>
 											<div>
 												{booking.payoutId ? (
 													<span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300 text-[10px] font-bold">
 														<CheckCircle2 className="w-3 h-3 text-emerald-500" />{" "}
-														تم تسويتها
-													</span>
+														{t('key_1783109438421_j8zf')}</span>
 												) : isUnder24h ? (
 													<span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400 text-[10px] font-bold">
-														<Clock className="w-3 h-3" /> محتجز (24 س)
-													</span>
+														<Clock className="w-3 h-3" /> {t('str_2YXYrdiq')}</span>
 												) : (
 													<span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-900/20 dark:text-emerald-400 text-[10px] font-bold">
-														<Wallet className="w-3 h-3" /> متاح للسحب
-													</span>
+														<Wallet className="w-3 h-3" /> {t('key_1783109438458_m91f')}</span>
 												)}
 											</div>
 										</div>
@@ -299,33 +287,30 @@ export default async function TeacherEarningsPage({
 					<div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-50 dark:bg-gray-800/50 p-4 rounded-2xl border border-gray-100 dark:border-gray-700 gap-4">
 						<h2 className="font-bold text-gray-700 dark:text-gray-300 flex items-center gap-2">
 							<Landmark className="w-5 h-5 text-emerald-500" />
-							سجل التحويلات البنكية والتسويات
-						</h2>
+							{t('key_1783109438497_jm04')}</h2>
 						<form className="flex items-center gap-2 w-full sm:w-auto">
 							<select
 								name="status"
 								defaultValue={(resolvedParams.status as string) || ""}
 								className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-xl px-4 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 flex-1"
 							>
-								<option value="">جميع الحالات</option>
-								<option value="PAID">مدفوعة</option>
-								<option value="PENDING">قيد التحويل</option>
+								<option value="">{t('key_1783109438514_a4lb')}</option>
+								<option value="PAID">{t('key_1783109438532_tyhd')}</option>
+								<option value="PENDING">{t('key_1783109438551_ufn0')}</option>
 							</select>
 							<input type="hidden" name="tab" value="payouts" />
 							<button
 								type="submit"
 								className="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-100 transition-colors shrink-0"
 							>
-								تصفية
-							</button>
+								{t('key_1783109438570_6mxs')}</button>
 						</form>
 					</div>
 
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 						{payouts.length === 0 ? (
 							<div className="col-span-full py-12 text-center text-gray-500 bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700">
-								لا توجد تسويات مالية سابقة.
-							</div>
+								{t('key_1783109438588_7wax')}</div>
 						) : (
 							(resolvedParams.status
 								? payouts.filter((p) =>
@@ -343,13 +328,11 @@ export default async function TeacherEarningsPage({
 										</span>
 										{payout.isPaid ? (
 											<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
-												<CheckCircle2 className="w-3 h-3" /> تم التحويل
-											</span>
+												<CheckCircle2 className="w-3 h-3" /> {t('key_1783109438605_0edl')}</span>
 										) : (
 											<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400">
 												<span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>{" "}
-												قيد التحويل البنكي
-											</span>
+												{t('key_1783109438638_zn87')}</span>
 										)}
 									</div>
 									<div>
@@ -357,8 +340,7 @@ export default async function TeacherEarningsPage({
 											{Number(payout.netAmount).toFixed(2)}
 										</span>
 										<span className="text-sm text-gray-500 ms-1 font-bold">
-											شيكل
-										</span>
+											{t('key_1783109437260_rpev')}</span>
 									</div>
 									<div className="border-t border-gray-100 dark:border-gray-700 pt-3 text-xs text-gray-500 flex justify-between items-center">
 										<span className="font-mono">
@@ -383,8 +365,7 @@ export default async function TeacherEarningsPage({
 					<div className="flex justify-between items-center bg-red-50 dark:bg-red-900/10 p-4 rounded-2xl border border-red-100 dark:border-red-900/30">
 						<h2 className="font-bold text-red-800 dark:text-red-400 flex items-center gap-2">
 							<AlertCircle className="w-5 h-5" />
-							النزاعات النشطة والمغلقة
-						</h2>
+							{t('key_1783109438663_gmk9')}</h2>
 					</div>
 
 					<div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -392,8 +373,7 @@ export default async function TeacherEarningsPage({
 							<div className="col-span-full py-12 text-center text-gray-500 bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 flex flex-col items-center gap-2">
 								<CheckCircle2 className="w-8 h-8 text-emerald-500" />
 								<span className="font-bold">
-									لا توجد أي نزاعات مالية. أداؤك ممتاز!
-								</span>
+									{t('key_1783109438681_c1ab')}</span>
 							</div>
 						) : (
 							disputedBookings.map((booking) => {
@@ -413,8 +393,7 @@ export default async function TeacherEarningsPage({
 												</h3>
 												<p className="text-xs text-gray-500 mt-1.5 flex items-center gap-1.5">
 													<span className="w-4 h-4 bg-red-50 text-red-600 dark:bg-red-900/30 rounded-full flex items-center justify-center text-[9px] font-bold">
-														ط
-													</span>
+														{t('key_1783109438180_8x4w')}</span>
 													{booking.student.name}
 												</p>
 											</div>
@@ -423,8 +402,7 @@ export default async function TeacherEarningsPage({
 													{net.toFixed(2)}
 												</span>
 												<span className="text-[10px] text-gray-500 ms-1">
-													شيكل
-												</span>
+													{t('key_1783109437260_rpev')}</span>
 											</div>
 										</div>
 
@@ -442,17 +420,14 @@ export default async function TeacherEarningsPage({
 												{booking.dispute!.status === "OPEN" ? (
 													<>
 														<span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>{" "}
-														قيد المراجعة
-													</>
+														{t('key_1783109437597_84u6')}</>
 												) : booking.dispute!.status ===
 													"RESOLVED_IN_FAVOR_OF_TEACHER" ? (
 													<>
-														<CheckCircle2 className="w-3 h-3" /> حُسم لصالحك
-													</>
+														<CheckCircle2 className="w-3 h-3" /> {t('key_1783109438735_pi1n')}</>
 												) : (
 													<>
-														<AlertCircle className="w-3 h-3" /> حُسم لولي الأمر
-													</>
+														<AlertCircle className="w-3 h-3" /> {t('key_1783109438753_5o9b')}</>
 												)}
 											</span>
 
@@ -461,14 +436,12 @@ export default async function TeacherEarningsPage({
 													href={`/dashboard/teacher/bookings/${booking.id}`}
 													className="text-[10px] font-bold text-gray-500 hover:text-gray-900 dark:hover:text-white hover:underline transition-all"
 												>
-													تفاصيل الجلسة
-												</Link>
+													{t('key_1783109438785_td74')}</Link>
 												<Link
 													href={`/dashboard/disputes/${booking.dispute!.id}`}
 													className="text-[10px] font-bold text-white bg-gray-900 dark:bg-white dark:text-gray-900 hover:bg-blue-600 dark:hover:bg-blue-500 px-3 py-1.5 rounded-lg transition-all shadow-sm"
 												>
-													المحادثة
-												</Link>
+													{t('key_1783109438800_5bev')}</Link>
 											</div>
 										</div>
 									</div>

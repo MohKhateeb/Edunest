@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -10,14 +12,18 @@ import {
 	TrendingUp 
 } from "lucide-react";
 
-const tabs = [
-	{ id: "overview", label: "النظرة العامة والإيرادات", icon: Activity },
-	{ id: "revenue", label: "تفاصيل أرباح المنصة", icon: TrendingUp },
-	{ id: "payouts", label: "تسويات المعلمين", icon: BadgeDollarSign },
-	{ id: "escrow", label: "الأموال المجمدة", icon: ShieldAlert },
+const getTabs = (t: ReturnType<typeof useTranslations>) => [
+	{ id: "overview", label: t('key_1783109439387_fkhc'), icon: Activity },
+	{ id: "revenue", label: t('key_1783109434023_f2go'), icon: TrendingUp },
+	{ id: "payouts", label: t('key_1783109439390_h1o3'), icon: BadgeDollarSign },
+	{ id: "escrow", label: t('key_1783109439390_4o2q'), icon: ShieldAlert },
 ];
 
+import { useMemo } from 'react';
+
 export default function FinancialTabs() {
+    const t = useTranslations('admin');
+	const tabs = useMemo(() => getTabs(t), [t]);
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();

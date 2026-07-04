@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import React from "react";
 import AnnouncementBanner from "@/components/home/AnnouncementBanner";
 import AssuranceSection from "@/components/home/AssuranceSection";
@@ -11,16 +12,17 @@ import { defaultHomepageContent } from "@/lib/default-homepage-content";
 import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 import type { HomepageContent } from "@/types/homepage";
 
-export const metadata = {
-	title: "إديونست | المنصة التعليمية الفلسطينية الأولى",
+export const getMetadata = (t: any) => ({
+	title: t('key_1783109425880_bpgi') ,
 	description:
 		"ابحث عن معلم خصوصي موثوق لطفلك في الضفة الغربية. حجز فوري، دفع آمن، ومتابعة مستمرة.",
-};
+});
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function HomePage() {
+    const t = await getTranslations('common')
 	// Fetch dynamic content
 	let content: HomepageContent = defaultHomepageContent;
 	try {

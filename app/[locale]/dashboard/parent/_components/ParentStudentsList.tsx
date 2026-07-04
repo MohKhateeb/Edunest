@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import type { Student } from "@prisma/client";
@@ -28,6 +30,7 @@ interface ParentStudentsListProps {
 export default function ParentStudentsList({
 	students,
 }: ParentStudentsListProps) {
+    const t = useTranslations('parent')
 	const [selectedStudentId, setSelectedStudentId] = useState<string | null>(
 		null,
 	);
@@ -62,7 +65,7 @@ export default function ParentStudentsList({
 
 		setEditLoading(false);
 		if (res.success) {
-			toast.success("تم تحديث بيانات الطالب بنجاح");
+			toast.success(t('key_1783109435286_doei'));
 			setEditingStudent(null);
 		} else {
 			setEditError(res.error);
@@ -76,8 +79,7 @@ export default function ParentStudentsList({
 				<AlertCircle className="h-4.5 w-4.5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
 				<div>
 					<span className="font-extrabold block mb-1">
-						💡 تنويه هام بخصوص تعديل البيانات:
-					</span>
+						{t('key_1783109435128_p4t3')}</span>
 					تعديل معلومات الطالب (الاسم، الصف، المدرسة) متاح بالكامل طالما **لم
 					يتم حجز أي جلسة تعليمية** له بعد. بمجرد جدولة أول جلسة، سيتم إغلاق
 					التعديل تلقائياً لحفظ نزاهة تقارير وسجلات الحصص.
@@ -89,8 +91,7 @@ export default function ParentStudentsList({
 					<NajeebCharacter mode="study" size="md" animated={true} />
 					<div>
 						<p className="text-sm font-bold text-foreground">
-							لم تقم بإضافة أي طالب لحسابك بعد
-						</p>
+							{t('key_1783109435145_eqo2')}</p>
 						<p className="text-xs text-muted-foreground mt-1 leading-relaxed">
 							استخدم النموذج الجانبي لإضافة طالبك الأول للبدء بجدولة الحصص
 							الدراسية.
@@ -117,7 +118,7 @@ export default function ParentStudentsList({
 												{student.name}
 											</h3>
 											<span className="text-[10px] text-primary bg-primary/10 px-2 py-0.5 rounded-full font-semibold">
-												الصف الدراسي {student.grade}
+												{t('key_1783109435172_fuun')}{student.grade}
 											</span>
 										</div>
 									</div>
@@ -125,7 +126,7 @@ export default function ParentStudentsList({
 									{student.school && (
 										<div className="text-xs text-muted-foreground flex items-center gap-1.5 pt-1">
 											<MapPin className="h-3.5 w-3.5 text-muted-foreground/60" />
-											<span>المدرسة: {student.school}</span>
+											<span>{t('key_1783109435181_xelz')}{student.school}</span>
 										</div>
 									)}
 								</div>
@@ -136,8 +137,7 @@ export default function ParentStudentsList({
 										className="text-[11px] font-bold text-muted-foreground hover:text-foreground border border-border hover:bg-accent/40 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
 									>
 										<Eye className="h-3.5 w-3.5" />
-										التفاصيل والسجل
-									</button>
+										{t('key_1783109435192_t05b')}</button>
 
 									{hasBookings ? (
 										<button
@@ -146,16 +146,14 @@ export default function ParentStudentsList({
 											title="تم قفل التعديل لوجود جلسات مسجلة لهذا الطالب"
 										>
 											<Edit3 className="h-3.5 w-3.5" />
-											التعديل مقفل
-										</button>
+											{t('key_1783109435202_23i7')}</button>
 									) : (
 										<button
 											onClick={() => openEditModal(student)}
 											className="text-[11px] font-bold text-teal-600 hover:text-white border border-teal-600/20 hover:bg-teal-600 hover:border-teal-600 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
 										>
 											<Edit3 className="h-3.5 w-3.5" />
-											تعديل البيانات
-										</button>
+											{t('key_1783109435211_vpxv')}</button>
 									)}
 								</div>
 							</div>
@@ -175,7 +173,7 @@ export default function ParentStudentsList({
 							<div className="flex justify-between items-center border-b border-border pb-2.5">
 								<h3 className="font-extrabold text-base flex items-center gap-2">
 									<Edit3 className="h-5 w-5 text-primary" />
-									تعديل بيانات الطالب: {editingStudent.name}
+									{t('key_1783109435221_fyiv')}{editingStudent.name}
 								</h3>
 								<button
 									type="button"
@@ -195,8 +193,7 @@ export default function ParentStudentsList({
 
 							<div className="space-y-1">
 								<label className="text-xs font-semibold text-muted-foreground block">
-									اسم الطالب *
-								</label>
+									{t('key_1783109434675_cs3c')}</label>
 								<input
 									type="text"
 									required
@@ -208,8 +205,7 @@ export default function ParentStudentsList({
 
 							<div className="space-y-1">
 								<label className="text-xs font-semibold text-muted-foreground block">
-									الصف الدراسي *
-								</label>
+									{t('key_1783109434682_n7ap')}</label>
 								<select
 									value={editGrade}
 									onChange={(e) => setEditGrade(e.target.value)}
@@ -219,7 +215,7 @@ export default function ParentStudentsList({
 										const classNum = index + 1;
 										return (
 											<option key={classNum} value={classNum}>
-												الصف {classNum}
+												{t('key_1783109434688_iusf')}{classNum}
 											</option>
 										);
 									})}
@@ -228,8 +224,7 @@ export default function ParentStudentsList({
 
 							<div className="space-y-1">
 								<label className="text-xs font-semibold text-muted-foreground block">
-									المدرسة (اختياري)
-								</label>
+									{t('key_1783109434693_b2kq')}</label>
 								<input
 									type="text"
 									value={editSchool}
@@ -244,8 +239,7 @@ export default function ParentStudentsList({
 									onClick={() => setEditingStudent(null)}
 									className="text-xs font-semibold border border-border hover:bg-accent px-4 py-2 rounded-lg cursor-pointer"
 								>
-									تراجع
-								</button>
+									{t('key_1783109435266_g45y')}</button>
 								<button
 									type="submit"
 									disabled={editLoading}
@@ -254,10 +248,9 @@ export default function ParentStudentsList({
 									{editLoading ? (
 										<>
 											<Loader2 className="h-4 w-4 animate-spin" />
-											جاري الحفظ...
-										</>
+											{t('key_1783109435276_ufwe')}</>
 									) : (
-										"حفظ التغييرات"
+										t('str_2K3Zgdi4')
 									)}
 								</button>
 							</div>

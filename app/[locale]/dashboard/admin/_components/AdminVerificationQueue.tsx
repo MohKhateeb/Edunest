@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import type { VerificationLevel } from "@prisma/client";
@@ -39,6 +41,7 @@ type AdminVerificationQueueProps = {
 export default function AdminVerificationQueue({
 	requests,
 }: AdminVerificationQueueProps) {
+    const t = useTranslations('admin')
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const [selectedRequestId, setSelectedRequestId] = useState<string | null>(
@@ -95,13 +98,12 @@ export default function AdminVerificationQueue({
 			<div className="lg:col-span-1 bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all space-y-4">
 				<h3 className="font-extrabold text-sm border-b border-border pb-2.5 flex items-center gap-2">
 					<Clock className="h-5 w-5 text-yellow-600" />
-					طلبات التوثيق المعلقة ({requests.length})
+					{t('key_1783109432629_cct4')}{requests.length})
 				</h3>
 
 				{requests.length === 0 ? (
 					<p className="text-xs text-muted-foreground py-10 text-center">
-						لا توجد طلبات توثيق معلقة جديدة حالياً.
-					</p>
+						{t('key_1783109432652_htpn')}</p>
 				) : (
 					<div className="space-y-2">
 						{requests.map((r) => (
@@ -139,10 +141,10 @@ export default function AdminVerificationQueue({
 									<span className="text-[10px] text-primary truncate block">
 										{r.teacher.subjects
 											?.map((s) => s.subject.name)
-											.join(", ") || "غير محدد"}
+											.join(", ") || t('key_1783109433088_wcfa')}
 									</span>
 									<span className="text-[9px] text-muted-foreground block">
-										تاريخ الطلب:{" "}
+										{t('key_1783109432666_p17l')}{" "}
 										{new Date(r.createdAt).toLocaleDateString("ar-EG")}
 									</span>
 								</div>
@@ -178,13 +180,13 @@ export default function AdminVerificationQueue({
 									<span className="text-xs text-primary">
 										{activeRequest.teacher.subjects
 											?.map((s) => s.subject.name)
-											.join(", ") || "غير محدد"}{" "}
+											.join(", ") || t('key_1783109433088_wcfa')}{" "}
 										| {activeRequest.teacher.user.email}
 									</span>
 								</div>
 							</div>
 							<span className="text-xs text-muted-foreground">
-								الموقع: {activeRequest.teacher.city || "غير محدد"}
+								{t('key_1783109432681_ftxr')}{activeRequest.teacher.city || t('key_1783109433088_wcfa')}
 							</span>
 						</div>
 
@@ -198,7 +200,7 @@ export default function AdminVerificationQueue({
 						{/* Document Links */}
 						<div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
 							<div className="p-4 border border-border rounded-xl bg-accent/20 space-y-2">
-								<span className="text-xs font-bold block">الهوية الوطنية</span>
+								<span className="text-xs font-bold block">{t('key_1783109432696_5erq')}</span>
 								{activeRequest.nationalIdUrl ? (
 									<a
 										href={activeRequest.nationalIdUrl}
@@ -207,17 +209,15 @@ export default function AdminVerificationQueue({
 										className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1"
 									>
 										<FileText className="h-4 w-4" />
-										عرض مستند الهوية
-									</a>
+										{t('key_1783109432712_yjaw')}</a>
 								) : (
-									<span className="text-xs text-rose-500">غير مرفوع</span>
+									<span className="text-xs text-rose-500">{t('key_1783109432725_e3qn')}</span>
 								)}
 							</div>
 
 							<div className="p-4 border border-border rounded-xl bg-accent/20 space-y-2">
 								<span className="text-xs font-bold block">
-									الشهادة الجامعية
-								</span>
+									{t('key_1783109432748_oj41')}</span>
 								{activeRequest.degreeUrl ? (
 									<a
 										href={activeRequest.degreeUrl}
@@ -226,15 +226,14 @@ export default function AdminVerificationQueue({
 										className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1"
 									>
 										<FileText className="h-4 w-4" />
-										عرض ملف الشهادة
-									</a>
+										{t('key_1783109432773_1keu')}</a>
 								) : (
-									<span className="text-xs text-rose-500">غير مرفوع</span>
+									<span className="text-xs text-rose-500">{t('key_1783109432725_e3qn')}</span>
 								)}
 							</div>
 
 							<div className="p-4 border border-border rounded-xl bg-accent/20 space-y-2">
-								<span className="text-xs font-bold block">مقطع الفيديو</span>
+								<span className="text-xs font-bold block">{t('key_1783109432794_m4uh')}</span>
 								{activeRequest.videoInterviewUrl ? (
 									<a
 										href={activeRequest.videoInterviewUrl}
@@ -243,12 +242,10 @@ export default function AdminVerificationQueue({
 										className="text-[11px] font-semibold text-primary hover:underline flex items-center gap-1"
 									>
 										<FileText className="h-4 w-4" />
-										عرض الفيديو التعريفي
-									</a>
+										{t('key_1783109432816_1ohv')}</a>
 								) : (
 									<span className="text-xs text-muted-foreground">
-										غير مرفوع
-									</span>
+										{t('key_1783109432725_e3qn')}</span>
 								)}
 							</div>
 						</div>
@@ -256,9 +253,9 @@ export default function AdminVerificationQueue({
 						{/* Educational Info */}
 						<div className="flex justify-between items-center bg-accent/20 p-3.5 border border-border rounded-xl">
 							<div className="text-xs text-muted-foreground">
-								المؤهلات الأكاديمية:{" "}
+								{t('key_1783109432842_7ojj')}{" "}
 								<strong className="text-foreground/80">
-									{activeRequest.teacher.education || "غير محدد"}
+									{activeRequest.teacher.education || t('key_1783109433088_wcfa')}
 								</strong>
 							</div>
 							<button
@@ -269,8 +266,7 @@ export default function AdminVerificationQueue({
 								className="text-[10px] font-bold text-primary border border-primary/20 hover:bg-primary hover:text-primary-foreground px-3 py-1.5 rounded-lg transition-all cursor-pointer flex items-center gap-1"
 							>
 								<FileText className="h-3.5 w-3.5" />
-								عرض الملف التعريفي الكامل
-							</button>
+								{t('key_1783109432859_w5vl')}</button>
 						</div>
 
 						{/* Decision buttons */}
@@ -282,8 +278,7 @@ export default function AdminVerificationQueue({
 								>
 									<div className="space-y-1">
 										<label className="text-xs font-semibold text-muted-foreground block">
-											سبب الرفض *
-										</label>
+											{t('key_1783109432877_zjsq')}</label>
 										<textarea
 											required
 											value={rejectReason}
@@ -299,15 +294,13 @@ export default function AdminVerificationQueue({
 											onClick={() => setShowRejectForm(false)}
 											className="text-xs font-semibold border border-border hover:bg-accent px-4 py-2 rounded-lg cursor-pointer"
 										>
-											تراجع
-										</button>
+											{t('key_1783109430052_d4am')}</button>
 										<button
 											type="submit"
 											disabled={loading}
 											className="text-xs font-semibold bg-destructive text-destructive-foreground hover:bg-destructive/90 px-4 py-2 rounded-lg cursor-pointer shadow-sm"
 										>
-											تأكيد الرفض
-										</button>
+											{t('key_1783109432968_5j5k')}</button>
 									</div>
 								</form>
 							) : (
@@ -317,8 +310,7 @@ export default function AdminVerificationQueue({
 										className="text-xs font-semibold border border-destructive/20 hover:bg-rose-50 text-destructive px-4 py-2.5 rounded-lg flex items-center gap-1 cursor-pointer transition-colors"
 									>
 										<XCircle className="h-4 w-4" />
-										رفض الطلب
-									</button>
+										{t('key_1783109432989_xm37')}</button>
 
 									<div className="flex gap-2 flex-wrap">
 										<button
@@ -327,24 +319,21 @@ export default function AdminVerificationQueue({
 											className="text-xs font-semibold bg-orange-100 hover:bg-orange-200 text-orange-800 px-3 py-2.5 rounded-lg flex items-center gap-1 cursor-pointer transition-colors shadow-sm"
 										>
 											<ShieldCheck className="h-4 w-4" />
-											توثيق برونزي
-										</button>
+											{t('key_1783109433022_s19g')}</button>
 										<button
 											onClick={() => handleVerify("SILVER")}
 											disabled={loading}
 											className="text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-800 px-3 py-2.5 rounded-lg flex items-center gap-1 cursor-pointer transition-colors shadow-sm"
 										>
 											<ShieldCheck className="h-4 w-4" />
-											توثيق فضي
-										</button>
+											{t('key_1783109433041_gvf7')}</button>
 										<button
 											onClick={() => handleVerify("GOLD")}
 											disabled={loading}
 											className="text-xs font-semibold bg-yellow-100 hover:bg-yellow-200 text-yellow-800 px-3 py-2.5 rounded-lg flex items-center gap-1 cursor-pointer transition-colors shadow-sm"
 										>
 											<ShieldCheck className="h-4 w-4" />
-											توثيق ذهبي
-										</button>
+											{t('key_1783109433056_hxb8')}</button>
 									</div>
 								</>
 							)}

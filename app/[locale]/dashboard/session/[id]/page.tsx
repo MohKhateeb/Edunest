@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import SessionLobbyClient from "@/components/shared/SessionLobbyClient";
@@ -10,6 +11,7 @@ export default async function SessionLobbyPage({
 }: {
 	params: Promise<{ id: string }>;
 }) {
+    const t = await getTranslations('common')
 	const session = await auth();
 	await requireAuth([UserType.ADMIN, UserType.TEACHER, UserType.PARENT]);
 	if (!session) redirect("/login");
@@ -47,8 +49,8 @@ export default async function SessionLobbyPage({
 				isParent={isParent}
 				paymentStatus={booking.paymentStatus}
 				meetingUrl={booking.meetingUrl}
-				teacherName={booking.teacherService.teacher.user.name || "المعلم"}
-				studentName={booking.student.name || "الطالب"}
+				teacherName={booking.teacherService.teacher.user.name || t('almalm_1')}
+				studentName={booking.student.name || t('altalb_1')}
 				subject={booking.teacherService.serviceType.name}
 				price={Number(booking.price)}
 			/>

@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import {
@@ -38,6 +40,7 @@ export default function TeacherProfileForm({
 	initialData,
 	subjects,
 }: TeacherProfileFormProps) {
+    const t = useTranslations('teachers')
 	const router = useRouter();
 	const [formData, setFormData] = useState<ProfileData>(initialData);
 	const [loading, setLoading] = useState(false);
@@ -78,13 +81,13 @@ export default function TeacherProfileForm({
 
 			if (res.ok && resData.url) {
 				setFormData({ ...formData, profileImageUrl: resData.url });
-				toast.success("تم رفع الصورة بنجاح");
+				toast.success(t('key_1783109436826_vckz'));
 			} else {
-				toast.error("فشل رفع الصورة الشخصية", { description: resData.error });
+				toast.error(t('key_1783109436854_cy6q'), { description: resData.error });
 			}
 		} catch (err) {
-			toast.error("حدث خطأ", {
-				description: "تعذر الاتصال بالخادم لرفع الصورة",
+			toast.error(t('key_1783109436860_ynpf'), {
+				description: t('key_1783109436867_u8gb'),
 			});
 			setUploadingImage(false);
 		}
@@ -96,8 +99,8 @@ export default function TeacherProfileForm({
 
 		const validated = teacherProfileSchema.safeParse(formData);
 		if (!validated.success) {
-			toast.error("بيانات غير مكتملة", {
-				description: "الرجاء التأكد من تعبئة جميع الحقول المطلوبة بشكل صحيح.",
+			toast.error(t('key_1783109436874_ejip'), {
+				description: t('key_1783109436882_uspg'),
 			});
 			setLoading(false);
 			return;
@@ -119,12 +122,12 @@ export default function TeacherProfileForm({
 		setLoading(false);
 
 		if (res.success) {
-			toast.success("تم الحفظ بنجاح", {
-				description: "تم تحديث بيانات الملف الشخصي الخاص بك.",
+			toast.success(t('key_1783109436890_8izn'), {
+				description: t('key_1783109436897_b15e'),
 			});
 			router.refresh();
 		} else {
-			toast.error("خطأ", { description: res.error });
+			toast.error(t('key_1783109436907_1yfi'), { description: res.error });
 		}
 	};
 
@@ -140,7 +143,7 @@ export default function TeacherProfileForm({
 		<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl shadow-sm hover:shadow-md transition-all overflow-hidden">
 			{/* Stepper Header */}
 			<div className="bg-muted/30 border-b border-border px-8 py-6">
-				<h2 className="font-extrabold text-xl mb-6">إعداد الملف الشخصي</h2>
+				<h2 className="font-extrabold text-xl mb-6">{t('key_1783109436491_vjnq')}</h2>
 				<div className="flex items-center justify-between relative">
 					<div className="absolute top-1/2 start-0 end-0 h-0.5 bg-border -z-10 -translate-y-1/2" />
 					{[1, 2, 3].map((step) => {
@@ -172,10 +175,10 @@ export default function TeacherProfileForm({
 									)}
 								>
 									{step === 1
-										? "المعلومات الشخصية"
+										? t('key_1783109436916_tcor')
 										: step === 2
-											? "التخصص والخبرات"
-											: "الأسعار والنبذة"}
+											? t('key_1783109436923_kkxz')
+											: t('key_1783109436931_k7c9')}
 								</span>
 							</div>
 						);
@@ -219,26 +222,21 @@ export default function TeacherProfileForm({
 									>
 										{uploadingImage ? (
 											<>
-												<Loader2 className="h-3.5 w-3.5 animate-spin" /> جاري
-												الرفع...
-											</>
+												<Loader2 className="h-3.5 w-3.5 animate-spin" /> {t('key_1783109436513_772a')}</>
 										) : (
 											<>
-												<Upload className="h-3.5 w-3.5" /> اختيار الصورة الشخصية
-											</>
+												<Upload className="h-3.5 w-3.5" /> {t('key_1783109436540_7aq0')}</>
 										)}
 									</label>
 									<span className="text-[10px] text-muted-foreground block mt-1">
-										تنسيق JPG أو PNG، بحد أقصى 2 ميجابايت
-									</span>
+										{t('jpg_png_2')}</span>
 								</div>
 							</div>
 
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										المدينة *
-									</label>
+										{t('key_1783109436573_14mj')}</label>
 									<input
 										type="text"
 										required
@@ -252,8 +250,7 @@ export default function TeacherProfileForm({
 								</div>
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										المنطقة / الحي (اختياري)
-									</label>
+										{t('key_1783109436590_sd91')}</label>
 									<input
 										type="text"
 										value={formData.area || ""}
@@ -274,8 +271,7 @@ export default function TeacherProfileForm({
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										المواد التي تدرسها *
-									</label>
+										{t('key_1783109436607_q798')}</label>
 									<div className="flex flex-wrap gap-2 mt-2">
 										{subjects.map((sub) => {
 											const isSelected = formData.subjectIds.includes(sub.id);
@@ -307,8 +303,7 @@ export default function TeacherProfileForm({
 
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										التخصص الفرعي (اختياري)
-									</label>
+										{t('key_1783109436624_zz9l')}</label>
 									<input
 										type="text"
 										value={formData.subSpecialization || ""}
@@ -325,8 +320,7 @@ export default function TeacherProfileForm({
 
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										التعليم والمؤهلات الأكاديمية
-									</label>
+										{t('key_1783109436650_vxyv')}</label>
 									<input
 										type="text"
 										value={formData.education || ""}
@@ -343,8 +337,7 @@ export default function TeacherProfileForm({
 
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										سنوات الخبرة *
-									</label>
+										{t('key_1783109436670_ogem')}</label>
 									<input
 										type="number"
 										required
@@ -363,8 +356,7 @@ export default function TeacherProfileForm({
 
 							<div className="space-y-2">
 								<label className="text-xs font-semibold text-muted-foreground block">
-									المراحل والصفوف الدراسية التي تدرسها *
-								</label>
+									{t('key_1783109436685_ib59')}</label>
 								<div className="flex flex-wrap gap-2 pt-1">
 									{availableGrades.map((grade) => {
 										const isSelected = formData.gradeLevels.includes(grade);
@@ -380,7 +372,7 @@ export default function TeacherProfileForm({
 														: "bg-card border-border hover:border-primary/50 hover:bg-primary/5 text-muted-foreground",
 												)}
 											>
-												الصف {grade}
+												{t('key_1783109436708_v2n4')}{grade}
 											</button>
 										);
 									})}
@@ -394,8 +386,7 @@ export default function TeacherProfileForm({
 						<div className="space-y-6 animate-in fade-in slide-in-from-start-4">
 							<div className="space-y-1.5 max-w-sm">
 								<label className="text-xs font-semibold text-muted-foreground block">
-									سعر الساعة الافتراضي (شيكل) *
-								</label>
+									{t('key_1783109436725_v7oa')}</label>
 								<div className="relative">
 									<span className="absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium">
 										₪
@@ -418,8 +409,7 @@ export default function TeacherProfileForm({
 
 							<div className="space-y-1.5">
 								<label className="text-xs font-semibold text-muted-foreground block">
-									النبذة التعريفية (السيرة الشخصية)
-								</label>
+									{t('key_1783109436741_eief')}</label>
 								<textarea
 									rows={5}
 									value={formData.bio || ""}
@@ -443,8 +433,7 @@ export default function TeacherProfileForm({
 						className="text-sm font-semibold px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 disabled:opacity-0 hover:bg-accent"
 					>
 						<ChevronRight className="h-4 w-4" />
-						السابق
-					</button>
+						{t('key_1783109436758_8vai')}</button>
 
 					{currentStep < totalSteps ? (
 						<button
@@ -452,8 +441,7 @@ export default function TeacherProfileForm({
 							onClick={nextStep}
 							className="bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors flex items-center gap-1.5 shadow-md"
 						>
-							التالي
-							<ChevronLeft className="h-4 w-4" />
+							{t('key_1783109436775_514c')}<ChevronLeft className="h-4 w-4" />
 						</button>
 					) : (
 						<button
@@ -464,12 +452,10 @@ export default function TeacherProfileForm({
 						>
 							{loading ? (
 								<>
-									<Loader2 className="h-4.5 w-4.5 animate-spin" /> حفظ وإكمال...
-								</>
+									<Loader2 className="h-4.5 w-4.5 animate-spin" /> {t('key_1783109436792_31gx')}</>
 							) : (
 								<>
-									<Save className="h-4.5 w-4.5" /> حفظ البيانات
-								</>
+									<Save className="h-4.5 w-4.5" /> {t('key_1783109436809_p1cs')}</>
 							)}
 						</button>
 					)}

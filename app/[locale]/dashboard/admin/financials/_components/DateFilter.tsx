@@ -1,3 +1,5 @@
+import { useTranslations } from "next-intl";
+
 "use client";
 
 import { Calendar } from "lucide-react";
@@ -5,6 +7,7 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useCallback, useState } from "react";
 
 export default function DateFilter() {
+    const t = useTranslations('admin')
 	const router = useRouter();
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -38,7 +41,7 @@ export default function DateFilter() {
 		<div className="flex flex-col sm:flex-row items-center gap-3 bg-white dark:bg-card p-3 rounded-2xl border border-border shadow-sm">
 			<div className="flex items-center gap-2">
 				<Calendar className="w-5 h-5 text-muted-foreground" />
-				<span className="text-sm font-bold">تصفية بالتاريخ:</span>
+				<span className="text-sm font-bold">{t('key_1783109439370_ac8c')}</span>
 			</div>
 			<div className="flex items-center gap-2">
 				<input
@@ -47,7 +50,7 @@ export default function DateFilter() {
 					onChange={(e) => setFrom(e.target.value)}
 					className="text-sm border border-input rounded-lg px-3 py-1.5 bg-background"
 				/>
-				<span className="text-muted-foreground">إلى</span>
+				<span className="text-muted-foreground">{t('key_1783109439374_3g5i')}</span>
 				<input
 					type="date"
 					value={to}
@@ -58,15 +61,13 @@ export default function DateFilter() {
 					onClick={applyFilter}
 					className="bg-primary text-primary-foreground px-4 py-1.5 rounded-lg text-sm font-bold hover:bg-primary/90 transition-colors"
 				>
-					تطبيق
-				</button>
+					{t('key_1783109439377_bola')}</button>
 				{hasFilters && (
 					<button
 						onClick={clearFilter}
 						className="text-muted-foreground hover:text-foreground text-sm px-2 transition-colors underline"
 					>
-						إلغاء الفلتر
-					</button>
+						{t('key_1783109439380_z0ll')}</button>
 				)}
 			</div>
 		</div>

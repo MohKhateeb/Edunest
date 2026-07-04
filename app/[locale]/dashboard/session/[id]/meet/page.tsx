@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import JitsiMeetingRoomWrapper from "@/components/shared/JitsiMeetingRoomWrapper";
@@ -10,6 +11,7 @@ export default async function SessionMeetPage({
 }: {
 	params: Promise<{ id: string }>;
 }) {
+    const t = await getTranslations('common')
 	const session = await auth();
 	await requireAuth([UserType.ADMIN, UserType.TEACHER, UserType.PARENT]);
 	if (!session) redirect("/login");
@@ -42,8 +44,8 @@ export default async function SessionMeetPage({
 
 	const role = isTeacher ? "TEACHER" : "PARENT";
 	const userName = isTeacher
-		? booking.teacherService.teacher.user.name || "معلم"
-		: booking.student.name || "طالب";
+		? booking.teacherService.teacher.user.name || t('key_1783109439414_5tqo')
+		: booking.student.name || t('key_1783109439415_1mh2');
 	const roomName = booking.meetingUrl
 		? new URL(booking.meetingUrl).pathname.slice(1)
 		: `edunest-${booking.id}`;

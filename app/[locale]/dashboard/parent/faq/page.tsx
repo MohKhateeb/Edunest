@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { FAQCategory, UserType } from "@prisma/client";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
@@ -7,12 +8,17 @@ import { getFAQs } from "@/lib/actions/faq";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 
-export const metadata: Metadata = {
-	title: "الأسئلة الشائعة | منصة إديونست",
-	description: "الأسئلة الشائعة لأولياء الأمور",
-};
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'parent' });
+	return {
+		title: t('key_1783109435564_5v7o'),
+		description: t('key_1783109435565_p510'),
+	};
+}
 
 export default async function ParentFAQPage() {
+    const t = await getTranslations('parent')
 	const session = await auth();
 	await requireAuth([UserType.PARENT]);
 	if (!session) redirect("/login");
@@ -22,7 +28,7 @@ export default async function ParentFAQPage() {
 	return (
 		<div className="space-y-6 text-start">
 			<div className="border-b border-border/40 pb-4">
-				<h1 className="text-2xl font-black mb-1">الأسئلة الشائعة</h1>
+				<h1 className="text-2xl font-black mb-1">{t('key_1783109435561_o60u')}</h1>
 				<p className="text-xs text-muted-foreground">
 					تجد هنا إجابات لأكثر الأسئلة شيوعاً حول استخدام المنصة، الحجوزات،
 					والمدفوعات الخاصة بأولياء الأمور.
@@ -31,7 +37,7 @@ export default async function ParentFAQPage() {
 
 			{!res.success ? (
 				<div className="p-4 bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 rounded-2xl border border-red-200/50">
-					{res.error || "حدث خطأ أثناء جلب البيانات"}
+					{res.error || t('key_1783109435567_70fa')}
 				</div>
 			) : (
 				<div className="bg-card border border-border/80 rounded-3xl p-6 shadow-premium relative overflow-visible mt-12">

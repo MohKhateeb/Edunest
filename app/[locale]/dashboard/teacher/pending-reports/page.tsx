@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { UserType } from "@prisma/client";
 import { FileText } from "lucide-react";
 import { redirect } from "next/navigation";
@@ -8,6 +9,7 @@ import { sanitizePrismaData } from "@/lib/utils";
 import PendingReportsClient from "./_components/PendingReportsClient";
 
 export default async function TeacherPendingReportsPage() {
+    const t = await getTranslations('teachers')
 	const session = await auth();
 	await requireAuth([UserType.TEACHER]);
 
@@ -23,8 +25,7 @@ export default async function TeacherPendingReportsPage() {
 			<div>
 				<h1 className="text-2xl font-black flex items-center gap-2">
 					<FileText className="h-7 w-7 text-primary" />
-					تقارير الجلسات المعلقة
-				</h1>
+					{t('key_1783109439058_ulm4')}</h1>
 				<p className="text-muted-foreground mt-1">
 					الرجاء كتابة تقارير الأداء فوراً لتفادي تجميد أو مصادرة أرباح الجلسات.
 				</p>

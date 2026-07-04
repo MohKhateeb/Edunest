@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 
 import type { VerificationLevel } from "@prisma/client";
 import { Eye, Loader2, Star } from "lucide-react";
@@ -30,6 +31,7 @@ type AdminTeachersListProps = {
 export default function AdminTeachersList({
 	teachers,
 }: AdminTeachersListProps) {
+	const t = useTranslations('admin');
 	const router = useRouter();
 	const [loadingId, setLoadingId] = useState<string | null>(null);
 	const [searchQuery, setSearchQuery] = useState("");
@@ -52,12 +54,12 @@ export default function AdminTeachersList({
 		router.refresh();
 	};
 
-	const filteredTeachers = teachers.filter((t) => {
+	const filteredTeachers = teachers.filter((teacher) => {
 		const matchesSearch =
-			t.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-			t.user.email.toLowerCase().includes(searchQuery.toLowerCase());
+			teacher.user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+			teacher.user.email.toLowerCase().includes(searchQuery.toLowerCase());
 		const matchesLevel =
-			filterLevel === "ALL" || t.verificationLevel === filterLevel;
+			filterLevel === "ALL" || teacher.verificationLevel === filterLevel;
 		return matchesSearch && matchesLevel;
 	});
 
@@ -67,8 +69,8 @@ export default function AdminTeachersList({
 				data={filteredTeachers}
 				headers={[
 					"اسم المعلم / التخصص",
-					"البريد الإلكتروني",
-					"التقييم",
+					t('key_1783109431649_3qcs'),
+					t('key_1783109431652_uexs'),
 					"حالة التوثيق",
 					"تعديل مستوى التوثيق",
 				]}
@@ -82,50 +84,50 @@ export default function AdminTeachersList({
 						onChange={(e) => setFilterLevel(e.target.value)}
 					>
 						<option value="ALL">كل المستويات</option>
-						<option value={"NONE"}>غير موثق</option>
-						<option value={"BRONZE"}>برونزي</option>
-						<option value={"SILVER"}>فضي</option>
-						<option value={"GOLD"}>ذهبي</option>
+						<option value={"NONE"}>{t('key_1783109431578_3ocp')}</option>
+						<option value={"BRONZE"}>{t('key_1783109431586_jpgz')}</option>
+						<option value={"SILVER"}>{t('key_1783109431594_kafm')}</option>
+						<option value={"GOLD"}>{t('key_1783109431603_fqhn')}</option>
 					</select>
 				}
-				emptyMessage="لا توجد نتائج مطابقة للبحث."
-				renderRow={(t) => {
-					const badge = VERIFICATION_BADGES_CONFIG[t.verificationLevel];
+				emptyMessage={t('str_2YTYpyDY')}
+				renderRow={(teacher) => {
+					const badge = VERIFICATION_BADGES_CONFIG[teacher.verificationLevel];
 					const badgeColorClass = badge.colorClass;
 
 					return (
 						<tr
-							key={t.id}
+							key={teacher.id}
 							className="border-b border-border last:border-none hover:bg-accent/20"
 						>
 							<td className="p-4">
 								<div className="flex items-center justify-between gap-2">
 									<div className="flex items-center gap-3">
 										<div className="relative h-9 w-9 rounded-full overflow-hidden bg-accent border border-border flex-shrink-0">
-											{t.profileImageUrl ? (
+											{teacher.profileImageUrl ? (
 												<img
-													src={t.profileImageUrl}
-													alt={t.user.name}
+													src={teacher.profileImageUrl}
+													alt={teacher.user.name}
 													className="h-full w-full object-cover"
 												/>
 											) : (
 												<div className="h-full w-full flex items-center justify-center text-primary font-bold text-sm bg-primary/10">
-													{t.user.name.charAt(0)}
+													{teacher.user.name.charAt(0)}
 												</div>
 											)}
 										</div>
 										<div>
 											<span className="font-bold block text-foreground/80">
-												{t.user.name}
+												{teacher.user.name}
 											</span>
 											<span className="text-[10px] text-primary">
-												{t.specialization}
+												{teacher.specialization}
 											</span>
 										</div>
 									</div>
 									<button
 										type="button"
-										onClick={() => setSelectedTeacherId(t.id)}
+										onClick={() => setSelectedTeacherId(teacher.id)}
 										className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"
 										title="عرض الملف التعريفي الكامل"
 									>
@@ -133,15 +135,15 @@ export default function AdminTeachersList({
 									</button>
 								</div>
 							</td>
-							<td className="p-4 text-muted-foreground">{t.user.email}</td>
+							<td className="p-4 text-muted-foreground">{teacher.user.email}</td>
 							<td className="p-4">
 								<div className="flex items-center gap-1.5">
 									<Star className="h-4 w-4 text-yellow-500 fill-currentColor" />
 									<span className="font-semibold">
-										{Number(t.averageRating).toFixed(1)}
+										{Number(teacher.averageRating).toFixed(1)}
 									</span>
 									<span className="text-[10px] text-muted-foreground">
-										({t.totalReviews})
+										({teacher.totalReviews})
 									</span>
 								</div>
 							</td>
@@ -153,14 +155,14 @@ export default function AdminTeachersList({
 								</span>
 							</td>
 							<td className="p-4 text-end">
-								{loadingId === t.id ? (
+								{loadingId === teacher.id ? (
 									<Loader2 className="h-4.5 w-4.5 animate-spin me-auto" />
 								) : (
 									<select
-										value={t.verificationLevel}
+										value={teacher.verificationLevel}
 										onChange={(e) =>
 											handleLevelChange(
-												t.id,
+												teacher.id,
 												e.target.value as VerificationLevel,
 											)
 										}

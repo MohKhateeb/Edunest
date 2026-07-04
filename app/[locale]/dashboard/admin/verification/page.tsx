@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import type { Prisma } from "@prisma/client";
 import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
@@ -30,6 +31,7 @@ export default async function AdminVerificationPage({
 }: {
 	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
+    const t = await getTranslations('admin')
 	const resolvedParams = await searchParams;
 	const session = await auth();
 	await requireAuth([UserType.ADMIN]);
@@ -43,8 +45,7 @@ export default async function AdminVerificationPage({
 		<div className="space-y-6">
 			<div>
 				<h1 className="text-2xl font-extrabold mb-1">
-					طلبات توثيق ملفات المعلمين
-				</h1>
+					{t('key_1783109434524_0p4y')}</h1>
 				<p className="text-xs text-muted-foreground">
 					راجع مستندات الهوية والشهادات العلمية المرفوعة من المعلمين لتفعيل
 					حساباتهم وتوثيقها بbadge مناسب.
