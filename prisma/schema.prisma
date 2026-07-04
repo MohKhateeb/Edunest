@@ -245,6 +245,7 @@ model TeacherService {
   serviceTypeId     String
   serviceType       ServiceType @relation(fields: [serviceTypeId], references: [id], onDelete: Restrict)
   price             Decimal     @db.Decimal(10, 2)
+  currency          Currency    @default(ILS) // العملة التي حدّد بها المعلم السعر
   duration          Int
   customDescription String?
   isActive          Boolean     @default(true)
@@ -381,6 +382,7 @@ model Payment {
   bookingId String        @unique
   booking   Booking       @relation(fields: [bookingId], references: [id], onDelete: Restrict)
   amount    Decimal       @db.Decimal(10, 2)
+  currency  Currency      @default(ILS) // تُنسخ من Booking.currency وقت الإنشاء
   method    PaymentMethod @default(ONLINE_CARD)
   isPaid    Boolean       @default(false)
   paidAt    DateTime?
@@ -397,6 +399,7 @@ model TeacherPayout {
   commissionAmount  Decimal   @db.Decimal(10, 2)
   trialCompensation Decimal   @default(0) @db.Decimal(10, 2)
   netAmount         Decimal   @db.Decimal(10, 2)
+  currency          Currency  @default(ILS)
   isPaid            Boolean   @default(false)
   paidAt            DateTime?
   periodStart       DateTime
@@ -413,6 +416,7 @@ model ParentRefund {
   bookingId String    @unique
   booking   Booking   @relation(fields: [bookingId], references: [id], onDelete: Restrict)
   amount    Decimal   @db.Decimal(10, 2)
+  currency  Currency  @default(ILS) // تُنسخ من Booking.currency وقت الإنشاء
   isPaid    Boolean   @default(false)
   paidAt    DateTime?
   createdAt DateTime  @default(now())
@@ -489,6 +493,7 @@ model TutoringRequest {
   startTime     DateTime // الوقت المطلوب لبدء الجلسة (UTC)
   duration      Int? // مدة الجلسة بالدقائق
   price         Decimal?      @db.Decimal(10, 2) // السعر/الميزانية المقترحة من ولي الأمر
+  currency      Currency      @default(ILS)
   status        RequestStatus @default(PENDING)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
@@ -566,6 +571,7 @@ model AdminEscrow {
   bookingId  String           @unique
   booking    Booking          @relation(fields: [bookingId], references: [id], onDelete: Restrict)
   amount     Decimal          @db.Decimal(10, 2)
+  currency   Currency         @default(ILS) // تُنسخ من Booking.currency وقت الإنشاء
   reason     String           @db.Text
   status     EscrowResolution @default(PENDING)
   createdAt  DateTime         @default(now())
