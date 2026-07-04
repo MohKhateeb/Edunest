@@ -89,7 +89,8 @@ export class SystemAdminService {
 		for (const setting of settings) {
 			if (
 				setting.settingKey.includes("Commission") ||
-				setting.settingKey.includes("Price")
+				setting.settingKey.includes("Price") ||
+				setting.settingKey === "DEFAULT_CURRENCY"
 			) {
 				groupedSettings.FINANCIAL.push(setting);
 			} else if (setting.settingKey.includes("Trial")) {
