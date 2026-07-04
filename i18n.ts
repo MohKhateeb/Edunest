@@ -1,24 +1,12 @@
 import {getRequestConfig} from 'next-intl/server'
-
-const VALID_LOCALES = ['ar', 'en'] as const
-export type Locale = typeof VALID_LOCALES[number]
-export const defaultLocale: Locale = 'ar'
+import {hasLocale} from 'next-intl'
+import {routing} from './i18n/routing'
 
 export default getRequestConfig(async ({requestLocale}) => {
-  let locale = await requestLocale
-
-  if (!locale) {
-    const { headers } = await import('next/headers');
-    const h = await headers();
-    const pathname = h.get('x-invoke-path') || h.get('referer') || '';
-    if (pathname.includes('/en/') || pathname.endsWith('/en')) {
-      locale = 'en';
-    }
-  }
-
-  if (!locale || !VALID_LOCALES.includes(locale as Locale)) {
-    locale = defaultLocale
-  }
+  const requested = await requestLocale
+  const locale = hasLocale(routing.locales, requested)
+    ? requested
+    : routing.defaultLocale
 
   return {
     locale,

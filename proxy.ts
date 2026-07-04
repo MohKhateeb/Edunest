@@ -1,13 +1,10 @@
 import { NextResponse, NextRequest, NextFetchEvent } from "next/server";
 import { withAuth, NextRequestWithAuth } from "next-auth/middleware";
 import createMiddleware from 'next-intl/middleware';
+import { routing } from '@/i18n/routing';
 import { FEATURE_FLAGS } from '@/lib/config/feature-flags';
 
-const intlMiddleware = createMiddleware({
-  locales: ['ar', 'en'],
-  defaultLocale: 'ar',
-  localePrefix: 'as-needed',
-});
+const intlMiddleware = createMiddleware(routing);
 
 const authProxy = withAuth(
 	function proxy(req) {

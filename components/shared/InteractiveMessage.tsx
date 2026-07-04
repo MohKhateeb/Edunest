@@ -32,7 +32,13 @@ export default function InteractiveMessage({
 	className,
 	najeebMode = "welcome",
 }: InteractiveMessageProps) {
-    const t = useTranslations('common');
+	let t: ReturnType<typeof useTranslations>;
+	try {
+		t = useTranslations('common');
+	} catch (error) {
+		return null; // Silently fail if NextIntlClientProvider context is not ready during SSR
+	}
+
 	const [mounted, setMounted] = useState(false);
 
 	useEffect(() => {
