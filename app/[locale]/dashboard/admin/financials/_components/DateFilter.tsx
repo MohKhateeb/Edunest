@@ -1,6 +1,5 @@
-import { useTranslations } from "next-intl";
-
 "use client";
+import { useTranslations } from "next-intl";
 
 import { Calendar } from "lucide-react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";

@@ -1,6 +1,5 @@
-import { useTranslations } from "next-intl";
-
 "use client";
+import { useTranslations } from "next-intl";
 
 import { Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";

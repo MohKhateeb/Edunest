@@ -1,6 +1,5 @@
-import { useTranslations } from "next-intl";
-
 "use client";
+import { useTranslations } from "next-intl";
 
 import type { FAQ, FAQCategory } from "@prisma/client";
 import { Check, Edit2, Plus, Trash2, X } from "lucide-react";

@@ -1,6 +1,5 @@
-import { useTranslations } from "next-intl";
-
 "use client";
+import { useTranslations } from "next-intl";
 
 import { AlertCircle, Loader2, Lock, Mail } from "lucide-react";
 import Image from "next/image";

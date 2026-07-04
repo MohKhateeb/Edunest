@@ -1,6 +1,5 @@
-import { useTranslations } from "next-intl";
-
 "use client";
+import { useTranslations } from "next-intl";
 
 import { AlertCircle, Loader2, Plus } from "lucide-react";
 import { useState } from "react";

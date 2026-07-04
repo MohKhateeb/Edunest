@@ -1,6 +1,5 @@
-import { useTranslations } from "next-intl";
-
 "use client";
+import { useTranslations } from "next-intl";
 
 import { AlertCircle, RefreshCcw } from "lucide-react";
 import { useEffect } from "react";

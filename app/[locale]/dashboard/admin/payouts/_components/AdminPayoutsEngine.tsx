@@ -1,6 +1,5 @@
-import { useTranslations } from "next-intl";
-
 "use client";
+import { useTranslations } from "next-intl";
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";

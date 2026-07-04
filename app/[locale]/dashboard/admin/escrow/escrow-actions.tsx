@@ -1,6 +1,5 @@
-import { useTranslations } from "next-intl";
-
 "use client";
+import { useTranslations } from "next-intl";
 
 import { EscrowResolution } from "@prisma/client";
 import { Loader2 } from "lucide-react";

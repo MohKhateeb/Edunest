@@ -1,6 +1,5 @@
-import { useTranslations } from "next-intl";
-
 "use client";
+import { useTranslations } from "next-intl";
 
 import { HelpCircle, Search } from "lucide-react";
 import { useState } from "react";

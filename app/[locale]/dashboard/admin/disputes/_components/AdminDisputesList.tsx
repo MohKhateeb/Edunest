@@ -1,6 +1,5 @@
-import { useTranslations } from "next-intl";
-
 "use client";
+import { useTranslations } from "next-intl";
 
 import type { DisputeStatus } from "@prisma/client";
 import { CheckCircle2, ChevronLeft, Search, ShieldAlert } from "lucide-react";

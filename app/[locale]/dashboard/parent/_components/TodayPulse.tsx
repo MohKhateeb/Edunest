@@ -1,6 +1,5 @@
-import { useTranslations } from "next-intl";
-
 "use client";
+import { useTranslations } from "next-intl";
 
 import { Clock, PlayCircle, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
