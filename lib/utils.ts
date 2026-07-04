@@ -6,11 +6,10 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(amount: number | string): string {
-	const num = typeof amount === "string" ? parseFloat(amount) : amount;
-	// إظهار الخانات العشرية فقط إذا كان الرقم يحتوي على كسور لتفادي لبس التقريب
-	const formatted = Number.isInteger(num) ? num.toString() : num.toFixed(2);
-	return `${formatted} ₪`;
+	return formatCurrency(amount);
 }
+
+export { formatCurrency, getCurrencySymbol } from "./utils/currency";
 
 export function formatDuration(minutes: number): string {
 	if (minutes < 60) return `${minutes} دقيقة`;
