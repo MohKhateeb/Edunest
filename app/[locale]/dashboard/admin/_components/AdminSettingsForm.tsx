@@ -39,7 +39,8 @@ type AdminSettingsFormProps = {
 // --------------------------------------------------------
 type SettingConfig = {
 	label: string;
-	type: "number" | "boolean" | "currency" | "percentage" | "text";
+	type: "number" | "boolean" | "currency" | "percentage" | "text" | "select";
+	options?: {value: string; label: string}[];
 	icon: React.ElementType;
 	category: "FINANCIAL" | "POLICY" | "TRIAL" | "OTHER";
 };
@@ -120,6 +121,23 @@ export default function AdminSettingsForm({
 			type: "number",
 			icon: Clock,
 			category: "POLICY",
+		},
+		DEFAULT_CURRENCY: {
+			label: "العملة الافتراضية للمنصة",
+			type: "select",
+			options: [
+				{ value: "ILS", label: "شيكل (ILS)" },
+				{ value: "USD", label: "دولار أمريكي (USD)" },
+				{ value: "EUR", label: "يورو (EUR)" },
+				{ value: "JOD", label: "دينار أردني (JOD)" },
+				{ value: "EGP", label: "جنيه مصري (EGP)" },
+				{ value: "SAR", label: "ريال سعودي (SAR)" },
+				{ value: "AED", label: "درهم إماراتي (AED)" },
+				{ value: "QAR", label: "ريال قطري (QAR)" },
+				{ value: "KWD", label: "دينار كويتي (KWD)" },
+			],
+			icon: Banknote,
+			category: "FINANCIAL",
 		},
 	};
 
@@ -287,7 +305,24 @@ export default function AdminSettingsForm({
 													</label>
 												</div>
 
-												{isToggle ? (
+												{config.type === "select" ? (
+													<select
+														value={currentValue}
+														onChange={(e) =>
+															handleValueChange(
+																setting.settingKey,
+																e.target.value,
+															)
+														}
+														className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-4 py-3 text-sm font-bold text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all appearance-none"
+													>
+														{config.options?.map((opt) => (
+															<option key={opt.value} value={opt.value}>
+																{opt.label}
+															</option>
+														))}
+													</select>
+												) : isToggle ? (
 													<div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">
 														<label className="relative inline-flex items-center cursor-pointer">
 															<input

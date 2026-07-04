@@ -29,6 +29,7 @@ model CurrencyConfig {
   displaySymbol   String
   decimalPlaces   Int      @default(2)
   sortOrder       Int      @default(0)
+  exchangeRate    Float    @default(1.0)
   updatedAt       DateTime @updatedAt
 
   @@map("currency_configs")
@@ -42,7 +43,6 @@ model SystemSetting {
   settingKey      String   @unique
   settingValue    String   @db.Text
   description     String?
-  defaultCurrency Currency @default(ILS)
   updatedAt       DateTime @updatedAt
   updatedBy       String?
 

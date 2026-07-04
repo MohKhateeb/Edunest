@@ -19,6 +19,7 @@ type PersonalProfileFormProps = {
 		name: string;
 		email: string;
 		phone: string | null;
+		preferredCurrency?: string | null;
 	};
 };
 
@@ -37,6 +38,7 @@ export default function PersonalProfileForm({
 		name: initialUser.name,
 		email: initialUser.email,
 		phone: initialUser.phone || "",
+		preferredCurrency: initialUser.preferredCurrency || "ILS",
 	});
 
 	// Password fields state
@@ -190,6 +192,28 @@ export default function PersonalProfileForm({
 									placeholder="05xxxxxxx"
 									dir="ltr"
 								/>
+							</div>
+
+							<div className="space-y-1.5">
+								<label className="text-xs font-bold text-foreground/80 block">
+									العملة المفضلة</label>
+								<select
+									value={profileForm.preferredCurrency}
+									onChange={(e) =>
+										setProfileForm({ ...profileForm, preferredCurrency: e.target.value })
+									}
+									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl"
+								>
+									<option value="ILS">شيكل (ILS)</option>
+									<option value="USD">دولار أمريكي (USD)</option>
+									<option value="EUR">يورو (EUR)</option>
+									<option value="JOD">دينار أردني (JOD)</option>
+									<option value="EGP">جنيه مصري (EGP)</option>
+									<option value="SAR">ريال سعودي (SAR)</option>
+									<option value="AED">درهم إماراتي (AED)</option>
+									<option value="QAR">ريال قطري (QAR)</option>
+									<option value="KWD">دينار كويتي (KWD)</option>
+								</select>
 							</div>
 
 							<div className="space-y-1.5 md:col-span-2">

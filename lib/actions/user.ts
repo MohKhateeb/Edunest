@@ -116,7 +116,7 @@ async function _updateUserProfileInDb(
 	userId: string,
 	data: z.infer<typeof updateProfileSchema>,
 ): Promise<ActionResponse> {
-	const { name, email, phone } = data;
+	const { name, email, phone, preferredCurrency } = data;
 	const cleanEmail = email.toLowerCase().trim();
 
 	const existing = await userRepository.findByEmailExcludingId(cleanEmail, userId);
@@ -132,6 +132,7 @@ async function _updateUserProfileInDb(
 		name,
 		email: cleanEmail,
 		phone: phone || null,
+		preferredCurrency: (preferredCurrency as any) || null,
 	});
 
 	return { success: true };

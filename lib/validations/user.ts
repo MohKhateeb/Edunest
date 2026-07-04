@@ -28,6 +28,7 @@ export const updateProfileSchema = z.object({
 	name: z.string().min(2, "الاسم يجب أن لا يقل عن حرفين"),
 	email: z.string().email("البريد الإلكتروني غير صالح"),
 	phone: z.string().optional().or(z.literal("")),
+	preferredCurrency: z.string().optional(),
 });
 
 export const changePasswordSchema = z
