@@ -23,7 +23,7 @@ export default async function LocaleLayout({
   children: React.ReactNode
   params: Promise<{locale: string}>
 }) {
-    const t = await getTranslations('common')
+
   const { locale } = await params;
   if (!LOCALES.includes(locale)) notFound()
   setRequestLocale(locale);

@@ -6,23 +6,25 @@ import FooterCTA from "@/components/home/FooterCTA";
 import HeroSection from "@/components/home/HeroSection";
 import JourneyPath from "@/components/home/JourneyPath";
 import PersuasionSection from "@/components/home/PersuasionSection";
+
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 import { defaultHomepageContent } from "@/lib/default-homepage-content";
 import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 import type { HomepageContent } from "@/types/homepage";
 
-export const getMetadata = (t: any) => ({
-	title: t('key_1783109425880_bpgi') ,
-	description:
-		"ابحث عن معلم خصوصي موثوق لطفلك في الضفة الغربية. حجز فوري، دفع آمن، ومتابعة مستمرة.",
-});
+export async function generateMetadata({params}: any) {
+	const t = await getTranslations({locale: params?.locale || 'ar', namespace: 'common'});
+	return {
+		title: t('key_1783109425880_bpgi') ,
+		description: t('key_1783109425883_ndoy'),
+	};
+}
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function HomePage() {
-    const t = await getTranslations('common')
 	// Fetch dynamic content
 	let content: HomepageContent = defaultHomepageContent;
 	try {
