@@ -116,7 +116,7 @@ export default function Sidebar() {
 
 	// Advisor tips selection
 	const tips =
-		getADVISORTIPS(tNav)[role as keyof ReturnType<typeof getADVISORTIPS>] || getADVISORTIPS(tNav).PARENT;
+		getADVISORTIPS(t)[role as keyof ReturnType<typeof getADVISORTIPS>] || getADVISORTIPS(t).PARENT;
 	const activeTip = tips[tipIndex % tips.length];
 
 	const cycleTip = () => {
