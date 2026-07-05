@@ -4,7 +4,7 @@ import type { Prisma } from "@prisma/client";
 import { FileText } from "lucide-react";
 import React from "react";
 import type { commonPayoutInclude } from "@/lib/types";
-import { formatPrice } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
 import { useTranslations } from "next-intl";
 
 export type DetailedPayout = Omit<
@@ -61,28 +61,28 @@ export default function PayoutDetails({ payout }: PayoutDetailsProps) {
 					<span className="text-[10px] text-muted-foreground block font-bold">
 						{t('ijmaly_rswm_alhss')}</span>
 					<span className="text-sm font-extrabold text-foreground">
-						{formatPrice(Number(payout.totalAmount))}
+						{formatCurrency(Number(payout.totalAmount), payout.currency)}
 					</span>
 				</div>
 				<div className="p-4 border border-border bg-card rounded-xl text-center text-rose-600 dark:text-rose-400">
 					<span className="text-[10px] text-muted-foreground block font-bold">
 						{t('khsm_amwlh_almnsh')}</span>
 					<span className="text-sm font-extrabold">
-						-{formatPrice(Number(payout.commissionAmount))}
+						-{formatCurrency(Number(payout.commissionAmount), payout.currency)}
 					</span>
 				</div>
 				<div className="p-4 border border-border bg-card rounded-xl text-center text-purple-600 dark:text-purple-400">
 					<span className="text-[10px] text-muted-foreground block font-bold">
 						{t('tawyd_alhss_almjanyh')}</span>
 					<span className="text-sm font-extrabold">
-						+{formatPrice(Number(payout.trialCompensation))}
+						+{formatCurrency(Number(payout.trialCompensation), payout.currency)}
 					</span>
 				</div>
 				<div className="p-4 border border-border bg-emerald-500/10 rounded-xl text-center text-primary font-bold">
 					<span className="text-[10px] text-primary block font-bold">
 						{t('alsafy_almhwl_llmalm')}</span>
 					<span className="text-base font-extrabold">
-						{formatPrice(Number(payout.netAmount))}
+						{formatCurrency(Number(payout.netAmount), payout.currency)}
 					</span>
 				</div>
 			</div>
@@ -135,19 +135,19 @@ export default function PayoutDetails({ payout }: PayoutDetailsProps) {
 											{isFree ? (
 												<span className="text-[10px] font-bold text-purple-600 bg-purple-100 px-1.5 py-0.5 rounded">
 													{t('mjanyh_tawyd')}{" "}
-													{formatPrice(Number(booking.trialCostToPlatform))})
+													{formatCurrency(Number(booking.trialCostToPlatform), payout.currency)})
 												</span>
 											) : (
-												<span>{formatPrice(Number(booking.price))}</span>
+												<span>{formatCurrency(Number(booking.price), payout.currency)}</span>
 											)}
 										</td>
 										<td className="p-3 text-rose-600 dark:text-rose-400">
 											{isFree
 												? "-"
-												: `-${formatPrice(commission)} (${Number(booking.appliedCommissionRate)}%)`}
+												: `-${formatCurrency(commission, payout.currency)} (${Number(booking.appliedCommissionRate)}%)`}
 										</td>
 										<td className="p-3 font-bold text-foreground text-end">
-											{formatPrice(netAmount)}
+											{formatCurrency(netAmount, payout.currency)}
 										</td>
 									</tr>
 								);

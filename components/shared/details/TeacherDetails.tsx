@@ -19,7 +19,8 @@ import {
 import Image from "next/image";
 import React from "react";
 import type { commonTeacherInclude } from "@/lib/types";
-import { cn, formatPrice } from "@/lib/utils";
+import { cn } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
 import { useTranslations } from "next-intl";
 
 export type DetailedTeacher = Prisma.TeacherGetPayload<{
@@ -107,7 +108,7 @@ export default function TeacherDetails({
 						{t('alsar_alaftrady')}</span>
 					<span className="text-sm font-extrabold text-foreground">
 						{teacher.defaultHourlyRate
-							? formatPrice(Number(teacher.defaultHourlyRate))
+							? formatCurrency(Number(teacher.defaultHourlyRate), teacher.defaultHourlyRateCurrency)
 							: t('ghyr_mhdd')}
 					</span>
 				</div>
@@ -317,7 +318,7 @@ export default function TeacherDetails({
 											<Clock className="h-3.5 w-3.5" />
 											{srv.duration} {t('dqyqh')}</span>
 										<span className="font-extrabold text-primary text-sm">
-											{formatPrice(Number(srv.price))}
+											{formatCurrency(Number(srv.price), srv.currency)}
 										</span>
 									</div>
 								</div>

@@ -13,7 +13,8 @@ import {
 import React from "react";
 import { BOOKING_STATUS_AR, BOOKING_STATUS_STYLES } from "@/lib/translations";
 import type { commonStudentInclude } from "@/lib/types";
-import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
+import { cn, formatLocalTime } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
 import { useTranslations } from "next-intl";
 
 export type DetailedStudent = Prisma.StudentGetPayload<{
@@ -214,7 +215,7 @@ export default function StudentDetails({
 										<span className="font-extrabold text-primary block">
 											{booking.isTrial
 												? t('tjrybyh_mjanyh')
-												: formatPrice(Number(booking.price))}
+												: formatCurrency(Number(booking.price), booking.currency)}
 										</span>
 										{booking.status === "COMPLETED" && booking.report && (
 											<div className="flex items-center gap-1 bg-blue-50 dark:bg-blue-950/30 text-blue-700 dark:text-blue-400 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-900 text-[10px]">

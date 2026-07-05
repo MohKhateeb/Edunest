@@ -19,7 +19,8 @@ import {
 	PAYMENT_STATUS_AR,
 } from "@/lib/translations";
 import type { DetailedBooking } from "@/lib/types";
-import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
+import { cn, formatLocalTime } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
 import {
 	canSubmitReport,
 	getDetailedSessionState,
@@ -40,7 +41,7 @@ export default function BookingDetails({
 	const isTrial = booking.isTrial;
 	const priceDisplay = isTrial
 		? t('jlsh_tjrybyh_mjanyh')
-		: formatPrice(Number(booking.price));
+		: formatCurrency(Number(booking.price), booking.currency);
 	const sessionTimeState = getDetailedSessionState(
 		booking.startTime,
 		booking.duration,

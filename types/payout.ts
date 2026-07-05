@@ -1,3 +1,5 @@
+import { Currency } from "@prisma/client";
+
 export type UnpaidBooking = {
 	id: string;
 	teacherId: string;
@@ -10,6 +12,7 @@ export type UnpaidBooking = {
 	isTrial: boolean;
 	trialCostToPlatform: number;
 	appliedCommissionRate: number;
+	currency: Currency;
 };
 
 export type PayoutRecord = {
@@ -18,6 +21,7 @@ export type PayoutRecord = {
 	commissionAmount: number;
 	trialCompensation: number;
 	netAmount: number;
+	currency: Currency;
 	isPaid: boolean;
 	paidAt: Date | null;
 	periodStart: Date;
@@ -35,6 +39,7 @@ export type ParentRefundRecord = {
 	bookingId: string;
 	parentName: string;
 	amount: number;
+	currency: Currency;
 	isPaid: boolean;
 	paidAt: Date | null;
 	createdAt: Date;
