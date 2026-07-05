@@ -9,10 +9,13 @@ import {
 	User,
 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
-import { toast } from "sonner";
+import { useLocale } from "next-intl";
+import { uploadProfileImage } from "@/lib/actions/upload";
+import { getAllCurrencies } from "@/lib/utils/currency";
 import { changeUserPassword, updateUserProfile } from "@/lib/actions/user";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
+import { toast } from "sonner";
 
 type PersonalProfileFormProps = {
 	initialUser: {
@@ -27,6 +30,7 @@ export default function PersonalProfileForm({
 	initialUser,
 }: PersonalProfileFormProps) {
     const t = useTranslations('common');
+	const locale = useLocale();
 	const { update } = useSession();
 	const [activeTab, setActiveTab] = useState<"info" | "security">("info");
 	const [loading, setLoading] = useState(false);
@@ -204,15 +208,11 @@ export default function PersonalProfileForm({
 									}
 									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl"
 								>
-									<option value="ILS">شيكل (ILS)</option>
-									<option value="USD">دولار أمريكي (USD)</option>
-									<option value="EUR">يورو (EUR)</option>
-									<option value="JOD">دينار أردني (JOD)</option>
-									<option value="EGP">جنيه مصري (EGP)</option>
-									<option value="SAR">ريال سعودي (SAR)</option>
-									<option value="AED">درهم إماراتي (AED)</option>
-									<option value="QAR">ريال قطري (QAR)</option>
-									<option value="KWD">دينار كويتي (KWD)</option>
+									{getAllCurrencies().map(c => (
+										<option key={c.code} value={c.code}>
+											{locale === "ar" ? c.nameAr : c.nameEn} ({c.code})
+										</option>
+									))}
 								</select>
 							</div>
 

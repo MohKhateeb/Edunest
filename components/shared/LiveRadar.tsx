@@ -12,7 +12,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { claimLiveRequest } from "@/lib/actions/tutoring-requests/instant-book";
-import { cn, formatCurrency, formatLocalTime } from "@/lib/utils";
+import { cn, formatLocalTime } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
+import { Currency } from "@prisma/client";
 import { useTranslations } from "next-intl";
 
 type LiveRequest = {
@@ -21,6 +23,7 @@ type LiveRequest = {
 	specialization: string;
 	title: string;
 	price: number;
+	currency: Currency;
 	duration: number;
 	createdAt: Date;
 };
@@ -166,7 +169,7 @@ export default function LiveRadar({
 										<span className="block text-xs text-slate-500 mb-1">
 											{t('alsar_almwhd')}</span>
 										<span className="font-bold text-indigo-600 dark:text-indigo-400">
-											{formatCurrency(req.price)}
+											{formatCurrency(req.price, req.currency)}
 										</span>
 									</div>
 								</div>

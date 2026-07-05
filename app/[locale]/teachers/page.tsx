@@ -187,9 +187,9 @@ export default async function TeachersPage({
 					) : (
 						<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
 							{teachers.map((teacher) => {
-								const minPrice = teacher.services[0]
-									? Number(teacher.services[0].price)
-									: null;
+								const minPriceService = teacher.services.reduce((min, s) => Number(s.price) < Number(min.price) ? s : min, teacher.services[0]);
+								const minPrice = minPriceService ? Number(minPriceService.price) : null;
+								const minCurrency = minPriceService?.currency;
 								return (
 									<Link
 										key={teacher.id}
@@ -259,7 +259,7 @@ export default async function TeachersPage({
 												</span>
 												{minPrice !== null && (
 													<span className="font-bold text-primary">
-														من {formatCurrency(minPrice)}
+														من {formatCurrency(minPrice, minCurrency)}
 													</span>
 												)}
 											</div>

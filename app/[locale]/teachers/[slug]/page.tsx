@@ -198,7 +198,7 @@ export default async function TeacherProfilePage({
 											</div>
 											<div className="text-start">
 												<p className="font-bold text-primary text-base">
-													{formatCurrency(Number(svc.price))}
+													{formatCurrency(Number(svc.price), svc.currency)}
 												</p>
 												<p className="text-xs text-muted-foreground">للجلسة</p>
 											</div>
