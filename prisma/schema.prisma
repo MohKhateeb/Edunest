@@ -109,6 +109,7 @@ model Teacher {
   education         String?
   yearsOfExperience Int                   @default(0)
   defaultHourlyRate Decimal?              @db.Decimal(10, 2)
+  defaultHourlyRateCurrency Currency @default(ILS)
   isVerified        Boolean               @default(false)
   isAvailableNow    Boolean               @default(false)
   verificationLevel VerificationLevel     @default(NONE)
@@ -228,6 +229,7 @@ model ServiceType {
   displayOrder     Int               @default(0)
   isActive         Boolean           @default(true)
   fazaaPrice       Decimal?          @db.Decimal(10, 2) // سعر الفزعة الموحد لهذا النوع
+  fazaaPriceCurrency Currency        @default(ILS)
   fazaaDuration    Int? // مدة الفزعة بالدقائق لهذا النوع
   createdAt        DateTime          @default(now())
   teacherServices  TeacherService[]

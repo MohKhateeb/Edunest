@@ -71,3 +71,66 @@ export function formatCurrency(
 		: num.toFixed(decimalPlaces);
 	return `${formatted} ${getCurrencySymbol(currency)}`;
 }
+
+const CURRENCY_NAMES: Record<Currency, { ar: string; en: string }> = {
+	ILS: { ar: "شيكل إسرائيلي", en: "Israeli Shekel" },
+	USD: { ar: "دولار أمريكي", en: "US Dollar" },
+	EUR: { ar: "يورو", en: "Euro" },
+	JOD: { ar: "دينار أردني", en: "Jordanian Dinar" },
+	EGP: { ar: "جنيه مصري", en: "Egyptian Pound" },
+	SAR: { ar: "ريال سعودي", en: "Saudi Riyal" },
+	AED: { ar: "درهم إماراتي", en: "UAE Dirham" },
+	QAR: { ar: "ريال قطري", en: "Qatari Riyal" },
+	KWD: { ar: "دينار كويتي", en: "Kuwaiti Dinar" },
+};
+
+export function getCurrencyName(
+	currency: Currency = Currency.ILS,
+	locale: "ar" | "en" = "ar",
+): string {
+	return CURRENCY_NAMES[currency][locale];
+}
+
+export interface CurrencyOption {
+	code: Currency;
+	symbol: string;
+	nameAr: string;
+	nameEn: string;
+	decimalPlaces: number;
+}
+
+export function getAllCurrencies(): CurrencyOption[] {
+	return Object.values(Currency).map((code) => ({
+		code,
+		symbol: getCurrencySymbol(code),
+		nameAr: CURRENCY_NAMES[code].ar,
+		nameEn: CURRENCY_NAMES[code].en,
+		decimalPlaces: CURRENCY_DECIMAL_PLACES[code],
+	}));
+}
+
+export function parseCurrencyInput(value: string | number): number | null {
+	if (typeof value === "number") {
+		return isNaN(value) || value < 0 ? null : value;
+	}
+	
+	let str = String(value).trim();
+	if (!str) return null;
+
+	// Convert Arabic-Indic digits to Western digits
+	str = str.replace(/[٠-٩]/g, (d) => String.fromCharCode(d.charCodeAt(0) - 0x0660 + 48));
+
+	// Remove all known currency symbols
+	const symbols = Object.values(CURRENCY_SYMBOLS);
+	for (const sym of symbols) {
+		str = str.replace(sym, "");
+	}
+
+	// Remove spaces, commas, and Arabic thousands separator (٬)
+	str = str.replace(/[ ,٬]/g, "");
+
+	const num = parseFloat(str);
+	if (isNaN(num) || num < 0) return null;
+
+	return num;
+}
