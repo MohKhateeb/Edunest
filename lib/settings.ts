@@ -1,3 +1,4 @@
+import { Currency } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import { prisma } from "@/lib/prisma";
 
@@ -29,4 +30,17 @@ export async function getSettingBool(
 	const val = await getSetting(key);
 	if (!val) return defaultValue;
 	return val === "true";
+}
+
+export async function getSettingCurrency(
+	key: string,
+	defaultValue: Currency = Currency.ILS,
+): Promise<Currency> {
+	const val = await getSetting(key);
+	if (!val) return defaultValue;
+	// Validate if val is a valid Currency enum
+	if (Object.values(Currency).includes(val as Currency)) {
+		return val as Currency;
+	}
+	return defaultValue;
 }

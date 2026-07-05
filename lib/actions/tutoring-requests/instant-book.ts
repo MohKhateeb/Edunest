@@ -7,13 +7,14 @@ import {
 	PaymentStatus,
 	RequestStatus,
 	UserType,
+	Currency,
 } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { requireTeacherProfile } from "@/lib/actions/auth-helpers";
 import { createNotification } from "@/lib/notifications";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
-import { getSettingNumber } from "@/lib/settings";
+import { getSettingNumber, getSettingCurrency } from "@/lib/settings";
 import type { ActionResponse } from "@/lib/types";
 
 /**
@@ -108,12 +109,15 @@ export async function claimLiveRequest(
 				},
 			});
 
+			const defaultCurrency = await getSettingCurrency("DefaultCurrency", Currency.ILS);
+
 			if (!teacherService) {
 				teacherService = await tx.teacherService.create({
 					data: {
 						teacherId: teacher.id,
 						serviceTypeId: request.serviceTypeId,
 						price: price,
+						currency: defaultCurrency,
 						duration: duration,
 						customDescription: "خدمة فوري (Live Radar)",
 						isActive: true,
@@ -144,6 +148,7 @@ export async function claimLiveRequest(
 					startTime: now,
 					duration: duration,
 					price: price,
+					currency: teacherService.currency,
 					appliedCommissionRate: commissionRate,
 					status: BookingStatus.AWAITING_PAYMENT,
 					paymentStatus: PaymentStatus.UNPAID,
@@ -162,6 +167,7 @@ export async function claimLiveRequest(
 				data: {
 					bookingId: booking.id,
 					amount: price,
+					currency: booking.currency,
 					method: PaymentMethod.ONLINE_CARD,
 					isPaid: false,
 				},
