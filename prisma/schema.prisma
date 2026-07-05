@@ -42,7 +42,6 @@ model SystemSetting {
   settingKey      String   @unique
   settingValue    String   @db.Text
   description     String?
-  defaultCurrency Currency @default(ILS)
   updatedAt       DateTime @updatedAt
   updatedBy       String?
 

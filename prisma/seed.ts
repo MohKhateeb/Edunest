@@ -56,7 +56,7 @@ async function main() {
 		{ settingKey: "CancellationRefundHours", settingValue: "24" },
 		{ settingKey: "MinBookingLeadHours", settingValue: "2" },
 		{ settingKey: "PAYMENT_HOLD_MINUTES", settingValue: "180", description: "المدة التي يُمهل فيها ولي الأمر لإتمام الدفع بعد موافقة المعلم. القيمة الافتراضية: 180 دقيقة (3 ساعات)" },
-		{ settingKey: "DEFAULT_CURRENCY", settingValue: "ILS", description: "العملة الافتراضية للمنصة" },
+		{ settingKey: "DefaultCurrency", settingValue: "ILS", description: "العملة الافتراضية لأي خدمة أو حجز جديد لا يحدد عملة صراحة" },
 	];
 
 	for (const s of settings) {
