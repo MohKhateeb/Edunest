@@ -29,7 +29,6 @@ model CurrencyConfig {
   displaySymbol   String
   decimalPlaces   Int      @default(2)
   sortOrder       Int      @default(0)
-  exchangeRate    Float    @default(1.0)
   updatedAt       DateTime @updatedAt
 
   @@map("currency_configs")

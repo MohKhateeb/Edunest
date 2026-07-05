@@ -1,7 +1,6 @@
 import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
 import AdminSettingsForm from "../_components/AdminSettingsForm";
-import AdminCurrencySyncButton from "../_components/AdminCurrencySyncButton";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
 import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
@@ -16,7 +15,6 @@ export default async function AdminSettingsPage() {
 
 	return (
 		<div className="space-y-6">
-			<AdminCurrencySyncButton />
 			<AdminSettingsForm
 				initialSettings={rawSettings}
 				groupedSettings={groupedSettings}

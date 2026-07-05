@@ -25,7 +25,6 @@ import {
 	updateSystemSettingsSchema,
 	verifyTeacherSchema,
 } from "@/lib/validations/admin";
-import { syncExchangeRates } from "@/lib/services/exchange-rate-service";
 
 export async function verifyTeacher(
 	teacherId: string,
@@ -232,18 +231,3 @@ export async function loadMoreAdminBookings(params: BookingListParams) {
 	return sanitizePrismaData(res);
 }
 
-export async function syncExchangeRatesAction(): Promise<ActionResponse> {
-	try {
-		await requireAuth([UserType.ADMIN]);
-		const result = await syncExchangeRates();
-		if (!result.success) {
-			return { success: false, error: result.error as string };
-		}
-		
-		revalidatePath("/dashboard/admin/settings");
-		return { success: true };
-	} catch (err: unknown) {
-		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء مزامنة العملات" };
-	}
-}
