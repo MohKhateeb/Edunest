@@ -11,7 +11,7 @@ import {
 import { useState } from "react";
 import ReportModal from "@/components/shared/ReportModal";
 import type { DetailedBooking } from "@/lib/types";
-import { formatPrice } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
 
 export default function PendingReportsClient({
 	initialBookings,
@@ -100,7 +100,7 @@ export default function PendingReportsClient({
 											<p>
 												<span className="font-semibold text-foreground">
 													{t('key_1783109439822_alpi')}</span>{" "}
-												{formatPrice(Number(booking.price))}
+												{formatCurrency(Number(booking.price), booking.currency)}
 											</p>
 										</div>
 									</div>

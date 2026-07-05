@@ -16,11 +16,20 @@ import {
 	Settings2,
 	ShieldAlert,
 	Zap,
+    Eye,
+    EyeOff,
+    Check,
+    X,
+    BookOpen,
+    Tag,
+    Search
 } from "lucide-react";
+import { getAllCurrencies } from "@/lib/utils/currency";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { updateSystemSettings } from "@/lib/actions/admin";
 import { cn } from "@/lib/utils";
+import { useLocale } from "next-intl";
 
 type SystemSetting = {
 	id: string;
@@ -54,6 +63,7 @@ export default function AdminSettingsForm({
 	groupedSettings: initialGroupedSettings,
 }: AdminSettingsFormProps) {
     const t = useTranslations('admin')
+    const locale = useLocale();
 
 	const SETTINGS_DICT: Record<string, SettingConfig> = {
 		DefaultCommissionRate: {
@@ -122,20 +132,13 @@ export default function AdminSettingsForm({
 			icon: Clock,
 			category: "POLICY",
 		},
-		DEFAULT_CURRENCY: {
+		DefaultCurrency: {
 			label: "العملة الافتراضية للمنصة",
 			type: "select",
-			options: [
-				{ value: "ILS", label: "شيكل (ILS)" },
-				{ value: "USD", label: "دولار أمريكي (USD)" },
-				{ value: "EUR", label: "يورو (EUR)" },
-				{ value: "JOD", label: "دينار أردني (JOD)" },
-				{ value: "EGP", label: "جنيه مصري (EGP)" },
-				{ value: "SAR", label: "ريال سعودي (SAR)" },
-				{ value: "AED", label: "درهم إماراتي (AED)" },
-				{ value: "QAR", label: "ريال قطري (QAR)" },
-				{ value: "KWD", label: "دينار كويتي (KWD)" },
-			],
+			options: getAllCurrencies().map(c => ({
+				value: c.code,
+				label: `${locale === "ar" ? c.nameAr : c.nameEn} (${c.code})`
+			})),
 			icon: Banknote,
 			category: "FINANCIAL",
 		},

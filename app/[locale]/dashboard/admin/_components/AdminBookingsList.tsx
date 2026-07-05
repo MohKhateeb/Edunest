@@ -30,7 +30,8 @@ import {
 import type { DetailedBooking } from "@/lib/types";
 import { BookingStatus } from "@prisma/client";
 import { loadMoreAdminBookings } from "@/lib/actions/admin";
-import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
+import { cn, formatLocalTime } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
 
 interface AdminBookingsListProps {
 	initialData: {
@@ -222,7 +223,7 @@ export default function AdminBookingsList({
 								<span className="font-extrabold text-foreground">
 									{booking.isTrial
 										? t('str_2YXYrNin')
-										: formatPrice(Number(booking.price))}
+										: formatCurrency(Number(booking.price), booking.currency)}
 								</span>
 								{!booking.isTrial && (
 									<span className="text-xs text-muted-foreground">

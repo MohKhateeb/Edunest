@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { CheckCircle2, RefreshCcw } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
 import type { ParentRefundRecord } from "@/types/payout";
 
 type ParentRefundsListProps = {
@@ -59,7 +59,7 @@ export async function ParentRefundsList({
 											{new Date(r.createdAt).toLocaleDateString("ar-EG")}
 										</td>
 										<td className="p-4 font-bold text-indigo-600 dark:text-indigo-400">
-											{formatPrice(r.amount)}
+											{formatCurrency(Number(r.amount), r.currency)}
 										</td>
 										<td className="p-4 text-end">
 											<div className="flex items-center justify-end gap-3">

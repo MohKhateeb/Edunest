@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { formatPrice } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
 import type { PayoutRecord } from "@/types/payout";
 
 type PrintInvoiceProps = {
@@ -61,14 +61,14 @@ export async function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 						<td className="p-4 border-b border-gray-200 text-gray-800">
 							{t('key_1783109440454_cyef')}</td>
 						<td className="p-4 border-b border-gray-200 text-end font-semibold text-gray-800">
-							{formatPrice(payoutToPrint.totalAmount)}
+							{formatCurrency(Number(payoutToPrint.totalAmount), payoutToPrint.currency)}
 						</td>
 					</tr>
 					<tr>
 						<td className="p-4 border-b border-gray-200 text-gray-800">
 							{t('key_1783109440458_9fyo')}</td>
 						<td className="p-4 border-b border-gray-200 text-end font-semibold text-red-600">
-							-{formatPrice(payoutToPrint.commissionAmount)}
+							-{formatCurrency(Number(payoutToPrint.commissionAmount), payoutToPrint.currency)}
 						</td>
 					</tr>
 					{payoutToPrint.trialCompensation > 0 && (
@@ -76,7 +76,7 @@ export async function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 							<td className="p-4 border-b border-gray-200 text-gray-800">
 								{t('key_1783109440463_remf')}</td>
 							<td className="p-4 border-b border-gray-200 text-end font-semibold text-green-600">
-								+{formatPrice(payoutToPrint.trialCompensation)}
+								+{formatCurrency(Number(payoutToPrint.trialCompensation), payoutToPrint.currency)}
 							</td>
 						</tr>
 					)}
@@ -86,7 +86,7 @@ export async function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 						<td className="p-5 font-extrabold text-xl text-gray-900 border-t-2 border-gray-300">
 							{t('key_1783109440478_bg9z')}</td>
 						<td className="p-5 font-extrabold text-xl text-end text-gray-900 border-t-2 border-gray-300">
-							{formatPrice(payoutToPrint.netAmount)}
+							{formatCurrency(Number(payoutToPrint.netAmount), payoutToPrint.currency)}
 						</td>
 					</tr>
 				</tfoot>

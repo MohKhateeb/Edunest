@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { BadgeDollarSign, CheckCircle2, Printer, Receipt } from "lucide-react";
-import { formatPrice } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
 import type { PayoutRecord } from "@/types/payout";
 
 type PayoutsHistoryListProps = {
@@ -69,7 +69,7 @@ export async function PayoutsHistoryList({
 											{new Date(p.periodEnd).toLocaleDateString("ar-EG")}
 										</td>
 										<td className="p-4 font-bold text-primary whitespace-nowrap">
-											{formatPrice(p.netAmount)}
+											{formatCurrency(Number(p.netAmount), p.currency)}
 										</td>
 										<td className="p-4 text-end">
 											<div className="flex items-center justify-end gap-3">
