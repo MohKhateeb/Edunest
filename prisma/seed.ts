@@ -57,6 +57,7 @@ async function main() {
 		{ settingKey: "MinBookingLeadHours", settingValue: "2" },
 		{ settingKey: "PAYMENT_HOLD_MINUTES", settingValue: "180", description: "المدة التي يُمهل فيها ولي الأمر لإتمام الدفع بعد موافقة المعلم. القيمة الافتراضية: 180 دقيقة (3 ساعات)" },
 		{ settingKey: "DefaultCurrency", settingValue: "ILS", description: "العملة الافتراضية لأي خدمة أو حجز جديد لا يحدد عملة صراحة" },
+		{ settingKey: "DefaultInstantBookingPrice", settingValue: "50", description: "السعر الافتراضي للحجز الفوري (Live Radar) عند عدم تحديد ولي الأمر سعراً، بعملة DefaultCurrency الحالية" },
 	];
 
 	for (const s of settings) {

@@ -60,7 +60,8 @@ export async function claimLiveRequest(
 
 			// تحديد السعر والمدة من الطلب (تم تحديدها مسبقاً من المنصة)
 			const duration = request.duration || 30; // افتراضي 30 دقيقة
-			const price = request.price || 50; // افتراضي 50 شيكل
+			const defaultPrice = await getSettingNumber("DefaultInstantBookingPrice", 50);
+			const price = request.price || defaultPrice;
 
 			// التحقق من عدم تعارض وقت الجلسة الفورية مع حجوزات المعلم
 			const now = new Date();
