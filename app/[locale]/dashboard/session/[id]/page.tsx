@@ -53,6 +53,7 @@ export default async function SessionLobbyPage({
 				studentName={booking.student.name || t('altalb_1')}
 				subject={booking.teacherService.serviceType.name}
 				price={Number(booking.price)}
+				currency={booking.currency}
 			/>
 		</div>
 	);

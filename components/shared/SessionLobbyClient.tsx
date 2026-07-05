@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import JoinMeetingButton from "@/components/shared/JoinMeetingButton";
 import { processPayment } from "@/lib/actions/bookings/pay";
 import { formatCurrency } from "@/lib/utils/currency";
+import { Currency } from "@prisma/client";
 import { useTranslations } from "next-intl";
 
 interface SessionLobbyClientProps {
@@ -29,6 +30,7 @@ interface SessionLobbyClientProps {
 	studentName: string;
 	subject: string;
 	price: number;
+	currency: Currency;
 }
 
 export default function SessionLobbyClient({
@@ -40,6 +42,7 @@ export default function SessionLobbyClient({
 	studentName,
 	subject,
 	price,
+	currency,
 }: SessionLobbyClientProps) {
     const t = useTranslations('common');
 	const router = useRouter();
@@ -138,7 +141,7 @@ export default function SessionLobbyClient({
 										<p className="text-sm text-slate-500 mb-1">
 											{t('almblgh_almtlwb')}</p>
 										<p className="text-3xl font-black text-slate-800 dark:text-slate-100">
-											{formatCurrency(price)}
+											{formatCurrency(price, currency)}
 										</p>
 									</div>
 

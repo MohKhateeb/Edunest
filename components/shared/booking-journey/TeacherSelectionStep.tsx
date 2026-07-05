@@ -93,9 +93,9 @@ export function TeacherSelectionStep({
 								VERIFICATION_BADGES_CONFIG[
 									teacher.verificationLevel as keyof typeof VERIFICATION_BADGES_CONFIG
 								] || VERIFICATION_BADGES_CONFIG.NONE;
-							const lowestPrice = Math.min(
-								...teacher.services.map((s) => s.price),
-							);
+							const lowestPriceService = teacher.services.reduce((min, s) => s.price < min.price ? s : min, teacher.services[0]);
+							const lowestPrice = lowestPriceService?.price ?? 0;
+							const lowestCurrency = lowestPriceService?.currency;
 
 							return (
 								<button
@@ -168,7 +168,7 @@ export function TeacherSelectionStep({
 											<div className="flex items-center justify-between">
 												<div className="flex items-center gap-2">
 													<span className="text-[11px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
-														{t('ybda_mn')}{formatCurrency(lowestPrice)}
+														{t('ybda_mn')}{formatCurrency(lowestPrice, lowestCurrency)}
 													</span>
 													<span className="text-[10px] text-muted-foreground">
 														{teacher.totalSessions} {t('jlsh_mktmlh')}</span>

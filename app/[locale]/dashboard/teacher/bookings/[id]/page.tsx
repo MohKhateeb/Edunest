@@ -184,7 +184,7 @@ export default async function TeacherBookingDetailsPage({
 							<div className="flex justify-between items-center text-sm">
 								<span className="text-gray-500">{t('key_1783109439570_st5c')}</span>
 								<span className="font-bold text-gray-900 dark:text-white">
-									{formatCurrency(price)}
+									{formatCurrency(price, booking.currency)}
 								</span>
 							</div>
 
@@ -194,7 +194,7 @@ export default async function TeacherBookingDetailsPage({
 										{t('key_1783109439589_muva')}{commissionRate}%)
 									</span>
 									<span className="font-bold text-red-500">
-										-{formatCurrency(commissionAmount)}
+										-{formatCurrency(commissionAmount, booking.currency)}
 									</span>
 								</div>
 							)}
@@ -203,7 +203,7 @@ export default async function TeacherBookingDetailsPage({
 								<div className="flex justify-between items-center text-sm">
 									<span className="text-gray-500">{t('key_1783109439609_veie')}</span>
 									<span className="font-bold text-emerald-500">
-										+{formatCurrency(netProfit)}
+										+{formatCurrency(netProfit, booking.currency)}
 									</span>
 								</div>
 							)}
@@ -212,7 +212,7 @@ export default async function TeacherBookingDetailsPage({
 								<span className="font-bold text-gray-900 dark:text-white">
 									{t('key_1783109439623_mq9v')}</span>
 								<span className="font-black text-2xl text-emerald-600 dark:text-emerald-400">
-									{formatCurrency(netProfit)}
+									{formatCurrency(netProfit, booking.currency)}
 								</span>
 							</div>
 						</div>

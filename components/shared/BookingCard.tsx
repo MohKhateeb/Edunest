@@ -45,7 +45,8 @@ import {
 	PAYMENT_STATUS_AR,
 	PAYMENT_STATUS_STYLES,
 } from "@/lib/translations";
-import { cn, formatLocalTime, formatPrice } from "@/lib/utils";
+import { cn, formatLocalTime } from "@/lib/utils";
+import { formatCurrency } from "@/lib/utils/currency";
 import {
 	canSubmitReport,
 	getDetailedSessionState,
@@ -91,7 +92,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 	const isTrial = booking.isTrial;
 	const priceDisplay = isTrial
 		? t('tjrybyh_mjanyh')
-		: formatPrice(Number(booking.price));
+		: formatCurrency(Number(booking.price), booking.currency);
 
 	// Actions
 	const handleAccept = async () => {
