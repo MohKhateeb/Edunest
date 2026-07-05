@@ -4,17 +4,21 @@ import { useTranslations } from "next-intl";
 import { useState, useEffect } from "react";
 import { CreditCard, Clock } from "lucide-react";
 import { PaymentModal } from "@/components/shared/PaymentModal";
+import { formatCurrency } from "@/lib/utils/currency";
+import { Currency } from "@prisma/client";
 import Portal from "@/components/shared/Portal";
 
 interface PaymentCountdownProps {
 	bookingId: string;
 	price: number;
+	currency: Currency;
 	paymentDeadline?: Date | string | null;
 }
 
 export default function PaymentCountdown({
 	bookingId,
 	price,
+	currency,
 	paymentDeadline,
 }: PaymentCountdownProps) {
     const t = useTranslations('parent')
@@ -65,7 +69,7 @@ export default function PaymentCountdown({
 					className="w-full flex items-center justify-center gap-1.5 text-xs font-bold bg-orange-600 text-white border border-orange-700 hover:bg-orange-700 py-3 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg animate-pulse hover:animate-none"
 				>
 					<CreditCard className="h-4 w-4" />
-					{t('key_1783109435481_cmyd')}{price})
+					{t('key_1783109435481_cmyd')}{formatCurrency(price, currency)})
 				</button>
 			)}
 
@@ -74,6 +78,7 @@ export default function PaymentCountdown({
 					<PaymentModal
 						bookingId={bookingId}
 						price={price}
+						currency={currency}
 						onClose={() => setShowPaymentModal(false)}
 					/>
 				</Portal>

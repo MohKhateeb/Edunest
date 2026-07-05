@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { updateTeacherProfile } from "@/lib/actions/teacher";
 import { cn, getCurrencySymbol } from "@/lib/utils";
 import { teacherProfileSchema } from "@/lib/validations/teacher";
+import { Currency } from "@prisma/client";
 
 type ProfileData = {
 	subjectIds: string[];
@@ -27,6 +28,7 @@ type ProfileData = {
 	education: string | null;
 	yearsOfExperience: number;
 	defaultHourlyRate: number;
+	defaultHourlyRateCurrency: Currency;
 	profileImageUrl: string | null;
 };
 
@@ -388,7 +390,7 @@ export default function TeacherProfileForm({
 									{t('key_1783109436725_v7oa')}</label>
 								<div className="relative">
 									<span className="absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium">
-										{getCurrencySymbol()}
+										{getCurrencySymbol(initialData.defaultHourlyRateCurrency)}
 									</span>
 									<input
 										type="number"

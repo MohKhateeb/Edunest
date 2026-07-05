@@ -140,6 +140,7 @@ export default function ParentBookingsList({
 								<PaymentCountdown
 									bookingId={booking.id}
 									price={Number(booking.price)}
+									currency={booking.currency}
 									paymentDeadline={booking.paymentDeadline}
 								/>
 							)}

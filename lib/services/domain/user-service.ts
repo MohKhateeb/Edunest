@@ -59,6 +59,7 @@ export class UserService {
 					defaultHourlyRate: teacher.defaultHourlyRate
 						? Number(teacher.defaultHourlyRate)
 						: 50,
+					defaultHourlyRateCurrency: teacher.defaultHourlyRateCurrency,
 					profileImageUrl: teacher.profileImageUrl || null,
 				}
 			: null;

@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import BaseModal from "@/components/shared/BaseModal";
 import { processPayment } from "@/lib/actions/bookings/pay";
+import { formatCurrency } from "@/lib/utils/currency";
+import { Currency } from "@prisma/client";
 import { useTranslations } from "next-intl";
 
 export function PaymentModal({
@@ -13,6 +15,7 @@ export function PaymentModal({
 }: {
 	bookingId: string;
 	price: number;
+	currency: Currency;
 	onClose: () => void;
 }) {
     const t = useTranslations('common');
@@ -67,18 +70,18 @@ export function PaymentModal({
 				<div className="flex justify-between items-center mb-2">
 					<span className="text-gray-600 dark:text-gray-300">{t('qymh_aljlsh')}</span>
 					<span className="font-semibold text-gray-900 dark:text-white">
-						{price} {t('shykl_1')}</span>
+						{formatCurrency(price, currency)}</span>
 				</div>
 				<div className="flex justify-between items-center mb-2">
 					<span className="text-gray-600 dark:text-gray-300">{t('rswm_idafyh')}</span>
 					<span className="font-semibold text-gray-900 dark:text-white">
-						{t('0_shykl')}</span>
+						{formatCurrency(0, currency)}</span>
 				</div>
 				<div className="border-t border-gray-200 dark:border-gray-600 my-2 pt-2 flex justify-between items-center">
 					<span className="text-gray-900 dark:text-white font-bold">
 						{t('alijmaly')}</span>
 					<span className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-						{price} {t('shykl_1')}</span>
+						{formatCurrency(price, currency)}</span>
 				</div>
 			</div>
 
