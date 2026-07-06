@@ -13,8 +13,9 @@ import { defaultHomepageContent } from "@/lib/default-homepage-content";
 import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 import type { HomepageContent } from "@/types/homepage";
 
-export async function generateMetadata({params}: any) {
-	const t = await getTranslations({locale: params?.locale || 'ar', namespace: 'common'});
+export async function generateMetadata({params}: {params: Promise<{locale: string}>}) {
+	const {locale} = await params;
+	const t = await getTranslations({locale: locale || 'ar', namespace: 'common'});
 	return {
 		title: t('key_1783109425880_bpgi') ,
 		description: t('key_1783109425883_ndoy'),

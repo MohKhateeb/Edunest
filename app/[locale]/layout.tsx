@@ -8,10 +8,9 @@ import ToastProvider from "@/components/shared/ToastProvider";
 
 const LOCALES = ['ar', 'en']
 
-export async function generateMetadata({params}: any) {
-  const resolvedParams = await params;
-  const locale = resolvedParams?.locale || 'ar';
-  const t = await getTranslations({locale, namespace: 'common'});
+export async function generateMetadata({params}: {params: Promise<{locale: string}>}) {
+  const {locale} = await params;
+  const t = await getTranslations({locale: locale || 'ar', namespace: 'common'});
   return {
     title: t('str_2YXZhti1'),
     description: "EduNest platform"

@@ -16,9 +16,13 @@ import AdminPayoutsEngine from "../payouts/_components/AdminPayoutsEngine";
 import { EscrowActions } from "../escrow/escrow-actions";
 import { formatCurrency, formatPrice } from "@/lib/utils";
 
-export const getMetadata = (t: any) => ({
-	title: t('str_2KfZhNil') ,
-});
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'admin' });
+	return {
+		title: t('str_2KfZhNil') ,
+	};
+}
 
 export default async function AdminFinancialsPage({
 	searchParams,

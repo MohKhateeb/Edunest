@@ -3,8 +3,9 @@ import type { Metadata } from "next";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 
-export async function generateMetadata({params}: any) {
-  const t = await getTranslations({locale: params?.locale || 'ar', namespace: 'legal'});
+export async function generateMetadata({params}: {params: Promise<{locale: string}>}) {
+  const {locale} = await params;
+  const t = await getTranslations({locale: locale || 'ar', namespace: 'legal'});
   return {
     title: t('key_1783109427657_w8si'),
     description: "EduNest platform"
