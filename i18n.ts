@@ -3,7 +3,7 @@ import {hasLocale} from 'next-intl'
 import {routing} from './i18n/routing'
 
 export default getRequestConfig(async ({requestLocale}) => {
-  const requested = await requestLocale; console.log('i18n requested:', requested);
+  const requested = await requestLocale;
   const locale = hasLocale(routing.locales, requested)
     ? requested
     : routing.defaultLocale

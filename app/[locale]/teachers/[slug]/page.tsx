@@ -46,6 +46,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
 	const { slug, locale } = await params;
 	const t = await getTranslations({ locale, namespace: 'teachers' });
+	const tCommon = await getTranslations({ locale, namespace: 'common' });
 	const teacher = await UserService.getTeacherMetadata(slug);
 
 	if (!teacher || !teacher.user.isActive) {
@@ -53,7 +54,7 @@ export async function generateMetadata({
 	}
 
 	const spec =
-		teacher.subjects?.map((s) => s.subject.name).join(", ") || t('ghyr_mhdd');
+		teacher.subjects?.map((s) => s.subject.name).join(", ") || tCommon('ghyr_mhdd');
 
 	return {
 		title: `${teacher.user.name} - معلم ${spec} | إديونست`,
@@ -113,7 +114,7 @@ export default async function TeacherProfilePage({
 						</div>
 						<p className="text-white/70 text-lg mb-3">
 							{teacher.subjects?.map((s) => s.subject.name).join(", ") ||
-								t('ghyr_mhdd')}
+								tCommon('ghyr_mhdd')}
 							{teacher.subSpecialization
 								? ` · ${teacher.subSpecialization}`
 								: ""}

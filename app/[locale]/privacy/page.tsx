@@ -73,14 +73,15 @@ const getSections = (t: any) => [
 ];
 
 export default async function PrivacyPage() {
-    const t = await getTranslations('legal')
+    const t = await getTranslations('legal');
+	const tCommon = await getTranslations('common');
 	return (
 		<div className="min-h-screen flex flex-col">
 			<Header />
 
 			<section className="bg-gradient-to-br from-[hsl(172,66%,10%)] via-[hsl(172,60%,18%)] to-[hsl(200,50%,14%)] text-white py-14">
 				<div className="max-w-4xl mx-auto px-6 text-center">
-					<h1 className="text-4xl font-extrabold mb-3">{t('syash_alkhswsyh')}</h1>
+					<h1 className="text-4xl font-extrabold mb-3">{tCommon('syash_alkhswsyh')}</h1>
 					<p className="text-white/70">{t('key_1783109428238_4n8o')}</p>
 				</div>
 			</section>

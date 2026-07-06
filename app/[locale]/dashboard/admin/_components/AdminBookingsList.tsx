@@ -117,6 +117,7 @@ export default function AdminBookingsList({
 	};
 
 	const t = useTranslations("admin");
+	const tCommon = useTranslations("common");
 
 	return (
 		<div className="space-y-4">
@@ -344,7 +345,7 @@ export default function AdminBookingsList({
 						disabled={isLoadingMore}
 						className="px-6 py-2.5 bg-primary text-primary-foreground hover:bg-primary/90 rounded-xl font-bold transition-all disabled:opacity-50 cursor-pointer shadow-sm"
 					>
-						{isLoadingMore ? t('loading') : t('str_2KrYrdmF')}
+						{isLoadingMore ? tCommon('loading') : t('str_2KrYrdmF')}
 					</button>
 				</div>
 			)}

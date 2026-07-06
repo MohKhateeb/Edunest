@@ -59,6 +59,7 @@ export default async function TeachersPage({
 	const resolvedSearchParams = await searchParams;
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: 'teachers' });
+	const tCommon = await getTranslations({ locale, namespace: 'common' });
 	const { teachers, total, page, PAGE_SIZE } = await getTeachers(resolvedSearchParams);
 	const totalPages = Math.ceil(total / PAGE_SIZE);
 
@@ -230,7 +231,7 @@ export default async function TeachersPage({
 											</h2>
 											<p className="text-xs text-muted-foreground mb-1 truncate">
 												{teacher.subjects?.map((s) => s.subject.name).join(", ") ||
-													t('ghyr_mhdd')}
+													tCommon('ghyr_mhdd')}
 												{teacher.subSpecialization ? ` · ${teacher.subSpecialization}` : ""}
 											</p>
 											{teacher.city && (

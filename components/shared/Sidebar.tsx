@@ -30,22 +30,22 @@ import { adminLinks, parentLinks, teacherLinks } from "@/lib/config/navigation";
 import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 
-const getADVISORTIPS = (t: any): Record<"PARENT" | "TEACHER" | "ADMIN", Array<{ advisor: "hakeem" | "najeeb"; text: string }>> => ({
+const getADVISORTIPS = (tAdvisors: any): Record<"PARENT" | "TEACHER" | "ADMIN", Array<{ advisor: "hakeem" | "najeeb"; text: string }>> => ({
 	PARENT: [
-		{ advisor: "hakeem", text: t('hakeem_sidebar_parent_1') },
-		{ advisor: "najeeb", text: t('najeeb_sidebar_parent_1') },
-		{ advisor: "hakeem", text: t('hakeem_sidebar_parent_2') },
-		{ advisor: "najeeb", text: t('najeeb_sidebar_parent_2') },
+		{ advisor: "hakeem", text: tAdvisors('hakeem_sidebar_parent_1') },
+		{ advisor: "najeeb", text: tAdvisors('najeeb_sidebar_parent_1') },
+		{ advisor: "hakeem", text: tAdvisors('hakeem_sidebar_parent_2') },
+		{ advisor: "najeeb", text: tAdvisors('najeeb_sidebar_parent_2') },
 	],
 	TEACHER: [
-		{ advisor: "hakeem", text: t('hakeem_sidebar_teacher_1') },
-		{ advisor: "najeeb", text: t('najeeb_sidebar_teacher_1') },
-		{ advisor: "hakeem", text: t('hakeem_sidebar_teacher_2') },
-		{ advisor: "najeeb", text: t('najeeb_sidebar_teacher_2') },
+		{ advisor: "hakeem", text: tAdvisors('hakeem_sidebar_teacher_1') },
+		{ advisor: "najeeb", text: tAdvisors('najeeb_sidebar_teacher_1') },
+		{ advisor: "hakeem", text: tAdvisors('hakeem_sidebar_teacher_2') },
+		{ advisor: "najeeb", text: tAdvisors('najeeb_sidebar_teacher_2') },
 	],
 	ADMIN: [
-		{ advisor: "hakeem", text: t('hakeem_sidebar_admin_1') },
-		{ advisor: "najeeb", text: t('najeeb_sidebar_admin_1') },
+		{ advisor: "hakeem", text: tAdvisors('hakeem_sidebar_admin_1') },
+		{ advisor: "najeeb", text: tAdvisors('najeeb_sidebar_admin_1') },
 	],
 });
 
