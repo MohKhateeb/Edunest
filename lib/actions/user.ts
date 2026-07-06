@@ -17,6 +17,7 @@ import {
 	studentSchema,
 	updateProfileSchema,
 } from "@/lib/validations/user";
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 
 const userRepository = new PrismaUserRepository();
 const teacherRepository = new PrismaTeacherRepository();
@@ -34,7 +35,8 @@ async function _registerUserInDb(
 	const existing = await userRepository.findByEmail(cleanEmail);
 
 	if (existing) {
-		return { success: false, error: "البريد الإلكتروني مسجل بالفعل" };
+		const tError = await getErrorT();
+		return { success: false, error: tError('user_email_already_registered') };
 	}
 
 	const passwordHash = await bcrypt.hash(password, 12);
@@ -88,18 +90,20 @@ async function _updateStudentInDb(
 		},
 	});
 
+	const tError = await getErrorT();
+
 	if (!student) {
-		return { success: false, error: "الطالب غير موجود" };
+		return { success: false, error: tError('student_not_found') };
 	}
 
 	if (student.parentUserId !== userId) {
-		return { success: false, error: "غير مصرح لك بتعديل بيانات هذا الطالب" };
+		return { success: false, error: tError('student_unauthorized_edit') };
 	}
 
 	if (student._count.bookings > 0) {
 		return {
 			success: false,
-			error: "لا يمكن تعديل بيانات الطالب لوجود جلسات مجدولة له",
+			error: tError('student_has_scheduled_sessions'),
 		};
 	}
 
@@ -122,9 +126,10 @@ async function _updateUserProfileInDb(
 	const existing = await userRepository.findByEmailExcludingId(cleanEmail, userId);
 
 	if (existing) {
+		const tError = await getErrorT();
 		return {
 			success: false,
-			error: "البريد الإلكتروني مستخدم بالفعل من قبل حساب آخر",
+			error: tError('user_email_in_use_by_other'),
 		};
 	}
 
@@ -145,14 +150,15 @@ async function _changeUserPasswordInDb(
 	const { currentPassword, newPassword } = data;
 
 	const user = await userRepository.findById(userId);
+	const tError = await getErrorT();
 
 	if (!user) {
-		return { success: false, error: "المستخدم غير موجود" };
+		return { success: false, error: tError('user_not_found') };
 	}
 
 	const isValid = await bcrypt.compare(currentPassword, user.passwordHash);
 	if (!isValid) {
-		return { success: false, error: "كلمة المرور الحالية غير صحيحة" };
+		return { success: false, error: tError('user_wrong_current_password') };
 	}
 
 	const passwordHash = await bcrypt.hash(newPassword, 12);
@@ -178,7 +184,8 @@ export async function registerUser(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء إنشاء الحساب" };
+		const tError = await getErrorT();
+		return { success: false, error: tError('user_registration_error') };
 	}
 }
 
@@ -201,7 +208,8 @@ export async function addStudent(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء إضافة الطالب" };
+		const tError = await getErrorT();
+		return { success: false, error: tError('student_add_error') };
 	}
 }
 
@@ -225,7 +233,8 @@ export async function updateStudent(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء تعديل بيانات الطالب" };
+		const tError = await getErrorT();
+		return { success: false, error: tError('student_update_error') };
 	}
 }
 
@@ -252,7 +261,8 @@ export async function updateUserProfile(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء تحديث بيانات الملف الشخصي" };
+		const tError = await getErrorT();
+		return { success: false, error: tError('user_profile_update_error') };
 	}
 }
 
@@ -277,6 +287,7 @@ export async function changeUserPassword(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء تغيير كلمة المرور" };
+		const tError = await getErrorT();
+		return { success: false, error: tError('user_password_change_error') };
 	}
 }

@@ -1686,5 +1686,37 @@
     "najeeb_opinion_tag": "رأي نجيب",
     "najeeb_homepage_quote": "\"صحيح جداً! وأفضل ما في الأمر أنني أستطيع اختيار المعلم الذي يفهمني، في الوقت الذي يناسبني تماماً دون أن أضطر لتغيير جدول يومي المليء بالأنشطة.\"",
     "najeeb_sidebar_teacher_1": "حسك يلهم طاقات المستقبل! نستمتع في إديونست بكل لحظة نقضيها معك!"
+  },
+  "errors": {
+    "booking_min_lead_time": "يجب أن يكون موعد الحجز بعد {minLeadHours} ساعات على الأقل من الآن",
+    "booking_student_not_found": "الطالب المحدد غير موجود أو غير تابع لك",
+    "booking_service_not_found": "الخدمة المطلوبة غير متوفرة",
+    "booking_teacher_not_verified": "المعلم لم يتم توثيقه بعد ولا يمكن حجز جلسات معه حالياً",
+    "booking_question_fields_required": "حقول عنوان وتفاصيل السؤال إلزامية لخدمة شرح المسألة السريعة",
+    "user_not_found": "المستخدم غير موجود",
+    "booking_financial_calc_error": "حدث خطأ أثناء حساب التكاليف المالية",
+    "booking_time_unavailable": "الوقت المحدد غير متاح",
+    "booking_trial_already_used": "لقد قمت باستخدام جلستك التجريبية المجانية مسبقاً",
+    "booking_teacher_has_overlap": "المعلم لديه حجز آخر متداخل في هذا الوقت. يرجى اختيار وقت آخر",
+    "booking_student_has_overlap": "الطالب لديه حجز آخر متداخل في هذا الوقت مع معلم آخر. يرجى اختيار وقت آخر",
+    "user_email_already_registered": "البريد الإلكتروني مسجل بالفعل",
+    "student_not_found": "الطالب غير موجود",
+    "student_unauthorized_edit": "غير مصرح لك بتعديل بيانات هذا الطالب",
+    "student_has_scheduled_sessions": "لا يمكن تعديل بيانات الطالب لوجود جلسات مجدولة له",
+    "user_email_in_use_by_other": "البريد الإلكتروني مستخدم بالفعل من قبل حساب آخر",
+    "user_wrong_current_password": "كلمة المرور الحالية غير صحيحة",
+    "user_registration_error": "حدث خطأ أثناء إنشاء الحساب",
+    "student_add_error": "حدث خطأ أثناء إضافة الطالب",
+    "student_update_error": "حدث خطأ أثناء تعديل بيانات الطالب",
+    "user_profile_update_error": "حدث خطأ أثناء تحديث بيانات الملف الشخصي",
+    "user_password_change_error": "حدث خطأ أثناء تغيير كلمة المرور"
+  },
+  "notifications": {
+    "new_booking_title": "حجز جديد بانتظارك",
+    "new_booking_message": "لقد تم حجز موعد جديد مع الطالب بتاريخ {startTime}",
+    "admin_cancelled_title": "إلغاء الجلسة من الإدارة",
+    "admin_cancelled_message": "قامت إدارة المنصة بإلغاء الجلسة. السبب: {reason}",
+    "booking_cancelled_title": "إلغاء حجز الجلسة",
+    "booking_cancelled_message": "تم إلغاء الجلسة من قبل الطرف الآخر. السبب: {reason}"
   }
 }

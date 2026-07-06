@@ -16,10 +16,13 @@ import {
 } from "@/lib/utils/booking-state";
 import { hoursUntil } from "@/lib/utils/time";
 import { cancellationSchema } from "@/lib/validations/booking";
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 
 export const cancelBooking = withAuthAction(
 	[UserType.PARENT, UserType.TEACHER, UserType.ADMIN],
 	async ({ userId, userType }, data: z.infer<typeof cancellationSchema>) => {
+		const tNotif = await getNotificationT();
+		
 		const validated = cancellationSchema.safeParse(data);
 		if (!validated.success) {
 			return { success: false, error: validated.error.issues[0].message };
@@ -123,8 +126,8 @@ export const cancelBooking = withAuthAction(
 				await createNotification(
 					{
 						userId: booking.parentUserId,
-						title: "إلغاء الجلسة من الإدارة",
-						message: `قامت إدارة المنصة بإلغاء الجلسة. السبب: ${reason}`,
+						title: tNotif('admin_cancelled_title'),
+						message: tNotif('admin_cancelled_message', { reason }),
 					},
 					tx,
 				);
@@ -132,8 +135,8 @@ export const cancelBooking = withAuthAction(
 				await createNotification(
 					{
 						userId: booking.teacherService.teacher.userId,
-						title: "إلغاء الجلسة من الإدارة",
-						message: `قامت إدارة المنصة بإلغاء الجلسة. السبب: ${reason}`,
+						title: tNotif('admin_cancelled_title'),
+						message: tNotif('admin_cancelled_message', { reason }),
 					},
 					tx,
 				);
@@ -146,8 +149,8 @@ export const cancelBooking = withAuthAction(
 				await createNotification(
 					{
 						userId: recipientId,
-						title: "إلغاء حجز الجلسة",
-						message: `تم إلغاء الجلسة من قبل الطرف الآخر. السبب: ${reason}`,
+						title: tNotif('booking_cancelled_title'),
+						message: tNotif('booking_cancelled_message', { reason }),
 					},
 					tx,
 				);

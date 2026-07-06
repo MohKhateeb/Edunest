@@ -1686,5 +1686,37 @@
     "najeeb_opinion_tag": "Najeeb's Opinion",
     "najeeb_homepage_quote": "\"Absolutely right! The best part is that I can choose the teacher who understands me, at a time that suits me perfectly without changing my busy daily schedule.\"",
     "najeeb_sidebar_teacher_1": "Your passion inspires the energies of the future! At EduNest, we enjoy every moment we spend with you!"
+  },
+  "errors": {
+    "booking_min_lead_time": "Booking time must be at least {minLeadHours} hours from now",
+    "booking_student_not_found": "The selected student was not found or does not belong to you",
+    "booking_service_not_found": "The requested service is not available",
+    "booking_teacher_not_verified": "The teacher is not verified yet and cannot be booked currently",
+    "booking_question_fields_required": "Question title and details are required for the quick question service",
+    "user_not_found": "User not found",
+    "booking_financial_calc_error": "An error occurred while calculating financial costs",
+    "booking_time_unavailable": "The selected time is not available",
+    "booking_trial_already_used": "You have already used your free trial session",
+    "booking_teacher_has_overlap": "The teacher has another booking overlapping with this time. Please choose another time",
+    "booking_student_has_overlap": "The student has another booking overlapping with this time with another teacher. Please choose another time",
+    "user_email_already_registered": "Email is already registered",
+    "student_not_found": "Student not found",
+    "student_unauthorized_edit": "You are not authorized to edit this student's data",
+    "student_has_scheduled_sessions": "Cannot edit student data because they have scheduled sessions",
+    "user_email_in_use_by_other": "Email is already in use by another account",
+    "user_wrong_current_password": "Current password is incorrect",
+    "user_registration_error": "An error occurred during account creation",
+    "student_add_error": "An error occurred while adding the student",
+    "student_update_error": "An error occurred while updating student data",
+    "user_profile_update_error": "An error occurred while updating profile data",
+    "user_password_change_error": "An error occurred while changing password"
+  },
+  "notifications": {
+    "new_booking_title": "New Booking Awaiting You",
+    "new_booking_message": "A new appointment has been booked with a student on {startTime}",
+    "admin_cancelled_title": "Session Cancelled by Administration",
+    "admin_cancelled_message": "The platform administration has cancelled the session. Reason: {reason}",
+    "booking_cancelled_title": "Booking Cancelled",
+    "booking_cancelled_message": "The session was cancelled by the other party. Reason: {reason}"
   }
 }

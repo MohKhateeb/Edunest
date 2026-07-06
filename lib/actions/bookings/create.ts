@@ -24,6 +24,7 @@ import {
 import { revalidateBookingPaths } from "@/lib/utils/booking-state";
 import { hoursUntil } from "@/lib/utils/time";
 import { bookingSchema } from "@/lib/validations/booking";
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 
 export const createBooking = withAuthAction(
 	[UserType.PARENT],
@@ -34,6 +35,9 @@ export const createBooking = withAuthAction(
 			bankTransferProofUrl?: string;
 		},
 	) => {
+		const tError = await getErrorT();
+		const tNotif = await getNotificationT();
+
 		const validated = bookingSchema.safeParse(data);
 		if (!validated.success) {
 			return { success: false, error: validated.error.issues[0].message };
@@ -55,7 +59,7 @@ export const createBooking = withAuthAction(
 		if (hoursUntil(startTime) < minLeadHours) {
 			return {
 				success: false,
-				error: `يجب أن يكون موعد الحجز بعد ${minLeadHours} ساعات على الأقل من الآن`,
+				error: tError('booking_min_lead_time', { minLeadHours }),
 			};
 		}
 
@@ -66,7 +70,7 @@ export const createBooking = withAuthAction(
 		if (!student) {
 			return {
 				success: false,
-				error: "الطالب المحدد غير موجود أو غير تابع لك",
+				error: tError('booking_student_not_found'),
 			};
 		}
 
@@ -80,12 +84,12 @@ export const createBooking = withAuthAction(
 			},
 		});
 		if (!teacherService) {
-			return { success: false, error: "الخدمة المطلوبة غير متوفرة" };
+			return { success: false, error: tError('booking_service_not_found') };
 		}
 		if (!teacherService.teacher.isVerified) {
 			return {
 				success: false,
-				error: "المعلم لم يتم توثيقه بعد ولا يمكن حجز جلسات معه حالياً",
+				error: tError('booking_teacher_not_verified'),
 			};
 		}
 
@@ -96,7 +100,7 @@ export const createBooking = withAuthAction(
 			if (!questionTitle || !questionDetails) {
 				return {
 					success: false,
-					error: "حقول عنوان وتفاصيل السؤال إلزامية لخدمة شرح المسألة السريعة",
+					error: tError('booking_question_fields_required'),
 				};
 			}
 		}
@@ -106,7 +110,7 @@ export const createBooking = withAuthAction(
 			where: { id: parentUserId },
 		});
 		if (!parentUser) {
-			return { success: false, error: "المستخدم غير موجود" };
+			return { success: false, error: tError('user_not_found') };
 		}
 
 		let financials;
@@ -124,7 +128,7 @@ export const createBooking = withAuthAction(
 				error:
 					err instanceof Error
 						? err.message
-						: "حدث خطأ أثناء حساب التكاليف المالية",
+						: tError('booking_financial_calc_error'),
 			};
 		}
 
@@ -140,7 +144,7 @@ export const createBooking = withAuthAction(
 		if (!availabilityCheck.available) {
 			return {
 				success: false,
-				error: availabilityCheck.reason || "الوقت المحدد غير متاح",
+				error: availabilityCheck.reason || tError('booking_time_unavailable'),
 			};
 		}
 
@@ -166,10 +170,10 @@ export const createBooking = withAuthAction(
 					where: { id: parentUserId },
 				});
 				if (!lockedParent) {
-					throw new Error("المستخدم غير موجود");
+					throw new Error(tError('user_not_found'));
 				}
 				if (lockedParent.hasUsedFreeTrial) {
-					throw new Error("لقد قمت باستخدام جلستك التجريبية المجانية مسبقاً");
+					throw new Error(tError('booking_trial_already_used'));
 				}
 
 				// Mark parent as having used trial
@@ -195,9 +199,7 @@ export const createBooking = withAuthAction(
 					b.duration,
 				);
 				if (hasOverlap) {
-					throw new Error(
-						"المعلم لديه حجز آخر متداخل في هذا الوقت. يرجى اختيار وقت آخر",
-					);
+					throw new Error(tError('booking_teacher_has_overlap'));
 				}
 			}
 
@@ -217,9 +219,7 @@ export const createBooking = withAuthAction(
 					b.duration,
 				);
 				if (hasOverlap) {
-					throw new Error(
-						"الطالب لديه حجز آخر متداخل في هذا الوقت مع معلم آخر. يرجى اختيار وقت آخر",
-					);
+					throw new Error(tError('booking_student_has_overlap'));
 				}
 			}
 
@@ -265,8 +265,8 @@ export const createBooking = withAuthAction(
 		// Send notification to Tutor (outside transaction)
 		await createNotification({
 			userId: teacherService.teacher.userId,
-			title: "طلب حجز جديد",
-			message: `لديك طلب حجز جديد من ولي الأمر لجلسة بتاريخ ${startTime.toLocaleString("ar-EG")}`,
+			title: tNotif('new_booking_title'),
+			message: tNotif('new_booking_message', { startTime: startTime.toLocaleString("ar-EG") }),
 			link: "/dashboard/teacher/requests",
 		});
 
