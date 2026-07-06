@@ -71,6 +71,7 @@ export default async function TeacherProfilePage({
 }) {
 	const { slug, locale } = await params;
 	const t = await getTranslations({ locale, namespace: 'teachers' });
+	const tCommon = await getTranslations({ locale, namespace: 'common' });
 	const GRADE_LABELS = getGradeLabels(t);
 	const VERIFICATION_LABELS = getVerificationLabels(t);
 	const teacher = await getTeacher(slug);

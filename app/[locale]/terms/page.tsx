@@ -3,15 +3,16 @@ import type { Metadata } from "next";
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 
-export async function generateMetadata({params}: any) {
-  const t = await getTranslations({locale: params?.locale || 'ar', namespace: 'legal'});
+export async function generateMetadata({params}: {params: Promise<{locale: string}>}) {
+  const {locale} = await params;
+  const t = await getTranslations({locale, namespace: 'legal'});
   return {
     title: t('key_1783109427909_x0z5'),
-    description: "EduNest platform"
+    description: t('terms_meta_description'),
   };
 }
 
-const getSections = (t: any) => [
+const getSections = (t: Awaited<ReturnType<typeof getTranslations>>) => [
 	{
 		title: t('key_1783109428243_l301') ,
 		content:
