@@ -583,3 +583,28 @@ model AdminEscrow {
   @@index([status, resolvedAt])
   @@map("admin_escrows")
 }
+
+model Country {
+  id        String   @id @default(cuid())
+  code      String   @unique
+  nameAr    String
+  nameEn    String
+  isActive  Boolean  @default(true)
+  cities    City[]
+  createdAt DateTime @default(now())
+}
+
+model City {
+  id        String   @id @default(cuid())
+  countryId String
+  country   Country  @relation(fields: [countryId], references: [id])
+  nameAr    String
+  nameEn    String
+  slug      String   @unique
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([countryId])
+  @@unique([countryId, nameEn])
+}

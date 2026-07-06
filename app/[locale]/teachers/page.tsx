@@ -6,6 +6,7 @@ import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
 import { UserService } from "@/lib/services/domain/user-service";
 import { formatCurrency } from "@/lib/utils/currency";
+import { locationRepository } from "@/lib/repositories/locationRepository";
 
 export const metadata = {
 	title: "ابحث عن معلم | إديونست",
@@ -23,17 +24,6 @@ async function getTeachers(params: SearchParams) {
 	return UserService.searchTeachers(params);
 }
 
-const CITIES = [
-	"رام الله",
-	"الخليل",
-	"نابلس",
-	"القدس",
-	"بيت لحم",
-	"طولكرم",
-	"قلقيلية",
-	"جنين",
-	"أريحا",
-];
 const GRADE_LABELS: Record<number, string> = {
 	1: "الأول",
 	2: "الثاني",
@@ -62,6 +52,8 @@ export default async function TeachersPage({
 	const tCommon = await getTranslations({ locale, namespace: 'common' });
 	const { teachers, total, page, PAGE_SIZE } = await getTeachers(resolvedSearchParams);
 	const totalPages = Math.ceil(total / PAGE_SIZE);
+	
+	const cities = await locationRepository.getActiveCitiesByCountry("PS");
 
 	function buildUrl(overrides: Record<string, string | undefined>) {
 		const qp = new URLSearchParams();
@@ -115,9 +107,9 @@ export default async function TeachersPage({
 							className="rounded-xl px-4 py-3 text-foreground bg-white/95 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
 						>
 							<option value="">جميع المدن</option>
-							{CITIES.map((c) => (
-								<option key={c} value={c}>
-									{c}
+							{cities.map((c) => (
+								<option key={c.slug} value={c.slug}>
+									{locale === 'en' ? c.nameEn : c.nameAr}
 								</option>
 							))}
 						</select>

@@ -7,22 +7,9 @@ import { useMemo } from "react";
 import type { DetailedBooking } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { getLocalDateString } from "@/lib/utils/time";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
-const MONTHS_AR = [
-	"يناير",
-	"فبراير",
-	"مارس",
-	"أبريل",
-	"مايو",
-	"يونيو",
-	"يوليو",
-	"أغسطس",
-	"سبتمبر",
-	"أكتوبر",
-	"نوفمبر",
-	"ديسمبر",
-];
+
 const WEEKDAYS_AR = ["ح", "ن", "ث", "ر", "خ", "ج", "س"]; // Starting from Sunday for standard date math, but wait, usually AR calendars start Saturday or Sunday. Let's stick to standard getDay() where 0=Sunday.
 
 interface TeacherCalendarProps {
@@ -41,6 +28,7 @@ export function TeacherCalendar({
 	setSelectedDateStr,
 }: TeacherCalendarProps) {
     const t = useTranslations('bookings');
+	const locale = useLocale();
 	const year = currentDate.getFullYear();
 	const month = currentDate.getMonth();
 
@@ -125,7 +113,7 @@ export function TeacherCalendar({
 					<ChevronRight className="h-4 w-4" />
 				</button>
 				<span className="text-xs font-black">
-					{MONTHS_AR[month]} {year}
+					{new Intl.DateTimeFormat(locale, { month: 'long' }).format(currentDate)} {year}
 				</span>
 				<button
 					onClick={handlePrevMonth}
