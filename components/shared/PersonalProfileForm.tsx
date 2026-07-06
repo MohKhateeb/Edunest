@@ -10,7 +10,6 @@ import {
 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
-import { uploadProfileImage } from "@/lib/actions/upload";
 import { getAllCurrencies } from "@/lib/utils/currency";
 import { changeUserPassword, updateUserProfile } from "@/lib/actions/user";
 import { useTranslations } from "next-intl";

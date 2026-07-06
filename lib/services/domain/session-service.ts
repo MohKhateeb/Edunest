@@ -13,12 +13,13 @@ export class SessionService {
 
 		const rawServiceTypes = await prisma.serviceType.findMany({
 			where: { isActive: true, isRecurring: false },
-			select: { id: true, name: true, fazaaPrice: true, fazaaDuration: true },
+			select: { id: true, name: true, fazaaPrice: true, fazaaDuration: true, fazaaPriceCurrency: true },
 		});
 
 		const serviceTypes = rawServiceTypes.map((st) => ({
 			...st,
 			fazaaPrice: st.fazaaPrice ? Number(st.fazaaPrice) : 50,
+			fazaaPriceCurrency: st.fazaaPriceCurrency,
 			fazaaDuration: st.fazaaDuration || 30,
 		}));
 
@@ -71,6 +72,7 @@ export class SessionService {
 			title: req.title,
 			specialization: req.subject?.name || "غير محدد",
 			price: Number(req.price || 50),
+			currency: req.currency,
 			duration: req.duration || 30,
 			createdAt: req.createdAt,
 			student: {

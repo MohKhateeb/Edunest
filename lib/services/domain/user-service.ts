@@ -183,7 +183,7 @@ export class UserService {
 							isActive: true,
 							serviceType: { isActive: true },
 						},
-						select: { price: true },
+						select: { price: true, currency: true },
 						orderBy: { price: "asc" },
 						take: 1,
 					},

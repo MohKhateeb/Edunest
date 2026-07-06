@@ -8,9 +8,11 @@ import { useTranslations } from "next-intl";
 export function PaymentAction({
 	bookingId,
 	price,
+	currency,
 }: {
 	bookingId: string;
 	price: number;
+	currency: any;
 }) {
     const t = useTranslations('common');
 	const [isOpen, setIsOpen] = useState(false);
@@ -26,6 +28,7 @@ export function PaymentAction({
 				<PaymentModal
 					bookingId={bookingId}
 					price={price}
+					currency={currency}
 					onClose={() => setIsOpen(false)}
 				/>
 			)}

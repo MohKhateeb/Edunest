@@ -9,7 +9,7 @@ import {
 	Search,
 	Square,
 } from "lucide-react";
-import { cn, formatPrice } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import type { TeacherGroup } from "./PendingTeachersList";
 
 type DraftPayoutSectionProps = {
@@ -92,10 +92,10 @@ export async function DraftPayoutSection({
 											<span className="font-semibold text-sm">
 												{b.isTrial ? (
 													<span className="text-purple-600 dark:text-purple-400">
-														{t('key_1783109439908_1ife')}{formatPrice(b.trialCostToPlatform)})
+														{t('key_1783109439908_1ife')}{formatCurrency(b.trialCostToPlatform, selectedTeacherGroup.currency)})
 													</span>
 												) : (
-													<span>{formatPrice(b.price)}</span>
+													<span>{formatCurrency(b.price, selectedTeacherGroup.currency)}</span>
 												)}
 											</span>
 										</div>
@@ -137,21 +137,21 @@ export async function DraftPayoutSection({
 								<div className="flex justify-between items-center text-sm">
 									<span className="text-muted-foreground">{t('key_1783109439950_dxpy')}</span>
 									<span className="font-bold">
-										{formatPrice(draftResult.totalAmount)}
+										{formatCurrency(draftResult.totalAmount, selectedTeacherGroup.currency)}
 									</span>
 								</div>
 								<div className="flex justify-between items-center text-sm">
 									<span className="text-muted-foreground">
 										{t('key_1783109439959_i31v')}</span>
 									<span className="font-bold text-rose-600 dark:text-rose-400">
-										-{formatPrice(draftResult.commissionAmount)}
+										-{formatCurrency(draftResult.commissionAmount, selectedTeacherGroup.currency)}
 									</span>
 								</div>
 								<div className="flex justify-between items-center text-sm">
 									<span className="text-muted-foreground">
 										{t('key_1783109439970_lhgq')}</span>
 									<span className="font-bold text-purple-600 dark:text-purple-400">
-										+{formatPrice(draftResult.trialCompensation)}
+										+{formatCurrency(draftResult.trialCompensation, selectedTeacherGroup.currency)}
 									</span>
 								</div>
 
@@ -160,7 +160,7 @@ export async function DraftPayoutSection({
 										<span className="font-bold text-foreground">
 											{t('key_1783109439978_7fot')}</span>
 										<span className="font-extrabold text-xl text-primary">
-											{formatPrice(draftResult.netAmount)}
+											{formatCurrency(draftResult.netAmount, selectedTeacherGroup.currency)}
 										</span>
 									</div>
 								</div>

@@ -36,7 +36,7 @@ export default function AdminPayoutsEngine({
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
 	const [selectedPayoutId, setSelectedPayoutId] = useState<string | null>(null);
 
-	const [selectedTeacherId, setSelectedTeacherId] = useState<string | null>(
+	const [selectedGroupKey, setSelectedGroupKey] = useState<string | null>(
 		null,
 	);
 	const [selectedBookingIds, setSelectedBookingIds] = useState<Set<string>>(
@@ -47,12 +47,12 @@ export default function AdminPayoutsEngine({
 
 	const groupedByTeacher = teacherGroups;
 
-	const handleSelectTeacher = (teacherId: string) => {
-		setSelectedTeacherId(teacherId);
+	const handleSelectGroup = (groupKey: string) => {
+		setSelectedGroupKey(groupKey);
 		setErrorMsg(null);
 		setSuccessMsg(null);
 		const teacherGroup = groupedByTeacher.find(
-			(g) => g.teacherId === teacherId,
+			(g) => `${g.teacherId}:${g.currency}` === groupKey,
 		);
 		if (teacherGroup) {
 			setSelectedBookingIds(new Set(teacherGroup.bookings.map((b) => b.id)));
@@ -69,9 +69,9 @@ export default function AdminPayoutsEngine({
 	};
 
 	const draftResult = useMemo(() => {
-		if (!selectedTeacherId) return null;
+		if (!selectedGroupKey) return null;
 		const teacher = groupedByTeacher.find(
-			(g) => g.teacherId === selectedTeacherId,
+			(g) => `${g.teacherId}:${g.currency}` === selectedGroupKey,
 		);
 		if (!teacher) return null;
 
@@ -98,18 +98,19 @@ export default function AdminPayoutsEngine({
 			trialCompensation,
 			netAmount,
 		};
-	}, [selectedTeacherId, groupedByTeacher, selectedBookingIds]);
+	}, [selectedGroupKey, groupedByTeacher, selectedBookingIds]);
 
 	const handleIssuePayout = async () => {
-		if (!selectedTeacherId || !draftResult || draftResult.bookingCount === 0)
+		if (!selectedGroupKey || !draftResult || draftResult.bookingCount === 0)
 			return;
 
 		setLoading(true);
 		setErrorMsg(null);
 		setSuccessMsg(null);
 
+		const teacherId = selectedGroupKey.split(':')[0];
 		const res = await createTeacherPayout({
-			teacherId: selectedTeacherId,
+			teacherId,
 			bookingIds: Array.from(selectedBookingIds),
 		});
 
@@ -117,7 +118,7 @@ export default function AdminPayoutsEngine({
 
 		if (res.success) {
 			setSuccessMsg(t('key_1783109439391_9mqi'));
-			setSelectedTeacherId(null);
+			setSelectedGroupKey(null);
 			setSelectedBookingIds(new Set());
 			router.refresh();
 		} else {
@@ -157,7 +158,7 @@ export default function AdminPayoutsEngine({
 	};
 
 	const selectedTeacherGroup = groupedByTeacher.find(
-		(g) => g.teacherId === selectedTeacherId,
+		(g) => `${g.teacherId}:${g.currency}` === selectedGroupKey,
 	);
 
 	return (
@@ -170,8 +171,8 @@ export default function AdminPayoutsEngine({
 				{/* Section 1: Pending Teachers */}
 				<PendingTeachersList
 					groupedByTeacher={groupedByTeacher}
-					selectedTeacherId={selectedTeacherId}
-					handleSelectTeacher={handleSelectTeacher}
+					selectedGroupKey={selectedGroupKey}
+					handleSelectGroup={handleSelectGroup}
 				/>
 
 				{/* Section 2: Selected Teacher Details & Drafting */}

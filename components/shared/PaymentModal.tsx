@@ -11,6 +11,7 @@ import { useTranslations } from "next-intl";
 export function PaymentModal({
 	bookingId,
 	price,
+	currency,
 	onClose,
 }: {
 	bookingId: string;

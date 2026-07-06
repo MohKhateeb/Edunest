@@ -6,9 +6,13 @@ import { DisputeChat } from "@/components/shared/DisputeChat";
 import { getSecureDisputeDetails } from "@/lib/actions/disputes";
 import { requireAuth } from "@/lib/require-auth";
 
-export const getMetadata = (t: any) => ({
-	title: t('edunest') ,
-});
+export async function generateMetadata({ params }: { params: Promise<{ id: string, locale: string }> }) {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'common' });
+	return {
+		title: t('edunest'),
+	};
+}
 
 export default async function DisputePage({
 	params,

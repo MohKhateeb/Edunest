@@ -1,11 +1,13 @@
 import { getTranslations } from "next-intl/server";
 import { Check, CheckCircle2, Receipt, Users } from "lucide-react";
-import { cn, formatPrice } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import type { UnpaidBooking } from "@/types/payout";
+import { Currency } from "@prisma/client";
 
 export type TeacherGroup = {
 	teacherId: string;
 	teacherName: string;
+	currency: Currency;
 	bookings: UnpaidBooking[];
 	totalNet: number;
 	totalCount: number;
@@ -13,14 +15,14 @@ export type TeacherGroup = {
 
 type PendingTeachersListProps = {
 	groupedByTeacher: TeacherGroup[];
-	selectedTeacherId: string | null;
-	handleSelectTeacher: (teacherId: string) => void;
+	selectedGroupKey: string | null;
+	handleSelectGroup: (groupKey: string) => void;
 };
 
 export async function PendingTeachersList({
 	groupedByTeacher,
-	selectedTeacherId,
-	handleSelectTeacher,
+	selectedGroupKey,
+	handleSelectGroup,
 }: PendingTeachersListProps) {
     const t = await getTranslations('admin')
 	return (
@@ -48,14 +50,16 @@ export async function PendingTeachersList({
 				</div>
 			) : (
 				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-					{groupedByTeacher.map((g) => (
+					{groupedByTeacher.map((g) => {
+						const groupKey = `${g.teacherId}:${g.currency}`;
+						return (
 						<button
 							type="button"
-							key={g.teacherId}
-							onClick={() => handleSelectTeacher(g.teacherId)}
+							key={groupKey}
+							onClick={() => handleSelectGroup(groupKey)}
 							className={cn(
 								"text-start flex flex-col justify-between p-5 rounded-2xl border transition-all duration-300 relative overflow-hidden group outline-none",
-								selectedTeacherId === g.teacherId
+								selectedGroupKey === groupKey
 									? "border-orange-500 bg-orange-50/50 dark:bg-orange-900/10 shadow-md ring-2 ring-orange-500/20 scale-[1.02]"
 									: "border-border bg-card hover:border-orange-300 dark:hover:border-orange-700/50 hover:shadow-sm",
 							)}
@@ -63,13 +67,13 @@ export async function PendingTeachersList({
 							<div className="flex justify-between items-start w-full mb-4">
 								<div className="flex-1">
 									<h3 className="font-bold text-base line-clamp-1">
-										{g.teacherName}
+										{g.teacherName} ({g.currency})
 									</h3>
 									<p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
 										<Receipt className="w-3.5 h-3.5" />
 										{g.totalCount} {t('key_1783109440398_mwh2')}</p>
 								</div>
-								{selectedTeacherId === g.teacherId && (
+								{selectedGroupKey === groupKey && (
 									<div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center shrink-0">
 										<Check className="w-4 h-4 text-white" />
 									</div>
@@ -79,11 +83,12 @@ export async function PendingTeachersList({
 								<p className="text-xs text-muted-foreground mb-1">
 									{t('key_1783109440402_13tp')}</p>
 								<p className="font-extrabold text-lg text-primary">
-									{formatPrice(g.totalNet)}
+									{formatCurrency(g.totalNet, g.currency)}
 								</p>
 							</div>
 						</button>
-					))}
+						);
+					})}
 				</div>
 			)}
 		</div>

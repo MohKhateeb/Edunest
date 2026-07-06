@@ -5,9 +5,13 @@ import { requireAuth } from "@/lib/require-auth";
 import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 import AdminDisputesList from "./_components/AdminDisputesList";
 
-export const getMetadata = (t: any) => ({
-	title: t('str_2KXYr9in') ,
-});
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'admin' });
+	return {
+		title: t('str_2KXYr9in'),
+	};
+}
 
 export default async function AdminDisputesPage({
 	searchParams,

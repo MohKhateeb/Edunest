@@ -10,9 +10,13 @@ import { requireAuth } from "@/lib/require-auth";
 import type { ParentFinancialBooking } from "@/lib/services/domain/financial-service";
 import { getParentFinancials } from "@/lib/services/domain/financial-service";
 
-export const getMetadata = (t: any) => ({
-	title: t('edunest') ,
-});
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'common' });
+	return {
+		title: t('edunest'),
+	};
+}
 
 // Use the exported type from the service
 type FinancialBooking = ParentFinancialBooking;
@@ -43,7 +47,7 @@ const renderPaymentStatus = (booking: FinancialBooking, t: any) => {
 		);
 	}
 	if (booking.status === "PENDING" || booking.status === "AWAITING_PAYMENT") {
-		return <PaymentAction bookingId={booking.id} price={booking.price} />;
+		return <PaymentAction bookingId={booking.id} price={booking.price} currency={booking.currency} />;
 	}
 	return (
 		<span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-gray-50 text-gray-700 border border-gray-200 dark:bg-gray-800 dark:text-gray-300 text-xs font-bold">

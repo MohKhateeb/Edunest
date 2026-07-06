@@ -1,3 +1,5 @@
+import { Currency } from "@prisma/client";
+
 export type Student = {
 	id: string;
 	name: string;
@@ -22,6 +24,7 @@ export type AvailableTeacher = {
 	services: {
 		id: string;
 		price: number;
+		currency: Currency;
 		duration: number;
 		serviceTypeName: string;
 		serviceTypeNameEnglish: string | null;

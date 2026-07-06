@@ -1,6 +1,6 @@
 "use server";
 
-import { BookingStatus, UserType } from "@prisma/client";
+import { BookingStatus, Currency, UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { bookingRepository } from "@/lib/repositories/prisma/booking.repository";
 import { requireAuth } from "@/lib/require-auth";
@@ -33,6 +33,7 @@ export async function searchAvailableTeachers(input: {
 			services: {
 				id: string;
 				price: number;
+				currency: Currency;
 				duration: number;
 				serviceTypeName: string;
 				serviceTypeNameEnglish: string | null;
@@ -200,6 +201,7 @@ export async function searchAvailableTeachers(input: {
 					services: teacher.services.map((s) => ({
 						id: s.id,
 						price: Number(s.price),
+						currency: s.currency,
 						duration: s.duration,
 						serviceTypeName: s.serviceType.name,
 						serviceTypeNameEnglish: s.serviceType.nameEnglish,

@@ -1,4 +1,4 @@
-import { type Prisma, UserType } from "@prisma/client";
+import { type Prisma, UserType, Currency } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
 import { calculateEarnings } from "@/lib/utils/financial";
@@ -450,6 +450,7 @@ export type AdminPayoutsData = {
 	teacherGroups: {
 		teacherId: string;
 		teacherName: string;
+		currency: Currency;
 		totalNet: number;
 		totalCount: number;
 		bookings: {
@@ -458,6 +459,7 @@ export type AdminPayoutsData = {
 			teacherName: string;
 			studentName: string;
 			serviceName: string;
+			currency: Currency;
 			startTime: Date;
 			duration: number;
 			price: number;
@@ -481,6 +483,7 @@ export type AdminPayoutsData = {
 		periodStart: Date;
 		periodEnd: Date;
 		createdAt: Date;
+		currency: Currency;
 		teacher: { user: { name: string } };
 	}[];
 	mappedRefunds: {
@@ -488,6 +491,7 @@ export type AdminPayoutsData = {
 		bookingId: string;
 		parentName: string;
 		amount: number;
+		currency: Currency;
 		isPaid: boolean;
 		paidAt: Date | null;
 		createdAt: Date;
@@ -550,6 +554,7 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 		const trialCostToPlatform = Number(b.trialCostToPlatform);
 		const teacherId = b.teacherService.teacherId;
 		const teacherName = b.teacherService.teacher.user.name || "غير معروف";
+		const currency = b.currency;
 
 		const earnings = calculateEarnings(
 			price,
@@ -559,22 +564,27 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 		);
 		const netEarnings = earnings.teacherTotalEarnings;
 
-		if (!groups[teacherId]) {
-			groups[teacherId] = {
+		// التجميع حسب (teacherId + currency) وليس teacherId فقط — لمنع دمج مبالغ من عملات مختلفة في تسوية واحدة
+		const groupKey = `${teacherId}:${currency}`;
+
+		if (!groups[groupKey]) {
+			groups[groupKey] = {
 				teacherId,
 				teacherName,
+				currency,
 				totalNet: 0,
 				totalCount: 0,
 				bookings: [],
 			};
 		}
 
-		groups[teacherId].bookings.push({
+		groups[groupKey].bookings.push({
 			id: b.id,
 			teacherId,
 			teacherName,
 			studentName: b.student.name,
 			serviceName: b.teacherService.serviceType.name,
+			currency,
 			startTime: b.startTime,
 			duration: b.duration,
 			price,
@@ -586,8 +596,8 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 			commissionAmount: earnings.commissionAmount,
 			trialCompensation: earnings.trialCompensation,
 		});
-		groups[teacherId].totalCount++;
-		groups[teacherId].totalNet += netEarnings;
+		groups[groupKey].totalCount++;
+		groups[groupKey].totalNet += netEarnings;
 	}
 
 	const teacherGroups = Object.values(groups).sort(
@@ -626,6 +636,7 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 		periodStart: p.periodStart,
 		periodEnd: p.periodEnd,
 		createdAt: p.createdAt,
+		currency: p.currency,
 		teacher: { user: { name: p.teacher.user.name || "غير معروف" } },
 	}));
 
@@ -653,6 +664,7 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 		bookingId: r.bookingId,
 		parentName: r.booking.parent.name || "غير معروف",
 		amount: Number(r.amount),
+		currency: r.currency,
 		isPaid: r.isPaid,
 		paidAt: r.paidAt,
 		createdAt: r.createdAt,
