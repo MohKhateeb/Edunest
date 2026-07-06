@@ -1,5 +1,6 @@
 "use server";
 
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 import { RequestStatus, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 
@@ -23,7 +24,8 @@ export async function checkLiveRequestMatch(
 		});
 
 		if (!request || request.parentId !== parentUserId) {
-			return { success: false, error: "الطلب غير موجود" };
+			const tError = await getErrorT();
+		return { success: false, error: tError("request_not_found") };
 		}
 
 		if (request.status === RequestStatus.ACCEPTED) {
@@ -49,7 +51,7 @@ export async function checkLiveRequestMatch(
 	} catch (error: unknown) {
 		return {
 			success: false,
-			error: error instanceof Error ? error.message : "حدث خطأ أثناء الفحص",
+			error: error instanceof Error ? error.message : await (async () => { const t = await getErrorT(); return t("request_status_check_error"); })(),
 		};
 	}
 }

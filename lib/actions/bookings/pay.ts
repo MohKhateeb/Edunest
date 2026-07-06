@@ -1,5 +1,6 @@
 "use server";
 
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { BookingStatus, PaymentStatus, UserType } from "@prisma/client";
 import crypto from "crypto";
 import { revalidatePath } from "next/cache";
@@ -23,19 +24,20 @@ export const processPayment = withAuthAction(
 		if (!isValidTransition(booking.status, BookingStatus.CONFIRMED)) {
 			return {
 				success: false,
-				error: getTransitionError(booking.status, BookingStatus.CONFIRMED),
+				error: await getTransitionError(booking.status, BookingStatus.CONFIRMED),
 			};
 		}
 
 		if (booking.paymentStatus !== PaymentStatus.UNPAID) {
-			return { success: false, error: "هذا الحجز ليس بحالة انتظار الدفع" };
+			const tError = await getErrorT();
+		return { success: false, error: tError("booking_not_awaiting_payment") };
 		}
 
 		if (isBookingInPast(booking.startTime, booking.duration)) {
 			return {
 				success: false,
 				error:
-					"لقد مضى موعد الجلسة بالفعل، لا يمكن الدفع الآن. سيقوم النظام بإلغائها قريباً.",
+					await (async () => { const t = await getErrorT(); return t("booking_past_time_pay"); })(),
 			};
 		}
 
@@ -81,11 +83,11 @@ export const processPayment = withAuthAction(
 				{
 					userId: booking.teacherService.teacher.userId,
 					title: isImmediate
-						? "الجلسة الفورية بدأت الآن! 🚨"
-						: "حجز جديد مؤكد! 🎉",
+						? await (async () => { const t = await getNotificationT(); return t("booking_instant_started_title"); })()
+						: await (async () => { const t = await getNotificationT(); return t("booking_confirmed_title"); })(),
 					message: isImmediate
-						? "لقد وافقت على الطلب وقام ولي الأمر بالدفع. الجلسة بدأت فوراً، ادخل الآن وتوجه لصفحة الحجوزات لتجد الرابط!"
-						: "قام ولي الأمر بدفع قيمة الحجز وتم تأكيده تلقائياً. يمكنك الآن الدخول وتجهيز الجلسة في موعدها.",
+						? await (async () => { const t = await getNotificationT(); return t("booking_instant_started_message"); })()
+						: await (async () => { const t = await getNotificationT(); return t("booking_confirmed_message"); })(),
 					link: "/dashboard/teacher/bookings",
 				},
 				tx,

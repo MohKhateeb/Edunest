@@ -1,5 +1,6 @@
 "use server";
 
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 import { UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -14,7 +15,7 @@ const reviewSchema = z.object({
 		.number()
 		.int()
 		.min(1)
-		.max(5, "التقييم يجب أن يكون بين 1 و 5"),
+		.max(5, "Rating must be between 1 and 5"),
 	comment: z.string().optional().nullable(),
 });
 
@@ -49,7 +50,8 @@ export async function submitReview(
 		});
 
 		if (!booking) {
-			return { success: false, error: "الحجز غير موجود" };
+			const tError = await getErrorT();
+		return { success: false, error: tError("review_booking_not_found") };
 		}
 
 		// Check if the user is authorized to review this booking (must be the parent who made it, or admin)
@@ -60,7 +62,8 @@ export async function submitReview(
 
 		// Verify booking status is COMPLETED
 		if (booking.status !== "COMPLETED") {
-			return { success: false, error: "يمكنك تقييم الجلسات المكتملة فقط" };
+			const tError = await getErrorT();
+		return { success: false, error: tError("review_only_completed_bookings") };
 		}
 
 		// Check if a review already exists
@@ -69,7 +72,8 @@ export async function submitReview(
 		});
 
 		if (existing) {
-			return { success: false, error: "لقد قمت بتقييم هذه الجلسة مسبقاً" };
+			const tError = await getErrorT();
+		return { success: false, error: tError("review_already_submitted") };
 		}
 
 		const teacherId = booking.teacherService.teacherId;
@@ -115,7 +119,7 @@ export async function submitReview(
 	} catch (err: unknown) {
 		console.error(err);
 		const msg =
-			err instanceof Error ? err.message : "حدث خطأ أثناء إرسال التقييم";
+			err instanceof Error ? err.message : await (async () => { const t = await getErrorT(); return t("review_submit_error"); })();
 		return { success: false, error: msg };
 	}
 }

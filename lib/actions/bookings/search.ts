@@ -1,5 +1,6 @@
 "use server";
 
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 import { BookingStatus, Currency, UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { bookingRepository } from "@/lib/repositories/prisma/booking.repository";
@@ -47,7 +48,8 @@ export async function searchAvailableTeachers(input: {
 		const { subjectId, studentId, date, timeSlot } = input;
 
 		if (!subjectId || !studentId || !date || !timeSlot) {
-			return { success: false, error: "يرجى تحديد الطالب والمادة والتاريخ والوقت" };
+			const tError = await getErrorT();
+		return { success: false, error: tError("search_missing_fields") };
 		}
 
 		// جلب بيانات الطالب للتحقق من الصف
@@ -57,13 +59,15 @@ export async function searchAvailableTeachers(input: {
 		});
 
 		if (!student) {
-			return { success: false, error: "الطالب المحدد غير موجود" };
+			const tError = await getErrorT();
+		return { success: false, error: tError("search_student_not_found") };
 		}
 
 		// تحديد يوم الأسبوع من التاريخ المطلوب
 		const dateObj = new Date(`${date}T${timeSlot}:00`);
 		if (isNaN(dateObj.getTime())) {
-			return { success: false, error: "التاريخ أو الوقت غير صالح" };
+			const tError = await getErrorT();
+		return { success: false, error: tError("search_invalid_datetime") };
 		}
 
 		// التحقق من أن الوقت المطلوب في المستقبل
@@ -71,7 +75,7 @@ export async function searchAvailableTeachers(input: {
 		if (hoursUntil(dateObj) < minLeadHours) {
 			return {
 				success: false,
-				error: `يجب أن يكون الموعد بعد ${minLeadHours} ساعات على الأقل من الآن`,
+				error: await (async () => { const t = await getErrorT(); return t("booking_min_lead_time", { minLeadHours }); })(),
 			};
 		}
 
@@ -188,7 +192,7 @@ export async function searchAvailableTeachers(input: {
 					userName: teacher.user.name,
 					specialization:
 						teacher.subjects?.map((s) => s.subject.name).join(", ") ||
-						"غير محدد",
+						await (async () => { const t = await getErrorT(); return t("search_unspecified", undefined, ); })() as any,
 					city: teacher.city,
 					profileImageUrl: teacher.profileImageUrl,
 					verificationLevel: teacher.verificationLevel,
@@ -213,7 +217,8 @@ export async function searchAvailableTeachers(input: {
 		return { success: true, data: { teachers: availableTeachers } };
 	} catch (err: unknown) {
 		console.error(err);
-		const msg = err instanceof Error ? err.message : "حدث خطأ أثناء البحث";
+		const tError = await getErrorT();
+		const msg = err instanceof Error ? err.message : tError("search_unexpected_error");
 		return { success: false, error: msg };
 	}
 }

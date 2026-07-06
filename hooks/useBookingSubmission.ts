@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createBooking } from "@/lib/actions/booking";
@@ -8,6 +9,7 @@ interface BookingSubmissionOptions {
 }
 
 export function useBookingSubmission(options?: BookingSubmissionOptions) {
+	const t = useTranslations("errors");
 	const router = useRouter();
 	const [createdBooking, setCreatedBooking] = useState<{
 		id: string;
@@ -51,13 +53,13 @@ export function useBookingSubmission(options?: BookingSubmissionOptions) {
 				}, 2000);
 				options?.onSuccess?.();
 			} else {
-				setErrorMsg(res.error || "حدث خطأ غير معروف");
-				options?.onError?.(res.error || "حدث خطأ غير معروف");
+				setErrorMsg(res.error || t("booking_unknown_error"));
+				options?.onError?.(res.error || t("booking_unknown_error"));
 			}
 		} catch (err: unknown) {
 			console.error(err);
-			setErrorMsg("حدث خطأ غير متوقع أثناء إتمام الحجز");
-			options?.onError?.("حدث خطأ غير متوقع أثناء إتمام الحجز");
+			setErrorMsg(t("booking_unexpected_error"));
+			options?.onError?.(t("booking_unexpected_error"));
 		} finally {
 			setLoading(false);
 		}

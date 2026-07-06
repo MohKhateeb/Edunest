@@ -1,5 +1,6 @@
 "use server";
 
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 import { UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -22,7 +23,8 @@ export async function updateWeeklyAvailability(
 		// Validate using Zod
 		const validated = availabilityArraySchema.safeParse(items);
 		if (!validated.success) {
-			return { success: false, error: "البيانات المرسلة غير صالحة" };
+			const tError = await getErrorT();
+			return { success: false, error: tError("availability_invalid_data") };
 		}
 
 		// Check time order for each item to satisfy DB constraints
@@ -30,7 +32,7 @@ export async function updateWeeklyAvailability(
 			if (item.startTime >= item.endTime) {
 				return {
 					success: false,
-					error: "وقت البدء يجب أن يكون قبل وقت الانتهاء",
+					error: await (async () => { const t = await getErrorT(); return t("availability_start_before_end"); })(),
 				};
 			}
 		}
@@ -63,7 +65,7 @@ export async function updateWeeklyAvailability(
 	} catch (err: unknown) {
 		console.error(err);
 		const msg =
-			err instanceof Error ? err.message : "حدث خطأ أثناء تحديث أوقات التوفر";
+			err instanceof Error ? err.message : await (async () => { const t = await getErrorT(); return t('availability_update_error'); })()
 		return { success: false, error: msg };
 	}
 }

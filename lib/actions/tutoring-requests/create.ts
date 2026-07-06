@@ -1,5 +1,6 @@
 "use server";
 
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { RequestStatus, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import type { z } from "zod";
@@ -41,7 +42,7 @@ export async function createTutoringRequest(
 		if (!student) {
 			return {
 				success: false,
-				error: "الطالب المحدد غير موجود أو غير تابع لك",
+				error: await (async () => { const t = await getErrorT(); return t("booking_student_not_found"); })(),
 			};
 		}
 
@@ -50,7 +51,8 @@ export async function createTutoringRequest(
 			where: { id: serviceTypeId, isActive: true },
 		});
 		if (!serviceType) {
-			return { success: false, error: "نوع الخدمة المطلوب غير متوفر" };
+			const tError = await getErrorT();
+		return { success: false, error: tError("request_service_type_not_found") };
 		}
 
 		// 4. إنشاء الطلب العام
@@ -93,11 +95,12 @@ export async function createTutoringRequest(
 
 		// إرسال إشعار لكل معلم متطابق بشكل جماعي لتحسين الأداء
 		if (matchingTeachers.length > 0) {
+			const tNotif = await getNotificationT();
 			await createManyNotifications(
 				matchingTeachers.map((t) => ({
 					userId: t.userId,
-					title: "⚡ طلب فوري جديد! (Live Radar) 📢",
-					message: `طلب عاجل من الطالب (${student.name} - الصف ${student.grade}). الطلب مدفوع مسبقاً (${formatCurrency(price)} - ${duration} دقيقة). أسرع والتقط الطلب الآن قبل غيرك!`,
+					title: tNotif("instant_request_new_title"),
+					message: tNotif("instant_request_new_message", { studentName: student.name, studentGrade: student.grade, priceFormatted: formatCurrency(price), duration }),
 					link: "/dashboard/teacher/live",
 				})),
 			);
@@ -109,7 +112,7 @@ export async function createTutoringRequest(
 		return {
 			success: false,
 			error:
-				error instanceof Error ? error.message : "حدث خطأ أثناء إنشاء الطلب",
+				error instanceof Error ? error.message : await (async () => { const t = await getErrorT(); return t("request_creation_error"); })()
 		};
 	}
 }

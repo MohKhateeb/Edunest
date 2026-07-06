@@ -1,5 +1,6 @@
 "use server";
 
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { BookingStatus, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import type { z } from "zod";
@@ -44,20 +45,21 @@ export const submitSessionReport = withAuthAction(
 		);
 
 		if (!booking || booking.teacherService.teacher.userId !== userId) {
-			return { success: false, error: "الحجز غير موجود أو غير تابع لك" };
+			const tError = await getErrorT();
+		return { success: false, error: tError("booking_not_found_or_unauthorized") };
 		}
 
 		if (!isValidTransition(booking.status, BookingStatus.COMPLETED)) {
 			return {
 				success: false,
-				error: getTransitionError(booking.status, BookingStatus.COMPLETED),
+				error: await getTransitionError(booking.status, BookingStatus.COMPLETED),
 			};
 		}
 
 		if (!canSubmitReport(booking.startTime, booking.duration)) {
 			return {
 				success: false,
-				error: "لا يمكن تقديم التقرير قبل انتهاء وقت الجلسة الفعلي",
+				error: await (async () => { const t = await getErrorT(); return t("booking_report_early_error"); })(),
 			};
 		}
 
@@ -97,8 +99,8 @@ export const submitSessionReport = withAuthAction(
 			await createNotification(
 				{
 					userId: booking.parentUserId,
-					title: "تقرير الجلسة التعليمية جاهز",
-					message: `قام المعلم برفع تقرير الحصة للطالب. يرجى مراجعة تفاصيل الجلسة.`,
+					title: await (async () => { const t = await getNotificationT(); return t("booking_report_ready_title"); })(),
+					message: await (async () => { const t = await getNotificationT(); return t("booking_report_ready_message"); })(),
 				},
 				tx,
 			);

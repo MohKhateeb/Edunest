@@ -1,3 +1,4 @@
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 import { prisma } from "@/lib/prisma";
 import {
 	crossesMidnight,
@@ -13,7 +14,7 @@ export async function checkTeacherAvailability(
 	if (crossesMidnight(startUtc, durationMinutes)) {
 		return {
 			available: false,
-			reason: "يجب أن تبدأ الجلسة وتنتهي في نفس اليوم بالتوقيت المحلي",
+			reason: await (async () => { const t = await getErrorT(); return t("availability_same_day_required"); })(),
 		};
 	}
 
@@ -39,7 +40,7 @@ export async function checkTeacherAvailability(
 	if (!isCovered) {
 		return {
 			available: false,
-			reason: "الوقت المطلوب ليس ضمن ساعات عمل المعلم المحددة لهذا اليوم",
+			reason: await (async () => { const t = await getErrorT(); return t("availability_outside_working_hours"); })(),
 		};
 	}
 
@@ -75,7 +76,7 @@ export async function checkConflictingBookings(
 		if (reqStart < bookingEnd && bookingStart < reqEnd) {
 			return {
 				conflict: true,
-				reason: "يوجد لديك حجز مؤكد أو قيد الانتظار في نفس الوقت المطلوب",
+				reason: await (async () => { const t = await getErrorT(); return t("availability_has_overlap"); })(),
 			};
 		}
 	}

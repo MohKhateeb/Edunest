@@ -1,5 +1,6 @@
 "use server";
 
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import {
 	BookingSource,
 	BookingStatus,
@@ -30,7 +31,7 @@ export async function claimLiveRequest(
 		if (!teacher.isVerified) {
 			return {
 				success: false,
-				error: "يجب توثيق حسابك أولاً لالتقاط الطلبات الفورية",
+				error: await (async () => { const t = await getErrorT(); return t("instant_book_teacher_unverified"); })(),
 			};
 		}
 
@@ -45,16 +46,18 @@ export async function claimLiveRequest(
 			});
 
 			if (!request || request.status !== RequestStatus.PENDING) {
-				throw new Error("عذراً، لقد كان معلماً آخر أسرع منك والتقط هذا الطلب!");
+				const tError = await getErrorT();
+				throw new Error(tError("instant_book_already_taken"));
 			}
 
 			// التحقق من مطابقة شروط التخصص والصف
 			if (!teacher.subjects.some((s) => s.subjectId === request.subjectId)) {
-				throw new Error("تخصصك لا يطابق التخصص المطلوب في هذا الطلب");
+				const tError = await getErrorT();
+			throw new Error(tError("instant_book_subject_mismatch"));
 			}
 			if (!teacher.gradeLevels.includes(request.student.grade)) {
 				throw new Error(
-					"المرحلة الدراسية للطالب لا تقع ضمن المراحل التي تدرسها",
+					await (async () => { const t = await getErrorT(); return t("instant_book_grade_mismatch"); })()
 				);
 			}
 
@@ -96,7 +99,7 @@ export async function claimLiveRequest(
 					Math.min(requestedEndMs, otherEndMs)
 				) {
 					throw new Error(
-						"لديك حجز آخر متداخل في هذا الوقت حالياً. يرجى إنهاء جلستك أولاً.",
+						await (async () => { const t = await getErrorT(); return t("instant_book_overlap"); })()
 					);
 				}
 			}
@@ -120,7 +123,7 @@ export async function claimLiveRequest(
 						price: price,
 						currency: defaultCurrency,
 						duration: duration,
-						customDescription: "خدمة فوري (Live Radar)",
+						customDescription: await (async () => { const t = await getErrorT(); return t("instant_service_desc", undefined, ); })(),
 						isActive: true,
 					},
 				});
@@ -184,8 +187,8 @@ export async function claimLiveRequest(
 			await createNotification(
 				{
 					userId: request.parentId,
-					title: "⚡ تم العثور على معلم!",
-					message: `تم التطابق مع المعلم ${teacher.user.name}. يرجى إتمام الدفع فوراً للدخول إلى الجلسة. المعلم بانتظارك الآن!`,
+					title: await (async () => { const t = await getNotificationT(); return t("instant_book_found_title"); })(),
+					message: await (async () => { const t = await getNotificationT(); return t("instant_book_found_message", { teacherName: teacher.user.name || "" }); })(),
 					link: `/dashboard/session/${booking.id}`,
 				},
 				tx,
@@ -202,7 +205,7 @@ export async function claimLiveRequest(
 		return {
 			success: false,
 			error:
-				error instanceof Error ? error.message : "حدث خطأ أثناء التقاط الطلب",
+				error instanceof Error ? error.message : await (async () => { const t = await getErrorT(); return t("instant_book_unexpected_error"); })()
 		};
 	}
 }

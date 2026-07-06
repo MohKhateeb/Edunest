@@ -1,3 +1,4 @@
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 import { BookingStatus } from "@prisma/client";
 import { BOOKING_STATUS_AR } from "@/lib/translations";
 
@@ -31,11 +32,12 @@ export function isValidTransition(
 	return ALLOWED_TRANSITIONS[from].includes(to);
 }
 
-export function getTransitionError(
+export async function getTransitionError(
 	from: BookingStatus,
 	to: BookingStatus,
-): string {
-	return `لا يمكن تغيير الحجز من "${BOOKING_STATUS_AR[from]}" إلى "${BOOKING_STATUS_AR[to]}"`;
+): Promise<string> {
+	const tError = await getErrorT();
+	return tError('booking_invalid_transition', { from: BOOKING_STATUS_AR[from], to: BOOKING_STATUS_AR[to] });
 }
 
 export type SessionTimeState = {

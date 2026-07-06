@@ -35,7 +35,7 @@ export const cancelBooking = withAuthAction(
 		if (!isValidTransition(booking.status, BookingStatus.CANCELLED)) {
 			return {
 				success: false,
-				error: getTransitionError(booking.status, BookingStatus.CANCELLED),
+				error: await getTransitionError(booking.status, BookingStatus.CANCELLED),
 			};
 		}
 

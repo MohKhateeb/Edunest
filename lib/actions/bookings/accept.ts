@@ -1,5 +1,6 @@
 "use server";
 
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { Prisma, BookingStatus, PaymentStatus, UserType } from "@prisma/client";
 import crypto from "crypto";
 import { revalidatePath } from "next/cache";
@@ -28,7 +29,7 @@ export const acceptBooking = withAuthAction(
 		if (!isValidTransition(booking.status, targetStatus)) {
 			return {
 				success: false,
-				error: getTransitionError(booking.status, targetStatus),
+				error: await getTransitionError(booking.status, targetStatus),
 			};
 		}
 
@@ -36,7 +37,7 @@ export const acceptBooking = withAuthAction(
 			return {
 				success: false,
 				error:
-					"لقد مضى موعد الجلسة بالفعل، لا يمكن قبولها الآن. سيقوم النظام بإلغائها قريباً.",
+					await (async () => { const t = await getErrorT(); return t("booking_past_time_accept"); })(),
 			};
 		}
 
@@ -48,7 +49,7 @@ export const acceptBooking = withAuthAction(
 			return {
 				success: false,
 				error:
-					"لا يمكن تأكيد الجلسة قبل إتمام الدفع أو تحقق الإدارة من إيصال التحويل",
+					await (async () => { const t = await getErrorT(); return t("booking_cannot_confirm_unpaid"); })(),
 			};
 		}
 
@@ -80,12 +81,12 @@ export const acceptBooking = withAuthAction(
 					userId: booking.parentUserId,
 					title:
 						targetStatus === BookingStatus.AWAITING_PAYMENT
-							? "تمت الموافقة على طلبك"
-							: "قبول الحجز",
+							? await (async () => { const t = await getNotificationT(); return t("booking_approved_title"); })()
+							: await (async () => { const t = await getNotificationT(); return t("booking_accepted_title"); })(),
 					message:
 						targetStatus === BookingStatus.AWAITING_PAYMENT
-							? `وافق المعلم على طلبك، يرجى إتمام الدفع خلال ${holdMinutes} دقيقة لتأكيد الحجز`
-							: "لقد وافق المعلم على طلب حجز الجلسة وتم تأكيدها.",
+							? await (async () => { const t = await getNotificationT(); return t("booking_accepted_pay_message", { holdMinutes }); })()
+							: await (async () => { const t = await getNotificationT(); return t("booking_approved_message"); })(),
 				},
 				tx,
 			);

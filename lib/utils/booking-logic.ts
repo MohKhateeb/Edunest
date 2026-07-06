@@ -1,3 +1,4 @@
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 import { getSettingBool, getSettingNumber } from "@/lib/settings";
 import { SERVICES } from "@/lib/translations";
 import { formatCurrency } from "./currency";
@@ -16,10 +17,12 @@ export async function calculateBookingFinancials(
 	if (isTrial) {
 		const trialEnabled = await getSettingBool("FreeTrialEnabled", true);
 		if (!trialEnabled) {
-			throw new Error("الجلسات التجريبية المجانية غير مفعلة حالياً");
+			const tError = await getErrorT();
+		throw new Error(tError("booking_trials_disabled"));
 		}
 		if (parentHasUsedTrial) {
-			throw new Error("لقد قمت باستخدام جلستك التجريبية المجانية مسبقاً");
+			const tError = await getErrorT();
+		throw new Error(tError("booking_trial_already_used"));
 		}
 
 		duration = await getSettingNumber("FreeTrialDurationMinutes", 30);
@@ -44,7 +47,8 @@ export async function calculateBookingFinancials(
 
 		const minPrice = await getSettingNumber("MinBookingPrice", 5);
 		if (price < minPrice) {
-			throw new Error(`الحد الأدنى لسعر الجلسة هو ${formatCurrency(minPrice)}`);
+			const tError = await getErrorT();
+		throw new Error(tError("booking_min_price", { minPrice: formatCurrency(minPrice) }));
 		}
 	}
 

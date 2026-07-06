@@ -1,5 +1,6 @@
 "use server";
 
+import { getNotificationT } from "@/lib/i18n/get-server-translations";
 import { BookingStatus, PaymentStatus, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { withAuthAction } from "@/lib/action-wrapper";
@@ -21,7 +22,7 @@ export const rejectBooking = withAuthAction(
 		if (!isValidTransition(booking.status, BookingStatus.REJECTED)) {
 			return {
 				success: false,
-				error: getTransitionError(booking.status, BookingStatus.REJECTED),
+				error: await getTransitionError(booking.status, BookingStatus.REJECTED),
 			};
 		}
 
@@ -46,8 +47,8 @@ export const rejectBooking = withAuthAction(
 			await createNotification(
 				{
 					userId: booking.parentUserId,
-					title: "رفض الحجز",
-					message: "نعتذر، لقد قام المعلم برفض طلب الحجز الخاص بك.",
+					title: await (async () => { const t = await getNotificationT(); return t("booking_rejected_title"); })(),
+					message: await (async () => { const t = await getNotificationT(); return t("booking_rejected_message"); })(),
 				},
 				tx,
 			);
