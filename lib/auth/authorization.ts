@@ -13,19 +13,19 @@ export function authorizeStudentAccess(
   
   if (userType === "PARENT") {
     if (student.parentUserId !== userId) {
-      return { authorized: false, error: "غير مصرح لك بمشاهدة تفاصيل هذا الطالب." };
+      return { authorized: false, error: "action_error_71" };
     }
     return { authorized: true };
   }
   
   if (userType === "TEACHER") {
     if (!student.bookings || student.bookings.length === 0) {
-      return { authorized: false, error: "غير مصرح لك بالاطلاع على هذا الطالب لعدم وجود حجوزات مشتركة بينكما." };
+      return { authorized: false, error: "auth_unauthorized_student_access" };
     }
     return { authorized: true };
   }
   
-  return { authorized: false, error: "نوع الحساب غير مصرح له بالوصول." };
+  return { authorized: false, error: "action_error_72" };
 }
 
 export function authorizeTeacherProfileAccess(
@@ -35,7 +35,7 @@ export function authorizeTeacherProfileAccess(
 ): AuthResult {
   if (userType === "ADMIN") return { authorized: true };
   if (teacher.userId === userId) return { authorized: true };
-  return { authorized: false, error: "غير مصرح" };
+  return { authorized: false, error: "action_error_73" };
 }
 
 // --- BOOKING GUARDS ---
@@ -49,19 +49,19 @@ export function authorizeBookingAccess(
   
   if (userType === "PARENT") {
     if (booking.parentUserId !== userId) {
-      return { authorized: false, error: "غير مصرح لك بمشاهدة تفاصيل هذا الحجز." };
+      return { authorized: false, error: "auth_unauthorized_booking_view" };
     }
     return { authorized: true };
   }
   
   if (userType === "TEACHER") {
     if (booking.teacherService.teacher.userId !== userId) {
-      return { authorized: false, error: "غير مصرح لك بمشاهدة تفاصيل حجز خاص بمعلم آخر." };
+      return { authorized: false, error: "auth_unauthorized_other_teacher_booking" };
     }
     return { authorized: true };
   }
   
-  return { authorized: false, error: "غير مصرح لك بمشاهدة تفاصيل هذا الحجز." };
+  return { authorized: false, error: "auth_unauthorized_booking_view" };
 }
 
 export function authorizeBookingReview(
@@ -72,7 +72,7 @@ export function authorizeBookingReview(
   if (userType === "ADMIN") return { authorized: true };
   
   if (booking.parentUserId !== userId) {
-    return { authorized: false, error: "غير مصرح لك بتقييم هذا الحجز" };
+    return { authorized: false, error: "auth_unauthorized_review" };
   }
   
   return { authorized: true };
@@ -96,19 +96,19 @@ export function authorizeDisputeAccess(
   if (userType === "PARENT") {
     const parentId = dispute.parentUserId || dispute.booking?.parentUserId;
     if (parentId !== userId) {
-      return { authorized: false, error: "غير مصرح." };
+      return { authorized: false, error: "auth_unauthorized" };
     }
     return { authorized: true };
   }
   
   if (userType === "TEACHER") {
     if (dispute.booking?.teacherService?.teacher?.userId !== userId) {
-      return { authorized: false, error: "غير مصرح." };
+      return { authorized: false, error: "auth_unauthorized" };
     }
     return { authorized: true };
   }
   
-  return { authorized: false, error: "غير مصرح." };
+  return { authorized: false, error: "auth_unauthorized" };
 }
 
 export function authorizeDisputeTurn(
@@ -118,15 +118,15 @@ export function authorizeDisputeTurn(
   if (userType === "ADMIN") return { authorized: true };
   
   if (dispute.allowedTurn === "NONE") {
-    return { authorized: false, error: "المحادثة مغلقة من قبل الإدارة حالياً." };
+    return { authorized: false, error: "auth_chat_closed_admin" };
   }
   
   if (dispute.allowedTurn === "PARENT" && userType !== "PARENT") {
-    return { authorized: false, error: "عذراً، الإدارة تنتظر رد ولي الأمر الآن. لا يمكنك الإرسال." };
+    return { authorized: false, error: "auth_chat_waiting_parent" };
   }
   
   if (dispute.allowedTurn === "TEACHER" && userType !== "TEACHER") {
-    return { authorized: false, error: "عذراً، الإدارة تنتظر رد المعلم الآن. لا يمكنك الإرسال." };
+    return { authorized: false, error: "auth_chat_waiting_teacher" };
   }
   
   return { authorized: true };
@@ -143,10 +143,10 @@ export function authorizePayoutAccess(
   
   if (userType === "TEACHER") {
     if (payout.teacher.userId !== userId) {
-      return { authorized: false, error: "غير مصرح لك بالاطلاع على تسوية مالية خاصة بمعلم آخر." };
+      return { authorized: false, error: "auth_unauthorized_other_teacher_payout" };
     }
     return { authorized: true };
   }
   
-  return { authorized: false, error: "غير مصرح لك بمشاهدة تفاصيل التسويات المالية." };
+  return { authorized: false, error: "auth_unauthorized_payout_view" };
 }

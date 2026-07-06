@@ -1,5 +1,5 @@
 "use server";
-
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { BookingStatus, DisputeStatus, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -28,23 +28,23 @@ export async function getSecureDisputeDetails(id: string) {
 }
 
 const createDisputeSchema = z.object({
-	bookingId: z.string().min(1, "معرف الحجز مطلوب"),
+	bookingId: z.string().min(1, "zod_min_error_14"),
 	reason: z
 		.string()
-		.min(10, "سبب الاعتراض يجب أن يكون 10 أحرف على الأقل")
-		.max(1000, "السبب طويل جداً"),
+		.min(10, "zod_min_error_15")
+		.max(1000, "zod_max_error_19"),
 });
 
 const sendMessageSchema = z.object({
-	disputeId: z.string().min(1, "معرف النزاع مطلوب"),
+	disputeId: z.string().min(1, "zod_min_error_16"),
 	message: z
 		.string()
-		.min(1, "الرسالة لا يمكن أن تكون فارغة")
-		.max(2000, "الرسالة طويلة جداً"),
+		.min(1, "zod_min_error_17")
+		.max(2000, "zod_max_error_20"),
 });
 
 const resolveDisputeSchema = z.object({
-	disputeId: z.string().min(1, "معرف النزاع مطلوب"),
+	disputeId: z.string().min(1, "zod_min_error_18"),
 	decision: z.enum([
 		"RESOLVED_IN_FAVOR_OF_PARENT",
 		"RESOLVED_IN_FAVOR_OF_TEACHER",
@@ -70,31 +70,31 @@ export async function createDispute(
 		if (!booking || booking.parentUserId !== userId) {
 			return {
 				success: false,
-				error: "الحجز غير موجود أو لا تملك صلاحية الوصول إليه.",
+				error: await (async () => { const t = await getErrorT(); return t("action_error_21"); })(),
 			};
 		}
 
 		if (booking.status !== BookingStatus.COMPLETED) {
 			return {
 				success: false,
-				error: "لا يمكن تقديم اعتراض إلا على الحجوزات المكتملة.",
+				error: await (async () => { const t = await getErrorT(); return t("action_error_22"); })(),
 			};
 		}
 
 		if (booking.payoutId) {
 			return {
 				success: false,
-				error: "تم تسوية هذا الحجز مالياً مسبقاً ولا يمكن الاعتراض عليه الآن.",
+				error: await (async () => { const t = await getErrorT(); return t("action_error_23"); })(),
 			};
 		}
 
 		if (booking.dispute) {
-			return { success: false, error: "يوجد اعتراض مسبق على هذا الحجز." };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_24"); })() };
 		}
 
 		// 2. Strict Date Validation: Only within 24 hours of completion
 		if (!booking.completedAt) {
-			return { success: false, error: "تاريخ اكتمال الجلسة غير متوفر." };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_25"); })() };
 		}
 
 		// hoursUntil returns (completedAt - now) in hours. It should be negative since completed in past.
@@ -104,7 +104,7 @@ export async function createDispute(
 		if (hoursUntil(booking.completedAt) < -24) {
 			return {
 				success: false,
-				error: "انتهت فترة السماح (24 ساعة) لتقديم اعتراض على هذه الجلسة.",
+				error: await (async () => { const t = await getErrorT(); return t("action_error_26"); })(),
 			};
 		}
 
@@ -123,7 +123,7 @@ export async function createDispute(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء تقديم الاعتراض" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_27"); })() };
 	}
 }
 
@@ -146,26 +146,24 @@ export async function sendDisputeMessage(
 		const dispute = await disputeRepository.findByIdWithBookingAccess(disputeId);
 
 		if (!dispute) {
-			return { success: false, error: "النزاع غير موجود." };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_28"); })() };
 		}
 
 		if (dispute.status !== DisputeStatus.OPEN) {
 			return {
 				success: false,
-				error: "المحادثة مغلقة للنزاعات التي تم البت فيها (للقراءة فقط).",
+				error: await (async () => { const t = await getErrorT(); return t("action_error_29"); })(),
 			};
 		}
 
 		// Verify access
 		const accessAuth = authorizeDisputeAccess(dispute, userId, userType);
-		if (!accessAuth.authorized) {
-			return { success: false, error: accessAuth.error };
+		if (!accessAuth.authorized) { return { success: false, error: await (async () => { const t = await getErrorT(); return t(accessAuth.error as any); })() };
 		}
 
 		// Verify Turn
 		const turnAuth = authorizeDisputeTurn(dispute, userType);
-		if (!turnAuth.authorized) {
-			return { success: false, error: turnAuth.error };
+		if (!turnAuth.authorized) { return { success: false, error: await (async () => { const t = await getErrorT(); return t(turnAuth.error as any); })() };
 		}
 
 		await disputeRepository.addMessage(disputeId, userId, message);
@@ -175,7 +173,7 @@ export async function sendDisputeMessage(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء إرسال الرسالة" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_30"); })() };
 	}
 }
 
@@ -189,13 +187,13 @@ export async function changeDisputeTurn(
 		const dispute = await disputeRepository.findById(disputeId);
 
 		if (!dispute) {
-			return { success: false, error: "النزاع غير موجود." };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_31"); })() };
 		}
 
 		if (dispute.status !== "OPEN") {
 			return {
 				success: false,
-				error: "لا يمكن تغيير دور المحادثة لنزاع مغلق.",
+				error: await (async () => { const t = await getErrorT(); return t("action_error_32"); })(),
 			};
 		}
 
@@ -206,7 +204,7 @@ export async function changeDisputeTurn(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء تغيير صلاحيات المحادثة" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_33"); })() };
 	}
 }
 
@@ -225,11 +223,11 @@ export async function resolveDispute(
 		const dispute = await disputeRepository.findByIdForResolution(disputeId);
 
 		if (!dispute) {
-			return { success: false, error: "النزاع غير موجود." };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_34"); })() };
 		}
 
 		if (dispute.status !== DisputeStatus.OPEN) {
-			return { success: false, error: "تم البت في هذا النزاع مسبقاً." };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_35"); })() };
 		}
 
 		await disputeRepository.resolveWithTransaction({
@@ -251,6 +249,6 @@ export async function resolveDispute(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء حسم النزاع" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_36"); })() };
 	}
 }

@@ -1,3 +1,5 @@
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getTranslations } from "next-intl/server";
 import { UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
@@ -70,7 +72,7 @@ export class SessionService {
 		const liveRequests = rawRequests.map((req) => ({
 			id: req.id,
 			title: req.title,
-			specialization: req.subject?.name || "غير محدد",
+			specialization: req.subject?.name || "Unspecified",
 			price: Number(req.price || 50),
 			currency: req.currency,
 			duration: req.duration || 30,

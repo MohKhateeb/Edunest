@@ -1,3 +1,4 @@
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 import type { UserType } from "@prisma/client";
 import { AuthError } from "@/lib/errors";
 import { requireAuth } from "@/lib/require-auth";
@@ -26,10 +27,12 @@ export function withAuthAction<Args extends unknown[], R = unknown>(
 			console.error(err);
 
 			if (err instanceof AuthError) {
-				return { success: false, error: err.message };
+				const t = await getErrorT();
+				return { success: false, error: t(err.message as any) };
 			}
 
-			const msg = err instanceof Error ? err.message : "حدث خطأ غير متوقع";
+			const t = await getErrorT();
+			const msg = err instanceof Error ? err.message : t("unexpected_error");
 			return { success: false, error: msg };
 		}
 	};

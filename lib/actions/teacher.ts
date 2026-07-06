@@ -1,5 +1,5 @@
 "use server";
-
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import type { z } from "zod";
@@ -31,7 +31,7 @@ export async function updateTeacherProfile(
 		});
 
 		if (!user) {
-			return { success: false, error: "المستخدم غير موجود" };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_52"); })() };
 		}
 
 		let slug = user.teacher?.slug || "";
@@ -82,7 +82,7 @@ export async function updateTeacherProfile(
 	} catch (err: unknown) {
 		console.error(err);
 		const msg =
-			err instanceof Error ? err.message : "حدث خطأ أثناء تحديث الملف الشخصي";
+			err instanceof Error ? err.message : await (async () => { const t = await getErrorT(); return t("action_error_60"); })();
 		return { success: false, error: msg };
 	}
 }
@@ -106,7 +106,7 @@ export async function addOrUpdateTeacherService(
 		});
 
 		if (!serviceType) {
-			return { success: false, error: "نوع الخدمة المختار غير صالح" };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_53"); })() };
 		}
 
 		const existingService = await prisma.teacherService.findFirst({
@@ -142,7 +142,7 @@ export async function addOrUpdateTeacherService(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء حفظ الخدمة" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_54"); })() };
 	}
 }
 
@@ -179,7 +179,7 @@ export async function submitVerificationDocuments(data: {
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء رفع الوثائق" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_55"); })() };
 	}
 }
 
@@ -203,7 +203,7 @@ export async function updateTeacherSlug(
 		if (teacher.slugUpdated) {
 			return {
 				success: false,
-				error: "لقد قمت بتعديل الرابط الخاص بك مسبقاً. لا يمكن تعديله مرة أخرى.",
+				error: await (async () => { const t = await getErrorT(); return t("action_error_56"); })(),
 			};
 		}
 
@@ -213,7 +213,7 @@ export async function updateTeacherSlug(
 		if (existingSlug && existingSlug.id !== teacher.id) {
 			return {
 				success: false,
-				error: "الرابط المطلوب غير متاح (مستخدم من قبل معلم آخر).",
+				error: await (async () => { const t = await getErrorT(); return t("action_error_57"); })(),
 			};
 		}
 
@@ -234,7 +234,7 @@ export async function updateTeacherSlug(
 		return { success: true, data: { slug: newSlug } };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء تحديث الرابط." };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_58"); })() };
 	}
 }
 
@@ -254,6 +254,6 @@ export async function toggleTeacherAvailability(
 		return { success: true };
 	} catch (error) {
 		console.error("Error toggling availability:", error);
-		return { success: false, error: "فشل في تحديث حالة التواجد" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_59"); })() };
 	}
 }

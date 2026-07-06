@@ -1,3 +1,4 @@
+import { getNotificationT } from "@/lib/i18n/get-server-translations";
 import { DisputeStatus, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { createNotification } from "@/lib/notifications";
@@ -124,9 +125,9 @@ class DisputeRepository {
 			await createNotification(
 				{
 					userId: params.teacherUserId,
-					title: "اعتراض جديد ⚠️",
+					title: await (async () => { const t = await getNotificationT(); return t("dispute_new_title"); })(),
 					message:
-						"قام ولي الأمر برفع اعتراض على جلستك الأخيرة. تم تجميد مستحقات الجلسة مؤقتاً.",
+						await (async () => { const t = await getNotificationT(); return t("dispute_new_message"); })(),
 				},
 				tx,
 			);
@@ -245,11 +246,11 @@ class DisputeRepository {
 			await createNotification(
 				{
 					userId: params.parentUserId,
-					title: "قرار بشأن اعتراضك",
+					title: await (async () => { const t = await getNotificationT(); return t("dispute_decision_title"); })(),
 					message:
 						params.decision === "RESOLVED_IN_FAVOR_OF_PARENT"
-							? "تم حل الاعتراض لصالحك وجاري إرجاع المبلغ."
-							: "تم رفض الاعتراض بعد المراجعة. راجع المحادثة للتفاصيل.",
+							? await (async () => { const t = await getNotificationT(); return t("dispute_decision_won_message"); })()
+							: await (async () => { const t = await getNotificationT(); return t("dispute_decision_lost_message"); })(),
 				},
 				tx,
 			);
@@ -257,11 +258,11 @@ class DisputeRepository {
 			await createNotification(
 				{
 					userId: params.teacherUserId,
-					title: "إغلاق النزاع المالي",
+					title: await (async () => { const t = await getNotificationT(); return t("dispute_closed_title"); })(),
 					message:
 						params.decision === "RESOLVED_IN_FAVOR_OF_TEACHER"
-							? "تم الحكم بصالحك في النزاع الأخير، وسيضاف الرصيد لدفعاتك القادمة."
-							: "تم قبول اعتراض ولي الأمر واسترداد مبلغ الجلسة.",
+							? await (async () => { const t = await getNotificationT(); return t("dispute_closed_won_message"); })()
+							: await (async () => { const t = await getNotificationT(); return t("dispute_closed_lost_message"); })(),
 				},
 				tx,
 			);

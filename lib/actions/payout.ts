@@ -1,5 +1,5 @@
 "use server";
-
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { requireTeacherProfile } from "@/lib/actions/auth-helpers";
@@ -38,7 +38,7 @@ export async function createTeacherPayout(data: {
 
 			if (bookings.length !== bookingIds.length) {
 				throw new Error(
-					"بعض الجلسات المحددة غير صالحة للتسوية أو تم تسويتها مسبقاً.",
+					await (async () => { const t = await getErrorT(); return t("payout_invalid_sessions"); })(),
 				);
 			}
 
@@ -99,7 +99,7 @@ export async function createTeacherPayout(data: {
 	} catch (err: unknown) {
 		console.error(err);
 		const msg =
-			err instanceof Error ? err.message : "حدث خطأ أثناء إصدار التسوية";
+			err instanceof Error ? err.message : await (async () => { const t = await getErrorT(); return t("action_error_51"); })();
 		return { success: false, error: msg };
 	}
 }
@@ -120,11 +120,11 @@ export async function markPayoutAsPaid(
 		});
 
 		if (!payout) {
-			return { success: false, error: "التسوية المالية المطلوبة غير موجودة" };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_45"); })() };
 		}
 
 		if (payout.isPaid) {
-			return { success: false, error: "هذه التسوية مدفوعة بالفعل مسبقاً" };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_46"); })() };
 		}
 
 		await prisma.teacherPayout.update({
@@ -141,7 +141,7 @@ export async function markPayoutAsPaid(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء تحديث حالة الدفع" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_47"); })() };
 	}
 }
 
@@ -161,11 +161,11 @@ export async function markParentRefundAsPaid(
 		});
 
 		if (!refund) {
-			return { success: false, error: "عملية الاسترداد غير موجودة" };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_48"); })() };
 		}
 
 		if (refund.isPaid) {
-			return { success: false, error: "تم تحويل مبلغ الاسترداد مسبقاً" };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_49"); })() };
 		}
 
 		await prisma.parentRefund.update({
@@ -182,6 +182,6 @@ export async function markParentRefundAsPaid(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء تحديث حالة الاسترداد" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_50"); })() };
 	}
 }

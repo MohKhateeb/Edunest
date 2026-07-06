@@ -1,5 +1,5 @@
 "use server";
-
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { type FAQ, type FAQCategory, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
@@ -23,7 +23,7 @@ export async function getFAQs(
 		return { success: true, data: faqs };
 	} catch (error: unknown) {
 		console.error("Error fetching FAQs:", error);
-		return { success: false, error: "حدث خطأ أثناء جلب الأسئلة الشائعة" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_37"); })() };
 	}
 }
 
@@ -58,7 +58,7 @@ export async function createFAQ(data: {
 		return { success: true, data: faq };
 	} catch (error: unknown) {
 		console.error("Error creating FAQ:", error);
-		return { success: false, error: "حدث خطأ أثناء إضافة السؤال" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_38"); })() };
 	}
 }
 
@@ -104,7 +104,7 @@ export async function updateFAQ(
 		return { success: true, data: faq };
 	} catch (error: unknown) {
 		console.error("Error updating FAQ:", error);
-		return { success: false, error: "حدث خطأ أثناء تحديث السؤال" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_39"); })() };
 	}
 }
 
@@ -127,6 +127,6 @@ export async function deleteFAQ(id: string): Promise<ActionResponse> {
 		return { success: true };
 	} catch (error: unknown) {
 		console.error("Error deleting FAQ:", error);
-		return { success: false, error: "حدث خطأ أثناء حذف السؤال" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_40"); })() };
 	}
 }

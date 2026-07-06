@@ -1,5 +1,5 @@
 "use server";
-
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { Prisma, UserType } from "@prisma/client";
 import { requireTeacherProfile } from "@/lib/actions/auth-helpers";
 import { auth } from "@/lib/auth";
@@ -57,10 +57,10 @@ async function getStudentDetails(
 			include: commonStudentInclude,
 		});
 
-		if (!student) return { success: false, error: "الطالب المطلوب غير موجود." };
+		if (!student) return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_61"); })() };
 		
 		const auth = authorizeStudentAccess(student, userId, userType);
-		if (!auth.authorized) return { success: false, error: auth.error };
+		if (!auth.authorized) return { success: false, error: await (async () => { const t = await getErrorT(); return t(auth.error as any); })() };
 		return successResponse(withCalculatedPerformance(student));
 	}
 
@@ -77,10 +77,10 @@ async function getStudentDetails(
 			},
 		});
 
-		if (!student) return { success: false, error: "الطالب المطلوب غير موجود." };
+		if (!student) return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_62"); })() };
 		
 		const auth = authorizeStudentAccess(student, userId, userType);
-		if (!auth.authorized) return { success: false, error: auth.error };
+		if (!auth.authorized) return { success: false, error: await (async () => { const t = await getErrorT(); return t(auth.error as any); })() };
 		return successResponse(withCalculatedPerformance(student));
 	}
 
@@ -89,11 +89,11 @@ async function getStudentDetails(
 			where: { id: entityId },
 			include: commonStudentInclude,
 		});
-		if (!student) return { success: false, error: "الطالب المطلوب غير موجود." };
+		if (!student) return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_63"); })() };
 		return successResponse(withCalculatedPerformance(student));
 	}
 
-	return { success: false, error: "نوع الحساب غير مصرح له بالوصول." };
+	return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_64"); })() };
 }
 
 async function getTeacherDetails(
@@ -106,7 +106,7 @@ async function getTeacherDetails(
 		include: commonTeacherInclude,
 	});
 
-	if (!teacher) return { success: false, error: "المعلم المطلوب غير موجود." };
+	if (!teacher) return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_65"); })() };
 
 	const auth = authorizeTeacherProfileAccess(teacher, userId, userType);
 	if (!auth.authorized) {
@@ -148,10 +148,10 @@ async function getBookingDetails(
 		},
 	});
 
-	if (!booking) return { success: false, error: "الحجز المطلوب غير موجود." };
+	if (!booking) return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_66"); })() };
 
 	const auth = authorizeBookingAccess(booking, userId, userType);
-	if (!auth.authorized) return { success: false, error: auth.error };
+	if (!auth.authorized) return { success: false, error: await (async () => { const t = await getErrorT(); return t(auth.error as any); })() };
 
 	return successResponse(booking);
 }
@@ -165,7 +165,7 @@ async function getPayoutDetails(
 	if (userType !== UserType.ADMIN && userType !== UserType.TEACHER) {
 		return {
 			success: false,
-			error: "غير مصرح لك بمشاهدة تفاصيل التسويات المالية.",
+			error: await (async () => { const t = await getErrorT(); return t("action_error_67"); })(),
 		};
 	}
 
@@ -175,10 +175,10 @@ async function getPayoutDetails(
 	});
 
 	if (!payout)
-		return { success: false, error: "التسوية المالية المطلوبة غير موجودة." };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_68"); })() };
 		
 	const auth = authorizePayoutAccess(payout, userId, userType);
-	if (!auth.authorized) return { success: false, error: auth.error };
+	if (!auth.authorized) return { success: false, error: await (async () => { const t = await getErrorT(); return t(auth.error as any); })() };
 
 	const hydratedBookings = payout.bookings.map((b) => {
 		const earnings = calculateEarnings(
@@ -218,13 +218,13 @@ export async function getEntityDetails(
 			case "payout":
 				return await getPayoutDetails(entityId, userId, userType);
 			default:
-				return { success: false, error: "نوع الكيان المطلوب غير صالح." };
+				return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_69"); })() };
 		}
 	} catch (err: unknown) {
 		console.error(err);
 		return {
 			success: false,
-			error: "حدث خطأ غير متوقع أثناء استرجاع التفاصيل.",
+			error: await (async () => { const t = await getErrorT(); return t("action_error_70"); })(),
 		};
 	}
 }

@@ -1,5 +1,5 @@
 "use server";
-
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { type Notification, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
@@ -25,7 +25,7 @@ export async function getUserNotifications(): Promise<
 		return { success: true, data: notifications };
 	} catch (error) {
 		console.error("Error fetching notifications:", error);
-		return { success: false, error: "حدث خطأ أثناء جلب الإشعارات" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_41"); })() };
 	}
 }
 
@@ -45,13 +45,13 @@ export async function markNotificationAsRead(
 		});
 
 		if (result.count === 0) {
-			return { success: false, error: "الإشعار غير موجود" };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_42"); })() };
 		}
 
 		return { success: true };
 	} catch (error) {
 		console.error("Error marking notification as read:", error);
-		return { success: false, error: "حدث خطأ" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_43"); })() };
 	}
 }
 
@@ -71,6 +71,6 @@ export async function markAllNotificationsAsRead(): Promise<ActionResponse> {
 		return { success: true };
 	} catch (error) {
 		console.error("Error marking all notifications as read:", error);
-		return { success: false, error: "حدث خطأ" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_44"); })() };
 	}
 }

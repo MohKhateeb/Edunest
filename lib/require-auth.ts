@@ -30,7 +30,7 @@ export async function requireAuth(
 ): Promise<AuthResult> {
 	const session = await auth();
 	if (!session?.user?.id || !session.user.userType) {
-		throw new AuthError("UNAUTHORIZED", "يجب تسجيل الدخول");
+		throw new AuthError("UNAUTHORIZED", "auth_unauthorized_login_required");
 	}
 
 	// Security Check: Verify user still exists and is active (prevents stale session bypass)
@@ -40,12 +40,12 @@ export async function requireAuth(
 	});
 
 	if (!dbUser || !dbUser.isActive) {
-		throw new AuthError("UNAUTHORIZED", "حسابك معطل أو غير موجود");
+		throw new AuthError("UNAUTHORIZED", "auth_unauthorized_account_disabled");
 	}
 
 	// Security Check: Verify role matches DB (in case admin changed their role while session is active)
 	if (!allowedTypes.includes(dbUser.userType)) {
-		throw new AuthError("FORBIDDEN", "غير مصرح لك بهذا الإجراء");
+		throw new AuthError("FORBIDDEN", "auth_forbidden_action");
 	}
 
 	return {

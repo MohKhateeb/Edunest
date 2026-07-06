@@ -1,3 +1,4 @@
+import { getNotificationT } from "@/lib/i18n/get-server-translations";
 import { BookingStatus, PaymentStatus, Prisma } from "@prisma/client";
 import { createNotification } from "@/lib/notifications";
 import { prisma } from "@/lib/prisma";
@@ -62,10 +63,8 @@ const handlePendingBooking: CleanupHandler = async (booking, externalTx) => {
 		await createNotification(
 			{
 				userId: booking.parentUserId,
-				title: "إلغاء حجز تلقائي",
-				message: `نعتذر، لقد تم إلغاء جلستك تلقائياً نظراً لانتهاء وقتها دون تأكيد المعلم.${
-					isPaid ? " سيتم إرجاع المبلغ المدفوع لرصيدك في أقرب وقت." : ""
-				}`,
+				title: await (async () => { const t = await getNotificationT(); return t("booking_auto_cancelled_title"); })(),
+				message: await (async () => { const t = await getNotificationT(); return t("booking_auto_cancelled_message") + (isPaid ? t("booking_auto_cancelled_refund") : ""); })(),
 			},
 			tx,
 		);
@@ -126,8 +125,8 @@ const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 			await createNotification(
 				{
 					userId: teacherUserId,
-					title: "إلغاء جلسة ومصادرة الأرباح 🔴",
-					message: `تم إغلاق جلستك تلقائياً نظراً لعدم تسليم التقرير لفترة تجاوزت 4 أيام.`,
+					title: await (async () => { const t = await getNotificationT(); return t("booking_report_penalty_title"); })(),
+					message: await (async () => { const t = await getNotificationT(); return t("booking_report_penalty_message"); })(),
 				},
 				tx,
 			);
@@ -135,8 +134,8 @@ const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 			await createNotification(
 				{
 					userId: booking.parentUserId,
-					title: "إلغاء جلسة لعدم التزام المعلم بالتقرير",
-					message: `نعتذر، لم يقم المعلم بكتابة تقرير الجلسة. تم حفظ حقوقك المالية وتُراجع الإدارة الموضوع الآن.`,
+					title: await (async () => { const t = await getNotificationT(); return t("booking_report_penalty_parent_title"); })(),
+					message: await (async () => { const t = await getNotificationT(); return t("booking_report_penalty_parent_message"); })(),
 				},
 				tx,
 			);
@@ -151,8 +150,8 @@ const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 			await createNotification(
 				{
 					userId: teacherUserId,
-					title: "تحذير نهائي - تجميد أرباح ⚠️",
-					message: `أرباح جلستك محجوزة! أمامك وقت محدود لتقديم التقرير قبل مصادرة الجلسة نهائياً.`,
+					title: await (async () => { const t = await getNotificationT(); return t("booking_report_warning_final_title"); })(),
+					message: await (async () => { const t = await getNotificationT(); return t("booking_report_warning_final_message"); })(),
 				},
 				tx,
 			);
@@ -167,8 +166,8 @@ const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 			await createNotification(
 				{
 					userId: teacherUserId,
-					title: "تحذير: تقرير متأخر ⏳",
-					message: `لقد مضى 24 ساعة على انتهاء الجلسة ولم تقم بكتابة التقرير. يرجى كتابته فوراً لتجنب تجميد الأرباح.`,
+					title: await (async () => { const t = await getNotificationT(); return t("booking_report_warning_title"); })(),
+					message: await (async () => { const t = await getNotificationT(); return t("booking_report_warning_message"); })(),
 				},
 				tx,
 			);

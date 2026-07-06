@@ -1,3 +1,4 @@
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 import { UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
@@ -16,18 +17,18 @@ export async function getAuthorizedBooking(
 	});
 
 	if (!booking) {
-		throw new Error("الحجز غير موجود أو غير متاح");
+		throw new Error(await (async () => { const t = await getErrorT(); return t("booking_not_found_or_unavailable"); })());
 	}
 
 	if (userType === UserType.PARENT && booking.parentUserId !== userId) {
-		throw new Error("غير مصرح لك بإجراء تعديلات على هذا الحجز");
+		throw new Error(await (async () => { const t = await getErrorT(); return t("booking_unauthorized_edit"); })());
 	}
 
 	if (
 		userType === UserType.TEACHER &&
 		booking.teacherService.teacher.userId !== userId
 	) {
-		throw new Error("غير مصرح لك بإجراء تعديلات على هذا الحجز");
+		throw new Error(await (async () => { const t = await getErrorT(); return t("booking_unauthorized_edit"); })());
 	}
 
 	return booking;

@@ -1,3 +1,4 @@
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 
@@ -24,5 +25,5 @@ export async function generateUniqueSlug(
 		const slug = `${base}-${suffix}`;
 		if (!existingSlugs.has(slug)) return slug;
 	}
-	throw new Error("فشل توليد slug فريد بعد عدة محاولات");
+	throw new Error(await (async () => { const t = await getErrorT(); return t("slug_generation_failed"); })());
 }

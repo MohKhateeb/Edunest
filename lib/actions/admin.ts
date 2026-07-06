@@ -1,5 +1,5 @@
 "use server";
-
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import {
 	BookingStatus,
 	PaymentStatus,
@@ -59,8 +59,8 @@ export async function verifyTeacher(
 				await createNotification(
 					{
 						userId: teacherProfile.userId,
-						title: "توثيق الحساب",
-						message: `تهانينا! لقد تم توثيق حسابك بمستوى: ${level}`,
+						title: await (async () => { const t = await getErrorT(); return t("action_error_8"); })(),
+						message: await (async () => { const t = await getNotificationT(); return t("admin_verification_approved", { level }); })(),
 					},
 					tx,
 				);
@@ -73,7 +73,7 @@ export async function verifyTeacher(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء توثيق المعلم" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_1"); })() };
 	}
 }
 
@@ -108,8 +108,8 @@ export async function rejectTeacher(
 				await createNotification(
 					{
 						userId: teacherProfile.userId,
-						title: "توثيق الحساب",
-						message: `تم رفض طلب التوثيق للسبب التالي: ${reason}`,
+						title: await (async () => { const t = await getErrorT(); return t("action_error_9"); })(),
+						message: await (async () => { const t = await getNotificationT(); return t("admin_verification_rejected", { reason }); })(),
 					},
 					tx,
 				);
@@ -121,7 +121,7 @@ export async function rejectTeacher(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء رفض توثيق المعلم" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_2"); })() };
 	}
 }
 
@@ -156,7 +156,7 @@ export async function updateSystemSettings(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء تحديث الإعدادات" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_3"); })() };
 	}
 }
 
@@ -176,7 +176,7 @@ export async function toggleUserActive(
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
 
 		if (targetUserId === adminUserId) {
-			return { success: false, error: "لا يمكنك حظر حسابك الشخصي" };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_4"); })() };
 		}
 
 		await userRepository.update(targetUserId, { isActive });
@@ -186,7 +186,7 @@ export async function toggleUserActive(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: "حدث خطأ أثناء تعديل حالة المستخدم" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_5"); })() };
 	}
 }
 
@@ -202,14 +202,14 @@ export async function updateHomepageLayout(
 		} catch {
 			return {
 				success: false,
-				error: "تنسيق البيانات غير صالح (JSON غير صحيح)",
+				error: await (async () => { const t = await getErrorT(); return t("action_error_6"); })(),
 			};
 		}
 
 		await systemSettingRepository.upsert(
 			"HomepageLayout",
 			layoutJson,
-			"تخطيط ومحتوى الصفحة الرئيسية بتنسيق JSON الديناميكي",
+			await (async () => { const t = await getErrorT(); return t("admin_homepage_layout_desc"); })(),
 			adminUserId
 		);
 
@@ -221,7 +221,7 @@ export async function updateHomepageLayout(
 		console.error(err);
 		return {
 			success: false,
-			error: "حدث خطأ أثناء تحديث تخطيط الصفحة الرئيسية",
+			error: await (async () => { const t = await getErrorT(); return t("action_error_7"); })(),
 		};
 	}
 }

@@ -1,5 +1,5 @@
 "use server";
-
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
@@ -24,9 +24,9 @@ export async function updateServiceType(
 
 		// 2. Validate basic logic
 		if (data.defaultDuration < 5)
-			return { success: false, error: "المدة يجب أن تكون 5 دقائق على الأقل" };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_10"); })() };
 		if (data.commissionRate < 0 || data.commissionRate > 100)
-			return { success: false, error: "نسبة العمولة يجب أن تكون بين 0 و 100" };
+			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_11"); })() };
 
 		// 3. Update in Database
 		await prisma.serviceType.update({
@@ -49,7 +49,7 @@ export async function updateServiceType(
 		return { success: true };
 	} catch (error: unknown) {
 		console.error("Update ServiceType Error:", error);
-		return { success: false, error: "حدث خطأ أثناء تحديث الخدمة" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_12"); })() };
 	}
 }
 
@@ -71,6 +71,6 @@ export async function toggleServiceTypeStatus(
 		return { success: true };
 	} catch (error: unknown) {
 		console.error("Toggle ServiceType Status Error:", error);
-		return { success: false, error: "حدث خطأ أثناء تحديث حالة الخدمة" };
+		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_13"); })() };
 	}
 }

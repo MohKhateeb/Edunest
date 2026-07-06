@@ -1,3 +1,5 @@
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getTranslations } from "next-intl/server";
 import { UserType } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
@@ -133,7 +135,7 @@ export class SystemAdminService {
 			items: data.map((t) => ({
 				...t,
 				specialization:
-					t.subjects?.map((s) => s.subject.name).join(", ") || "غير محدد",
+					t.subjects?.map((s) => s.subject.name).join(", ") || "Unspecified",
 				averageRating: Number(t.averageRating),
 				defaultHourlyRate: Number(t.defaultHourlyRate),
 			})),

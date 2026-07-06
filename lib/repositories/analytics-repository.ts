@@ -1,3 +1,6 @@
+import { BOOKING_STATUS_AR } from "@/lib/translations";
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getTranslations } from "next-intl/server";
 import { Prisma, UserType, BookingStatus, VerificationLevel } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { bookingDetailsInclude, type DetailedBooking } from "@/lib/types";
@@ -127,13 +130,12 @@ export class AnalyticsRepository {
 			select: { id: true, reportWarningLevel: true },
 		});
 
+		const tNotif = await getNotificationT();
 		const urgentAlerts = ghostBookings.map((b) => ({
 			id: `alert-${b.id}`,
 			bookingId: b.id,
 			type: b.reportWarningLevel === 1 ? ("WARNING_1" as const) : ("WARNING_2_FROZEN" as const),
-			message: b.reportWarningLevel === 1
-					? "تحذير: توجد جلسة مر على انتهائها أكثر من 24 ساعة ولم تكتب التقرير. يرجى كتابته فوراً لتجنب تجميد الأرباح."
-					: "تحذير أخير: أرباح جلسة سابقة أصبحت مجمدة نظراً لعدم كتابتك التقرير. الجلسة مهددة بالمصادرة إذا لم تقم بكتابة التقرير.",
+			message: b.reportWarningLevel === 1 ? tNotif("booking_report_warning_message") : tNotif("booking_report_warning_final_message"),
 		}));
 
 		return {
@@ -155,6 +157,7 @@ export class AnalyticsRepository {
 			where: { reviewedAt: null },
 		});
 
+		const tCommon = await getTranslations("common");
 		const totalBookings = await prisma.booking.count({
 			where: { createdAt: { gte: startDate, lte: endDate } }
 		});
@@ -191,9 +194,7 @@ export class AnalyticsRepository {
 			_count: { status: true },
 			where: { createdAt: { gte: startDate, lte: endDate } }
 		});
-		const statusMap: Record<string, string> = {
-			COMPLETED: "مكتمل", CONFIRMED: "مؤكد", PENDING: "معلق", CANCELLED: "ملغي", REJECTED: "مرفوض", PENDING_APPROVAL: "بانتظار الموافقة", AWAITING_PAYMENT: "بانتظار الدفع",
-		};
+		const statusMap: Record<string, string> = BOOKING_STATUS_AR;
 		const bookingStatuses = statusGroups.map(g => ({
 			name: statusMap[g.status] || g.status,
 			value: g._count.status,
@@ -222,27 +223,27 @@ export class AnalyticsRepository {
 
 		const specRaw = await prisma.$queryRaw<{ name: string, count: number }[]>`
 			SELECT 
-				COALESCE(s.name, 'غير محدد') as name,
+				COALESCE(s.name, ${await (async () => { const t = await getTranslations("common"); return t("unspecified"); })()}) as name,
 				COUNT(b.id)::int as count
 			FROM "bookings" b
 			LEFT JOIN "teacher_services" ts ON b."teacherServiceId" = ts.id
 			LEFT JOIN "teacher_subjects" tsub ON ts."teacherId" = tsub."teacherId"
 			LEFT JOIN "subjects" s ON tsub."subjectId" = s.id
 			WHERE b."createdAt" >= ${startDate} AND b."createdAt" <= ${endDate}
-			GROUP BY COALESCE(s.name, 'غير محدد')
+			GROUP BY COALESCE(s.name, ${await (async () => { const t = await getTranslations("common"); return t("unspecified"); })()})
 			ORDER BY count DESC
 		`;
 		const requestedSpecializations = specRaw.map(r => ({ name: r.name, count: Number(r.count) }));
 
 		const typeRaw = await prisma.$queryRaw<{ name: string, count: number }[]>`
 			SELECT 
-				COALESCE(st.name, 'غير محدد') as name,
+				COALESCE(st.name, ${await (async () => { const t = await getTranslations("common"); return t("unspecified"); })()}) as name,
 				COUNT(b.id)::int as count
 			FROM "bookings" b
 			LEFT JOIN "teacher_services" ts ON b."teacherServiceId" = ts.id
 			LEFT JOIN "service_types" st ON ts."serviceTypeId" = st.id
 			WHERE b."createdAt" >= ${startDate} AND b."createdAt" <= ${endDate}
-			GROUP BY COALESCE(st.name, 'غير محدد')
+			GROUP BY COALESCE(st.name, ${await (async () => { const t = await getTranslations("common"); return t("unspecified"); })()})
 			ORDER BY count DESC
 		`;
 		const sessionTypes = typeRaw.map(r => ({ name: r.name, count: Number(r.count) }));
@@ -254,7 +255,7 @@ export class AnalyticsRepository {
 
 		const registeredGrades = gradeGroups
 			.map((g) => ({
-				name: `الصف ${g.grade}`,
+				name: tCommon("grade_level", { grade: g.grade }),
 				count: g._count.grade,
 				grade: g.grade,
 			}))

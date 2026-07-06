@@ -1,3 +1,5 @@
+import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getTranslations } from "next-intl/server";
 import { type Prisma, UserType, Currency } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
@@ -341,7 +343,7 @@ export async function getTeacherEarningsWallet(
 	});
 
 	if (!teacher) {
-		throw new Error("حدث خطأ، لا يوجد ملف معلم.");
+		throw new Error(await (async () => { const t = await getErrorT(); return t("financial_teacher_profile_missing"); })());
 	}
 
 	const payouts = await prisma.teacherPayout.findMany({
@@ -553,7 +555,7 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 		const appliedCommissionRate = Number(b.appliedCommissionRate);
 		const trialCostToPlatform = Number(b.trialCostToPlatform);
 		const teacherId = b.teacherService.teacherId;
-		const teacherName = b.teacherService.teacher.user.name || "غير معروف";
+		const teacherName = b.teacherService.teacher.user.name || "Unknown";
 		const currency = b.currency;
 
 		const earnings = calculateEarnings(
@@ -637,7 +639,7 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 		periodEnd: p.periodEnd,
 		createdAt: p.createdAt,
 		currency: p.currency,
-		teacher: { user: { name: p.teacher.user.name || "غير معروف" } },
+		teacher: { user: { name: p.teacher.user.name || "Unknown" } },
 	}));
 
 	const refundsWhere: Prisma.ParentRefundWhereInput = {};
@@ -662,7 +664,7 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 	const mappedRefunds = refunds.map((r) => ({
 		id: r.id,
 		bookingId: r.bookingId,
-		parentName: r.booking.parent.name || "غير معروف",
+		parentName: r.booking.parent.name || "Unknown",
 		amount: Number(r.amount),
 		currency: r.currency,
 		isPaid: r.isPaid,
