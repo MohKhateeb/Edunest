@@ -15,7 +15,7 @@ export default function WelcomeHeader({ teacherName, teacherSlug, isAvailableNow
 		<div className="mt-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
 			<InteractiveMessage
 				character="najeeb"
-				title={`أهلاً بك، أ. ${teacherName} 👋`}
+				title={t('welcome_back_name', { name: teacherName })}
 				message={t('mn_lwhh_althkm_ymknk')}
 				najeebMode="welcome"
 				className="lg:w-1/2"

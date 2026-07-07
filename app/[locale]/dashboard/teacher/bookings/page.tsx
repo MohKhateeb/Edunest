@@ -31,10 +31,9 @@ export default async function TeacherBookingsPage() {
 		<div className="space-y-6">
 			<div>
 				<h1 className="text-2xl font-extrabold mb-1">
-					{t('key_1783109437867_i1ut')}</h1>
+					{t('bookings_page_title')}</h1>
 				<p className="text-xs text-muted-foreground">
-					تابع مواعيد الحصص المجدولة للطلاب، قبول/رفض طلبات الحجز المعلقة، ورفع
-					تقارير الأداء بعد انتهاء الحصص.
+					{t('bookings_page_subtitle')}
 				</p>
 			</div>
 
@@ -43,11 +42,9 @@ export default async function TeacherBookingsPage() {
 					<AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
 					<div>
 						<h3 className="font-bold text-sm">
-							{t('key_1783109437870_vr5t')}</h3>
+							{t('bookings_page_stale_alert_title')}</h3>
 						<p className="text-sm mt-1">
-							{t('key_1783109437872_xewl')}<strong>{cancelledCount}</strong> من طلبات الحجز تلقائياً
-							نظراً لانتهاء وقتها المجدول دون قيامك بتأكيدها. يرجى المتابعة
-							اليومية لطلباتك لتجنب ذلك.
+							{t('bookings_page_stale_alert_prefix')}<strong>{cancelledCount}</strong>{t('bookings_page_stale_alert_suffix')}
 						</p>
 					</div>
 				</div>
@@ -56,7 +53,7 @@ export default async function TeacherBookingsPage() {
 			<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all space-y-4">
 				<h2 className="font-black text-lg border-b border-border pb-3 flex items-center gap-2">
 					<Calendar className="h-6 w-6 text-primary" />
-					{t('key_1783109437875_wex5')}</h2>
+					{t('bookings_page_calendar_title')}</h2>
 
 				<TeacherBookingsList bookings={sanitizedBookings} />
 			</div>

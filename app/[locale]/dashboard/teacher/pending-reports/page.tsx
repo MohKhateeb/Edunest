@@ -25,9 +25,9 @@ export default async function TeacherPendingReportsPage() {
 			<div>
 				<h1 className="text-2xl font-black flex items-center gap-2">
 					<FileText className="h-7 w-7 text-primary" />
-					{t('key_1783109439058_ulm4')}</h1>
+					{t('pending_reports_title')}</h1>
 				<p className="text-muted-foreground mt-1">
-					الرجاء كتابة تقارير الأداء فوراً لتفادي تجميد أو مصادرة أرباح الجلسات.
+					{t('pending_reports_subtitle')}
 				</p>
 			</div>
 

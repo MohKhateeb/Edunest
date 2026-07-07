@@ -45,25 +45,25 @@ export default function TeacherSlugForm({
 			}
 
 			if (slug === currentSlug) {
-				setError(t('key_1783109437507_8c3s'));
+				setError(t('slug_identical_text'));
 				setLoading(false);
 				return;
 			}
 
 			const res = await updateTeacherSlug({ slug });
 			if (res.success) {
-				toast.success(t('key_1783109437508_0ozw'), {
-					description: `الرابط الجديد الخاص بك هو: ${slug}`,
+				toast.success(t('slug_success_text'), {
+					description: t('slug_success_desc', { slug }),
 				});
-				setSuccess(t('key_1783109437510_rp4j')); // just to freeze the UI
+				setSuccess(t('slug_success_title')); // just to freeze the UI
 			} else {
-				toast.error(t('key_1783109436860_ynpf'), {
-					description: res.error || t('key_1783109437514_98vo'),
+				toast.error(t('profile_error_title'), {
+					description: res.error || t('slug_error_unexpected'),
 				});
 			}
 		} catch (err) {
-			toast.error(t('key_1783109437518_6uag'), {
-				description: t('key_1783109437521_ve8j'),
+			toast.error(t('slug_error_connection_title'), {
+				description: t('slug_error_connection_desc'),
 			});
 		} finally {
 			setLoading(false);
@@ -75,12 +75,12 @@ export default function TeacherSlugForm({
 			<div className="p-6 border-b border-border bg-muted/20">
 				<h2 className="text-xl font-extrabold flex items-center gap-2">
 					<LinkIcon className="h-5 w-5 text-primary" />
-					{t('slug')}</h2>
+					{t('slug_title')}</h2>
 				<p className="text-sm text-muted-foreground mt-2">
-					هذا هو الرابط الذي سيظهر للطلاب وأولياء الأمور للوصول إلى ملفك الشخصي.
+					{t('slug_description')}
 					{!slugUpdated && (
 						<strong className="text-amber-600 block mt-1">
-							{t('key_1783109437480_xfwy')}</strong>
+							{t('slug_warning_text')}</strong>
 					)}
 				</p>
 			</div>
@@ -117,7 +117,7 @@ export default function TeacherSlugForm({
 									{loading ? (
 										<Loader2 className="h-5 w-5 animate-spin" />
 									) : (
-										t('key_1783109437523_vryy')
+										t('slug_btn_save')
 									)}
 								</button>
 							)}

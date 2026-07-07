@@ -28,7 +28,7 @@ export async function generateMetadata({
     const t = await getTranslations('teachers')
 	const resolvedParams = await params;
 	return {
-		title: `تفاصيل الجلسة #${resolvedParams.id.slice(0, 8)} | EduNest`,
+		title: `${t('bookings_details_meta_title')} #${resolvedParams.id.slice(0, 8)} | EduNest`,
 	};
 }
 

@@ -92,11 +92,11 @@ export default function TeacherVerificationForm({
 			if (res.ok && resData.url) {
 				handleUrlChange(field, resData.url);
 			} else {
-				setErrorMsg(resData.error || t('key_1783109437790_g104'));
+				setErrorMsg(resData.error || t('verification_error_upload_failed'));
 			}
 		} catch (err: unknown) {
 			console.error(err);
-			setErrorMsg(t('key_1783109437795_nlof'));
+			setErrorMsg(t('verification_error_upload_exception'));
 			setUploadingField(null);
 		}
 	};
@@ -105,7 +105,7 @@ export default function TeacherVerificationForm({
 		e.preventDefault();
 		if (!formData.nationalIdUrl || !formData.degreeUrl) {
 			setErrorMsg(
-				t('key_1783109437800_j9gv'),
+				t('verification_error_missing_docs'),
 			);
 			return;
 		}
@@ -122,14 +122,14 @@ export default function TeacherVerificationForm({
 			});
 
 			if (res.success) {
-				setSuccessMsg(t('key_1783109437805_p4fp'));
+				setSuccessMsg(t('verification_success_submitted'));
 				router.refresh();
 			} else {
 				setErrorMsg(res.error);
 			}
 		} catch (err: unknown) {
 			console.error(err);
-			setErrorMsg(t('key_1783109437809_0ckr'));
+			setErrorMsg(t('verification_error_save_failed'));
 		} finally {
 			setLoading(false);
 		}
@@ -144,10 +144,9 @@ export default function TeacherVerificationForm({
 	return (
 		<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-8 space-y-6 shadow-sm hover:shadow-md transition-all">
 			<div>
-				<h2 className="font-extrabold text-xl mb-1">{t('key_1783109437532_wlsu')}</h2>
+				<h2 className="font-extrabold text-xl mb-1">{t('verification_title')}</h2>
 				<p className="text-xs text-muted-foreground">
-					ارفع وثائقك الرسمية لتتم مراجعتها وتوثيق ملفك بbadge برونزي/فضي/ذهبي،
-					مما يزيد من ظهورك وثقة الأهالي بك.
+					{t('verification_description')}
 				</p>
 			</div>
 
@@ -156,10 +155,9 @@ export default function TeacherVerificationForm({
 				<div className="flex items-start gap-3 p-4 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 rounded-xl border border-emerald-100 dark:border-emerald-900">
 					<CheckCircle2 className="h-5 w-5 flex-shrink-0 mt-0.5" />
 					<div className="text-xs space-y-1">
-						<span className="font-bold block">{t('key_1783109437579_1ikd')}</span>
+						<span className="font-bold block">{t('verification_status_verified_title')}</span>
 						<p>
-							لقد تمت مراجعة ملفك وتوثيقه بنجاح من إدارة المنصة. حسابك الآن يظهر
-							للأهالي في نتائج البحث.
+							{t('verification_status_verified_desc')}
 						</p>
 					</div>
 				</div>
@@ -167,10 +165,9 @@ export default function TeacherVerificationForm({
 				<div className="flex items-start gap-3 p-4 bg-yellow-50 dark:bg-yellow-950/20 text-yellow-700 dark:text-yellow-400 rounded-xl border border-yellow-100 dark:border-yellow-900">
 					<Loader2 className="h-5 w-5 flex-shrink-0 mt-0.5 animate-spin" />
 					<div className="text-xs space-y-1">
-						<span className="font-bold block">{t('key_1783109437597_84u6')}</span>
+						<span className="font-bold block">{t('verification_status_pending_title')}</span>
 						<p>
-							تم استلام وثائقك وهي قيد المراجعة حالياً من قبل الإدارة. سيتم
-							إشعارك فور اكتمال التوثيق.
+							{t('verification_status_pending_desc')}
 						</p>
 					</div>
 				</div>
@@ -178,23 +175,22 @@ export default function TeacherVerificationForm({
 				<div className="flex items-start gap-3 p-4 bg-rose-50 dark:bg-rose-950/20 text-rose-700 dark:text-rose-400 rounded-xl border border-rose-100 dark:border-rose-900">
 					<ShieldAlert className="h-5 w-5 flex-shrink-0 mt-0.5" />
 					<div className="text-xs space-y-1">
-						<span className="font-bold block">{t('key_1783109437618_1zdj')}</span>
+						<span className="font-bold block">{t('verification_status_rejected_title')}</span>
 						<p>
-							{t('key_1783109437630_dcit')}{" "}
+							{t('verification_status_rejected_desc_prefix')}{" "}
 							<strong className="text-foreground">
 								{initialData.rejectionReason}
 							</strong>
-							{t('key_1783109437641_jego')}</p>
+							{t('verification_status_rejected_desc_suffix')}</p>
 					</div>
 				</div>
 			) : (
 				<div className="flex items-start gap-3 p-4 bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 rounded-xl border border-border">
 					<ShieldAlert className="h-5 w-5 flex-shrink-0 mt-0.5" />
 					<div className="text-xs space-y-1">
-						<span className="font-bold block">{t('key_1783109437653_xmsv')}</span>
+						<span className="font-bold block">{t('verification_status_unverified_title')}</span>
 						<p>
-							يرجى رفع الوثائق المطلوبة أدناه للبدء في مراجعة ملفك الشخصي وتفعيل
-							حسابك.
+							{t('verification_status_unverified_desc')}
 						</p>
 					</div>
 				</div>
@@ -221,9 +217,9 @@ export default function TeacherVerificationForm({
 						<FileText className="h-8 w-8 text-primary mx-auto" />
 						<div>
 							<span className="text-xs font-bold block mb-1">
-								{t('key_1783109437671_r1ow')}</span>
+								{t('verification_national_id_title')}</span>
 							<p className="text-[10px] text-muted-foreground">
-								{t('key_1783109437684_fhhl')}</p>
+								{t('verification_national_id_desc')}</p>
 						</div>
 						<div className="space-y-2">
 							<input
@@ -245,9 +241,9 @@ export default function TeacherVerificationForm({
 								{uploadingField === "id" ? (
 									<Loader2 className="h-4 w-4 animate-spin mx-auto" />
 								) : formData.nationalIdUrl ? (
-									t('key_1783109437813_znuz')
+									t('verification_change_file')
 								) : (
-									t('key_1783109437818_fqne')
+									t('verification_upload_id')
 								)}
 							</label>
 							{formData.nationalIdUrl && (
@@ -258,7 +254,7 @@ export default function TeacherVerificationForm({
 									className="inline-flex items-center justify-center gap-1 w-full text-[11px] text-primary hover:underline font-semibold"
 								>
 									<Eye className="h-3.5 w-3.5" />
-									{t('key_1783109437697_a576')}</a>
+									{t('verification_national_id_preview')}</a>
 							)}
 						</div>
 					</div>
@@ -268,9 +264,9 @@ export default function TeacherVerificationForm({
 						<FileText className="h-8 w-8 text-primary mx-auto" />
 						<div>
 							<span className="text-xs font-bold block mb-1">
-								{t('key_1783109437718_jkbw')}</span>
+								{t('verification_degree_title')}</span>
 							<p className="text-[10px] text-muted-foreground">
-								{t('key_1783109437730_557k')}</p>
+								{t('verification_degree_desc')}</p>
 						</div>
 						<div className="space-y-2">
 							<input
@@ -292,9 +288,9 @@ export default function TeacherVerificationForm({
 								{uploadingField === "degree" ? (
 									<Loader2 className="h-4 w-4 animate-spin mx-auto" />
 								) : formData.degreeUrl ? (
-									t('key_1783109437835_mgft')
+									t('verification_change_degree')
 								) : (
-									t('key_1783109437839_gtyv')
+									t('verification_upload_degree')
 								)}
 							</label>
 							{formData.degreeUrl && (
@@ -305,7 +301,7 @@ export default function TeacherVerificationForm({
 									className="inline-flex items-center justify-center gap-1 w-full text-[11px] text-primary hover:underline font-semibold"
 								>
 									<Eye className="h-3.5 w-3.5" />
-									{t('key_1783109437741_g8qs')}</a>
+									{t('verification_degree_preview')}</a>
 							)}
 						</div>
 					</div>
@@ -315,10 +311,9 @@ export default function TeacherVerificationForm({
 						<UploadCloud className="h-8 w-8 text-primary mx-auto" />
 						<div>
 							<span className="text-xs font-bold block mb-1">
-								{t('key_1783109437754_wh8g')}</span>
+								{t('verification_video_title')}</span>
 							<p className="text-[10px] text-muted-foreground">
-								مقطع فيديو دقيقة واحدة تشرح فيها طريقتك في التدريس لزيادة
-								القبول.
+								t('verification_video_desc')
 							</p>
 						</div>
 						<div className="space-y-2">
@@ -341,9 +336,9 @@ export default function TeacherVerificationForm({
 								{uploadingField === "video" ? (
 									<Loader2 className="h-4 w-4 animate-spin mx-auto" />
 								) : formData.videoInterviewUrl ? (
-									t('key_1783109437842_19fl')
+									t('verification_change_video')
 								) : (
-									t('key_1783109437846_6e3r')
+									t('verification_upload_video')
 								)}
 							</label>
 							{formData.videoInterviewUrl && (
@@ -354,7 +349,7 @@ export default function TeacherVerificationForm({
 									className="inline-flex items-center justify-center gap-1 w-full text-[11px] text-primary hover:underline font-semibold"
 								>
 									<Eye className="h-3.5 w-3.5" />
-									{t('key_1783109437778_3f90')}</a>
+									{t('verification_video_preview')}</a>
 							)}
 						</div>
 					</div>
@@ -368,7 +363,7 @@ export default function TeacherVerificationForm({
 							disabled={loading || uploadingField !== null}
 							className="bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-semibold px-6 py-2.5 rounded-lg shadow-md transition-colors cursor-pointer disabled:opacity-50"
 						>
-							{loading ? t('key_1783109437850_wo83') : t('key_1783109437854_zlrf')}
+							{loading ? t('verification_btn_sending') : t('verification_btn_submit')}
 						</button>
 					</div>
 				)}

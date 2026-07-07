@@ -11,8 +11,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: 'teachers' });
 	return {
-		title: t('key_1783109439045_jts2'),
-		description: t('key_1783109439046_1ivt'),
+		title: t('faq_meta_title'),
+		description: t('faq_meta_desc'),
 	};
 }
 
@@ -27,16 +27,15 @@ export default async function TeacherFAQPage() {
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-2xl font-extrabold mb-1">{t('key_1783109439043_i879')}</h1>
+				<h1 className="text-2xl font-extrabold mb-1">{t('faq_title')}</h1>
 				<p className="text-xs text-muted-foreground">
-					تجد هنا إجابات لأكثر الأسئلة شيوعاً حول إدارة الحساب، الحجوزات، والأمور
-					المالية الخاصة بالمعلمين.
+					{t('faq_subtitle')}
 				</p>
 			</div>
 
 			{!res.success ? (
 				<div className="p-4 bg-red-50 text-red-700 rounded-lg border border-red-200">
-					{res.error || t('key_1783109439046_y19b')}
+					{res.error || t('faq_error_load')}
 				</div>
 			) : (
 				<FAQAccordion faqs={res.data || []} />

@@ -73,13 +73,13 @@ export default function TeacherBookingsList({
 		try {
 			const res = await acceptBooking(bookingId);
 			if (!res.success) {
-				toast.error(t('key_1783109436156_pg1f'), { description: res.error });
+				toast.error(t('bookings_accept_failed'), { description: res.error });
 			} else {
-				toast.success(t('key_1783109436164_hug4'));
+				toast.success(t('bookings_accept_success'));
 			}
 		} catch (err) {
 			console.error(err);
-			toast.error(t('key_1783109436171_aid5'));
+			toast.error(t('bookings_accept_unexpected_error'));
 		} finally {
 			setLoadingId(null);
 		}
@@ -94,13 +94,13 @@ export default function TeacherBookingsList({
 		try {
 			const res = await rejectBooking(bookingId);
 			if (!res.success) {
-				toast.error(t('key_1783109436178_f8ot'), { description: res.error });
+				toast.error(t('bookings_reject_failed'), { description: res.error });
 			} else {
-				toast.success(t('key_1783109436185_tdvv'));
+				toast.success(t('bookings_reject_success'));
 			}
 		} catch (err) {
 			console.error(err);
-			toast.error(t('key_1783109436192_mjtp'));
+			toast.error(t('bookings_reject_unexpected_error'));
 		} finally {
 			setLoadingId(null);
 		}
@@ -121,13 +121,13 @@ export default function TeacherBookingsList({
 		try {
 			const res = await cancelBooking({ bookingId: cancelDialogBookingId, reason });
 			if (!res.success) {
-				toast.error(t('key_1783109436199_bqof'), { description: res.error });
+				toast.error(t('bookings_cancel_failed'), { description: res.error });
 			} else {
-				toast.success(t('key_1783109436205_oven'));
+				toast.success(t('bookings_cancel_success'));
 			}
 		} catch (err) {
 			console.error(err);
-			toast.error(t('key_1783109436212_eb76'));
+			toast.error(t('bookings_cancel_unexpected_error'));
 		} finally {
 			setLoadingId(null);
 			setCancelDialogBookingId(null);
@@ -144,7 +144,7 @@ export default function TeacherBookingsList({
 				<div className="relative flex-1">
 					<input
 						type="text"
-						placeholder="ابحث باسم الطالب، ولي الأمر، المادة، أو موضوع الجلسة..."
+						placeholder={t('bookings_search_placeholder')}
 						className="premium-input w-full text-sm ps-10 pe-4 py-3 rounded-2xl border border-border/80 bg-background"
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}
@@ -158,14 +158,14 @@ export default function TeacherBookingsList({
 					value={statusFilter}
 					onChange={(e) => setStatusFilter(e.target.value)}
 				>
-					<option value="ALL">{t('key_1783109435963_qre0')}</option>
-					<option value="PENDING_APPROVAL">{t('key_1783109436012_61yy')}</option>
-					<option value="AWAITING_PAYMENT">{t('key_1783109436034_y43e')}</option>
-					<option value="PENDING">{t('key_1783109436053_d0rc')}</option>
-					<option value="CONFIRMED">{t('key_1783109436069_i44p')}</option>
-					<option value="COMPLETED">{t('key_1783109436088_euwb')}</option>
-					<option value="CANCELLED">{t('key_1783109436108_6h96')}</option>
-					<option value="REJECTED">{t('key_1783109436130_m0sj')}</option>
+					<option value="ALL">{t('bookings_filter_all')}</option>
+					<option value="PENDING_APPROVAL">{t('bookings_status_pending_approval')}</option>
+					<option value="AWAITING_PAYMENT">{t('bookings_status_awaiting_payment')}</option>
+					<option value="PENDING">{t('bookings_status_pending_old')}</option>
+					<option value="CONFIRMED">{t('bookings_status_confirmed')}</option>
+					<option value="COMPLETED">{t('bookings_status_completed')}</option>
+					<option value="CANCELLED">{t('bookings_status_cancelled')}</option>
+					<option value="REJECTED">{t('bookings_status_rejected')}</option>
 				</select>
 			</div>
 
@@ -211,11 +211,11 @@ export default function TeacherBookingsList({
 
 			<ConfirmDialog
 				isOpen={!!cancelDialogBookingId}
-				title="إلغاء الموعد"
-				description="هل أنت متأكد من رغبتك في إلغاء هذا الحجز؟ سيتم تحرير الموعد للطلاب الآخرين."
+				title={t('bookings_cancel_title')}
+				description={t('bookings_cancel_desc')}
 				requireReason={true}
-				reasonLabel={t('str_2LPYqNio')}
-				confirmLabel={t('str_2KrYo9mD')}
+				reasonLabel={t('bookings_cancel_reason_label')}
+				confirmLabel={t('bookings_cancel_confirm_label')}
 				isLoading={loadingId === cancelDialogBookingId}
 				onConfirm={(reason) => executeCancelBooking(reason)}
 				onCancel={() => setCancelDialogBookingId(null)}

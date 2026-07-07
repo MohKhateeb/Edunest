@@ -25,9 +25,9 @@ export default async function TeacherLiveRadarPage() {
 			<div className="flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
 				<div>
 					<h1 className="text-3xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-3">
-						{t('key_1783109439049_dnwl')}</h1>
+						{t('live_title')}</h1>
 					<p className="text-slate-500 mt-2">
-						التقط طلبات الفزعة الفورية للطلاب، وادخل الجلسة في ثوانٍ معدودة.
+						{t('live_subtitle')}
 					</p>
 				</div>
 
@@ -35,8 +35,8 @@ export default async function TeacherLiveRadarPage() {
 					character="hakeem"
 					message={
 						teacher.isAvailableNow
-							? "الرادار يعمل! أي طالب يطلب فزعة في مادتك سيظهر هنا. كن أسرع من يلتقطه!"
-							: "لتفعيل الرادار واستقبال الطلبات، يجب عليك تفعيل خيار 'متاح الآن' من ملفك."
+							? t('live_radar_active_desc')
+							: t('live_radar_inactive_desc')
 					}
 					className="max-w-md"
 				/>

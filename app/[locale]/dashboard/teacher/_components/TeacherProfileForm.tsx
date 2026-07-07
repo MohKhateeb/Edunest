@@ -82,13 +82,13 @@ export default function TeacherProfileForm({
 
 			if (res.ok && resData.url) {
 				setFormData({ ...formData, profileImageUrl: resData.url });
-				toast.success(t('key_1783109436826_vckz'));
+				toast.success(t('profile_success_upload'));
 			} else {
-				toast.error(t('key_1783109436854_cy6q'), { description: resData.error });
+				toast.error(t('profile_error_upload'), { description: resData.error });
 			}
 		} catch (err) {
-			toast.error(t('key_1783109436860_ynpf'), {
-				description: t('key_1783109436867_u8gb'),
+			toast.error(t('profile_error_title'), {
+				description: t('profile_error_upload_connection'),
 			});
 			setUploadingImage(false);
 		}
@@ -100,8 +100,8 @@ export default function TeacherProfileForm({
 
 		const validated = teacherProfileSchema.safeParse(formData);
 		if (!validated.success) {
-			toast.error(t('key_1783109436874_ejip'), {
-				description: t('key_1783109436882_uspg'),
+			toast.error(t('profile_error_incomplete_title'), {
+				description: t('profile_error_incomplete_desc'),
 			});
 			setLoading(false);
 			return;
@@ -123,12 +123,12 @@ export default function TeacherProfileForm({
 		setLoading(false);
 
 		if (res.success) {
-			toast.success(t('key_1783109436890_8izn'), {
-				description: t('key_1783109436897_b15e'),
+			toast.success(t('profile_success_save_title'), {
+				description: t('profile_success_save_desc'),
 			});
 			router.refresh();
 		} else {
-			toast.error(t('key_1783109436907_1yfi'), { description: res.error });
+			toast.error(t('profile_error_save_title'), { description: res.error });
 		}
 	};
 
@@ -144,7 +144,7 @@ export default function TeacherProfileForm({
 		<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl shadow-sm hover:shadow-md transition-all overflow-hidden">
 			{/* Stepper Header */}
 			<div className="bg-muted/30 border-b border-border px-8 py-6">
-				<h2 className="font-extrabold text-xl mb-6">{t('key_1783109436491_vjnq')}</h2>
+				<h2 className="font-extrabold text-xl mb-6">{t('profile_setup_title')}</h2>
 				<div className="flex items-center justify-between relative">
 					<div className="absolute top-1/2 start-0 end-0 h-0.5 bg-border -z-10 -translate-y-1/2" />
 					{[1, 2, 3].map((step) => {
@@ -176,10 +176,10 @@ export default function TeacherProfileForm({
 									)}
 								>
 									{step === 1
-										? t('key_1783109436916_tcor')
+										? t('profile_tab_personal')
 										: step === 2
-											? t('key_1783109436923_kkxz')
-											: t('key_1783109436931_k7c9')}
+											? t('profile_tab_experience')
+											: t('profile_tab_pricing')}
 								</span>
 							</div>
 						);
@@ -223,21 +223,21 @@ export default function TeacherProfileForm({
 									>
 										{uploadingImage ? (
 											<>
-												<Loader2 className="h-3.5 w-3.5 animate-spin" /> {t('key_1783109436513_772a')}</>
+												<Loader2 className="h-3.5 w-3.5 animate-spin" /> {t('profile_uploading')}</>
 										) : (
 											<>
-												<Upload className="h-3.5 w-3.5" /> {t('key_1783109436540_7aq0')}</>
+												<Upload className="h-3.5 w-3.5" /> {t('profile_choose_photo')}</>
 										)}
 									</label>
 									<span className="text-[10px] text-muted-foreground block mt-1">
-										{t('jpg_png_2')}</span>
+										{t('profile_photo_format_desc')}</span>
 								</div>
 							</div>
 
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										{t('key_1783109436573_14mj')}</label>
+										{t('profile_city')}</label>
 									<input
 										type="text"
 										required
@@ -245,20 +245,20 @@ export default function TeacherProfileForm({
 										onChange={(e) =>
 											setFormData({ ...formData, city: e.target.value || null })
 										}
-										placeholder="رام الله، نابلس، الخليل"
+										placeholder={t('profile_city_placeholder')}
 										className="w-full premium-input text-sm"
 									/>
 								</div>
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										{t('key_1783109436590_sd91')}</label>
+										{t('profile_neighborhood')}</label>
 									<input
 										type="text"
 										value={formData.area || ""}
 										onChange={(e) =>
 											setFormData({ ...formData, area: e.target.value || null })
 										}
-										placeholder="مثال: البالوع، الطيرة، رفيديا"
+										placeholder={t('profile_neighborhood_placeholder')}
 										className="w-full premium-input text-sm"
 									/>
 								</div>
@@ -272,7 +272,7 @@ export default function TeacherProfileForm({
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										{t('key_1783109436607_q798')}</label>
+										{t('profile_subjects')}</label>
 									<div className="flex flex-wrap gap-2 mt-2">
 										{subjects.map((sub) => {
 											const isSelected = formData.subjectIds.includes(sub.id);
@@ -304,7 +304,7 @@ export default function TeacherProfileForm({
 
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										{t('key_1783109436624_zz9l')}</label>
+										{t('profile_subspecialization')}</label>
 									<input
 										type="text"
 										value={formData.subSpecialization || ""}
@@ -314,14 +314,14 @@ export default function TeacherProfileForm({
 												subSpecialization: e.target.value || null,
 											})
 										}
-										placeholder="مثال: الجبر والهندسة، التوجيهي العلمي"
+										placeholder={t('profile_subspecialization_placeholder')}
 										className="w-full premium-input text-sm"
 									/>
 								</div>
 
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										{t('key_1783109436650_vxyv')}</label>
+										{t('profile_education')}</label>
 									<input
 										type="text"
 										value={formData.education || ""}
@@ -331,14 +331,14 @@ export default function TeacherProfileForm({
 												education: e.target.value || null,
 											})
 										}
-										placeholder="مثال: بكالوريوس في الرياضيات - جامعة بيرزيت"
+										placeholder={t('profile_education_placeholder')}
 										className="w-full premium-input text-sm"
 									/>
 								</div>
 
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
-										{t('key_1783109436670_ogem')}</label>
+										{t('profile_experience')}</label>
 									<input
 										type="number"
 										required
@@ -357,7 +357,7 @@ export default function TeacherProfileForm({
 
 							<div className="space-y-2">
 								<label className="text-xs font-semibold text-muted-foreground block">
-									{t('key_1783109436685_ib59')}</label>
+									{t('profile_stages')}</label>
 								<div className="flex flex-wrap gap-2 pt-1">
 									{availableGrades.map((grade) => {
 										const isSelected = formData.gradeLevels.includes(grade);
@@ -373,7 +373,7 @@ export default function TeacherProfileForm({
 														: "bg-card border-border hover:border-primary/50 hover:bg-primary/5 text-muted-foreground",
 												)}
 											>
-												{t('key_1783109436708_v2n4')}{grade}
+												{t('profile_grade')}{grade}
 											</button>
 										);
 									})}
@@ -387,7 +387,7 @@ export default function TeacherProfileForm({
 						<div className="space-y-6 animate-in fade-in slide-in-from-start-4">
 							<div className="space-y-1.5 max-w-sm">
 								<label className="text-xs font-semibold text-muted-foreground block">
-									{t('key_1783109436725_v7oa')}</label>
+									{t('profile_hourly_rate')}</label>
 								<div className="relative">
 									<span className="absolute start-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium">
 										{getCurrencySymbol(initialData.defaultHourlyRateCurrency)}
@@ -410,14 +410,14 @@ export default function TeacherProfileForm({
 
 							<div className="space-y-1.5">
 								<label className="text-xs font-semibold text-muted-foreground block">
-									{t('key_1783109436741_eief')}</label>
+									{t('profile_bio')}</label>
 								<textarea
 									rows={5}
 									value={formData.bio || ""}
 									onChange={(e) =>
 										setFormData({ ...formData, bio: e.target.value || null })
 									}
-									placeholder="اكتب تفاصيل إضافية عن أسلوبك في التدريس والمواد التي تشرحها لتشجيع أولياء الأمور على اختيارك..."
+									placeholder={t('profile_bio_placeholder')}
 									className="w-full text-sm premium-input resize-none"
 								/>
 							</div>
@@ -434,7 +434,7 @@ export default function TeacherProfileForm({
 						className="text-sm font-semibold px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 disabled:opacity-0 hover:bg-accent"
 					>
 						<ChevronRight className="h-4 w-4" />
-						{t('key_1783109436758_8vai')}</button>
+						{t('profile_btn_prev')}</button>
 
 					{currentStep < totalSteps ? (
 						<button
@@ -442,7 +442,7 @@ export default function TeacherProfileForm({
 							onClick={nextStep}
 							className="bg-primary text-primary-foreground hover:bg-primary/90 text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors flex items-center gap-1.5 shadow-md"
 						>
-							{t('key_1783109436775_514c')}<ChevronLeft className="h-4 w-4" />
+							{t('profile_btn_next')}<ChevronLeft className="h-4 w-4" />
 						</button>
 					) : (
 						<button
@@ -453,10 +453,10 @@ export default function TeacherProfileForm({
 						>
 							{loading ? (
 								<>
-									<Loader2 className="h-4.5 w-4.5 animate-spin" /> {t('key_1783109436792_31gx')}</>
+									<Loader2 className="h-4.5 w-4.5 animate-spin" /> {t('profile_btn_saving')}</>
 							) : (
 								<>
-									<Save className="h-4.5 w-4.5" /> {t('key_1783109436809_p1cs')}</>
+									<Save className="h-4.5 w-4.5" /> {t('profile_btn_save')}</>
 							)}
 						</button>
 					)}
