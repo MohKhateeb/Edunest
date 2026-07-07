@@ -27,6 +27,7 @@ import {
 	SessionTimeState,
 } from "@/lib/utils/booking-state";
 import { useTranslations } from "next-intl";
+import { isKnownReasonKey } from "@/lib/constants/reason-keys";
 
 interface BookingDetailsProps {
 	booking: DetailedBooking;
@@ -38,6 +39,7 @@ export default function BookingDetails({
 	setPreviewImage,
 }: BookingDetailsProps) {
     const t = useTranslations('common');
+	const tReasons = useTranslations('recordReasons');
 	const isTrial = booking.isTrial;
 	const priceDisplay = isTrial
 		? t('jlsh_tjrybyh_mjanyh')
@@ -284,7 +286,7 @@ export default function BookingDetails({
 							<span className="font-bold block mb-1 text-xs">
 								{t('sbb_ilghaa_aljlsh')}</span>
 							<p className="leading-relaxed italic">
-								"{booking.cancellationReason}"
+								{isKnownReasonKey(booking.cancellationReason) ? tReasons(booking.cancellationReason) : booking.cancellationReason}
 							</p>
 						</div>
 					)}
