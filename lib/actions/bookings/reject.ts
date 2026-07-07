@@ -27,6 +27,7 @@ export const rejectBooking = withAuthAction(
 		}
 
 		await unitOfWork.runTransaction(async (tx) => {
+            const t = await getNotificationT();
 			await bookingRepository.updateStatus(bookingId, BookingStatus.REJECTED, tx);
 
 			// If it was paid, queue for manual admin refund or handle appropriately
@@ -47,8 +48,8 @@ export const rejectBooking = withAuthAction(
 			await createNotification(
 				{
 					userId: booking.parentUserId,
-					title: await (async () => { const t = await getNotificationT(); return t("booking_rejected_title"); })(),
-					message: await (async () => { const t = await getNotificationT(); return t("booking_rejected_message"); })(),
+					title: t("booking_rejected_title"),
+					message: t("booking_rejected_message"),
 				},
 				tx,
 			);

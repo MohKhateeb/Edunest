@@ -19,7 +19,9 @@ import { requireAuth } from "@/lib/require-auth";
 import { analyticsRepository } from "@/lib/repositories/analytics-repository";
 import { formatPrice } from "@/lib/utils";
 
-export default async function AdminDashboard() {
+export default async function AdminDashboard(props: { params: Promise<{ locale: string }> }) {
+    const params = await props.params;
+    const locale = params?.locale || "ar";
     const t = await getTranslations('admin')
 	await requireAuth([UserType.ADMIN]);
 	const session = await auth();
@@ -45,7 +47,7 @@ export default async function AdminDashboard() {
 		openDisputesCount,
 		pendingPayoutsCount,
 		pendingEscrowsCount,
-	} = await analyticsRepository.getAdminDashboardStats(start, end);
+	} = await analyticsRepository.getAdminDashboardStats(start, end, locale);
 
 	const hasUrgentMatters =
 		pendingVerifications > 0 ||

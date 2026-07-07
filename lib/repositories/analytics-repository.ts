@@ -7,7 +7,7 @@ import { bookingDetailsInclude, type DetailedBooking } from "@/lib/types";
 import type { DbClient } from "./types";
 
 export class AnalyticsRepository {
-	async getTeacherDashboardOverview(teacherId: string, startDate: Date, endDate: Date) {
+	async getTeacherDashboardOverview(teacherId: string, startDate: Date, endDate: Date, locale: string = "ar") {
 		const teacher = await prisma.teacher.findUnique({
 			where: { id: teacherId },
 			include: { user: { select: { name: true } } },
@@ -76,7 +76,7 @@ export class AnalyticsRepository {
 		`;
 
 		const chartData = chartRaw.map(r => ({
-			date: new Date(r.date).toLocaleDateString("ar-EG", { weekday: "short" }),
+			date: new Date(r.date).toLocaleDateString(locale === "ar" ? "ar-EG" : "en-US", { weekday: "short" }),
 			earnings: Number(r.earnings),
 			sessions: Number(r.sessions),
 		}));
@@ -152,7 +152,7 @@ export class AnalyticsRepository {
 		};
 	}
 
-	async getAdminDashboardStats(startDate: Date, endDate: Date) {
+	async getAdminDashboardStats(startDate: Date, endDate: Date, locale: string = "ar") {
 		const pendingVerifications = await prisma.teacherVerification.count({
 			where: { reviewedAt: null },
 		});
@@ -217,33 +217,36 @@ export class AnalyticsRepository {
 		`;
 		
 		const revenueData = revenueRaw.map(r => ({
-			date: new Date(r.date).toLocaleDateString("ar-PS", { month: "short", day: "numeric" }),
+			date: new Date(r.date).toLocaleDateString(locale === "ar" ? "ar-PS" : "en-US", { month: "short", day: "numeric" }),
 			revenue: Number(r.revenue || 0)
 		}));
 
 		const specRaw = await prisma.$queryRaw<{ name: string, count: number }[]>`
 			SELECT 
-				COALESCE(s.name, ${await (async () => { const t = await getTranslations("common"); return t("unspecified"); })()}) as name,
+				COALESCE(s.name, 'UNSPECIFIED') as name,
 				COUNT(b.id)::int as count
 			FROM "bookings" b
 			LEFT JOIN "teacher_services" ts ON b."teacherServiceId" = ts.id
 			LEFT JOIN "teacher_subjects" tsub ON ts."teacherId" = tsub."teacherId"
 			LEFT JOIN "subjects" s ON tsub."subjectId" = s.id
 			WHERE b."createdAt" >= ${startDate} AND b."createdAt" <= ${endDate}
-			GROUP BY COALESCE(s.name, ${await (async () => { const t = await getTranslations("common"); return t("unspecified"); })()})
+			GROUP BY COALESCE(s.name, 'UNSPECIFIED')
 			ORDER BY count DESC
 		`;
-		const requestedSpecializations = specRaw.map(r => ({ name: r.name, count: Number(r.count) }));
+		const requestedSpecializations = specRaw.map(r => ({ 
+			name: r.name === 'UNSPECIFIED' ? tCommon("unspecified") : r.name, 
+			count: Number(r.count) 
+		}));
 
 		const typeRaw = await prisma.$queryRaw<{ name: string, count: number }[]>`
 			SELECT 
-				COALESCE(st.name, ${await (async () => { const t = await getTranslations("common"); return t("unspecified"); })()}) as name,
+				COALESCE(st.name, 'UNSPECIFIED') as name,
 				COUNT(b.id)::int as count
 			FROM "bookings" b
 			LEFT JOIN "teacher_services" ts ON b."teacherServiceId" = ts.id
 			LEFT JOIN "service_types" st ON ts."serviceTypeId" = st.id
 			WHERE b."createdAt" >= ${startDate} AND b."createdAt" <= ${endDate}
-			GROUP BY COALESCE(st.name, ${await (async () => { const t = await getTranslations("common"); return t("unspecified"); })()})
+			GROUP BY COALESCE(st.name, 'UNSPECIFIED')
 			ORDER BY count DESC
 		`;
 		const sessionTypes = typeRaw.map(r => ({ name: r.name, count: Number(r.count) }));

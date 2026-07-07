@@ -31,6 +31,7 @@ export type CleanupHandler = (booking: BookingWithDetails, tx?: Prisma.Transacti
 
 const handlePendingBooking: CleanupHandler = async (booking, externalTx) => {
 	const logic = async (tx: Prisma.TransactionClient) => {
+        const t = await getNotificationT();
 		const isPaid = booking.paymentStatus === PaymentStatus.PAID && !booking.isTrial;
 
 		await tx.booking.update({
@@ -63,8 +64,8 @@ const handlePendingBooking: CleanupHandler = async (booking, externalTx) => {
 		await createNotification(
 			{
 				userId: booking.parentUserId,
-				title: await (async () => { const t = await getNotificationT(); return t("booking_auto_cancelled_title"); })(),
-				message: await (async () => { const t = await getNotificationT(); return t("booking_auto_cancelled_message") + (isPaid ? t("booking_auto_cancelled_refund") : ""); })(),
+				title: t("booking_auto_cancelled_title"),
+				message: t("booking_auto_cancelled_message") + (isPaid ? t("booking_auto_cancelled_refund") : ""),
 			},
 			tx,
 		);
@@ -88,6 +89,7 @@ const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 	if (timeSinceEndMs <= WARNING_1_MS) return;
 
 	const logic = async (tx: Prisma.TransactionClient) => {
+        const t = await getNotificationT();
 		const teacherUserId = booking.teacherService!.teacher.userId;
 
 		if (timeSinceEndMs > ESCROW_MS && booking.reportWarningLevel! < 3) {
@@ -125,8 +127,8 @@ const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 			await createNotification(
 				{
 					userId: teacherUserId,
-					title: await (async () => { const t = await getNotificationT(); return t("booking_report_penalty_title"); })(),
-					message: await (async () => { const t = await getNotificationT(); return t("booking_report_penalty_message"); })(),
+					title: t("booking_report_penalty_title"),
+					message: t("booking_report_penalty_message"),
 				},
 				tx,
 			);
@@ -134,8 +136,8 @@ const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 			await createNotification(
 				{
 					userId: booking.parentUserId,
-					title: await (async () => { const t = await getNotificationT(); return t("booking_report_penalty_parent_title"); })(),
-					message: await (async () => { const t = await getNotificationT(); return t("booking_report_penalty_parent_message"); })(),
+					title: t("booking_report_penalty_parent_title"),
+					message: t("booking_report_penalty_parent_message"),
 				},
 				tx,
 			);
@@ -150,8 +152,8 @@ const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 			await createNotification(
 				{
 					userId: teacherUserId,
-					title: await (async () => { const t = await getNotificationT(); return t("booking_report_warning_final_title"); })(),
-					message: await (async () => { const t = await getNotificationT(); return t("booking_report_warning_final_message"); })(),
+					title: t("booking_report_warning_final_title"),
+					message: t("booking_report_warning_final_message"),
 				},
 				tx,
 			);
@@ -166,8 +168,8 @@ const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 			await createNotification(
 				{
 					userId: teacherUserId,
-					title: await (async () => { const t = await getNotificationT(); return t("booking_report_warning_title"); })(),
-					message: await (async () => { const t = await getNotificationT(); return t("booking_report_warning_message"); })(),
+					title: t("booking_report_warning_title"),
+					message: t("booking_report_warning_message"),
 				},
 				tx,
 			);
