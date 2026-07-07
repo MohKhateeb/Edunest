@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { Clock } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { formatDuration } from "@/lib/utils";
 
 interface PaymentCountdownProps {
 	deadline: Date;
@@ -14,6 +15,7 @@ export function PaymentCountdownReadOnly({
 	className = "",
 }: PaymentCountdownProps) {
     const t = useTranslations('common');
+	const locale = useLocale();
 	const [timeLeft, setTimeLeft] = useState<string>("");
 
 	useEffect(() => {
@@ -26,13 +28,8 @@ export function PaymentCountdownReadOnly({
 				return t('antha_alwqt');
 			}
 
-			const hours = Math.floor(difference / (1000 * 60 * 60));
-			const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-
-			if (hours > 0) {
-				return `${hours} ساعة و ${minutes} دقيقة`;
-			}
-			return `${minutes} دقيقة`;
+			const totalMinutes = Math.floor(difference / (1000 * 60));
+			return formatDuration(totalMinutes, locale);
 		};
 
 		setTimeLeft(calculateTimeLeft());
@@ -41,7 +38,7 @@ export function PaymentCountdownReadOnly({
 		}, 60000);
 
 		return () => clearInterval(timer);
-	}, [deadline]);
+	}, [deadline, locale, t]);
 
 	if (!timeLeft) return null;
 

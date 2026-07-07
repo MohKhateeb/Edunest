@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import { type NextRequest, NextResponse } from "next/server";
@@ -9,7 +9,6 @@ import { auth } from "@/lib/auth";
 async function validateUploadRequest(
 	req: NextRequest,
 	session: Session | null,
-	t: any
 ): Promise<{
 	file?: File;
 	bucket?: string;
@@ -17,6 +16,7 @@ async function validateUploadRequest(
 	fileName?: string;
 	error?: NextResponse;
 }> {
+	const tError = await getErrorT();
 	if (!session?.user?.id) {
 		return {
 			error: NextResponse.json(
@@ -60,7 +60,7 @@ async function validateUploadRequest(
 	if (!ALLOWED_TYPES.includes(file.type)) {
 		return {
 			error: NextResponse.json(
-				{ error: t("upload_invalid_file_type") },
+				{ error: tError("upload_invalid_file_type") },
 				{ status: 400 },
 			),
 		};
@@ -177,10 +177,9 @@ async function uploadToLocalStorage(
 }
 
 export async function POST(req: NextRequest) {
-    const t = await getTranslations('common')
 	try {
 		const session = await auth();
-		const { file, bucket, fileName, error } = await validateUploadRequest(req, session, t);
+		const { file, bucket, fileName, error } = await validateUploadRequest(req, session);
 		if (error) return error;
 
 		const buffer = Buffer.from(await file!.arrayBuffer());

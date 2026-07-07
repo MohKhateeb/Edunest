@@ -10,6 +10,7 @@ import StarRating from "@/components/shared/StarRating";
 import { auth } from "@/lib/auth";
 import { UserService } from "@/lib/services/domain/user-service";
 import { formatCurrency } from "@/lib/utils/currency";
+import { formatDuration } from "@/lib/utils";
 
 const getGradeLabels = (t: any): Record<number, string> => ({
 	1: t('key_1783109427957_e53t') ,
@@ -193,7 +194,7 @@ export default async function TeacherProfilePage({
 													{svc.serviceType.name}
 												</p>
 												<p className="text-xs text-muted-foreground mt-0.5">
-													{svc.duration} دقيقة
+													{formatDuration(svc.duration, locale)}
 													{svc.customDescription &&
 														` · ${svc.customDescription}`}
 												</p>
