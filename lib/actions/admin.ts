@@ -30,6 +30,8 @@ export async function verifyTeacher(
 	teacherId: string,
 	level: VerificationLevel,
 ): Promise<ActionResponse> {
+    const tError = await getErrorT();
+    const tNotif = await getNotificationT();
 	try {
 		const validated = verifyTeacherSchema.safeParse({ teacherId, level });
 		if (!validated.success) {
@@ -59,8 +61,8 @@ export async function verifyTeacher(
 				await createNotification(
 					{
 						userId: teacherProfile.userId,
-						title: await (async () => { const t = await getErrorT(); return t("action_error_8"); })(),
-						message: await (async () => { const t = await getNotificationT(); return t("admin_verification_approved", { level }); })(),
+						title: tError("action_error_8"),
+						message: tNotif("admin_verification_approved", { level }),
 					},
 					tx,
 				);
@@ -73,7 +75,7 @@ export async function verifyTeacher(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_1"); })() };
+		return { success: false, error: tError("action_error_1") };
 	}
 }
 
@@ -81,6 +83,8 @@ export async function rejectTeacher(
 	teacherId: string,
 	reason: string,
 ): Promise<ActionResponse> {
+    const tError = await getErrorT();
+    const tNotif = await getNotificationT();
 	try {
 		const validated = rejectTeacherSchema.safeParse({ teacherId, reason });
 		if (!validated.success) {
@@ -108,8 +112,8 @@ export async function rejectTeacher(
 				await createNotification(
 					{
 						userId: teacherProfile.userId,
-						title: await (async () => { const t = await getErrorT(); return t("action_error_9"); })(),
-						message: await (async () => { const t = await getNotificationT(); return t("admin_verification_rejected", { reason }); })(),
+						title: tError("action_error_9"),
+						message: tNotif("admin_verification_rejected", { reason }),
 					},
 					tx,
 				);
@@ -121,13 +125,14 @@ export async function rejectTeacher(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_2"); })() };
+		return { success: false, error: tError("action_error_2") };
 	}
 }
 
 export async function updateSystemSettings(
 	settings: { settingKey: string; settingValue: string }[],
 ): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const validated = updateSystemSettingsSchema.safeParse(settings);
 		if (!validated.success) {
@@ -156,7 +161,7 @@ export async function updateSystemSettings(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_3"); })() };
+		return { success: false, error: t("action_error_3") };
 	}
 }
 
@@ -164,6 +169,7 @@ export async function toggleUserActive(
 	targetUserId: string,
 	isActive: boolean,
 ): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const validated = toggleUserActiveSchema.safeParse({
 			targetUserId,
@@ -176,7 +182,7 @@ export async function toggleUserActive(
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
 
 		if (targetUserId === adminUserId) {
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_4"); })() };
+			return { success: false, error: t("action_error_4") };
 		}
 
 		await userRepository.update(targetUserId, { isActive });
@@ -186,13 +192,14 @@ export async function toggleUserActive(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_5"); })() };
+		return { success: false, error: t("action_error_5") };
 	}
 }
 
 export async function updateHomepageLayout(
 	layoutJson: string,
 ): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
 
@@ -202,14 +209,14 @@ export async function updateHomepageLayout(
 		} catch {
 			return {
 				success: false,
-				error: await (async () => { const t = await getErrorT(); return t("action_error_6"); })(),
+				error: t("action_error_6"),
 			};
 		}
 
 		await systemSettingRepository.upsert(
 			"HomepageLayout",
 			layoutJson,
-			await (async () => { const t = await getErrorT(); return t("admin_homepage_layout_desc"); })(),
+			t("admin_homepage_layout_desc"),
 			adminUserId
 		);
 
@@ -221,7 +228,7 @@ export async function updateHomepageLayout(
 		console.error(err);
 		return {
 			success: false,
-			error: await (async () => { const t = await getErrorT(); return t("action_error_7"); })(),
+			error: t("action_error_7"),
 		};
 	}
 }

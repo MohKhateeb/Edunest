@@ -24,6 +24,8 @@ import type { ActionResponse } from "@/lib/types";
 export async function claimLiveRequest(
 	requestId: string,
 ): Promise<ActionResponse<{ bookingId: string }>> {
+    const tError = await getErrorT();
+    const tNotif = await getNotificationT();
 	try {
 		const { userId } = await requireAuth([UserType.TEACHER]);
 		const teacher = await requireTeacherProfile(userId);
@@ -31,7 +33,7 @@ export async function claimLiveRequest(
 		if (!teacher.isVerified) {
 			return {
 				success: false,
-				error: await (async () => { const t = await getErrorT(); return t("instant_book_teacher_unverified"); })(),
+				error: tError("instant_book_teacher_unverified"),
 			};
 		}
 
@@ -57,7 +59,7 @@ export async function claimLiveRequest(
 			}
 			if (!teacher.gradeLevels.includes(request.student.grade)) {
 				throw new Error(
-					await (async () => { const t = await getErrorT(); return t("instant_book_grade_mismatch"); })()
+					tError("instant_book_grade_mismatch")
 				);
 			}
 
@@ -99,7 +101,7 @@ export async function claimLiveRequest(
 					Math.min(requestedEndMs, otherEndMs)
 				) {
 					throw new Error(
-						await (async () => { const t = await getErrorT(); return t("instant_book_overlap"); })()
+						tError("instant_book_overlap")
 					);
 				}
 			}
@@ -123,7 +125,7 @@ export async function claimLiveRequest(
 						price: price,
 						currency: defaultCurrency,
 						duration: duration,
-						customDescription: await (async () => { const t = await getErrorT(); return t("instant_service_desc", undefined, ); })(),
+						customDescription: tError("instant_service_desc", undefined, ),
 						isActive: true,
 					},
 				});
@@ -187,8 +189,8 @@ export async function claimLiveRequest(
 			await createNotification(
 				{
 					userId: request.parentId,
-					title: await (async () => { const t = await getNotificationT(); return t("instant_book_found_title"); })(),
-					message: await (async () => { const t = await getNotificationT(); return t("instant_book_found_message", { teacherName: teacher.user.name || "" }); })(),
+					title: tNotif("instant_book_found_title"),
+					message: tNotif("instant_book_found_message", { teacherName: teacher.user.name || "" }),
 					link: `/dashboard/session/${booking.id}`,
 				},
 				tx,
@@ -205,7 +207,7 @@ export async function claimLiveRequest(
 		return {
 			success: false,
 			error:
-				error instanceof Error ? error.message : await (async () => { const t = await getErrorT(); return t("instant_book_unexpected_error"); })()
+				error instanceof Error ? error.message : tError("instant_book_unexpected_error")
 		};
 	}
 }

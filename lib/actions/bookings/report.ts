@@ -19,6 +19,7 @@ import { reportSchema } from "@/lib/validations/booking";
 export const submitSessionReport = withAuthAction(
 	[UserType.TEACHER],
 	async ({ userId }, data: z.infer<typeof reportSchema>) => {
+        const t = await getErrorT();
 		const validated = reportSchema.safeParse(data);
 		if (!validated.success) {
 			return { success: false, error: validated.error.issues[0].message };
@@ -45,8 +46,8 @@ export const submitSessionReport = withAuthAction(
 		);
 
 		if (!booking || booking.teacherService.teacher.userId !== userId) {
-			const tError = await getErrorT();
-		return { success: false, error: tError("booking_not_found_or_unauthorized") };
+			const t = await getErrorT();
+		return { success: false, error: t("booking_not_found_or_unauthorized") };
 		}
 
 		if (!isValidTransition(booking.status, BookingStatus.COMPLETED)) {
@@ -59,12 +60,13 @@ export const submitSessionReport = withAuthAction(
 		if (!canSubmitReport(booking.startTime, booking.duration)) {
 			return {
 				success: false,
-				error: await (async () => { const t = await getErrorT(); return t("booking_report_early_error"); })(),
+				error: t("booking_report_early_error"),
 			};
 		}
 
 		// Save report and mark booking COMPLETED in transaction
 		await unitOfWork.runTransaction(async (tx) => {
+            const t = await getNotificationT();
 			// 1. Create session report
 			await tx.sessionReport.create({
 				data: {
@@ -99,8 +101,8 @@ export const submitSessionReport = withAuthAction(
 			await createNotification(
 				{
 					userId: booking.parentUserId,
-					title: await (async () => { const t = await getNotificationT(); return t("booking_report_ready_title"); })(),
-					message: await (async () => { const t = await getNotificationT(); return t("booking_report_ready_message"); })(),
+					title: t("booking_report_ready_title"),
+					message: t("booking_report_ready_message"),
 				},
 				tx,
 			);

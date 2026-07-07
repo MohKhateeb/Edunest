@@ -20,6 +20,8 @@ import { tutoringRequestSchema } from "@/lib/validations/tutoring-request";
 export async function createTutoringRequest(
 	data: z.infer<typeof tutoringRequestSchema>,
 ): Promise<ActionResponse<{ requestId: string }>> {
+    const tError = await getErrorT();
+    const tNotif = await getNotificationT();
 	try {
 		const { userId: parentUserId } = await requireAuth([UserType.PARENT]);
 
@@ -42,7 +44,7 @@ export async function createTutoringRequest(
 		if (!student) {
 			return {
 				success: false,
-				error: await (async () => { const t = await getErrorT(); return t("booking_student_not_found"); })(),
+				error: tError("booking_student_not_found"),
 			};
 		}
 
@@ -112,7 +114,7 @@ export async function createTutoringRequest(
 		return {
 			success: false,
 			error:
-				error instanceof Error ? error.message : await (async () => { const t = await getErrorT(); return t("request_creation_error"); })()
+				error instanceof Error ? error.message : tError("request_creation_error")
 		};
 	}
 }

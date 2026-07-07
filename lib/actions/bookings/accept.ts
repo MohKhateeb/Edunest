@@ -20,6 +20,7 @@ import {
 export const acceptBooking = withAuthAction(
 	[UserType.TEACHER],
 	async ({ userId, userType }, bookingId: string) => {
+        const t = await getErrorT();
 		const booking = await getAuthorizedBooking(bookingId, userId, userType);
 
 		const targetStatus = booking.isTrial
@@ -37,7 +38,7 @@ export const acceptBooking = withAuthAction(
 			return {
 				success: false,
 				error:
-					await (async () => { const t = await getErrorT(); return t("booking_past_time_accept"); })(),
+					t("booking_past_time_accept"),
 			};
 		}
 
@@ -49,11 +50,12 @@ export const acceptBooking = withAuthAction(
 			return {
 				success: false,
 				error:
-					await (async () => { const t = await getErrorT(); return t("booking_cannot_confirm_unpaid"); })(),
+					t("booking_cannot_confirm_unpaid"),
 			};
 		}
 
 		await unitOfWork.runTransaction(async (tx) => {
+            const t = await getNotificationT();
 			const meetingUrl =
 				booking.meetingUrl ||
 				`https://meet.jit.si/edunest-${crypto.randomUUID()}`;
@@ -81,12 +83,12 @@ export const acceptBooking = withAuthAction(
 					userId: booking.parentUserId,
 					title:
 						targetStatus === BookingStatus.AWAITING_PAYMENT
-							? await (async () => { const t = await getNotificationT(); return t("booking_approved_title"); })()
-							: await (async () => { const t = await getNotificationT(); return t("booking_accepted_title"); })(),
+							? t("booking_approved_title")
+							: t("booking_accepted_title"),
 					message:
 						targetStatus === BookingStatus.AWAITING_PAYMENT
-							? await (async () => { const t = await getNotificationT(); return t("booking_accepted_pay_message", { holdMinutes }); })()
-							: await (async () => { const t = await getNotificationT(); return t("booking_approved_message"); })(),
+							? t("booking_accepted_pay_message", { holdMinutes })
+							: t("booking_approved_message"),
 				},
 				tx,
 			);

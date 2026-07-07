@@ -7,6 +7,7 @@ export async function getAuthorizedBooking(
 	userId: string,
 	userType: UserType,
 ) {
+    const t = await getErrorT();
 	const booking = await prisma.booking.findUnique({
 		where: { id: bookingId },
 		include: {
@@ -17,18 +18,18 @@ export async function getAuthorizedBooking(
 	});
 
 	if (!booking) {
-		throw new Error(await (async () => { const t = await getErrorT(); return t("booking_not_found_or_unavailable"); })());
+		throw new Error(t("booking_not_found_or_unavailable"));
 	}
 
 	if (userType === UserType.PARENT && booking.parentUserId !== userId) {
-		throw new Error(await (async () => { const t = await getErrorT(); return t("booking_unauthorized_edit"); })());
+		throw new Error(t("booking_unauthorized_edit"));
 	}
 
 	if (
 		userType === UserType.TEACHER &&
 		booking.teacherService.teacher.userId !== userId
 	) {
-		throw new Error(await (async () => { const t = await getErrorT(); return t("booking_unauthorized_edit"); })());
+		throw new Error(t("booking_unauthorized_edit"));
 	}
 
 	return booking;

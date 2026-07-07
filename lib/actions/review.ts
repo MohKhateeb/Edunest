@@ -22,6 +22,7 @@ const reviewSchema = z.object({
 export async function submitReview(
 	data: z.infer<typeof reviewSchema>,
 ): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const { userId, userType } = await requireAuth([
 			UserType.PARENT,
@@ -50,19 +51,19 @@ export async function submitReview(
 		});
 
 		if (!booking) {
-			const tError = await getErrorT();
-		return { success: false, error: tError("review_booking_not_found") };
+			const t = await getErrorT();
+		return { success: false, error: t("review_booking_not_found") };
 		}
 
 		// Check if the user is authorized to review this booking (must be the parent who made it, or admin)
 		const auth = authorizeBookingReview(booking, userId, userType);
-		if (!auth.authorized) { return { success: false, error: await (async () => { const t = await getErrorT(); return t(auth.error as any); })() };
+		if (!auth.authorized) { return { success: false, error: t(auth.error as any) };
 		}
 
 		// Verify booking status is COMPLETED
 		if (booking.status !== "COMPLETED") {
-			const tError = await getErrorT();
-		return { success: false, error: tError("review_only_completed_bookings") };
+			const t = await getErrorT();
+		return { success: false, error: t("review_only_completed_bookings") };
 		}
 
 		// Check if a review already exists
@@ -71,8 +72,8 @@ export async function submitReview(
 		});
 
 		if (existing) {
-			const tError = await getErrorT();
-		return { success: false, error: tError("review_already_submitted") };
+			const t = await getErrorT();
+		return { success: false, error: t("review_already_submitted") };
 		}
 
 		const teacherId = booking.teacherService.teacherId;
@@ -118,7 +119,7 @@ export async function submitReview(
 	} catch (err: unknown) {
 		console.error(err);
 		const msg =
-			err instanceof Error ? err.message : await (async () => { const t = await getErrorT(); return t("review_submit_error"); })();
+			err instanceof Error ? err.message : t("review_submit_error");
 		return { success: false, error: msg };
 	}
 }

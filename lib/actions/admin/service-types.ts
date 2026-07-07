@@ -18,15 +18,16 @@ export async function updateServiceType(
 		isActive: boolean;
 	},
 ): Promise<ActionResponse<void>> {
+    const t = await getErrorT();
 	try {
 		// 1. Security Check: Admin Only
 		await requireAuth([UserType.ADMIN]);
 
 		// 2. Validate basic logic
 		if (data.defaultDuration < 5)
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_10"); })() };
+			return { success: false, error: t("action_error_10") };
 		if (data.commissionRate < 0 || data.commissionRate > 100)
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_11"); })() };
+			return { success: false, error: t("action_error_11") };
 
 		// 3. Update in Database
 		await prisma.serviceType.update({
@@ -49,7 +50,7 @@ export async function updateServiceType(
 		return { success: true };
 	} catch (error: unknown) {
 		console.error("Update ServiceType Error:", error);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_12"); })() };
+		return { success: false, error: t("action_error_12") };
 	}
 }
 
@@ -57,6 +58,7 @@ export async function toggleServiceTypeStatus(
 	id: string,
 	currentStatus: boolean,
 ): Promise<ActionResponse<void>> {
+    const t = await getErrorT();
 	try {
 		await requireAuth([UserType.ADMIN]);
 
@@ -71,6 +73,6 @@ export async function toggleServiceTypeStatus(
 		return { success: true };
 	} catch (error: unknown) {
 		console.error("Toggle ServiceType Status Error:", error);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_13"); })() };
+		return { success: false, error: t("action_error_13") };
 	}
 }

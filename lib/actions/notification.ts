@@ -9,6 +9,7 @@ import type { ActionResponse } from "@/lib/types";
 export async function getUserNotifications(): Promise<
 	ActionResponse<Notification[]>
 > {
+    const t = await getErrorT();
 	try {
 		const { userId } = await requireAuth([
 			UserType.PARENT,
@@ -25,13 +26,14 @@ export async function getUserNotifications(): Promise<
 		return { success: true, data: notifications };
 	} catch (error) {
 		console.error("Error fetching notifications:", error);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_41"); })() };
+		return { success: false, error: t("action_error_41") };
 	}
 }
 
 export async function markNotificationAsRead(
 	notificationId: string,
 ): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const { userId } = await requireAuth([
 			UserType.PARENT,
@@ -45,17 +47,18 @@ export async function markNotificationAsRead(
 		});
 
 		if (result.count === 0) {
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_42"); })() };
+			return { success: false, error: t("action_error_42") };
 		}
 
 		return { success: true };
 	} catch (error) {
 		console.error("Error marking notification as read:", error);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_43"); })() };
+		return { success: false, error: t("action_error_43") };
 	}
 }
 
 export async function markAllNotificationsAsRead(): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const { userId } = await requireAuth([
 			UserType.PARENT,
@@ -71,6 +74,6 @@ export async function markAllNotificationsAsRead(): Promise<ActionResponse> {
 		return { success: true };
 	} catch (error) {
 		console.error("Error marking all notifications as read:", error);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_44"); })() };
+		return { success: false, error: t("action_error_44") };
 	}
 }

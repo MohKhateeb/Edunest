@@ -51,16 +51,17 @@ async function getStudentDetails(
 	userId: string,
 	userType: UserType,
 ): Promise<ActionResponse<unknown>> {
+    const t = await getErrorT();
 	if (userType === UserType.PARENT) {
 		const student = await prisma.student.findUnique({
 			where: { id: entityId },
 			include: commonStudentInclude,
 		});
 
-		if (!student) return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_61"); })() };
+		if (!student) return { success: false, error: t("action_error_61") };
 		
 		const auth = authorizeStudentAccess(student, userId, userType);
-		if (!auth.authorized) return { success: false, error: await (async () => { const t = await getErrorT(); return t(auth.error as any); })() };
+		if (!auth.authorized) return { success: false, error: t(auth.error as any) };
 		return successResponse(withCalculatedPerformance(student));
 	}
 
@@ -77,10 +78,10 @@ async function getStudentDetails(
 			},
 		});
 
-		if (!student) return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_62"); })() };
+		if (!student) return { success: false, error: t("action_error_62") };
 		
 		const auth = authorizeStudentAccess(student, userId, userType);
-		if (!auth.authorized) return { success: false, error: await (async () => { const t = await getErrorT(); return t(auth.error as any); })() };
+		if (!auth.authorized) return { success: false, error: t(auth.error as any) };
 		return successResponse(withCalculatedPerformance(student));
 	}
 
@@ -89,11 +90,11 @@ async function getStudentDetails(
 			where: { id: entityId },
 			include: commonStudentInclude,
 		});
-		if (!student) return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_63"); })() };
+		if (!student) return { success: false, error: t("action_error_63") };
 		return successResponse(withCalculatedPerformance(student));
 	}
 
-	return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_64"); })() };
+	return { success: false, error: t("action_error_64") };
 }
 
 async function getTeacherDetails(
@@ -101,12 +102,13 @@ async function getTeacherDetails(
 	userId: string,
 	userType: UserType,
 ): Promise<ActionResponse<unknown>> {
+    const t = await getErrorT();
 	const teacher = await prisma.teacher.findUnique({
 		where: { id: entityId },
 		include: commonTeacherInclude,
 	});
 
-	if (!teacher) return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_65"); })() };
+	if (!teacher) return { success: false, error: t("action_error_65") };
 
 	const auth = authorizeTeacherProfileAccess(teacher, userId, userType);
 	if (!auth.authorized) {
@@ -125,6 +127,7 @@ async function getBookingDetails(
 	userId: string,
 	userType: UserType,
 ): Promise<ActionResponse<unknown>> {
+    const t = await getErrorT();
 	const booking = await prisma.booking.findUnique({
 		where: { id: entityId },
 		include: {
@@ -148,10 +151,10 @@ async function getBookingDetails(
 		},
 	});
 
-	if (!booking) return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_66"); })() };
+	if (!booking) return { success: false, error: t("action_error_66") };
 
 	const auth = authorizeBookingAccess(booking, userId, userType);
-	if (!auth.authorized) return { success: false, error: await (async () => { const t = await getErrorT(); return t(auth.error as any); })() };
+	if (!auth.authorized) return { success: false, error: t(auth.error as any) };
 
 	return successResponse(booking);
 }
@@ -161,11 +164,12 @@ async function getPayoutDetails(
 	userId: string,
 	userType: UserType,
 ): Promise<ActionResponse<unknown>> {
+    const t = await getErrorT();
 	// Basic role check early return (optional, kept from original logic)
 	if (userType !== UserType.ADMIN && userType !== UserType.TEACHER) {
 		return {
 			success: false,
-			error: await (async () => { const t = await getErrorT(); return t("action_error_67"); })(),
+			error: t("action_error_67"),
 		};
 	}
 
@@ -175,10 +179,10 @@ async function getPayoutDetails(
 	});
 
 	if (!payout)
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_68"); })() };
+		return { success: false, error: t("action_error_68") };
 		
 	const auth = authorizePayoutAccess(payout, userId, userType);
-	if (!auth.authorized) return { success: false, error: await (async () => { const t = await getErrorT(); return t(auth.error as any); })() };
+	if (!auth.authorized) return { success: false, error: t(auth.error as any) };
 
 	const hydratedBookings = payout.bookings.map((b) => {
 		const earnings = calculateEarnings(
@@ -201,6 +205,7 @@ export async function getEntityDetails(
 	entityType: EntityType,
 	entityId: string,
 ): Promise<ActionResponse<unknown>> {
+    const t = await getErrorT();
 	try {
 		const { userId, userType } = await requireAuth([
 			UserType.PARENT,
@@ -218,13 +223,13 @@ export async function getEntityDetails(
 			case "payout":
 				return await getPayoutDetails(entityId, userId, userType);
 			default:
-				return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_69"); })() };
+				return { success: false, error: t("action_error_69") };
 		}
 	} catch (err: unknown) {
 		console.error(err);
 		return {
 			success: false,
-			error: await (async () => { const t = await getErrorT(); return t("action_error_70"); })(),
+			error: t("action_error_70"),
 		};
 	}
 }

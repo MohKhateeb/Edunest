@@ -104,6 +104,7 @@ class DisputeRepository {
 		teacherUserId: string;
 	}): Promise<void> {
 		await prisma.$transaction(async (tx) => {
+            const t = await getNotificationT();
 			const dispute = await tx.dispute.create({
 				data: {
 					bookingId: params.bookingId,
@@ -125,9 +126,9 @@ class DisputeRepository {
 			await createNotification(
 				{
 					userId: params.teacherUserId,
-					title: await (async () => { const t = await getNotificationT(); return t("dispute_new_title"); })(),
+					title: t("dispute_new_title"),
 					message:
-						await (async () => { const t = await getNotificationT(); return t("dispute_new_message"); })(),
+						t("dispute_new_message"),
 				},
 				tx,
 			);
@@ -205,6 +206,7 @@ class DisputeRepository {
 		teacherUserId: string;
 	}): Promise<void> {
 		await prisma.$transaction(async (tx) => {
+            const t = await getNotificationT();
 			// 1. Update dispute status
 			await tx.dispute.update({
 				where: { id: params.disputeId },
@@ -246,11 +248,11 @@ class DisputeRepository {
 			await createNotification(
 				{
 					userId: params.parentUserId,
-					title: await (async () => { const t = await getNotificationT(); return t("dispute_decision_title"); })(),
+					title: t("dispute_decision_title"),
 					message:
 						params.decision === "RESOLVED_IN_FAVOR_OF_PARENT"
-							? await (async () => { const t = await getNotificationT(); return t("dispute_decision_won_message"); })()
-							: await (async () => { const t = await getNotificationT(); return t("dispute_decision_lost_message"); })(),
+							? t("dispute_decision_won_message")
+							: t("dispute_decision_lost_message"),
 				},
 				tx,
 			);
@@ -258,11 +260,11 @@ class DisputeRepository {
 			await createNotification(
 				{
 					userId: params.teacherUserId,
-					title: await (async () => { const t = await getNotificationT(); return t("dispute_closed_title"); })(),
+					title: t("dispute_closed_title"),
 					message:
 						params.decision === "RESOLVED_IN_FAVOR_OF_TEACHER"
-							? await (async () => { const t = await getNotificationT(); return t("dispute_closed_won_message"); })()
-							: await (async () => { const t = await getNotificationT(); return t("dispute_closed_lost_message"); })(),
+							? t("dispute_closed_won_message")
+							: t("dispute_closed_lost_message"),
 				},
 				tx,
 			);

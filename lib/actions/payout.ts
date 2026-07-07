@@ -13,6 +13,7 @@ export async function createTeacherPayout(data: {
 	teacherId: string;
 	bookingIds: string[];
 }): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const validated = createPayoutSchema.safeParse(data);
 		if (!validated.success) {
@@ -38,7 +39,7 @@ export async function createTeacherPayout(data: {
 
 			if (bookings.length !== bookingIds.length) {
 				throw new Error(
-					await (async () => { const t = await getErrorT(); return t("payout_invalid_sessions"); })(),
+					t("payout_invalid_sessions"),
 				);
 			}
 
@@ -99,7 +100,7 @@ export async function createTeacherPayout(data: {
 	} catch (err: unknown) {
 		console.error(err);
 		const msg =
-			err instanceof Error ? err.message : await (async () => { const t = await getErrorT(); return t("action_error_51"); })();
+			err instanceof Error ? err.message : t("action_error_51");
 		return { success: false, error: msg };
 	}
 }
@@ -107,6 +108,7 @@ export async function createTeacherPayout(data: {
 export async function markPayoutAsPaid(
 	payoutId: string,
 ): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const validated = payoutIdSchema.safeParse({ payoutId });
 		if (!validated.success) {
@@ -120,11 +122,11 @@ export async function markPayoutAsPaid(
 		});
 
 		if (!payout) {
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_45"); })() };
+			return { success: false, error: t("action_error_45") };
 		}
 
 		if (payout.isPaid) {
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_46"); })() };
+			return { success: false, error: t("action_error_46") };
 		}
 
 		await prisma.teacherPayout.update({
@@ -141,13 +143,14 @@ export async function markPayoutAsPaid(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_47"); })() };
+		return { success: false, error: t("action_error_47") };
 	}
 }
 
 export async function markParentRefundAsPaid(
 	refundId: string,
 ): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const validated = payoutIdSchema.safeParse({ payoutId: refundId });
 		if (!validated.success) {
@@ -161,11 +164,11 @@ export async function markParentRefundAsPaid(
 		});
 
 		if (!refund) {
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_48"); })() };
+			return { success: false, error: t("action_error_48") };
 		}
 
 		if (refund.isPaid) {
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_49"); })() };
+			return { success: false, error: t("action_error_49") };
 		}
 
 		await prisma.parentRefund.update({
@@ -182,6 +185,6 @@ export async function markParentRefundAsPaid(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_50"); })() };
+		return { success: false, error: t("action_error_50") };
 	}
 }

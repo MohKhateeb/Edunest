@@ -12,6 +12,7 @@ export async function getFAQs(
 	category?: FAQCategory,
 	includeInactive = false,
 ): Promise<ActionResponse<FAQ[]>> {
+    const t = await getErrorT();
 	try {
 		const faqs = await prisma.fAQ.findMany({
 			where: {
@@ -23,7 +24,7 @@ export async function getFAQs(
 		return { success: true, data: faqs };
 	} catch (error: unknown) {
 		console.error("Error fetching FAQs:", error);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_37"); })() };
+		return { success: false, error: t("action_error_37") };
 	}
 }
 
@@ -35,6 +36,7 @@ export async function createFAQ(data: {
 	isActive?: boolean;
 	order?: number;
 }): Promise<ActionResponse<FAQ>> {
+    const t = await getErrorT();
 	try {
 		const validated = faqSchema.safeParse(data);
 		if (!validated.success) {
@@ -58,7 +60,7 @@ export async function createFAQ(data: {
 		return { success: true, data: faq };
 	} catch (error: unknown) {
 		console.error("Error creating FAQ:", error);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_38"); })() };
+		return { success: false, error: t("action_error_38") };
 	}
 }
 
@@ -73,6 +75,7 @@ export async function updateFAQ(
 		order: number;
 	}>,
 ): Promise<ActionResponse<FAQ>> {
+    const t = await getErrorT();
 	try {
 		const validatedId = faqIdSchema.safeParse({ id });
 		if (!validatedId.success) {
@@ -104,12 +107,13 @@ export async function updateFAQ(
 		return { success: true, data: faq };
 	} catch (error: unknown) {
 		console.error("Error updating FAQ:", error);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_39"); })() };
+		return { success: false, error: t("action_error_39") };
 	}
 }
 
 // Delete an FAQ (Admin only)
 export async function deleteFAQ(id: string): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const validated = faqIdSchema.safeParse({ id });
 		if (!validated.success) {
@@ -127,6 +131,6 @@ export async function deleteFAQ(id: string): Promise<ActionResponse> {
 		return { success: true };
 	} catch (error: unknown) {
 		console.error("Error deleting FAQ:", error);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_40"); })() };
+		return { success: false, error: t("action_error_40") };
 	}
 }

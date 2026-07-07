@@ -55,6 +55,7 @@ const resolveDisputeSchema = z.object({
 export async function createDispute(
 	data: z.infer<typeof createDisputeSchema>,
 ): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const validated = createDisputeSchema.safeParse(data);
 		if (!validated.success) {
@@ -70,31 +71,31 @@ export async function createDispute(
 		if (!booking || booking.parentUserId !== userId) {
 			return {
 				success: false,
-				error: await (async () => { const t = await getErrorT(); return t("action_error_21"); })(),
+				error: t("action_error_21"),
 			};
 		}
 
 		if (booking.status !== BookingStatus.COMPLETED) {
 			return {
 				success: false,
-				error: await (async () => { const t = await getErrorT(); return t("action_error_22"); })(),
+				error: t("action_error_22"),
 			};
 		}
 
 		if (booking.payoutId) {
 			return {
 				success: false,
-				error: await (async () => { const t = await getErrorT(); return t("action_error_23"); })(),
+				error: t("action_error_23"),
 			};
 		}
 
 		if (booking.dispute) {
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_24"); })() };
+			return { success: false, error: t("action_error_24") };
 		}
 
 		// 2. Strict Date Validation: Only within 24 hours of completion
 		if (!booking.completedAt) {
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_25"); })() };
+			return { success: false, error: t("action_error_25") };
 		}
 
 		// hoursUntil returns (completedAt - now) in hours. It should be negative since completed in past.
@@ -104,7 +105,7 @@ export async function createDispute(
 		if (hoursUntil(booking.completedAt) < -24) {
 			return {
 				success: false,
-				error: await (async () => { const t = await getErrorT(); return t("action_error_26"); })(),
+				error: t("action_error_26"),
 			};
 		}
 
@@ -123,13 +124,14 @@ export async function createDispute(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_27"); })() };
+		return { success: false, error: t("action_error_27") };
 	}
 }
 
 export async function sendDisputeMessage(
 	data: z.infer<typeof sendMessageSchema>,
 ): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const validated = sendMessageSchema.safeParse(data);
 		if (!validated.success) {
@@ -146,24 +148,24 @@ export async function sendDisputeMessage(
 		const dispute = await disputeRepository.findByIdWithBookingAccess(disputeId);
 
 		if (!dispute) {
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_28"); })() };
+			return { success: false, error: t("action_error_28") };
 		}
 
 		if (dispute.status !== DisputeStatus.OPEN) {
 			return {
 				success: false,
-				error: await (async () => { const t = await getErrorT(); return t("action_error_29"); })(),
+				error: t("action_error_29"),
 			};
 		}
 
 		// Verify access
 		const accessAuth = authorizeDisputeAccess(dispute, userId, userType);
-		if (!accessAuth.authorized) { return { success: false, error: await (async () => { const t = await getErrorT(); return t(accessAuth.error as any); })() };
+		if (!accessAuth.authorized) { return { success: false, error: t(accessAuth.error as any) };
 		}
 
 		// Verify Turn
 		const turnAuth = authorizeDisputeTurn(dispute, userType);
-		if (!turnAuth.authorized) { return { success: false, error: await (async () => { const t = await getErrorT(); return t(turnAuth.error as any); })() };
+		if (!turnAuth.authorized) { return { success: false, error: t(turnAuth.error as any) };
 		}
 
 		await disputeRepository.addMessage(disputeId, userId, message);
@@ -173,7 +175,7 @@ export async function sendDisputeMessage(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_30"); })() };
+		return { success: false, error: t("action_error_30") };
 	}
 }
 
@@ -181,19 +183,20 @@ export async function changeDisputeTurn(
 	disputeId: string,
 	turn: "BOTH" | "PARENT" | "TEACHER" | "NONE",
 ): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		await requireAuth([UserType.ADMIN]);
 
 		const dispute = await disputeRepository.findById(disputeId);
 
 		if (!dispute) {
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_31"); })() };
+			return { success: false, error: t("action_error_31") };
 		}
 
 		if (dispute.status !== "OPEN") {
 			return {
 				success: false,
-				error: await (async () => { const t = await getErrorT(); return t("action_error_32"); })(),
+				error: t("action_error_32"),
 			};
 		}
 
@@ -204,13 +207,14 @@ export async function changeDisputeTurn(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_33"); })() };
+		return { success: false, error: t("action_error_33") };
 	}
 }
 
 export async function resolveDispute(
 	data: z.infer<typeof resolveDisputeSchema>,
 ): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const validated = resolveDisputeSchema.safeParse(data);
 		if (!validated.success) {
@@ -223,11 +227,11 @@ export async function resolveDispute(
 		const dispute = await disputeRepository.findByIdForResolution(disputeId);
 
 		if (!dispute) {
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_34"); })() };
+			return { success: false, error: t("action_error_34") };
 		}
 
 		if (dispute.status !== DisputeStatus.OPEN) {
-			return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_35"); })() };
+			return { success: false, error: t("action_error_35") };
 		}
 
 		await disputeRepository.resolveWithTransaction({
@@ -249,6 +253,6 @@ export async function resolveDispute(
 		return { success: true };
 	} catch (err: unknown) {
 		console.error(err);
-		return { success: false, error: await (async () => { const t = await getErrorT(); return t("action_error_36"); })() };
+		return { success: false, error: t("action_error_36") };
 	}
 }

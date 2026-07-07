@@ -19,6 +19,7 @@ import {
 export const processPayment = withAuthAction(
 	[UserType.PARENT],
 	async ({ userId, userType }, bookingId: string) => {
+        const t = await getErrorT();
 		const booking = await getAuthorizedBooking(bookingId, userId, userType);
 
 		if (!isValidTransition(booking.status, BookingStatus.CONFIRMED)) {
@@ -29,19 +30,20 @@ export const processPayment = withAuthAction(
 		}
 
 		if (booking.paymentStatus !== PaymentStatus.UNPAID) {
-			const tError = await getErrorT();
-		return { success: false, error: tError("booking_not_awaiting_payment") };
+			const t = await getErrorT();
+		return { success: false, error: t("booking_not_awaiting_payment") };
 		}
 
 		if (isBookingInPast(booking.startTime, booking.duration)) {
 			return {
 				success: false,
 				error:
-					await (async () => { const t = await getErrorT(); return t("booking_past_time_pay"); })(),
+					t("booking_past_time_pay"),
 			};
 		}
 
 		await unitOfWork.runTransaction(async (tx) => {
+            const t = await getNotificationT();
 			// 1. تحديث جدول Payment (إن وجد) أو إنشاؤه إذا لم يكن موجوداً
 			if (booking.payment) {
 				await tx.payment.update({
@@ -83,11 +85,11 @@ export const processPayment = withAuthAction(
 				{
 					userId: booking.teacherService.teacher.userId,
 					title: isImmediate
-						? await (async () => { const t = await getNotificationT(); return t("booking_instant_started_title"); })()
-						: await (async () => { const t = await getNotificationT(); return t("booking_confirmed_title"); })(),
+						? t("booking_instant_started_title")
+						: t("booking_confirmed_title"),
 					message: isImmediate
-						? await (async () => { const t = await getNotificationT(); return t("booking_instant_started_message"); })()
-						: await (async () => { const t = await getNotificationT(); return t("booking_confirmed_message"); })(),
+						? t("booking_instant_started_message")
+						: t("booking_confirmed_message"),
 					link: "/dashboard/teacher/bookings",
 				},
 				tx,

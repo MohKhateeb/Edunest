@@ -11,10 +11,11 @@ export async function checkTeacherAvailability(
 	startUtc: Date,
 	durationMinutes: number,
 ): Promise<{ available: boolean; reason?: string }> {
+    const t = await getErrorT();
 	if (crossesMidnight(startUtc, durationMinutes)) {
 		return {
 			available: false,
-			reason: await (async () => { const t = await getErrorT(); return t("availability_same_day_required"); })(),
+			reason: t("availability_same_day_required"),
 		};
 	}
 
@@ -40,7 +41,7 @@ export async function checkTeacherAvailability(
 	if (!isCovered) {
 		return {
 			available: false,
-			reason: await (async () => { const t = await getErrorT(); return t("availability_outside_working_hours"); })(),
+			reason: t("availability_outside_working_hours"),
 		};
 	}
 
@@ -52,6 +53,7 @@ export async function checkConflictingBookings(
 	startUtc: Date,
 	durationMinutes: number,
 ): Promise<{ conflict: boolean; reason?: string }> {
+    const t = await getErrorT();
 	const dayStart = new Date(startUtc);
 	dayStart.setUTCHours(0, 0, 0, 0);
 	const dayEnd = new Date(startUtc);
@@ -76,7 +78,7 @@ export async function checkConflictingBookings(
 		if (reqStart < bookingEnd && bookingStart < reqEnd) {
 			return {
 				conflict: true,
-				reason: await (async () => { const t = await getErrorT(); return t("availability_has_overlap"); })(),
+				reason: t("availability_has_overlap"),
 			};
 		}
 	}

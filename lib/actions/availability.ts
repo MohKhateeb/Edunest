@@ -15,6 +15,7 @@ const availabilityArraySchema = z.array(availabilityItemSchema);
 export async function updateWeeklyAvailability(
 	items: z.infer<typeof availabilityArraySchema>,
 ): Promise<ActionResponse> {
+    const t = await getErrorT();
 	try {
 		const { userId } = await requireAuth([UserType.TEACHER]);
 
@@ -23,8 +24,8 @@ export async function updateWeeklyAvailability(
 		// Validate using Zod
 		const validated = availabilityArraySchema.safeParse(items);
 		if (!validated.success) {
-			const tError = await getErrorT();
-			return { success: false, error: tError("availability_invalid_data") };
+			const t = await getErrorT();
+			return { success: false, error: t("availability_invalid_data") };
 		}
 
 		// Check time order for each item to satisfy DB constraints
@@ -32,7 +33,7 @@ export async function updateWeeklyAvailability(
 			if (item.startTime >= item.endTime) {
 				return {
 					success: false,
-					error: await (async () => { const t = await getErrorT(); return t("availability_start_before_end"); })(),
+					error: t("availability_start_before_end"),
 				};
 			}
 		}
@@ -65,7 +66,7 @@ export async function updateWeeklyAvailability(
 	} catch (err: unknown) {
 		console.error(err);
 		const msg =
-			err instanceof Error ? err.message : await (async () => { const t = await getErrorT(); return t('availability_update_error'); })()
+			err instanceof Error ? err.message : t('availability_update_error')
 		return { success: false, error: msg };
 	}
 }

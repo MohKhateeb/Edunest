@@ -6,6 +6,7 @@ export async function generateUniqueSlug(
 	name: string,
 	maxAttempts = 5,
 ): Promise<string> {
+    const t = await getErrorT();
 	// Normalize string for slug representation
 	const base = `${name}`
 		.toLowerCase()
@@ -25,5 +26,5 @@ export async function generateUniqueSlug(
 		const slug = `${base}-${suffix}`;
 		if (!existingSlugs.has(slug)) return slug;
 	}
-	throw new Error(await (async () => { const t = await getErrorT(); return t("slug_generation_failed"); })());
+	throw new Error(t("slug_generation_failed"));
 }

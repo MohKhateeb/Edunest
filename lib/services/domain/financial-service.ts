@@ -335,6 +335,7 @@ export type TeacherEarningsWallet = {
 export async function getTeacherEarningsWallet(
 	userId: string,
 ): Promise<TeacherEarningsWallet> {
+    const t = await getErrorT();
 	await requireAuth([UserType.TEACHER]);
 
 	const teacher = await prisma.teacher.findUnique({
@@ -343,7 +344,7 @@ export async function getTeacherEarningsWallet(
 	});
 
 	if (!teacher) {
-		throw new Error(await (async () => { const t = await getErrorT(); return t("financial_teacher_profile_missing"); })());
+		throw new Error(t("financial_teacher_profile_missing"));
 	}
 
 	const payouts = await prisma.teacherPayout.findMany({

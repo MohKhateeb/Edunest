@@ -15,6 +15,7 @@ import type { ActionResponse } from "@/lib/types";
 export async function checkLiveRequestMatch(
 	requestId: string,
 ): Promise<ActionResponse<{ isMatched: boolean; bookingId?: string }>> {
+    const t = await getErrorT();
 	try {
 		const { userId: parentUserId } = await requireAuth([UserType.PARENT]);
 
@@ -24,8 +25,8 @@ export async function checkLiveRequestMatch(
 		});
 
 		if (!request || request.parentId !== parentUserId) {
-			const tError = await getErrorT();
-		return { success: false, error: tError("request_not_found") };
+			const t = await getErrorT();
+		return { success: false, error: t("request_not_found") };
 		}
 
 		if (request.status === RequestStatus.ACCEPTED) {
@@ -51,7 +52,7 @@ export async function checkLiveRequestMatch(
 	} catch (error: unknown) {
 		return {
 			success: false,
-			error: error instanceof Error ? error.message : await (async () => { const t = await getErrorT(); return t("request_status_check_error"); })(),
+			error: error instanceof Error ? error.message : t("request_status_check_error"),
 		};
 	}
 }

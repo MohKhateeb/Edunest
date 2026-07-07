@@ -42,14 +42,15 @@ export async function searchAvailableTeachers(input: {
 		}[];
 	}>
 > {
+    const t = await getErrorT();
 	try {
 		await requireAuth([UserType.PARENT]);
 
 		const { subjectId, studentId, date, timeSlot } = input;
 
 		if (!subjectId || !studentId || !date || !timeSlot) {
-			const tError = await getErrorT();
-		return { success: false, error: tError("search_missing_fields") };
+			const t = await getErrorT();
+		return { success: false, error: t("search_missing_fields") };
 		}
 
 		// جلب بيانات الطالب للتحقق من الصف
@@ -59,15 +60,15 @@ export async function searchAvailableTeachers(input: {
 		});
 
 		if (!student) {
-			const tError = await getErrorT();
-		return { success: false, error: tError("search_student_not_found") };
+			const t = await getErrorT();
+		return { success: false, error: t("search_student_not_found") };
 		}
 
 		// تحديد يوم الأسبوع من التاريخ المطلوب
 		const dateObj = new Date(`${date}T${timeSlot}:00`);
 		if (isNaN(dateObj.getTime())) {
-			const tError = await getErrorT();
-		return { success: false, error: tError("search_invalid_datetime") };
+			const t = await getErrorT();
+		return { success: false, error: t("search_invalid_datetime") };
 		}
 
 		// التحقق من أن الوقت المطلوب في المستقبل
@@ -75,7 +76,7 @@ export async function searchAvailableTeachers(input: {
 		if (hoursUntil(dateObj) < minLeadHours) {
 			return {
 				success: false,
-				error: await (async () => { const t = await getErrorT(); return t("booking_min_lead_time", { minLeadHours }); })(),
+				error: t("booking_min_lead_time", { minLeadHours }),
 			};
 		}
 
@@ -192,7 +193,7 @@ export async function searchAvailableTeachers(input: {
 					userName: teacher.user.name,
 					specialization:
 						teacher.subjects?.map((s) => s.subject.name).join(", ") ||
-						await (async () => { const t = await getErrorT(); return t("search_unspecified", undefined, ); })() as any,
+						t("search_unspecified", undefined, ) as any,
 					city: teacher.city,
 					profileImageUrl: teacher.profileImageUrl,
 					verificationLevel: teacher.verificationLevel,
@@ -217,8 +218,8 @@ export async function searchAvailableTeachers(input: {
 		return { success: true, data: { teachers: availableTeachers } };
 	} catch (err: unknown) {
 		console.error(err);
-		const tError = await getErrorT();
-		const msg = err instanceof Error ? err.message : tError("search_unexpected_error");
+		const t = await getErrorT();
+		const msg = err instanceof Error ? err.message : t("search_unexpected_error");
 		return { success: false, error: msg };
 	}
 }
