@@ -61,7 +61,7 @@ async function getStudentDetails(
 		if (!student) return { success: false, error: t("action_error_61") };
 		
 		const auth = authorizeStudentAccess(student, userId, userType);
-		if (!auth.authorized) return { success: false, error: t(auth.error as any) };
+		if (!auth.authorized) return { success: false, error: t(auth.error) };
 		return successResponse(withCalculatedPerformance(student));
 	}
 
@@ -81,7 +81,7 @@ async function getStudentDetails(
 		if (!student) return { success: false, error: t("action_error_62") };
 		
 		const auth = authorizeStudentAccess(student, userId, userType);
-		if (!auth.authorized) return { success: false, error: t(auth.error as any) };
+		if (!auth.authorized) return { success: false, error: t(auth.error) };
 		return successResponse(withCalculatedPerformance(student));
 	}
 
@@ -154,7 +154,7 @@ async function getBookingDetails(
 	if (!booking) return { success: false, error: t("action_error_66") };
 
 	const auth = authorizeBookingAccess(booking, userId, userType);
-	if (!auth.authorized) return { success: false, error: t(auth.error as any) };
+	if (!auth.authorized) return { success: false, error: t(auth.error) };
 
 	return successResponse(booking);
 }
@@ -182,7 +182,7 @@ async function getPayoutDetails(
 		return { success: false, error: t("action_error_68") };
 		
 	const auth = authorizePayoutAccess(payout, userId, userType);
-	if (!auth.authorized) return { success: false, error: t(auth.error as any) };
+	if (!auth.authorized) return { success: false, error: t(auth.error) };
 
 	const hydratedBookings = payout.bookings.map((b) => {
 		const earnings = calculateEarnings(

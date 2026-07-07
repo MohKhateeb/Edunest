@@ -28,7 +28,7 @@ export function withAuthAction<Args extends unknown[], R = unknown>(
 
 			if (err instanceof AuthError) {
 				const t = await getErrorT();
-				return { success: false, error: t(err.message as any) };
+				return { success: false, error: t(err.message as Parameters<typeof t>[0]) };
 			}
 
 			const t = await getErrorT();

@@ -57,7 +57,7 @@ export async function submitReview(
 
 		// Check if the user is authorized to review this booking (must be the parent who made it, or admin)
 		const auth = authorizeBookingReview(booking, userId, userType);
-		if (!auth.authorized) { return { success: false, error: t(auth.error as any) };
+		if (!auth.authorized) { return { success: false, error: t(auth.error) };
 		}
 
 		// Verify booking status is COMPLETED

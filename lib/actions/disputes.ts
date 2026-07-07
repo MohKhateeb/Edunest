@@ -160,12 +160,12 @@ export async function sendDisputeMessage(
 
 		// Verify access
 		const accessAuth = authorizeDisputeAccess(dispute, userId, userType);
-		if (!accessAuth.authorized) { return { success: false, error: t(accessAuth.error as any) };
+		if (!accessAuth.authorized) { return { success: false, error: t(accessAuth.error) };
 		}
 
 		// Verify Turn
 		const turnAuth = authorizeDisputeTurn(dispute, userType);
-		if (!turnAuth.authorized) { return { success: false, error: t(turnAuth.error as any) };
+		if (!turnAuth.authorized) { return { success: false, error: t(turnAuth.error) };
 		}
 
 		await disputeRepository.addMessage(disputeId, userId, message);

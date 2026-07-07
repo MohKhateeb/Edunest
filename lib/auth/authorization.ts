@@ -1,6 +1,21 @@
 import { UserType } from "@prisma/client";
 
-export type AuthResult = { authorized: true } | { authorized: false; error: string };
+export type AuthErrorKey =
+  | "action_error_71"
+  | "action_error_72"
+  | "action_error_73"
+  | "auth_unauthorized_student_access"
+  | "auth_unauthorized_booking_view"
+  | "auth_unauthorized_other_teacher_booking"
+  | "auth_unauthorized_review"
+  | "auth_unauthorized"
+  | "auth_chat_closed_admin"
+  | "auth_chat_waiting_parent"
+  | "auth_chat_waiting_teacher"
+  | "auth_unauthorized_other_teacher_payout"
+  | "auth_unauthorized_payout_view";
+
+export type AuthResult = { authorized: true } | { authorized: false; error: AuthErrorKey };
 
 // --- STUDENT GUARDS ---
 
