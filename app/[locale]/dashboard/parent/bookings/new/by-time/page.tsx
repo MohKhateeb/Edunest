@@ -25,7 +25,7 @@ export default async function BookByTimePage() {
 		<div className="space-y-4 relative min-h-[500px]">
 			<div className="max-w-4xl mx-auto space-y-6 pb-20">
 				<BookingJourneyHeader
-					title="حجز جلسة جديدة"
+					title={t('bookings_new_title')}
 					subtitle={t('str_2KfZhNio')}
 					character="hakeem"
 					characterMessage={tAdvisors('hakeem_booking_time_tip')}

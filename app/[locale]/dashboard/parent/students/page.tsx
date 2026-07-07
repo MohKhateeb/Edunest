@@ -21,10 +21,10 @@ export default async function ParentStudentsPage() {
 		<div className="space-y-8 text-start pb-10">
 			<div>
 				<h1 className="text-2xl font-black mb-4 text-primary">
-					{t('key_1783109435942_3wbp')}</h1>
+					{t('students_page_title')}</h1>
 				<InteractiveMessage
 					character="hakeem"
-					message="إضافة بيانات أبنائك وتحديث مستوياتهم الدراسية بدقة، هي الخطوة الأولى لاختيار المعلم الأنسب وتخصيص تجربة التعلم لكل بطل منهم."
+					message={t('students_intro_message')}
 				/>
 			</div>
 
@@ -34,7 +34,7 @@ export default async function ParentStudentsPage() {
 					<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
 						<h2 className="font-black text-lg border-b border-border/50 pb-3 flex items-center gap-2">
 							<Users className="h-6 w-6 text-secondary" />
-							{t('key_1783109435945_z7ru')}</h2>
+							{t('students_list_title')}</h2>
 
 						<ParentStudentsList students={students} />
 					</div>
@@ -49,7 +49,7 @@ export default async function ParentStudentsPage() {
 					<InteractiveMessage
 						character="najeeb"
 						najeebMode="study"
-						message="كلما أضفنا بطلاً جديداً لعائلتنا هنا، زادت فرصتنا في تحقيق التفوق والنجاح معاً! 🌟"
+						message={t('students_intro_welcome')}
 					/>
 				</div>
 			</div>

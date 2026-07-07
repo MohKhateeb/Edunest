@@ -38,7 +38,7 @@ export default function TodayPulse({ sessions }: TodayPulseProps) {
 					<h2 className="text-lg font-black text-emerald-800 dark:text-emerald-400">
 						{t('key_1783109435510_8ndp')}</h2>
 					<p className="text-sm font-semibold text-emerald-700/80 dark:text-emerald-300/80 mt-1">
-						بطلنا لديه جلسات ممتعة اليوم، استمروا في هذا التألق، اضغط على الجلسة لمتابعة التفاصيل!
+						{t('pulse_has_sessions')}
 					</p>
 				</div>
 			</div>

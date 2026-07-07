@@ -26,9 +26,9 @@ export default function DashboardError({
 			</div>
 			<div className="space-y-2">
 				<h2 className="text-2xl font-bold text-slate-900 dark:text-white">
-					{t('key_1783109426045_pcfa')}</h2>
+					{t('error_title')}</h2>
 				<p className="text-slate-500 dark:text-slate-400 max-w-md">
-					يبدو أن هناك مشكلة في تحميل هذه الصفحة. نحن نعتذر عن هذا الخلل.
+					{t('error_description')}
 				</p>
 			</div>
 			<button
@@ -36,7 +36,7 @@ export default function DashboardError({
 				className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold transition-all shadow-md shadow-indigo-500/20"
 			>
 				<RefreshCcw className="w-4 h-4" />
-				{t('key_1783109426051_u9st')}</button>
+				{t('error_retry_btn')}</button>
 		</div>
 	);
 }

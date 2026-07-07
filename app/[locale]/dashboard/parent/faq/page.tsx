@@ -12,8 +12,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: 'parent' });
 	return {
-		title: t('key_1783109435564_5v7o'),
-		description: t('key_1783109435565_p510'),
+		title: t('faq_meta_title'),
+		description: t('faq_meta_desc'),
 	};
 }
 
@@ -28,16 +28,15 @@ export default async function ParentFAQPage() {
 	return (
 		<div className="space-y-6 text-start">
 			<div className="border-b border-border/40 pb-4">
-				<h1 className="text-2xl font-black mb-1">{t('key_1783109435561_o60u')}</h1>
+				<h1 className="text-2xl font-black mb-1">{t('faq_title')}</h1>
 				<p className="text-xs text-muted-foreground">
-					تجد هنا إجابات لأكثر الأسئلة شيوعاً حول استخدام المنصة، الحجوزات،
-					والمدفوعات الخاصة بأولياء الأمور.
+					{t('faq_subtitle')}
 				</p>
 			</div>
 
 			{!res.success ? (
 				<div className="p-4 bg-red-50 dark:bg-red-950/20 text-red-700 dark:text-red-400 rounded-2xl border border-red-200/50">
-					{res.error || t('key_1783109435567_70fa')}
+					{res.error || t('faq_error_load')}
 				</div>
 			) : (
 				<div className="bg-card border border-border/80 rounded-3xl p-6 shadow-premium relative overflow-visible mt-12">

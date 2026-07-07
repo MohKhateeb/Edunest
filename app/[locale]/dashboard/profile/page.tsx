@@ -24,10 +24,9 @@ export default async function PersonalProfilePage() {
 			<div>
 				<h1 className="text-2xl font-black mb-1.5 text-primary flex items-center gap-2">
 					<User className="h-7 w-7" />
-					{t('key_1783109428875_28p2')}</h1>
+					{t('profile_title')}</h1>
 				<p className="text-xs text-muted-foreground">
-					إدارة بياناتك الشخصية الأساسية وتغيير كلمة مرور حسابك لتأمين دخولك
-					للمنصة.
+					{t('profile_description')}
 				</p>
 			</div>
 

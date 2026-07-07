@@ -54,7 +54,7 @@ export default function AddStudentForm() {
 			}
 		} catch (err: unknown) {
 			console.error(err);
-			setErrorMsg(t('key_1783109434721_pj7j'));
+			setErrorMsg(t('student_error_add'));
 		} finally {
 			setLoading(false);
 		}
@@ -66,7 +66,7 @@ export default function AddStudentForm() {
 			className="bg-card border border-border/80 rounded-3xl p-6 space-y-4 shadow-premium"
 		>
 			<h3 className="font-black text-base border-b border-border/60 pb-2.5 flex items-center gap-2">
-				{t('key_1783109434665_5yyt')}</h3>
+				{t('student_add_title')}</h3>
 
 			{errorMsg && (
 				<div className="flex items-center gap-2 text-xs text-destructive bg-destructive/10 px-3 py-2.5 rounded-xl border border-destructive/20">
@@ -77,21 +77,21 @@ export default function AddStudentForm() {
 
 			<div className="space-y-1">
 				<label className="text-xs font-bold text-muted-foreground block">
-					{t('key_1783109434675_cs3c')}</label>
+					{t('student_name_label')}</label>
 				<input
 					type="text"
 					name="name"
 					required
 					value={formData.name}
 					onChange={handleChange}
-					placeholder="محمد أحمد"
+					placeholder={t('student_name_placeholder')}
 					className="w-full premium-input text-xs"
 				/>
 			</div>
 
 			<div className="space-y-1">
 				<label className="text-xs font-bold text-muted-foreground block">
-					{t('key_1783109434682_n7ap')}</label>
+					{t('student_grade_label')}</label>
 				<select
 					name="grade"
 					value={formData.grade}
@@ -102,7 +102,7 @@ export default function AddStudentForm() {
 						const classNum = index + 1;
 						return (
 							<option key={classNum} value={classNum}>
-								{t('key_1783109434688_iusf')}{classNum}
+								{t('student_grade_prefix')}{classNum}
 							</option>
 						);
 					})}
@@ -111,13 +111,13 @@ export default function AddStudentForm() {
 
 			<div className="space-y-1">
 				<label className="text-xs font-bold text-muted-foreground block">
-					{t('key_1783109434693_b2kq')}</label>
+					{t('student_school_label')}</label>
 				<input
 					type="text"
 					name="school"
 					value={formData.school}
 					onChange={handleChange}
-					placeholder="مدرسة بيت لحم الثانوية"
+					placeholder={t('student_school_placeholder')}
 					className="w-full premium-input text-xs"
 				/>
 			</div>
@@ -130,11 +130,11 @@ export default function AddStudentForm() {
 				{loading ? (
 					<>
 						<Loader2 className="h-4 w-4 animate-spin" />
-						{t('key_1783109434698_w7hf')}</>
+						{t('student_btn_adding')}</>
 				) : (
 					<>
 						<Plus className="h-4 w-4" />
-						{t('key_1783109434705_wd9w')}</>
+						{t('student_btn_add')}</>
 				)}
 			</button>
 		</form>

@@ -19,9 +19,9 @@ export default async function NewBookingPageRoute() {
 			{/* عنوان الصفحة (يظهر دائماً) */}
 			<div className="text-center space-y-1 mb-8">
 				<h1 className="text-3xl font-black text-slate-900 dark:text-white">
-					{t('key_1783109439408_ghgg')}</h1>
+					{t('bookings_new_title')}</h1>
 				<p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-					{t('key_1783109439410_4d1o')}</p>
+					{t('bookings_new_subtitle')}</p>
 			</div>
 
 			<BookingSelectionCards />

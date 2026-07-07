@@ -81,10 +81,10 @@ export default function ParentBookingsList({
 			<div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white dark:bg-slate-900 p-2 rounded-2xl border border-border/50 shadow-sm">
 				<div className="flex w-full md:w-auto overflow-x-auto scrollbar-none gap-2">
 					{[
-						{ id: "UPCOMING", label: `القادمة (${upcomingCount})` },
-						{ id: "PENDING", label: `المعلقة (${pendingCount})` },
-						{ id: "COMPLETED", label: t('key_1783109434934_ssvy') },
-						{ id: "ARCHIVED", label: t('key_1783109434936_vp1b') },
+						{ id: "UPCOMING", label: t('tab_upcoming', { count: upcomingCount }) },
+						{ id: "PENDING", label: t('tab_pending', { count: pendingCount }) },
+						{ id: "COMPLETED", label: t('bookings_completed') },
+						{ id: "ARCHIVED", label: t('bookings_archives') },
 					].map((tab) => (
 						<button
 							key={tab.id}
@@ -106,7 +106,7 @@ export default function ParentBookingsList({
 					</div>
 					<input
 						type="text"
-						placeholder="ابحث هنا..."
+						placeholder={t('search_placeholder')}
 						className="w-full text-sm bg-slate-50 dark:bg-slate-800 border border-border/50 rounded-xl ps-9 pe-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}

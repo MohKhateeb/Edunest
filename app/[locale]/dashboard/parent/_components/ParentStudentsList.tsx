@@ -64,7 +64,7 @@ export default function ParentStudentsList({
 
 		setEditLoading(false);
 		if (res.success) {
-			toast.success(t('key_1783109435286_doei'));
+			toast.success(t('students_edit_success'));
 			setEditingStudent(null);
 		} else {
 			setEditError(res.error);
@@ -78,10 +78,8 @@ export default function ParentStudentsList({
 				<AlertCircle className="h-4.5 w-4.5 text-blue-600 dark:text-blue-400 mt-0.5 flex-shrink-0" />
 				<div>
 					<span className="font-extrabold block mb-1">
-						{t('key_1783109435128_p4t3')}</span>
-					تعديل معلومات الطالب (الاسم، الصف، المدرسة) متاح بالكامل طالما **لم
-					يتم حجز أي جلسة تعليمية** له بعد. بمجرد جدولة أول جلسة، سيتم إغلاق
-					التعديل تلقائياً لحفظ نزاهة تقارير وسجلات الحصص.
+						{t('students_edit_warning_title')}</span>
+					{t('students_edit_warning')}
 				</div>
 			</div>
 
@@ -90,10 +88,9 @@ export default function ParentStudentsList({
 					<NajeebCharacter mode="study" size="md" animated={true} />
 					<div>
 						<p className="text-sm font-bold text-foreground">
-							{t('key_1783109435145_eqo2')}</p>
+							{t('students_no_students')}</p>
 						<p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-							استخدم النموذج الجانبي لإضافة طالبك الأول للبدء بجدولة الحصص
-							الدراسية.
+							{t('students_no_students_desc')}
 						</p>
 					</div>
 				</div>
@@ -136,23 +133,23 @@ export default function ParentStudentsList({
 										className="text-[11px] font-bold text-muted-foreground hover:text-foreground border border-border hover:bg-accent/40 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
 									>
 										<Eye className="h-3.5 w-3.5" />
-										{t('key_1783109435192_t05b')}</button>
+										{t('students_btn_details_history')}</button>
 
 									{hasBookings ? (
 										<button
 											disabled
 											className="text-[11px] font-bold text-muted-foreground/50 bg-muted/30 border border-border px-3 py-1.5 rounded-lg flex items-center gap-1 cursor-not-allowed opacity-60"
-											title="تم قفل التعديل لوجود جلسات مسجلة لهذا الطالب"
+											title={t('students_edit_locked_tooltip')}
 										>
 											<Edit3 className="h-3.5 w-3.5" />
-											{t('key_1783109435202_23i7')}</button>
+											{t('students_edit_locked')}</button>
 									) : (
 										<button
 											onClick={() => openEditModal(student)}
 											className="text-[11px] font-bold text-teal-600 hover:text-white border border-teal-600/20 hover:bg-teal-600 hover:border-teal-600 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
 										>
 											<Edit3 className="h-3.5 w-3.5" />
-											{t('key_1783109435211_vpxv')}</button>
+											{t('students_btn_edit')}</button>
 									)}
 								</div>
 							</div>
@@ -172,7 +169,7 @@ export default function ParentStudentsList({
 							<div className="flex justify-between items-center border-b border-border pb-2.5">
 								<h3 className="font-extrabold text-base flex items-center gap-2">
 									<Edit3 className="h-5 w-5 text-primary" />
-									{t('key_1783109435221_fyiv')}{editingStudent.name}
+									{t('students_edit_title')}{editingStudent.name}
 								</h3>
 								<button
 									type="button"
@@ -238,7 +235,7 @@ export default function ParentStudentsList({
 									onClick={() => setEditingStudent(null)}
 									className="text-xs font-semibold border border-border hover:bg-accent px-4 py-2 rounded-lg cursor-pointer"
 								>
-									{t('key_1783109435266_g45y')}</button>
+									{t('btn_back')}</button>
 								<button
 									type="submit"
 									disabled={editLoading}
@@ -247,7 +244,7 @@ export default function ParentStudentsList({
 									{editLoading ? (
 										<>
 											<Loader2 className="h-4 w-4 animate-spin" />
-											{t('key_1783109435276_ufwe')}</>
+											{t('btn_saving')}</>
 									) : (
 										t('str_2K3Zgdi4')
 									)}
