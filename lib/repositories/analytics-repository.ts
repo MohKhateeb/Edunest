@@ -249,7 +249,10 @@ export class AnalyticsRepository {
 			GROUP BY COALESCE(st.name, 'UNSPECIFIED')
 			ORDER BY count DESC
 		`;
-		const sessionTypes = typeRaw.map(r => ({ name: r.name, count: Number(r.count) }));
+		const sessionTypes = typeRaw.map(r => ({ 
+			name: r.name === 'UNSPECIFIED' ? tCommon("unspecified") : r.name, 
+			count: Number(r.count) 
+		}));
 
 		const gradeGroups = await prisma.student.groupBy({
 			by: ["grade"],
