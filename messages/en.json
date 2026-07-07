@@ -1886,5 +1886,12 @@
     "dispute_closed_lost_message": "The parent's dispute was accepted and the session amount was refunded.",
     "admin_verification_approved": "Congratulations! Your account has been verified at level: {level}",
     "admin_verification_rejected": "Your verification request was rejected for the following reason: {reason}"
+  },
+  "recordReasons": {
+    "cancellation_auto_timeout_unconfirmed": "System auto-cancellation: Session time expired without confirmation.",
+    "cancellation_report_timeout_forfeited": "Teacher failed to submit report within maximum duration (96 hours). Forfeited.",
+    "forfeiture_no_report_96h": "Forfeited due to failure to submit session report within 96 hours.",
+    "ledger_commission_session": "Session Commission - Teacher: {teacherName}",
+    "ledger_forfeited_frozen_balance": "Forfeited Frozen Balance - Teacher: {teacherName}"
   }
 }

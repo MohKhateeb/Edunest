@@ -10,6 +10,7 @@ import {
 	getAdminPayoutsData,
 } from "@/lib/services/domain/financial-service";
 import { getAllEscrows } from "@/lib/services/domain/admin-escrow-service";
+import { isKnownReasonKey, RecordReasonKey } from "@/lib/constants/reason-keys";
 import DateFilter from "./_components/DateFilter";
 import FinancialTabs from "./_components/FinancialTabs";
 import AdminPayoutsEngine from "../payouts/_components/AdminPayoutsEngine";
@@ -29,7 +30,8 @@ export default async function AdminFinancialsPage({
 }: {
 	searchParams: Promise<{ tab?: string; from?: string; to?: string; cursor?: string }>;
 }) {
-    const t = await getTranslations('admin')
+    const t = await getTranslations('admin');
+	const tReasons = await getTranslations('recordReasons');
 	await requireAuth([UserType.ADMIN]);
 
 	const resolvedSearchParams = await searchParams;
@@ -135,7 +137,7 @@ export default async function AdminFinancialsPage({
 												</span>
 											</td>
 											<td className="p-4 font-black text-emerald-600">+{formatCurrency(transaction.amount)}</td>
-											<td className="p-4 text-sm">{transaction.description}</td>
+											<td className="p-4 text-sm">{tReasons(transaction.description, { teacherName: transaction.teacherName })}</td>
 										</tr>
 									))}
 								</tbody>
@@ -200,7 +202,7 @@ export default async function AdminFinancialsPage({
 														<p><strong>{t('key_1783109434272_xcqt')}</strong> {escrow.booking.startTime.toLocaleDateString("ar-SA")}</p>
 													</div>
 													<p className="mt-3 text-sm text-red-800 dark:text-red-300 bg-red-50 dark:bg-red-900/20 p-3 rounded-xl border border-red-100 dark:border-red-900/30">
-														<strong>{t('key_1783109434291_sl0o')}</strong> {escrow.reason}
+														<strong>{t('key_1783109434291_sl0o')}</strong> {isKnownReasonKey(escrow.reason) ? tReasons(escrow.reason) : escrow.reason}
 													</p>
 												</div>
 												<div className="flex-shrink-0 flex items-center md:items-start">

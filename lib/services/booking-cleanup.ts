@@ -38,7 +38,7 @@ const handlePendingBooking: CleanupHandler = async (booking, externalTx) => {
 			where: { id: booking.id },
 			data: {
 				status: BookingStatus.CANCELLED,
-				cancellationReason: "إلغاء تلقائي من النظام: انتهى وقت الجلسة ولم يتم تأكيدها.",
+				cancellationReason: "cancellation_auto_timeout_unconfirmed",
 				cancelledAt: new Date(),
 				paymentStatus: isPaid ? PaymentStatus.REFUNDED : booking.paymentStatus,
 			},
@@ -98,7 +98,7 @@ const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 				data: {
 					status: BookingStatus.CANCELLED,
 					reportWarningLevel: 3,
-					cancellationReason: "تخلف المعلم عن كتابة التقرير للمدة القصوى (96 ساعة). تمت المصادرة.",
+					cancellationReason: "cancellation_report_timeout_forfeited",
 					cancelledAt: new Date(),
 					paymentStatus:
 						booking.paymentStatus === PaymentStatus.PAID && !booking.isTrial
@@ -112,7 +112,7 @@ const handleConfirmedBooking: CleanupHandler = async (booking, externalTx) => {
 					data: {
 						bookingId: booking.id,
 						amount: booking.price,
-						reason: "مصادرة بسبب عدم تسليم تقرير الجلسة خلال 96 ساعة.",
+						reason: "forfeiture_no_report_96h",
 					},
 				});
 

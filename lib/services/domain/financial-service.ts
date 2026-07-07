@@ -79,13 +79,16 @@ export async function getAdminFinancialStats(startDate?: string, endDate?: strin
 	};
 }
 
+import { RecordReasonKey } from "@/lib/constants/reason-keys";
+
 export type PlatformRevenueTransaction = {
 	id: string;
 	date: Date;
 	type: "COMMISSION" | "CONFISCATED_ESCROW";
 	amount: number;
 	bookingId: string;
-	description: string;
+	description: RecordReasonKey;
+	teacherName: string;
 };
 
 export async function getPlatformRevenueDetails(startDate?: string, endDate?: string): Promise<PlatformRevenueTransaction[]> {
@@ -143,7 +146,8 @@ export async function getPlatformRevenueDetails(startDate?: string, endDate?: st
 				type: "COMMISSION",
 				amount: commission,
 				bookingId: b.id,
-				description: `عمولة جلسة - المعلم: ${b.teacherService.teacher.user.name}`
+				description: "ledger_commission_session",
+				teacherName: b.teacherService.teacher.user.name
 			});
 		}
 	}
@@ -155,7 +159,8 @@ export async function getPlatformRevenueDetails(startDate?: string, endDate?: st
 			type: "CONFISCATED_ESCROW",
 			amount: Number(e.amount),
 			bookingId: e.bookingId,
-			description: `مصادرة رصيد مجمد - المعلم: ${e.booking.teacherService.teacher.user.name}`
+			description: "ledger_forfeited_frozen_balance",
+			teacherName: e.booking.teacherService.teacher.user.name
 		});
 	}
 

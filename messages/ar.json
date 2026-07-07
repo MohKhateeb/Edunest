@@ -1886,5 +1886,12 @@
     "dispute_closed_lost_message": "تم قبول اعتراض ولي الأمر واسترداد مبلغ الجلسة.",
     "admin_verification_approved": "تهانينا! لقد تم توثيق حسابك بمستوى: {level}",
     "admin_verification_rejected": "تم رفض طلب التوثيق للسبب التالي: {reason}"
+  },
+  "recordReasons": {
+    "cancellation_auto_timeout_unconfirmed": "إلغاء تلقائي من النظام: انتهى وقت الجلسة ولم يتم تأكيدها.",
+    "cancellation_report_timeout_forfeited": "تخلف المعلم عن كتابة التقرير للمدة القصوى (96 ساعة). تمت المصادرة.",
+    "forfeiture_no_report_96h": "مصادرة بسبب عدم تسليم تقرير الجلسة خلال 96 ساعة.",
+    "ledger_commission_session": "عمولة جلسة - المعلم: {teacherName}",
+    "ledger_forfeited_frozen_balance": "مصادرة رصيد مجمد - المعلم: {teacherName}"
   }
 }
