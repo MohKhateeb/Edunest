@@ -1840,7 +1840,9 @@
     "action_error_72": "[EN] نوع الحساب غير مصرح له بالوصول.",
     "action_error_73": "[EN] غير مصرح",
     "admin_homepage_layout_desc": "Homepage layout and content in dynamic JSON format",
-    "payout_invalid_sessions": "Some selected sessions are invalid for payout or have already been settled."
+    "payout_invalid_sessions": "Some selected sessions are invalid for payout or have already been settled.",
+    "upload_invalid_file_type": "Invalid file type. Allowed: Images, PDF, and common video formats.",
+    "instant_service_desc": "Instant Service (Live Radar)"
   },
   "notifications": {
     "new_booking_title": "New Booking Awaiting You",

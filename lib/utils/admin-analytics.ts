@@ -1,3 +1,4 @@
+import { BOOKING_STATUS_AR } from "@/lib/translations";
 import { calculateEarnings } from "@/lib/utils/financial";
 
 export type BookingAnalyticsData = {
@@ -54,15 +55,8 @@ export function computeBookingStatuses(allBookings: BookingAnalyticsData[]) {
 	for (const b of allBookings) {
 		statusCounts[b.status] = (statusCounts[b.status] || 0) + 1;
 	}
-	const statusMap: Record<string, string> = {
-		COMPLETED: "مكتمل",
-		CONFIRMED: "مؤكد",
-		PENDING: "معلق",
-		CANCELLED: "ملغي",
-		REJECTED: "مرفوض",
-	};
 	return Object.entries(statusCounts).map(([status, count]) => ({
-		name: statusMap[status] || status,
+		name: BOOKING_STATUS_AR[status as keyof typeof BOOKING_STATUS_AR] || status,
 		value: count,
 	}));
 }
@@ -111,7 +105,7 @@ export function computeRequestedSpecializations(
 				specCounts[spec] = (specCounts[spec] || 0) + 1;
 			}
 		} else {
-			const spec = "غير محدد";
+			const spec = "UNSPECIFIED";
 			specCounts[spec] = (specCounts[spec] || 0) + 1;
 		}
 	}
@@ -123,7 +117,7 @@ export function computeRequestedSpecializations(
 export function computeSessionTypes(allBookings: BookingAnalyticsData[]) {
 	const typeCounts: Record<string, number> = {};
 	for (const b of allBookings) {
-		const type = b.teacherService?.serviceType?.name || "غير محدد";
+		const type = b.teacherService?.serviceType?.name || "UNSPECIFIED";
 		typeCounts[type] = (typeCounts[type] || 0) + 1;
 	}
 	return Object.entries(typeCounts)

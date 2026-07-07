@@ -13,12 +13,18 @@ export function formatPrice(amount: number | string): string {
 
 export { formatCurrency, getCurrencySymbol } from "./utils/currency";
 
-export function formatDuration(minutes: number): string {
-	if (minutes < 60) return `${minutes} دقيقة`;
+export function formatDuration(minutes: number, locale: string): string {
 	const hours = Math.floor(minutes / 60);
 	const mins = minutes % 60;
-	if (mins === 0) return `${hours} ساعة`;
-	return `${hours} ساعة و${mins} دقيقة`;
+
+	const hrFormat = new Intl.NumberFormat(locale, { style: "unit", unit: "hour" });
+	const minFormat = new Intl.NumberFormat(locale, { style: "unit", unit: "minute" });
+	const listFormat = new Intl.ListFormat(locale, { style: "long", type: "conjunction" });
+
+	if (hours === 0) return minFormat.format(minutes);
+	if (mins === 0) return hrFormat.format(hours);
+
+	return listFormat.format([hrFormat.format(hours), minFormat.format(mins)]);
 }
 
 export { formatLocalTime } from "./utils/time";

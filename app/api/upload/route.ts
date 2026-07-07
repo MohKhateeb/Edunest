@@ -9,6 +9,7 @@ import { auth } from "@/lib/auth";
 async function validateUploadRequest(
 	req: NextRequest,
 	session: Session | null,
+	t: any
 ): Promise<{
 	file?: File;
 	bucket?: string;
@@ -59,7 +60,7 @@ async function validateUploadRequest(
 	if (!ALLOWED_TYPES.includes(file.type)) {
 		return {
 			error: NextResponse.json(
-				{ error: "نوع الملف غير مسموح به. مسموح بالصور، ملفات PDF، ومقاطع الفيديو الشائعة" },
+				{ error: t("upload_invalid_file_type") },
 				{ status: 400 },
 			),
 		};
@@ -179,7 +180,7 @@ export async function POST(req: NextRequest) {
     const t = await getTranslations('common')
 	try {
 		const session = await auth();
-		const { file, bucket, fileName, error } = await validateUploadRequest(req, session);
+		const { file, bucket, fileName, error } = await validateUploadRequest(req, session, t);
 		if (error) return error;
 
 		const buffer = Buffer.from(await file!.arrayBuffer());

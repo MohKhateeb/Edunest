@@ -1840,7 +1840,9 @@
     "action_error_72": "نوع الحساب غير مصرح له بالوصول.",
     "action_error_73": "غير مصرح",
     "admin_homepage_layout_desc": "تخطيط ومحتوى الصفحة الرئيسية بتنسيق JSON الديناميكي",
-    "payout_invalid_sessions": "بعض الجلسات المحددة غير صالحة للتسوية أو تم تسويتها مسبقاً."
+    "payout_invalid_sessions": "بعض الجلسات المحددة غير صالحة للتسوية أو تم تسويتها مسبقاً.",
+    "upload_invalid_file_type": "نوع الملف غير مسموح به. مسموح بالصور، ملفات PDF، ومقاطع الفيديو الشائعة",
+    "instant_service_desc": "خدمة فوري (Live Radar)"
   },
   "notifications": {
     "new_booking_title": "حجز جديد بانتظارك",
