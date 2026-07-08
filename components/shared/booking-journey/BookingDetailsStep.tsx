@@ -120,7 +120,7 @@ export function BookingDetailsStep({
 						<User className="h-4 w-4" />
 						{t('altalb_almsthdf')}</label>
 					<div className="w-full premium-input text-xs bg-muted/50 cursor-not-allowed">
-						{selectedStudent ? `${selectedStudent.name} (الصف ${selectedStudent.grade})` : t('lm_ytm_thdyd_altalb')}
+						{selectedStudent ? `${selectedStudent.name} (${t('grade_level', { grade: selectedStudent.grade })})` : t('lm_ytm_thdyd_altalb')}
 					</div>
 				</div>
 

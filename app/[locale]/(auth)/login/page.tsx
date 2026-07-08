@@ -47,7 +47,7 @@ export default function LoginPage() {
 			if (res?.error) {
 				if (res.error === "BANNED_USER" || res.error.includes("BANNED_USER")) {
 					setErrorMsg(
-						"عذراً، تم إيقاف نشاط هذا الحساب. يرجى التواصل مع إدارة المنصة للاستفسار والدعم.",
+						t('auth_account_banned'),
 					);
 				} else {
 					setErrorMsg(t('key_1783109428350_uyay'));

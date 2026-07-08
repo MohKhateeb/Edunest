@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { updateHomepageLayout } from "@/lib/actions/admin";
-import { defaultHomepageContent } from "@/lib/default-homepage-content";
+import { defaultHomepageContent, getDefaultHomepageContent } from "@/lib/default-homepage-content";
 import type { HomepageContent } from "@/types/homepage";
 import AnnouncementEditor from "./AnnouncementEditor";
 import AssuranceEditor from "./AssuranceEditor";
@@ -21,6 +21,8 @@ interface Props {
 
 export default function HomepageSettingsManager({ initialLayoutJson }: Props) {
     const t = useTranslations('common');
+	const tHome = useTranslations('home');
+	const defaultContent = getDefaultHomepageContent(tHome);
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -30,13 +32,13 @@ export default function HomepageSettingsManager({ initialLayoutJson }: Props) {
 			try {
 				const parsed = JSON.parse(initialLayoutJson);
 				// Merge with defaults to ensure all fields exist
-				return { ...defaultHomepageContent, ...parsed };
+				return { ...defaultContent, ...parsed };
 			} catch (e) {
 				console.error("Failed to parse initial layout", e);
-				return defaultHomepageContent;
+				return defaultContent;
 			}
 		}
-		return defaultHomepageContent;
+		return defaultContent;
 	});
 
 	const [activeTab, setActiveTab] = useState<

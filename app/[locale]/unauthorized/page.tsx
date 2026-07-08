@@ -3,7 +3,7 @@ import { ShieldAlert } from "lucide-react";
 import Link from "next/link";
 
 export default async function UnauthorizedPage() {
-    const t = await getTranslations('common')
+	const t = await getTranslations('common');
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-background p-4">
 			<div className="max-w-md w-full text-center space-y-6 bg-card border border-border rounded-2xl p-8 glass shadow-md">
@@ -13,8 +13,7 @@ export default async function UnauthorizedPage() {
 				<h1 className="text-2xl font-extrabold tracking-tight">
 					{t('key_1783109428260_8u69')}</h1>
 				<p className="text-sm text-muted-foreground">
-					ليست لديك صلاحية للوصول إلى هذا القسم من التطبيق. يرجى التأكد من
-					الحساب المسجل به.
+					{t('unauthorized_page_desc')}
 				</p>
 				<div className="pt-2">
 					<Link

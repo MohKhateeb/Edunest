@@ -10,9 +10,6 @@ import { getLocalDateString } from "@/lib/utils/time";
 import { useTranslations, useLocale } from "next-intl";
 
 
-const WEEKDAYS_AR = ["ح", "ن", "ث", "ر", "خ", "ج", "س"];
-const WEEKDAYS_EN = ["S", "M", "T", "W", "T", "F", "S"]; // Starting from Sunday for standard date math, but wait, usually AR calendars start Saturday or Sunday. Let's stick to standard getDay() where 0=Sunday.
-
 interface TeacherCalendarProps {
 	bookings: DetailedBooking[];
 	currentDate: Date;
@@ -32,6 +29,16 @@ export function TeacherCalendar({
 	const locale = useLocale();
 	const year = currentDate.getFullYear();
 	const month = currentDate.getMonth();
+
+	const weekdays = useMemo(() => {
+		const baseDate = new Date(2026, 6, 5); // July 5, 2026 is Sunday
+		const formatter = new Intl.DateTimeFormat(locale, { weekday: "narrow" });
+		return Array.from({ length: 7 }).map((_, i) => {
+			const d = new Date(baseDate);
+			d.setDate(baseDate.getDate() + i);
+			return formatter.format(d);
+		});
+	}, [locale]);
 
 	const handleNextMonth = () => setCurrentDate(new Date(year, month + 1, 1));
 	const handlePrevMonth = () => setCurrentDate(new Date(year, month - 1, 1));
@@ -125,8 +132,8 @@ export function TeacherCalendar({
 			</div>
 
 			<div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-muted-foreground mb-2">
-				{(locale === "ar" ? WEEKDAYS_AR : WEEKDAYS_EN).map((day) => (
-					<div key={day} className="py-1">
+				{weekdays.map((day, i) => (
+					<div key={i} className="py-1">
 						{day}
 					</div>
 				))}

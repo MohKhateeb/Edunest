@@ -9,7 +9,7 @@ import PersuasionSection from "@/components/home/PersuasionSection";
 
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
-import { defaultHomepageContent } from "@/lib/default-homepage-content";
+import { defaultHomepageContent, getDefaultHomepageContent } from "@/lib/default-homepage-content";
 import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 import type { HomepageContent } from "@/types/homepage";
 
@@ -26,13 +26,15 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function HomePage() {
+	const tHome = await getTranslations("home");
+	const defaultContent = getDefaultHomepageContent(tHome);
 	// Fetch dynamic content
-	let content: HomepageContent = defaultHomepageContent;
+	let content: HomepageContent = defaultContent;
 	try {
 		const layoutSetting = await SystemAdminService.getHomepageData();
 		if (layoutSetting?.settingValue) {
 			const parsed = JSON.parse(layoutSetting.settingValue);
-			content = { ...defaultHomepageContent, ...parsed };
+			content = { ...defaultContent, ...parsed };
 		}
 	} catch (e) {
 		console.error("Error fetching homepage layout:", e);
