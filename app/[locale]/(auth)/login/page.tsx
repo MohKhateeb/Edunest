@@ -10,7 +10,8 @@ import { useState } from "react";
 import { loginSchema } from "@/lib/validations/user";
 
 export default function LoginPage() {
-    const t = useTranslations('common')
+    const t = useTranslations('common');
+	const tValidation = useTranslations('validation');
 	const router = useRouter();
 	const [formData, setFormData] = useState({
 		email: "",
@@ -33,7 +34,7 @@ export default function LoginPage() {
 			// Validate inputs client-side
 			const validated = loginSchema.safeParse(formData);
 			if (!validated.success) {
-				setErrorMsg(validated.error.issues[0].message);
+				setErrorMsg(tValidation(validated.error.issues[0].message as any));
 				setLoading(false);
 				return;
 			}

@@ -7,7 +7,8 @@ import { addStudent } from "@/lib/actions/user";
 import { studentSchema } from "@/lib/validations/user";
 
 export default function AddStudentForm() {
-    const t = useTranslations('parent')
+    const t = useTranslations('parent');
+	const tValidation = useTranslations('validation');
 	const [formData, setFormData] = useState({
 		name: "",
 		grade: "1",
@@ -38,7 +39,7 @@ export default function AddStudentForm() {
 			// Client side check
 			const validated = studentSchema.safeParse(data);
 			if (!validated.success) {
-				setErrorMsg(validated.error.issues[0].message);
+				setErrorMsg(tValidation(validated.error.issues[0].message as any));
 				return;
 			}
 

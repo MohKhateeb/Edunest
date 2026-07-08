@@ -22,7 +22,8 @@ import { cn } from "@/lib/utils";
 import { registerSchema } from "@/lib/validations/user";
 
 export default function RegisterPage() {
-    const t = useTranslations('common')
+    const t = useTranslations('common');
+	const tValidation = useTranslations('validation');
 	const router = useRouter();
 	const [formData, setFormData] = useState({
 		role: "PARENT" as "PARENT" | "TEACHER",
@@ -72,7 +73,7 @@ export default function RegisterPage() {
 			});
 
 			if (!validated.success) {
-				setErrorMsg(validated.error.issues[0].message);
+				setErrorMsg(tValidation(validated.error.issues[0].message as any));
 				return;
 			}
 
