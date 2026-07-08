@@ -84,7 +84,7 @@ export async function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 				<tfoot>
 					<tr className="bg-gray-50">
 						<td className="p-5 font-extrabold text-xl text-gray-900 border-t-2 border-gray-300">
-							{t('key_1783109440478_bg9z')}</td>
+							{t('payouts_net_amount')}</td>
 						<td className="p-5 font-extrabold text-xl text-end text-gray-900 border-t-2 border-gray-300">
 							{formatCurrency(Number(payoutToPrint.netAmount), payoutToPrint.currency)}
 						</td>
@@ -94,9 +94,9 @@ export async function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
 
 			<div className="text-center mt-20 text-gray-500 text-sm">
 				<p>
-					هذه الفاتورة مصدرة إلكترونياً من نظام EduNest ولا تحتاج إلى توقيع يدوي.
+					{t('payouts_invoice_footer_note')}
 				</p>
-				<p className="mt-2">{t('key_1783109440491_edrr')}</p>
+				<p className="mt-2">{t('payouts_invoice_thank_you')}</p>
 			</div>
 		</div>
 	);

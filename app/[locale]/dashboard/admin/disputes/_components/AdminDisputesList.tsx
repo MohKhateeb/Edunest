@@ -70,7 +70,7 @@ export default function AdminDisputesList({
 					</div>
 					<input
 						type="text"
-						placeholder="البحث باسم المعلم، ولي الأمر، أو سبب النزاع..."
+						placeholder={t('disputes_search_placeholder')}
 						className="block w-full rounded-2xl border-0 py-3 ps-10 pe-4 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-slate-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-primary dark:bg-slate-800 dark:text-white sm:text-sm sm:leading-6 transition-all"
 						value={searchQuery}
 						onChange={(e) => setSearchQuery(e.target.value)}

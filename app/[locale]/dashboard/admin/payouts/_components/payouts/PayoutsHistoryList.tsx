@@ -77,7 +77,7 @@ export async function PayoutsHistoryList({
 													type="button"
 													onClick={() => handlePrint(p)}
 													className="text-muted-foreground hover:text-foreground transition-colors p-2 rounded-lg hover:bg-accent"
-													title="طباعة الفاتورة"
+													title={t('payouts_print_invoice')}
 												>
 													<Printer className="w-4 h-4" />
 												</button>
@@ -86,7 +86,7 @@ export async function PayoutsHistoryList({
 													onClick={() => setSelectedPayoutId(p.id)}
 													className="text-xs font-semibold text-primary hover:underline px-2 py-1"
 												>
-													{t('key_1783109440127_463g')}</button>
+													{t('payouts_view_details')}</button>
 												{p.isPaid ? (
 													<span className="inline-flex items-center gap-1.5 text-xs text-emerald-600 bg-emerald-50 dark:bg-emerald-950/30 dark:text-emerald-400 font-bold px-3 py-1.5 rounded-full border border-emerald-200 dark:border-emerald-800/50">
 														<CheckCircle2 className="w-3.5 h-3.5" />

@@ -362,15 +362,14 @@ export default function AdminBookingsList({
 								<XCircle className="h-5 w-5 text-destructive" />
 								{t('key_1783109430024_0xkk')}</h3>
 							<p className="text-xs text-muted-foreground leading-relaxed">
-								بصفتك مدير النظام، فإن إلغاءك لهذا الحجز سيتجاوز شروط الإلغاء
-								العادية وسيعتبر نهائياً. سيتم إشعار المعلم وولي الأمر.
+								{t('bookings_admin_cancel_warning')}
 							</p>
 							<textarea
 								required
 								rows={3}
 								value={cancelReason}
 								onChange={(e) => setCancelReason(e.target.value)}
-								placeholder="اكتب سبب الإلغاء الإداري هنا (سيرسَل للأطراف المعنية)..."
+								placeholder={t('bookings_admin_cancel_reason_placeholder')}
 								className="w-full text-sm premium-input resize-none"
 							/>
 							<div className="flex justify-end gap-3 pt-2">

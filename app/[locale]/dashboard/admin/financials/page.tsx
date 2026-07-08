@@ -252,9 +252,9 @@ export default async function AdminFinancialsPage({
 				<div>
 					<h1 className="text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 flex items-center gap-2 mb-2">
 						<Activity className="w-8 h-8 text-blue-600 dark:text-blue-400" />
-						{t('key_1783109434381_hb9t')}</h1>
+						{t('financials_page_title')}</h1>
 					<p className="text-sm text-blue-800 dark:text-blue-300 font-medium">
-						مراقبة إيرادات المنصة، المهام المالية، تسويات المعلمين، والأموال المجمدة بلمحة بصر.
+						{t('financials_page_subtitle')}
 					</p>
 				</div>
 				<DateFilter />

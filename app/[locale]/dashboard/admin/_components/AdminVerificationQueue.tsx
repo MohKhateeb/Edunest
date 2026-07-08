@@ -282,7 +282,7 @@ export default function AdminVerificationQueue({
 											required
 											value={rejectReason}
 											onChange={(e) => setRejectReason(e.target.value)}
-											placeholder="اكتب سبب رفض طلب التوثيق بالتفصيل ليتم إرساله للمعلم..."
+											placeholder={t('verification_reject_placeholder')}
 											className="w-full text-xs premium-input resize-none"
 											rows={2}
 										/>
@@ -342,7 +342,7 @@ export default function AdminVerificationQueue({
 					<div className="m-auto text-center space-y-2">
 						<ShieldCheck className="h-12 w-12 text-muted-foreground/30 mx-auto" />
 						<p className="text-xs text-muted-foreground">
-							الرجاء اختيار أحد طلبات التوثيق الجانبية للمراجعة واتخاذ القرار.
+							{t('verification_select_request_prompt')}
 						</p>
 					</div>
 				)}

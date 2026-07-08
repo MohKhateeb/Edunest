@@ -202,14 +202,14 @@ export default function FAQAdminClient({
 											<button
 												onClick={() => handleOpenModal(faq)}
 												className="text-blue-600 hover:text-blue-900 transition-colors"
-												title="تعديل"
+												title={t('edit')}
 											>
 												<Edit2 className="w-5 h-5" />
 											</button>
 											<button
 												onClick={() => handleDelete(faq.id)}
 												className="text-red-600 hover:text-red-900 transition-colors"
-												title="حذف"
+												title={t('delete')}
 											>
 												<Trash2 className="w-5 h-5" />
 											</button>
@@ -258,7 +258,7 @@ export default function FAQAdminClient({
 										setFormData({ ...formData, question: e.target.value })
 									}
 									className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none"
-									placeholder="أدخل السؤال هنا..."
+									placeholder={t('faq_question_placeholder')}
 								/>
 							</div>
 
@@ -273,7 +273,7 @@ export default function FAQAdminClient({
 										setFormData({ ...formData, answer: e.target.value })
 									}
 									className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary focus:border-primary outline-none resize-none"
-									placeholder="أدخل الإجابة هنا..."
+									placeholder={t('faq_answer_placeholder')}
 								/>
 							</div>
 

@@ -61,8 +61,8 @@ export default async function AdminDashboard(props: { params: Promise<{ locale: 
 			<div className="mt-4 flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
 				<InteractiveMessage
 					character="hakeem"
-					title={`أهلاً بك، ${session.user.name}`}
-					message="تتيح لك لوحة القيادة مراقبة مؤشرات الأداء الرئيسية (KPIs)، وإدارة التدفقات المالية للمنصة بشكل مباشر. راقب الأرقام لضمان النمو."
+					title={t('welcome_back_name', { name: session.user.name || "" })}
+					message={t('admin_dashboard_subtitle')}
 					className="lg:w-2/3"
 				/>
 			</div>

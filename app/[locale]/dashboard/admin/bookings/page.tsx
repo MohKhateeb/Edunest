@@ -22,17 +22,16 @@ export default async function AdminBookingsPage() {
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-2xl font-extrabold mb-1">{t('key_1783109433318_m05v')}</h1>
+				<h1 className="text-2xl font-extrabold mb-1">{t('bookings_page_title')}</h1>
 				<p className="text-xs text-muted-foreground">
-					عرض ومتابعة كافة المواعيد والطلبات المسجلة في المنصة وإدارتها أو
-					إلغائها عند الضرورة.
+					{t('bookings_page_subtitle')}
 				</p>
 			</div>
 
 			<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all space-y-4">
 				<h2 className="font-extrabold text-base border-b border-border pb-2.5 flex items-center gap-2">
 					<Calendar className="h-5 w-5 text-primary" />
-					{t('key_1783109433321_vmyx')}{result.totalCount ?? result.data.length})
+					{t('bookings_page_list_count_prefix')}{result.totalCount ?? result.data.length})
 				</h2>
 
 				<AdminBookingsList initialData={sanitizedResult} />

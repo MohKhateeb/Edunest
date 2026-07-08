@@ -46,7 +46,7 @@ export default function AdminTeachersList({
 	) => {
 		setLoadingId(teacherId);
 		if (level === "NONE") {
-			await rejectTeacher(teacherId, "تم إلغاء التوثيق من المدير العام");
+			await rejectTeacher(teacherId, t('verification_cancelled_by_admin'));
 		} else {
 			await verifyTeacher(teacherId, level);
 		}
@@ -68,22 +68,22 @@ export default function AdminTeachersList({
 			<DataTable
 				data={filteredTeachers}
 				headers={[
-					"اسم المعلم / التخصص",
+					t('teachers_list_header_name_specialization'),
 					t('key_1783109431649_3qcs'),
 					t('key_1783109431652_uexs'),
-					"حالة التوثيق",
-					"تعديل مستوى التوثيق",
+					t('teachers_list_header_verification_status'),
+					t('teachers_list_header_edit_verification'),
 				]}
 				searchQuery={searchQuery}
 				setSearchQuery={setSearchQuery}
-				searchPlaceholder="ابحث بالاسم أو البريد..."
+				searchPlaceholder={t('teachers_list_search_placeholder')}
 				toolbarChildren={
 					<select
 						className="premium-input text-sm sm:w-48 cursor-pointer"
 						value={filterLevel}
 						onChange={(e) => setFilterLevel(e.target.value)}
 					>
-						<option value="ALL">كل المستويات</option>
+						<option value="ALL">{t('verification_all_levels')}</option>
 						<option value={"NONE"}>{t('key_1783109431578_3ocp')}</option>
 						<option value={"BRONZE"}>{t('key_1783109431586_jpgz')}</option>
 						<option value={"SILVER"}>{t('key_1783109431594_kafm')}</option>
@@ -129,7 +129,7 @@ export default function AdminTeachersList({
 										type="button"
 										onClick={() => setSelectedTeacherId(teacher.id)}
 										className="p-1.5 text-muted-foreground hover:text-primary hover:bg-primary/5 rounded-lg transition-colors cursor-pointer"
-										title="عرض الملف التعريفي الكامل"
+										title={t('teachers_list_view_profile')}
 									>
 										<Eye className="h-4.5 w-4.5" />
 									</button>
@@ -168,10 +168,10 @@ export default function AdminTeachersList({
 										}
 										className="premium-input text-xs w-36 cursor-pointer"
 									>
-										<option value={"NONE"}>غير موثق (NONE)</option>
-										<option value={"BRONZE"}>برونزي (BRONZE)</option>
-										<option value={"SILVER"}>فضي (SILVER)</option>
-										<option value={"GOLD"}>ذهبي (GOLD)</option>
+										<option value={"NONE"}>{t('verification_level_none')}</option>
+										<option value={"BRONZE"}>{t('verification_level_bronze')}</option>
+										<option value={"SILVER"}>{t('verification_level_silver')}</option>
+										<option value={"GOLD"}>{t('verification_level_gold')}</option>
 									</select>
 								)}
 							</td>

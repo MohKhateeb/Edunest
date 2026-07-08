@@ -24,10 +24,9 @@ export default async function AdminUsersPage({
 	return (
 		<div className="space-y-6">
 			<div>
-				<h1 className="text-2xl font-extrabold mb-1">{t('key_1783109434515_5mt6')}</h1>
+				<h1 className="text-2xl font-extrabold mb-1">{t('users_page_title')}</h1>
 				<p className="text-xs text-muted-foreground">
-					عرض جميع الحسابات المسجلة في المنصة بمختلف أنواعها، وتعديل حالات
-					النشاط وتفاصيل الأبناء التابعين لكل ولي أمر.
+					{t('users_page_subtitle')}
 				</p>
 			</div>
 

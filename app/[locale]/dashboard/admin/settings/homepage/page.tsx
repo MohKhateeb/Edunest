@@ -18,10 +18,9 @@ export default async function AdminHomepageSettingsPage() {
 		<div className="space-y-6">
 			<div className="bg-card border border-border rounded-xl p-6 shadow-sm">
 				<h1 className="text-2xl font-extrabold text-foreground mb-1">
-					{t('key_1783109439404_ulli')}</h1>
+					{t('homepage_settings_page_title')}</h1>
 				<p className="text-xs text-muted-foreground">
-					تحكم ديناميكياً بجميع نصوص الصفحة الرئيسية، العناوين، الإحصائيات،
-					بالإضافة إلى التحكم بظهور وإخفاء الشريط الإعلاني الخاص بالعروض.
+					{t('homepage_settings_page_subtitle')}
 				</p>
 			</div>
 

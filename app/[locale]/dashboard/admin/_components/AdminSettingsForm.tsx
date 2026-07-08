@@ -133,7 +133,7 @@ export default function AdminSettingsForm({
 			category: "POLICY",
 		},
 		DefaultCurrency: {
-			label: "العملة الافتراضية للمنصة",
+			label: t('settings_default_currency_label'),
 			type: "select",
 			options: getAllCurrencies().map(c => ({
 				value: c.code,
@@ -228,8 +228,7 @@ export default function AdminSettingsForm({
 					<Settings2 className="w-8 h-8 text-primary" />
 				</h1>
 				<p className="text-slate-500">
-					تحكم بالعمولات، سياسات الإلغاء، الجلسات المجانية والقواعد الأساسية
-					للمنصة بكل سهولة.
+					{t('settings_description')}
 				</p>
 			</div>
 

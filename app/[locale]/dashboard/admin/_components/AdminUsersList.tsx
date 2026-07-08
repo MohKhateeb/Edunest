@@ -60,7 +60,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 	const handleToggleStatus = async (userId: string, currentActive: boolean) => {
 		if (
 			confirm(
-				`هل أنت متأكد من رغبتك في ${currentActive ? t('key_1783109432345_18vy') : t('key_1783109432354_1085')} هذا المستخدم؟`,
+				t('users_confirm_toggle_active', { action: currentActive ? t('block') : t('activate') }),
 			)
 		) {
 			setLoadingUserId(userId);
@@ -70,12 +70,12 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 			if (res.success) {
 				toast.success(
 					currentActive
-						? t('key_1783109432362_xhy1')
-						: t('key_1783109432370_y4p0'),
+						? t('users_block_success')
+						: t('users_activate_success'),
 				);
 				router.refresh();
 			} else {
-				toast.error(res.error || t('key_1783109432394_g4oo'));
+				toast.error(res.error || t('users_toggle_error'));
 			}
 		}
 	};
@@ -178,7 +178,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 											type="button"
 											onClick={() => toggleExpand(u.id)}
 											className="p-1 rounded-lg hover:bg-accent text-muted-foreground transition-colors cursor-pointer"
-											title="عرض تفاصيل إضافية"
+											title={t('users_view_details_tooltip')}
 										>
 											{isExpanded ? (
 												<ChevronUp className="h-4.5 w-4.5 text-primary" />
@@ -261,7 +261,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 													type="button"
 													onClick={() => handleToggleStatus(u.id, u.isActive)}
 													className="text-xs font-bold text-rose-600 hover:text-white border border-rose-600/20 hover:bg-rose-600 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
-													title="حظر الحساب ومنع تسجيل الدخول"
+													title={t('users_block_tooltip')}
 												>
 													<UserX className="h-4 w-4" />
 													{t('key_1783109432179_b96b')}</button>
@@ -270,7 +270,7 @@ export default function AdminUsersList({ users }: AdminUsersListProps) {
 													type="button"
 													onClick={() => handleToggleStatus(u.id, u.isActive)}
 													className="text-xs font-bold text-emerald-600 hover:text-white border border-emerald-600/20 hover:bg-emerald-600 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1 cursor-pointer"
-													title="تفعيل وتنشيط الحساب"
+													title={t('users_activate_tooltip')}
 												>
 													<UserCheck className="h-4 w-4" />
 													{t('key_1783109432195_zcrb')}</button>
