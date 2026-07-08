@@ -10,7 +10,8 @@ import { getLocalDateString } from "@/lib/utils/time";
 import { useTranslations, useLocale } from "next-intl";
 
 
-const WEEKDAYS_AR = ["ح", "ن", "ث", "ر", "خ", "ج", "س"]; // Starting from Sunday for standard date math, but wait, usually AR calendars start Saturday or Sunday. Let's stick to standard getDay() where 0=Sunday.
+const WEEKDAYS_AR = ["ح", "ن", "ث", "ر", "خ", "ج", "س"];
+const WEEKDAYS_EN = ["S", "M", "T", "W", "T", "F", "S"]; // Starting from Sunday for standard date math, but wait, usually AR calendars start Saturday or Sunday. Let's stick to standard getDay() where 0=Sunday.
 
 interface TeacherCalendarProps {
 	bookings: DetailedBooking[];
@@ -124,7 +125,7 @@ export function TeacherCalendar({
 			</div>
 
 			<div className="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-muted-foreground mb-2">
-				{WEEKDAYS_AR.map((day) => (
+				{(locale === "ar" ? WEEKDAYS_AR : WEEKDAYS_EN).map((day) => (
 					<div key={day} className="py-1">
 						{day}
 					</div>

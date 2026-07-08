@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface NajeebCharacterProps {
 	mode: "welcome" | "study" | "success" | "help";
@@ -39,6 +40,7 @@ export default function NajeebCharacter({
 	animated = false,
 	className,
 }: NajeebCharacterProps) {
+	const t = useTranslations('common');
 	const imageSrc = characterImages[mode] || characterImages.welcome;
 	const dimension = sizeDimensions[size];
 
@@ -53,7 +55,7 @@ export default function NajeebCharacter({
 		>
 			<Image
 				src={imageSrc}
-				alt={`نصيحة من نجيب - وضع ${mode}`}
+				alt={t('najeeb_alt', { mode })}
 				width={dimension}
 				height={dimension}
 				className="object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.06)]"

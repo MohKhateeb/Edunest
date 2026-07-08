@@ -18,7 +18,7 @@ import type { AvailableTeacher, Student } from "@/types/booking";
 import { BookingDetailsStep } from "./booking-journey/BookingDetailsStep";
 import { TeacherSelectionStep } from "./booking-journey/TeacherSelectionStep";
 import { TimeSearchStep } from "./booking-journey/TimeSearchStep";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 type TimeFirstBookingFormProps = {
 	students: Student[];
@@ -30,8 +30,8 @@ export default function TimeFirstBookingForm({
 	students,
 	subjects,
 	hasUsedTrial,
-}: TimeFirstBookingFormProps) {
-    const t = useTranslations('common');
+}: TimeFirstBookingFormProps) {    const t = useTranslations('common');
+	const locale = useLocale();
 	const router = useRouter();
 
 	// خطوات النموذج
@@ -243,20 +243,19 @@ export default function TimeFirstBookingForm({
 	// تحويل التاريخ لعرض عربي
 	const selectedDateLabel = useMemo(() => {
 		if (!searchQuery.selectedDate) return "";
-		const d = new Date(searchQuery.selectedDate);
-		const dayName = new Intl.DateTimeFormat("ar-PS", {
+		const d = new Date(searchQuery.selectedDate);		const dayName = new Intl.DateTimeFormat(locale === "ar" ? "ar-PS" : "en-US", {
 			timeZone: PALESTINE_TZ,
 			weekday: "long",
 		}).format(d);
-		const dayNum = new Intl.DateTimeFormat("ar-PS", {
+		const dayNum = new Intl.DateTimeFormat(locale === "ar" ? "ar-PS" : "en-US", {
 			timeZone: PALESTINE_TZ,
 			day: "numeric",
 		}).format(d);
-		const monthName = new Intl.DateTimeFormat("ar-PS", {
+		const monthName = new Intl.DateTimeFormat(locale === "ar" ? "ar-PS" : "en-US", {
 			timeZone: PALESTINE_TZ,
 			month: "long",
 		}).format(d);
-		return `${dayName}، ${dayNum} ${monthName}`;
+		return locale === "ar" ? `${dayName}، ${dayNum} ${monthName}` : `${dayName}, ${monthName} ${dayNum}`;
 	}, [searchQuery.selectedDate]);
 
 	const selectedSubjectLabel = useMemo(() => {

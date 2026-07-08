@@ -199,7 +199,7 @@ export default function PersonalProfileForm({
 
 							<div className="space-y-1.5">
 								<label className="text-xs font-bold text-foreground/80 block">
-									العملة المفضلة</label>
+									{t('preferred_currency')}</label>
 								<select
 									value={profileForm.preferredCurrency}
 									onChange={(e) =>

@@ -22,12 +22,17 @@ export default function PersuasionSection({
 		// Otherwise, it means the admin has customized it, so return the custom text.
 		const isDefault = [
 			key,
-			tAdvisors(key, { fallback: "" }), // Arabic or English depending on current locale
+			tAdvisors(key, { fallback: "" }),
 			"دعنا نستمع لما يقوله حكيم ونجيب...",
+			"Let's listen to what Hakeem and Najeeb have to say...",
 			"نصيحة حكيم",
+			"Hakeem's Advice",
 			"\"يا بني، الوقت هو أثمن ما نملكه. والتعليم الفردي المخصص يختصر المسافات، يركز على نقاط الضعف، ويبني الثقة بالنفس بشكل أسرع بكثير من الطرق التقليدية.\"",
+			"\"My son, time is our most precious asset. Personalized tutoring shortens distances, focuses on weaknesses, and builds self-confidence much faster than traditional methods.\"",
 			"رأي نجيب",
-			"\"صحيح جداً! وأفضل ما في الأمر أنني أستطيع اختيار المعلم الذي يفهمني، في الوقت الذي يناسبني تماماً دون أن أضطر لتغيير جدول يومي المليء بالأنشطة.\""
+			"Najeeb's Opinion",
+			"\"صحيح جداً! وأفضل ما في الأمر أنني أستطيع اختيار المعلم الذي يفهمني، في الوقت الذي يناسبني تماماً دون أن أضطر لتغيير جدول يومي المليء بالأنشطة.\"",
+			"\"Absolutely right! The best part is that I can choose the teacher who understands me, at a time that suits me perfectly without changing my busy daily schedule.\""
 		].includes(text);
 		
 		return isDefault ? tAdvisors(key) : text;

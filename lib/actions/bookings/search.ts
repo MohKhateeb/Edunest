@@ -193,7 +193,7 @@ export async function searchAvailableTeachers(input: {
 					userName: teacher.user.name,
 					specialization:
 						teacher.subjects?.map((s) => s.subject.name).join(", ") ||
-						t("search_unspecified", undefined, ) as any,
+						t("search_unspecified"),
 					city: teacher.city,
 					profileImageUrl: teacher.profileImageUrl,
 					verificationLevel: teacher.verificationLevel,

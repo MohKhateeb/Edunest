@@ -688,7 +688,9 @@
     "profile_description": "Manage your basic personal information and change your password to secure your account.",
     "error_title": "Oops, something went wrong!",
     "error_description": "It seems there was a problem loading this page. We apologize for this inconvenience.",
-    "error_retry_btn": "Try Again"
+    "error_retry_btn": "Try Again",
+    "preferred_currency": "Preferred Currency",
+    "najeeb_alt": "Advice from Najeeb - mode {mode}"
   },
   "nav": {
     "dashboard": "Dashboard",

@@ -29,11 +29,12 @@ import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import NotificationBell from "@/components/shared/NotificationBell";
 import { adminLinks, parentLinks, teacherLinks } from "@/lib/config/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 export default function Header() {
     const t = useTranslations('common');
     const tNav = useTranslations('nav');
+	const locale = useLocale();
 	const { data: session } = useSession();
 	const [isOpen, setIsOpen] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
@@ -116,7 +117,7 @@ export default function Header() {
 												/>
 											) : (
 												<div className="h-full w-full bg-gradient-to-tr from-primary to-primary-foreground/30 text-white font-extrabold flex items-center justify-center text-sm">
-													{(session.user.name || "أ").charAt(0)}
+													{(session.user.name || (locale === "ar" ? "أ" : "U")).charAt(0)}
 												</div>
 											)}
 										</div>
