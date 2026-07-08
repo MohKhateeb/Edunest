@@ -826,7 +826,8 @@
     "wrfa_hwytk_walshhadh_aljamayh": "and upload your ID and degree to activate your account and appear in search.",
     "mn_lwhh_althkm_ymknk": "From dashboard you can accept student bookings, manage availability, and track earnings seamlessly.",
     "rabt_sfhtk_alaamh_lltlab": "Your public page link for students",
-    "welcome_back_name": "Welcome, Mr./Ms. {name} 👋"
+    "welcome_back_name": "Welcome, Mr./Ms. {name} 👋",
+    "pending_bookings_count_message": "{count, plural, =1 {You have 1 pending booking request! Please respond quickly to increase your credibility with students.} other {You have {count} pending booking requests! Please respond quickly to increase your credibility with students.}}"
   },
   "help": {
     "tab_general": "1. General Platform Rules",
@@ -1933,7 +1934,10 @@
     "faq_subtitle": "Find answers to the most common questions regarding account management, bookings, and financial matters for teachers.",
     "faq_error_load": "An error occurred while loading FAQs",
     "pending_reports_title": "Pending Session Reports",
-    "pending_reports_subtitle": "Please submit performance reports immediately to prevent holding or losing session earnings."
+    "pending_reports_subtitle": "Please submit performance reports immediately to prevent holding or losing session earnings.",
+    "teacher_not_found_title": "Teacher Not Found | EduNest",
+    "teacher_meta_title": "{name} - {spec} Tutor | EduNest",
+    "teacher_meta_desc": "Verified {spec} tutor in {city}. Book your free trial session now."
   },
   "advisors": {
     "hakeem_sidebar_parent_1": "Education is not the filling of a pail, but the lighting of a fire. Check your child's performance regularly!",
@@ -2107,7 +2111,8 @@
     "payout_invalid_sessions": "Some selected sessions are invalid for payout or have already been settled.",
     "upload_invalid_file_type": "Invalid file type. Allowed: Images, PDF, and common video formats.",
     "instant_service_desc": "Instant Service (Live Radar)",
-    "search_unspecified": "Unspecified"
+    "search_unspecified": "Unspecified",
+    "teacher_profile_not_found": "Teacher profile not found."
   },
   "notifications": {
     "new_booking_title": "New Booking Awaiting You",

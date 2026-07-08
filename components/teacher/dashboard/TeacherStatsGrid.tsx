@@ -26,7 +26,7 @@ export default function TeacherStatsGrid({
 				title={t('mwjz_alhkym_lidarh_hssk')}
 				message={
 					pendingRequestsCount > 0
-						? `لديك ${pendingRequestsCount} طلب حجز بانتظار ردك! سارع بتأكيدها لزيادة موثوقيتك عند الطلاب.`
+						? t('pending_bookings_count_message', { count: pendingRequestsCount })
 						: t('amwrk_mmtazh_ahrs_ala')
 				}
 			/>

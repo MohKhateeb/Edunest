@@ -183,7 +183,7 @@ export default function RegisterPage() {
 									required
 									value={formData.name}
 									onChange={handleChange}
-									placeholder="محمد أحمد"
+									placeholder={t('key_1783109428559_ytn1')}
 									className="w-full premium-input text-sm"
 								/>
 							</div>
@@ -263,7 +263,7 @@ export default function RegisterPage() {
 									required
 									value={formData.password}
 									onChange={handleChange}
-									placeholder="•••••••• (6 أحرف على الأقل)"
+									placeholder={t('str_4oCi4oCi')}
 									className="w-full premium-input text-sm"
 								/>
 							</div>

@@ -51,17 +51,19 @@ export async function generateMetadata({
 	const teacher = await UserService.getTeacherMetadata(slug);
 
 	if (!teacher || !teacher.user.isActive) {
-		return { title: "معلم غير موجود | إديونست" };
+		return { title: t('teacher_not_found_title') };
 	}
 
 	const spec =
 		teacher.subjects?.map((s) => s.subject.name).join(", ") || tCommon('ghyr_mhdd');
 
+	const city = teacher.city || tCommon('key_1783109429460_z0kk');
+
 	return {
-		title: `${teacher.user.name} - معلم ${spec} | إديونست`,
+		title: t('teacher_meta_title', { name: teacher.user.name, spec }),
 		description: teacher.bio
 			? teacher.bio.slice(0, 155)
-			: `معلم ${spec} موثّق في ${teacher.city ?? "الضفة الغربية"}. احجز جلستك التجريبية المجانية الآن.`,
+			: t('teacher_meta_desc', { spec, city }),
 	};
 }
 

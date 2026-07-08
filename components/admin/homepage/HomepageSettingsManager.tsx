@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import { updateHomepageLayout } from "@/lib/actions/admin";
-import { defaultHomepageContent, getDefaultHomepageContent } from "@/lib/default-homepage-content";
+import { getDefaultHomepageContent } from "@/lib/default-homepage-content";
 import type { HomepageContent } from "@/types/homepage";
 import AnnouncementEditor from "./AnnouncementEditor";
 import AssuranceEditor from "./AssuranceEditor";

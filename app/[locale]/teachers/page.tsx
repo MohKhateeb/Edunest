@@ -7,12 +7,20 @@ import Header from "@/components/shared/Header";
 import { UserService } from "@/lib/services/domain/user-service";
 import { formatCurrency } from "@/lib/utils/currency";
 import { locationRepository } from "@/lib/repositories/locationRepository";
+import type { Metadata } from "next";
 
-export const metadata = {
-	title: "ابحث عن معلم | إديونست",
-	description:
-		"تصفح قائمة المعلمين الموثّقين في الضفة الغربية وابحث بحسب التخصص والمدينة.",
-};
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: 'common' });
+	return {
+		title: t('key_1783109427892_pzbk'),
+		description: t('key_1783109427898_ci72'),
+	};
+}
 
 interface SearchParams {
 	subject?: string;
@@ -24,19 +32,19 @@ async function getTeachers(params: SearchParams) {
 	return UserService.searchTeachers(params);
 }
 
-const GRADE_LABELS: Record<number, string> = {
-	1: "الأول",
-	2: "الثاني",
-	3: "الثالث",
-	4: "الرابع",
-	5: "الخامس",
-	6: "السادس",
-	7: "السابع",
-	8: "الثامن",
-	9: "التاسع",
-	10: "العاشر",
-	11: "الحادي عشر",
-	12: "الثاني عشر",
+const GRADE_LABEL_KEYS: Record<number, string> = {
+	1: "key_1783109427957_e53t",
+	2: "key_1783109427963_de9z",
+	3: "key_1783109427968_jq6s",
+	4: "key_1783109427987_kasc",
+	5: "key_1783109427993_569z",
+	6: "key_1783109427998_8ikp",
+	7: "key_1783109428004_vcdi",
+	8: "key_1783109428009_ffra",
+	9: "key_1783109428016_rsv5",
+	10: "key_1783109428022_dg13",
+	11: "key_1783109428028_5si7",
+	12: "key_1783109428033_85m6",
 };
 
 export default async function TeachersPage({
@@ -234,10 +242,13 @@ export default async function TeachersPage({
 											)}
 											{teacher.gradeLevels.length > 0 && (
 												<p className="text-xs text-muted-foreground mb-3">
-													الصفوف:{" "}
+													{tCommon('key_1783109427774_cfcr')}{" "}
 													{teacher.gradeLevels
 														.slice(0, 3)
-														.map((g) => GRADE_LABELS[g] ?? g)
+														.map((g) => {
+															const key = GRADE_LABEL_KEYS[g];
+															return key ? t(key) : String(g);
+														})
 														.join("، ")}
 													{teacher.gradeLevels.length > 3 && " ..."}
 												</p>

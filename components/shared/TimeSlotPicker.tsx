@@ -8,7 +8,7 @@ import {
 	getLocalDateString,
 	PALESTINE_TZ,
 } from "@/lib/utils/time";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 type SlotPickerProps = {
 	availability: {
@@ -31,6 +31,7 @@ export default function TimeSlotPicker({
 	onChange,
 }: SlotPickerProps) {
     const t = useTranslations('common');
+	const locale = useLocale();
 	const [selectedDate, setSelectedDate] = useState("");
 	const [selectedSlotTime, setSelectedSlotTime] = useState<number | null>(null);
 	const [showCustomDatePicker, setShowCustomDatePicker] = useState(false);
@@ -161,19 +162,21 @@ export default function TimeSlotPicker({
 	const selectedDateLabel = useMemo(() => {
 		if (!selectedDate) return "";
 		const d = new Date(selectedDate);
-		const dayName = new Intl.DateTimeFormat("ar-PS", {
+		const formatLocale = locale === "ar" ? "ar-PS" : "en-US";
+		const dayName = new Intl.DateTimeFormat(formatLocale, {
 			timeZone: PALESTINE_TZ,
 			weekday: "long",
 		}).format(d);
-		const dayNum = new Intl.DateTimeFormat("ar-PS", {
+		const dayNum = new Intl.DateTimeFormat(formatLocale, {
 			timeZone: PALESTINE_TZ,
 			day: "numeric",
 		}).format(d);
-		const monthName = new Intl.DateTimeFormat("ar-PS", {
+		const monthName = new Intl.DateTimeFormat(formatLocale, {
 			timeZone: PALESTINE_TZ,
 			month: "long",
 		}).format(d);
-		return `${dayName}، ${dayNum} ${monthName}`;
+		const comma = locale === "ar" ? "، " : ", ";
+		return `${dayName}${comma}${dayNum} ${monthName}`;
 	}, [selectedDate]);
 
 	return (

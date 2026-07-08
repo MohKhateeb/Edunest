@@ -21,7 +21,7 @@ import React from "react";
 import type { commonTeacherInclude } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils/currency";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 export type DetailedTeacher = Prisma.TeacherGetPayload<{
 	include: typeof commonTeacherInclude;
@@ -39,6 +39,7 @@ export default function TeacherDetails({
 	setActiveTab,
 }: TeacherDetailsProps) {
     const t = useTranslations('common');
+	const locale = useLocale();
 	return (
 		<div className="space-y-6">
 			{/* Teacher Main Header */}
@@ -62,7 +63,9 @@ export default function TeacherDetails({
 						</h3>
 						<span className="text-xs text-primary font-bold">
 							{teacher.subjects && teacher.subjects.length > 0
-								? teacher.subjects.map((s) => s.subject.name).join("، ")
+								? new Intl.ListFormat(locale, { style: "long", type: "conjunction" }).format(
+										teacher.subjects.map((s) => s.subject.name)
+								  )
 								: teacher.subSpecialization}
 						</span>
 					</div>
@@ -183,7 +186,7 @@ export default function TeacherDetails({
 									{t('alsfwf_alty_ydrsha')}{" "}
 									<strong>
 										{teacher.gradeLevels
-											?.map((g: number) => `الصف ${g}`)
+											?.map((g: number) => t('grade_level', { grade: g }))
 											.join(", ") || t('ghyr_mhdd')}
 									</strong>
 								</span>

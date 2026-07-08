@@ -2,6 +2,7 @@
 
 import type { Teacher } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
+import { getErrorT } from "@/lib/i18n/get-server-translations";
 
 export async function requireTeacherProfile(userId: string): Promise<
 	Teacher & {
@@ -18,7 +19,8 @@ export async function requireTeacherProfile(userId: string): Promise<
 	});
 
 	if (!teacher) {
-		throw new Error("الملف الشخصي للمعلم غير موجود.");
+		const t = await getErrorT();
+		throw new Error(t("teacher_profile_not_found"));
 	}
 
 	return teacher;

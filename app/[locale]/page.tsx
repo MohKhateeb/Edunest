@@ -9,7 +9,7 @@ import PersuasionSection from "@/components/home/PersuasionSection";
 
 import Footer from "@/components/shared/Footer";
 import Header from "@/components/shared/Header";
-import { defaultHomepageContent, getDefaultHomepageContent } from "@/lib/default-homepage-content";
+import { getDefaultHomepageContent } from "@/lib/default-homepage-content";
 import { SystemAdminService } from "@/lib/services/domain/system-admin-service";
 import type { HomepageContent } from "@/types/homepage";
 
