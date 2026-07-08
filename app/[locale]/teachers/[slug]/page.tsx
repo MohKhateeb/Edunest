@@ -225,7 +225,7 @@ export default async function TeacherProfilePage({
 										id="login-to-book-btn"
 										className="mt-4 w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-bold rounded-xl py-3 text-sm hover:opacity-90 transition-opacity"
 									>
-										🔑 سجّل دخولك للحجز
+										🔑 {t('login_to_book')}
 									</Link>
 								)}
 							</div>

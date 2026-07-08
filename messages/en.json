@@ -1943,7 +1943,8 @@
     "reviews_count": "{count, plural, =1 {1 rating} other {{count} ratings}}",
     "completed_sessions_count": "{count, plural, =1 {1 completed session} other {{count} completed sessions}}",
     "tutors_waiting_count": "{count, plural, =1 {1 verified tutor is waiting for you} other {{count} verified tutors are waiting for you}}",
-    "price_from": "from {price}"
+    "price_from": "from {price}",
+    "login_to_book": "Log in to book"
   },
   "advisors": {
     "hakeem_sidebar_parent_1": "Education is not the filling of a pail, but the lighting of a fire. Check your child's performance regularly!",

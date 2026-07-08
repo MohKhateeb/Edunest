@@ -1943,7 +1943,8 @@
     "reviews_count": "{count, plural, =1 {تقييم واحد} =2 {تقييمان} other {{count} تقييمات}}",
     "completed_sessions_count": "{count, plural, =1 {جلسة مكتملة واحدة} =2 {جلستان مكتملتان} other {{count} جلسة مكتملة}}",
     "tutors_waiting_count": "{count, plural, =1 {معلم موثّق واحد في انتظارك} =2 {معلمان موثقان في انتظارك} other {{count} معلم موثّق في انتظارك}}",
-    "price_from": "من {price}"
+    "price_from": "من {price}",
+    "login_to_book": "سجّل دخولك للحجز"
   },
   "advisors": {
     "hakeem_sidebar_parent_1": "التعليم ليس ملء دلو، بل إيقاد شعلة. تفقد أداء طفلك بانتظام للوقوف على نقاط قوته!",
