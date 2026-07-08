@@ -48,15 +48,16 @@ export default function TimeSlotPicker({
 			const dateStr = getLocalDateString(d); // "YYYY-MM-DD"
 			const dayOfWeek = getDayOfWeekPalestine(d); // 0 to 6
 
-			const dayName = new Intl.DateTimeFormat("ar-PS", {
+			const formatLocale = locale === "ar" ? "ar-PS" : "en-US";
+			const dayName = new Intl.DateTimeFormat(formatLocale, {
 				timeZone: PALESTINE_TZ,
 				weekday: "long",
 			}).format(d);
-			const dayNum = new Intl.DateTimeFormat("ar-PS", {
+			const dayNum = new Intl.DateTimeFormat(formatLocale, {
 				timeZone: PALESTINE_TZ,
 				day: "numeric",
 			}).format(d);
-			const monthName = new Intl.DateTimeFormat("ar-PS", {
+			const monthName = new Intl.DateTimeFormat(formatLocale, {
 				timeZone: PALESTINE_TZ,
 				month: "short",
 			}).format(d);

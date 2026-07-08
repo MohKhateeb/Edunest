@@ -50,7 +50,7 @@ export function PaymentCountdownReadOnly({
 		>
 			<Clock className="w-3.5 h-3.5" />
 			<span>
-				{isExpired ? t('antha_wqt_aldfa') : `متبقي للدفع: ${timeLeft}`}
+				{isExpired ? t('antha_wqt_aldfa') : `${t('key_1783109435478_s3ww')} ${timeLeft}`}
 			</span>
 		</div>
 	);

@@ -692,7 +692,8 @@
     "preferred_currency": "العملة المفضلة",
     "najeeb_alt": "نصيحة من نجيب - وضع {mode}",
     "auth_account_banned": "عذراً، تم إيقاف نشاط هذا الحساب. يرجى التواصل مع إدارة المنصة للاستفسار والدعم.",
-    "unauthorized_page_desc": "ليست لديك صلاحية للوصول إلى هذا القسم من التطبيق. يرجى التأكد من الحساب المسجل به."
+    "unauthorized_page_desc": "ليست لديك صلاحية للوصول إلى هذا القسم من التطبيق. يرجى التأكد من الحساب المسجل به.",
+    "key_1783109435478_s3ww": "الوقت المتبقي للدفع:"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
@@ -1937,7 +1938,12 @@
     "pending_reports_subtitle": "الرجاء كتابة تقارير الأداء فوراً لتفادي تجميد أو مصادرة أرباح الجلسات.",
     "teacher_not_found_title": "معلم غير موجود | إديونست",
     "teacher_meta_title": "{name} - معلم {spec} | إديونست",
-    "teacher_meta_desc": "معلم {spec} موثّق في {city}. احجز جلستك التجريبية المجانية الآن."
+    "teacher_meta_desc": "معلم {spec} موثّق في {city}. احجز جلستك التجريبية المجانية الآن.",
+    "years_of_experience_count": "{count, plural, =1 {سنة خبرة واحدة} =2 {سنتان خبرة} other {{count} سنوات خبرة}}",
+    "reviews_count": "{count, plural, =1 {تقييم واحد} =2 {تقييمان} other {{count} تقييمات}}",
+    "completed_sessions_count": "{count, plural, =1 {جلسة مكتملة واحدة} =2 {جلستان مكتملتان} other {{count} جلسة مكتملة}}",
+    "tutors_waiting_count": "{count, plural, =1 {معلم موثّق واحد في انتظارك} =2 {معلمان موثقان في انتظارك} other {{count} معلم موثّق في انتظارك}}",
+    "price_from": "من {price}"
   },
   "advisors": {
     "hakeem_sidebar_parent_1": "التعليم ليس ملء دلو، بل إيقاد شعلة. تفقد أداء طفلك بانتظام للوقوف على نقاط قوته!",

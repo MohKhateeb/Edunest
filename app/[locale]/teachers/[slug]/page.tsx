@@ -131,15 +131,15 @@ export default async function TeacherProfilePage({
 								</span>
 							)}
 							{teacher.yearsOfExperience > 0 && (
-								<span>🎓 {teacher.yearsOfExperience} سنة خبرة</span>
+								<span>🎓 {t('years_of_experience_count', { count: teacher.yearsOfExperience })}</span>
 							)}
 							<span className="flex items-center gap-1 text-amber-400">
 								★ {Number(teacher.averageRating).toFixed(1)}
 								<span className="text-white/50">
-									({teacher.totalReviews} تقييم)
+									({t('reviews_count', { count: teacher.totalReviews })})
 								</span>
 							</span>
-							<span>📚 {teacher.totalSessions} جلسة مكتملة</span>
+							<span>📚 {t('completed_sessions_count', { count: teacher.totalSessions })}</span>
 						</div>
 					</div>
 
@@ -151,7 +151,7 @@ export default async function TeacherProfilePage({
 								id="book-session-btn"
 								className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-2xl px-6 py-3 text-base transition-all duration-200 hover:shadow-lg hover:shadow-emerald-500/30 hover:-translate-y-0.5"
 							>
-								📅 احجز جلسة
+								{tCommon('key_1783109428958_2rm2')}
 							</Link>
 						) : (
 							<Link
@@ -159,7 +159,7 @@ export default async function TeacherProfilePage({
 								id="book-session-login-btn"
 								className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-bold rounded-2xl px-6 py-3 text-base transition-all duration-200 backdrop-blur-sm"
 							>
-								🔑 سجّل دخولك للحجز
+								{tCommon('key_1783109428977_miqu')}
 							</Link>
 						)}
 					</div>
@@ -174,7 +174,7 @@ export default async function TeacherProfilePage({
 						{/* Bio */}
 						{teacher.bio && (
 							<div className="bg-card border border-border rounded-2xl p-6">
-								<h2 className="text-lg font-bold mb-3">نبذة عن المعلم</h2>
+								<h2 className="text-lg font-bold mb-3">{tCommon('key_1783109428999_5kdw')}</h2>
 								<p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-line">
 									{teacher.bio}
 								</p>
@@ -184,7 +184,7 @@ export default async function TeacherProfilePage({
 						{/* Services */}
 						{teacher.services.length > 0 && (
 							<div className="bg-card border border-border rounded-2xl p-6">
-								<h2 className="text-lg font-bold mb-4">الخدمات والأسعار</h2>
+								<h2 className="text-lg font-bold mb-4">{tCommon('key_1783109429015_dz2a')}</h2>
 								<div className="space-y-3">
 									{teacher.services.map((svc) => (
 										<div
@@ -205,7 +205,7 @@ export default async function TeacherProfilePage({
 												<p className="font-bold text-primary text-base">
 													{formatCurrency(Number(svc.price), svc.currency)}
 												</p>
-												<p className="text-xs text-muted-foreground">للجلسة</p>
+												<p className="text-xs text-muted-foreground">{tCommon('key_1783109429047_idj8')}</p>
 											</div>
 										</div>
 									))}
@@ -217,7 +217,7 @@ export default async function TeacherProfilePage({
 										id="book-now-bottom-btn"
 										className="mt-4 w-full flex items-center justify-center gap-2 bg-primary text-primary-foreground font-bold rounded-xl py-3 text-sm hover:opacity-90 transition-opacity"
 									>
-										📅 احجز الآن
+										{tCommon('key_1783109429065_r05x')}
 									</Link>
 								) : (
 									<Link
@@ -235,7 +235,7 @@ export default async function TeacherProfilePage({
 						{teacher.reviews.length > 0 && (
 							<div className="bg-card border border-border rounded-2xl p-6">
 								<h2 className="text-lg font-bold mb-4">
-									تقييمات الأهالي
+									{tCommon('key_1783109429113_fwnv')}
 									<span className="text-sm font-normal text-muted-foreground me-2">
 										({teacher.totalReviews})
 									</span>
@@ -252,7 +252,7 @@ export default async function TeacherProfilePage({
 														{review.booking.parent.name}
 													</p>
 													<p className="text-xs text-muted-foreground">
-														للطالب {review.booking.student.name} — الصف{" "}
+														{tCommon('key_1783109429128_q7s0')}{" "}{review.booking.student.name} {" "}{tCommon('key_1783109429144_n1a9')}{" "}
 														{GRADE_LABELS[review.booking.student.grade] ??
 															review.booking.student.grade}
 													</p>
@@ -283,14 +283,14 @@ export default async function TeacherProfilePage({
 					<div className="space-y-6">
 						{/* Quick Info */}
 						<div className="bg-card border border-border rounded-2xl p-5 space-y-4">
-							<h2 className="text-base font-bold">معلومات سريعة</h2>
+							<h2 className="text-base font-bold">{tCommon('key_1783109429159_2dyg')}</h2>
 
 							{teacher.education && (
 								<div className="flex items-start gap-3 text-sm">
 									<span className="text-xl">🎓</span>
 									<div>
 										<p className="font-semibold text-xs text-muted-foreground">
-											المؤهل العلمي
+											{tCommon('key_1783109429176_y9fy')}
 										</p>
 										<p>{teacher.education}</p>
 									</div>
@@ -302,9 +302,9 @@ export default async function TeacherProfilePage({
 									<span className="text-xl">⏳</span>
 									<div>
 										<p className="font-semibold text-xs text-muted-foreground">
-											سنوات الخبرة
+											{tCommon('key_1783109429196_lvmt')}
 										</p>
-										<p>{teacher.yearsOfExperience} سنة</p>
+										<p>{t('years_of_experience_count', { count: teacher.yearsOfExperience })}</p>
 									</div>
 								</div>
 							)}
@@ -314,7 +314,7 @@ export default async function TeacherProfilePage({
 									<span className="text-xl">📚</span>
 									<div>
 										<p className="font-semibold text-xs text-muted-foreground mb-1">
-											الصفوف الدراسية
+											{tCommon('key_1783109429227_e4pf')}
 										</p>
 										<div className="flex flex-wrap gap-1">
 											{teacher.gradeLevels.map((g) => (
@@ -322,7 +322,7 @@ export default async function TeacherProfilePage({
 													key={g}
 													className="bg-accent text-accent-foreground rounded-lg px-2 py-0.5 text-xs"
 												>
-													{GRADE_LABELS[g] ?? `الصف ${g}`}
+													{GRADE_LABELS[g] ?? tCommon('grade_level', { grade: g })}
 												</span>
 											))}
 										</div>
@@ -335,7 +335,7 @@ export default async function TeacherProfilePage({
 						{teacher.availability.length > 0 && (
 							<div className="bg-card border border-border rounded-2xl p-5">
 								<h2 className="text-base font-bold mb-4">
-									أوقات التوفر الأسبوعية
+									{tCommon('key_1783109429263_rd2u')}
 								</h2>
 								<AvailabilityViewer availability={teacher.availability} />
 							</div>
@@ -352,7 +352,7 @@ export default async function TeacherProfilePage({
 								/>
 							</div>
 							<p className="text-xs text-muted-foreground">
-								بناءً على {teacher.totalReviews} تقييم حقيقي
+								{tCommon('key_1783109429278_vdfv')}{" "}{t('reviews_count', { count: teacher.totalReviews })}{" "}{tCommon('key_1783109429295_sewz')}
 							</p>
 						</div>
 					</div>

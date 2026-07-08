@@ -595,7 +595,7 @@
     "key_1783109427774_cfcr": "Rows:",
     "key_1783109427855_u1z3": "Previous →",
     "key_1783109427877_dax6": "← next",
-    "key_1783109427892_pzbk": "Find a teacher | edionest",
+    "key_1783109427892_pzbk": "Find a teacher | EduNest",
     "key_1783109427898_ci72": "Browse the list of certified teachers in the West Bank and search by specialty and city.",
     "key_1783109427904_06bk": "Ramallah",
     "key_1783109427910_g4gw": "Hebron",
@@ -692,7 +692,8 @@
     "preferred_currency": "Preferred Currency",
     "najeeb_alt": "Advice from Najeeb - mode {mode}",
     "auth_account_banned": "Sorry, this account has been suspended. Please contact the platform administration for inquiry and support.",
-    "unauthorized_page_desc": "You do not have permission to access this section of the application. Please check the account you are logged in with."
+    "unauthorized_page_desc": "You do not have permission to access this section of the application. Please check the account you are logged in with.",
+    "key_1783109435478_s3ww": "Time remaining for payment:"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -1937,7 +1938,12 @@
     "pending_reports_subtitle": "Please submit performance reports immediately to prevent holding or losing session earnings.",
     "teacher_not_found_title": "Teacher Not Found | EduNest",
     "teacher_meta_title": "{name} - {spec} Tutor | EduNest",
-    "teacher_meta_desc": "Verified {spec} tutor in {city}. Book your free trial session now."
+    "teacher_meta_desc": "Verified {spec} tutor in {city}. Book your free trial session now.",
+    "years_of_experience_count": "{count, plural, =1 {1 year of experience} other {{count} years of experience}}",
+    "reviews_count": "{count, plural, =1 {1 rating} other {{count} ratings}}",
+    "completed_sessions_count": "{count, plural, =1 {1 completed session} other {{count} completed sessions}}",
+    "tutors_waiting_count": "{count, plural, =1 {1 verified tutor is waiting for you} other {{count} verified tutors are waiting for you}}",
+    "price_from": "from {price}"
   },
   "advisors": {
     "hakeem_sidebar_parent_1": "Education is not the filling of a pail, but the lighting of a fire. Check your child's performance regularly!",
