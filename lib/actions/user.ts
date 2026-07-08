@@ -17,7 +17,7 @@ import {
 	studentSchema,
 	updateProfileSchema,
 } from "@/lib/validations/user";
-import { getErrorT } from "@/lib/i18n/get-server-translations";
+import { getErrorT, getValidationT } from "@/lib/i18n/get-server-translations";
 
 const userRepository = new PrismaUserRepository();
 const teacherRepository = new PrismaTeacherRepository();
@@ -175,7 +175,8 @@ export async function registerUser(
 	try {
 		const validated = registerSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const result = await _registerUserInDb(validated.data);
@@ -197,7 +198,8 @@ export async function addStudent(
 
 		const validated = studentSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const result = await _addStudentInDb(userId, validated.data);
@@ -222,7 +224,8 @@ export async function updateStudent(
 
 		const validated = studentSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const result = await _updateStudentInDb(studentId, userId, validated.data);
@@ -250,7 +253,8 @@ export async function updateUserProfile(
 
 		const validated = updateProfileSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const result = await _updateUserProfileInDb(userId, validated.data);
@@ -278,7 +282,8 @@ export async function changeUserPassword(
 
 		const validated = changePasswordSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const result = await _changeUserPasswordInDb(userId, validated.data);

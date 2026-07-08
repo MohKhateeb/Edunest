@@ -2,31 +2,31 @@ import { UserType } from "@prisma/client";
 import { z } from "zod";
 
 export const loginSchema = z.object({
-	email: z.string().email("البريد الإلكتروني غير صالح"),
-	password: z.string().min(6, "كلمة المرور يجب أن لا تقل عن 6 أحرف"),
+	email: z.string().email("validation_email_invalid"),
+	password: z.string().min(6, "validation_password_min_length"),
 });
 
 export const registerSchema = z.object({
-	name: z.string().min(2, "الاسم يجب أن لا يقل عن حرفين"),
-	email: z.string().email("البريد الإلكتروني غير صالح"),
+	name: z.string().min(2, "validation_name_min_length"),
+	email: z.string().email("validation_email_invalid"),
 	phone: z.string().optional().or(z.literal("")),
-	password: z.string().min(6, "كلمة المرور يجب أن لا تقل عن 6 أحرف"),
+	password: z.string().min(6, "validation_password_min_length"),
 	userType: z.enum([UserType.PARENT, UserType.TEACHER]),
 });
 
 export const studentSchema = z.object({
-	name: z.string().min(2, "اسم الطالب مطلوب"),
+	name: z.string().min(2, "validation_student_name_required"),
 	grade: z.coerce
 		.number()
 		.int()
-		.min(1, "الصف الدراسي يجب أن يكون بين 1 و 12")
+		.min(1, "validation_student_grade_range")
 		.max(12),
 	school: z.string().optional(),
 });
 
 export const updateProfileSchema = z.object({
-	name: z.string().min(2, "الاسم يجب أن لا يقل عن حرفين"),
-	email: z.string().email("البريد الإلكتروني غير صالح"),
+	name: z.string().min(2, "validation_name_min_length"),
+	email: z.string().email("validation_email_invalid"),
 	phone: z.string().optional().or(z.literal("")),
 	preferredCurrency: z.string().optional(),
 });
@@ -35,15 +35,15 @@ export const changePasswordSchema = z
 	.object({
 		currentPassword: z
 			.string()
-			.min(6, "كلمة المرور الحالية يجب أن لا تقل عن 6 أحرف"),
+			.min(6, "validation_current_password_min_length"),
 		newPassword: z
 			.string()
-			.min(6, "كلمة المرور الجديدة يجب أن لا تقل عن 6 أحرف"),
+			.min(6, "validation_new_password_min_length"),
 		confirmPassword: z
 			.string()
-			.min(6, "تأكيد كلمة المرور يجب أن لا يقل عن 6 أحرف"),
+			.min(6, "validation_confirm_password_min_length"),
 	})
 	.refine((data) => data.newPassword === data.confirmPassword, {
-		message: "كلمة المرور الجديدة وتأكيدها غير متطابقين",
+		message: "validation_password_mismatch",
 		path: ["confirmPassword"],
 	});

@@ -2213,5 +2213,16 @@
     "footer_cta_title": "Ready to start?",
     "footer_cta_subtitle": "Join hundreds of students who achieved their academic goals with EduNest's outstanding teachers.",
     "footer_cta_btn_text": "Create your free account now"
+  },
+  "validation": {
+    "validation_email_invalid": "Invalid email address",
+    "validation_password_min_length": "Password must be at least 6 characters long",
+    "validation_name_min_length": "Name must be at least 2 characters long",
+    "validation_student_name_required": "Student name is required",
+    "validation_student_grade_range": "Grade level must be between 1 and 12",
+    "validation_current_password_min_length": "Current password must be at least 6 characters long",
+    "validation_new_password_min_length": "New password must be at least 6 characters long",
+    "validation_confirm_password_min_length": "Confirm password must be at least 6 characters long",
+    "validation_password_mismatch": "New password and confirmation do not match"
   }
 }
