@@ -16,7 +16,7 @@ import {
 } from "@/lib/utils/booking-state";
 import { hoursUntil } from "@/lib/utils/time";
 import { cancellationSchema } from "@/lib/validations/booking";
-import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getErrorT, getNotificationT, getValidationT } from "@/lib/i18n/get-server-translations";
 
 export const cancelBooking = withAuthAction(
 	[UserType.PARENT, UserType.TEACHER, UserType.ADMIN],
@@ -25,7 +25,8 @@ export const cancelBooking = withAuthAction(
 		
 		const validated = cancellationSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const { bookingId, reason } = validated.data;

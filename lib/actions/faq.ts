@@ -1,5 +1,5 @@
 "use server";
-import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getErrorT, getNotificationT, getValidationT } from "@/lib/i18n/get-server-translations";
 import { type FAQ, type FAQCategory, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
@@ -40,7 +40,8 @@ export async function createFAQ(data: {
 	try {
 		const validated = faqSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		await requireAuth([UserType.ADMIN]);
@@ -79,12 +80,14 @@ export async function updateFAQ(
 	try {
 		const validatedId = faqIdSchema.safeParse({ id });
 		if (!validatedId.success) {
-			return { success: false, error: validatedId.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validatedId.error.issues[0].message) };
 		}
 
 		const validatedData = faqUpdateSchema.safeParse(data);
 		if (!validatedData.success) {
-			return { success: false, error: validatedData.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validatedData.error.issues[0].message) };
 		}
 
 		await requireAuth([UserType.ADMIN]);
@@ -117,7 +120,8 @@ export async function deleteFAQ(id: string): Promise<ActionResponse> {
 	try {
 		const validated = faqIdSchema.safeParse({ id });
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		await requireAuth([UserType.ADMIN]);

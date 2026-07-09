@@ -2,9 +2,9 @@ import { FAQCategory } from "@prisma/client";
 import { z } from "zod";
 
 export const faqSchema = z.object({
-	question: z.string().min(5, "السؤال يجب أن لا يقل عن 5 أحرف"),
-	answer: z.string().min(5, "الإجابة يجب أن لا تقل عن 5 أحرف"),
-	category: z.nativeEnum(FAQCategory, { message: "التصنيف غير صالح" }),
+	question: z.string().min(5, "validation_question_min_length"),
+	answer: z.string().min(5, "validation_answer_min_length"),
+	category: z.nativeEnum(FAQCategory, { message: "validation_category_invalid" }),
 	isActive: z.boolean().default(true),
 	order: z.number().int().default(0),
 });
@@ -12,5 +12,5 @@ export const faqSchema = z.object({
 export const faqUpdateSchema = faqSchema.partial();
 
 export const faqIdSchema = z.object({
-	id: z.string().min(1, "معرّف السؤال مطلوب"),
+	id: z.string().min(1, "validation_faq_id_required"),
 });

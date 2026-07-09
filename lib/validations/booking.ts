@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 export const bookingSchema = z.object({
-	studentId: z.string().min(1, "الطالب مطلوب"),
-	teacherServiceId: z.string().min(1, "الخدمة مطلوبة"),
-	startTime: z.coerce.date({ message: "تاريخ وبدء الجلسة مطلوب" }),
+	studentId: z.string().min(1, "validation_student_required"),
+	teacherServiceId: z.string().min(1, "validation_service_required"),
+	startTime: z.coerce.date({ message: "validation_start_time_required" }),
 	isTrial: z.boolean().default(false),
 	questionTitle: z.string().optional(),
 	questionDetails: z.string().optional(),
@@ -13,7 +13,7 @@ export const bookingSchema = z.object({
 
 export const cancellationSchema = z.object({
 	bookingId: z.string().min(1),
-	reason: z.string().min(5, "سبب الإلغاء يجب أن لا يقل عن 5 أحرف"),
+	reason: z.string().min(5, "validation_cancel_reason_min_length"),
 });
 
 export const reportSchema = z
@@ -35,7 +35,7 @@ export const reportSchema = z
 		if (data.studentAttended && data.topicsCovered.trim().length < 3) {
 			ctx.addIssue({
 				code: z.ZodIssueCode.custom,
-				message: "يرجى كتابة المواضيع التي تم تغطيتها",
+				message: "validation_topics_covered_required",
 				path: ["topicsCovered"],
 			});
 		}

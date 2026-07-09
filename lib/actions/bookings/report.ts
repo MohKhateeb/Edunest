@@ -1,6 +1,6 @@
 "use server";
 
-import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getErrorT, getNotificationT, getValidationT } from "@/lib/i18n/get-server-translations";
 import { BookingStatus, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import type { z } from "zod";
@@ -22,7 +22,8 @@ export const submitSessionReport = withAuthAction(
         const t = await getErrorT();
 		const validated = reportSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const {

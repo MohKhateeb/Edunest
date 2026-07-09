@@ -1,5 +1,5 @@
 "use server";
-import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getErrorT, getNotificationT, getValidationT } from "@/lib/i18n/get-server-translations";
 import {
 	BookingStatus,
 	PaymentStatus,
@@ -35,7 +35,8 @@ export async function verifyTeacher(
 	try {
 		const validated = verifyTeacherSchema.safeParse({ teacherId, level });
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
@@ -88,7 +89,8 @@ export async function rejectTeacher(
 	try {
 		const validated = rejectTeacherSchema.safeParse({ teacherId, reason });
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
@@ -136,7 +138,8 @@ export async function updateSystemSettings(
 	try {
 		const validated = updateSystemSettingsSchema.safeParse(settings);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
@@ -176,7 +179,8 @@ export async function toggleUserActive(
 			isActive,
 		});
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);

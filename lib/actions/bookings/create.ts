@@ -24,7 +24,7 @@ import {
 import { revalidateBookingPaths } from "@/lib/utils/booking-state";
 import { hoursUntil } from "@/lib/utils/time";
 import { bookingSchema } from "@/lib/validations/booking";
-import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getErrorT, getNotificationT, getValidationT } from "@/lib/i18n/get-server-translations";
 
 export const createBooking = withAuthAction(
 	[UserType.PARENT],
@@ -40,7 +40,8 @@ export const createBooking = withAuthAction(
 
 		const validated = bookingSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const {

@@ -1,6 +1,6 @@
 "use server";
 
-import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getErrorT, getNotificationT, getValidationT } from "@/lib/i18n/get-server-translations";
 import { RequestStatus, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import type { z } from "zod";
@@ -27,7 +27,8 @@ export async function createTutoringRequest(
 
 		const validated = tutoringRequestSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		const { studentId, subjectId, serviceTypeId, title, details, imageUrl } =

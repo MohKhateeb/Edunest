@@ -1,5 +1,5 @@
 "use server";
-import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getErrorT, getNotificationT, getValidationT } from "@/lib/i18n/get-server-translations";
 import { UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { requireTeacherProfile } from "@/lib/actions/auth-helpers";
@@ -17,7 +17,8 @@ export async function createTeacherPayout(data: {
 	try {
 		const validated = createPayoutSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		await requireAuth([UserType.ADMIN]);
@@ -112,7 +113,8 @@ export async function markPayoutAsPaid(
 	try {
 		const validated = payoutIdSchema.safeParse({ payoutId });
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		await requireAuth([UserType.ADMIN]);
@@ -154,7 +156,8 @@ export async function markParentRefundAsPaid(
 	try {
 		const validated = payoutIdSchema.safeParse({ payoutId: refundId });
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const t = await getValidationT();
+			return { success: false, error: t(validated.error.issues[0].message) };
 		}
 
 		await requireAuth([UserType.ADMIN]);
