@@ -1,5 +1,5 @@
 "use server";
-import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getErrorT, getNotificationT, getValidationT } from "@/lib/i18n/get-server-translations";
 import { BookingStatus, DisputeStatus, UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -28,23 +28,23 @@ export async function getSecureDisputeDetails(id: string) {
 }
 
 const createDisputeSchema = z.object({
-	bookingId: z.string().min(1, "zod_min_error_14"),
+	bookingId: z.string().min(1, "validation_dispute_booking_id_required"),
 	reason: z
 		.string()
-		.min(10, "zod_min_error_15")
-		.max(1000, "zod_max_error_19"),
+		.min(10, "validation_dispute_reason_min_length")
+		.max(1000, "validation_dispute_reason_max_length"),
 });
 
 const sendMessageSchema = z.object({
-	disputeId: z.string().min(1, "zod_min_error_16"),
+	disputeId: z.string().min(1, "validation_dispute_id_required"),
 	message: z
 		.string()
-		.min(1, "zod_min_error_17")
-		.max(2000, "zod_max_error_20"),
+		.min(1, "validation_dispute_message_required")
+		.max(2000, "validation_dispute_message_max_length"),
 });
 
 const resolveDisputeSchema = z.object({
-	disputeId: z.string().min(1, "zod_min_error_18"),
+	disputeId: z.string().min(1, "validation_dispute_id_required"),
 	decision: z.enum([
 		"RESOLVED_IN_FAVOR_OF_PARENT",
 		"RESOLVED_IN_FAVOR_OF_TEACHER",
@@ -59,7 +59,8 @@ export async function createDispute(
 	try {
 		const validated = createDisputeSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const tVal = await getValidationT();
+			return { success: false, error: tVal(validated.error.issues[0].message) };
 		}
 
 		const { userId } = await requireAuth([UserType.PARENT]);
@@ -135,7 +136,8 @@ export async function sendDisputeMessage(
 	try {
 		const validated = sendMessageSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const tVal = await getValidationT();
+			return { success: false, error: tVal(validated.error.issues[0].message) };
 		}
 
 		const { userId, userType } = await requireAuth([
@@ -218,7 +220,8 @@ export async function resolveDispute(
 	try {
 		const validated = resolveDisputeSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const tVal = await getValidationT();
+			return { success: false, error: tVal(validated.error.issues[0].message) };
 		}
 
 		const { userId } = await requireAuth([UserType.ADMIN]);
