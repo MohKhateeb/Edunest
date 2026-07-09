@@ -1,26 +1,26 @@
 import { z } from "zod";
 
 export const teacherProfileSchema = z.object({
-	subjectIds: z.array(z.string()).min(1, "يجب اختيار مادة واحدة على الأقل"),
+	subjectIds: z.array(z.string()).min(1, "validation_teacher_subject_required"),
 	subSpecialization: z.string().optional().nullable(),
 	bio: z.string().optional().nullable(),
 	gradeLevels: z
 		.array(z.coerce.number().int().min(1).max(12))
-		.min(1, "يرجى اختيار صف دراسي واحد على الأقل"),
-	city: z.string().min(2, "المدينة مطلوبة"),
+		.min(1, "validation_teacher_grade_required"),
+	city: z.string().min(2, "validation_teacher_city_required"),
 	area: z.string().optional().nullable(),
 	education: z.string().optional().nullable(),
-	yearsOfExperience: z.coerce.number().int().min(0, "سنوات الخبرة غير صالحة"),
+	yearsOfExperience: z.coerce.number().int().min(0, "validation_teacher_years_of_experience_invalid"),
 	defaultHourlyRate: z.coerce
 		.number()
-		.min(5, "الحد الأدنى لسعر الساعة هو 5 ₪"),
+		.min(5, "validation_teacher_min_hourly_rate"),
 	profileImageUrl: z.string().optional().nullable(),
 });
 
 export const teacherServiceSchema = z.object({
-	serviceTypeId: z.string().min(1, "نوع الخدمة مطلوب"),
-	price: z.coerce.number().min(5, "الحد الأدنى للسعر هو 5 ₪"),
-	duration: z.coerce.number().int().min(5, "المدة يجب أن لا تقل عن 5 دقائق"),
+	serviceTypeId: z.string().min(1, "validation_teacher_service_type_required"),
+	price: z.coerce.number().min(5, "validation_teacher_min_price"),
+	duration: z.coerce.number().int().min(5, "validation_teacher_min_duration"),
 	customDescription: z.string().optional().nullable(),
 });
 
@@ -28,19 +28,20 @@ export const availabilityItemSchema = z.object({
 	dayOfWeek: z.coerce.number().int().min(0).max(6),
 	startTime: z
 		.string()
-		.regex(/^([01][0-9]|2[0-3]):[0-5][0-9]$/, "تنسيق الوقت غير صالح (HH:MM)"),
+		.regex(/^([01][0-9]|2[0-3]):[0-5][0-9]$/, "validation_teacher_time_format_invalid"),
 	endTime: z
 		.string()
-		.regex(/^([01][0-9]|2[0-3]):[0-5][0-9]$/, "تنسيق الوقت غير صالح (HH:MM)"),
+		.regex(/^([01][0-9]|2[0-3]):[0-5][0-9]$/, "validation_teacher_time_format_invalid"),
 });
 
 export const teacherSlugSchema = z.object({
 	slug: z
 		.string()
-		.min(3, "الرابط يجب أن يحتوي على 3 أحرف على الأقل")
-		.max(50, "الرابط طويل جداً (الحد الأقصى 50 حرف)")
+		.min(3, "validation_teacher_slug_min_length")
+		.max(50, "validation_teacher_slug_max_length")
 		.regex(
 			/^[a-zA-Z0-9-]+$/,
-			"الرابط يجب أن يحتوي فقط على أحرف إنجليزية، أرقام، أو شرطات (-) بدون مسافات",
+			"validation_teacher_slug_format_invalid",
 		),
 });
+

@@ -2251,6 +2251,25 @@
     "validation_request_id_required": "معرف الطلب مطلوب",
     "validation_offer_price_min": "السعر المعروض يجب أن لا يقل عن 5 شواكل",
     "validation_offer_duration_min": "المدة يجب أن لا تقل عن 5 دقائق",
-    "validation_offer_duration_max": "المدة تتجاوز الحد الأقصى"
+    "validation_offer_duration_max": "المدة تتجاوز الحد الأقصى",
+    "validation_teacher_subject_required": "يجب اختيار مادة واحدة على الأقل",
+    "validation_teacher_grade_required": "يرجى اختيار صف دراسي واحد على الأقل",
+    "validation_teacher_city_required": "المدينة مطلوبة",
+    "validation_teacher_years_of_experience_invalid": "سنوات الخبرة غير صالحة",
+    "validation_teacher_min_hourly_rate": "الحد الأدنى لسعر الساعة هو 5 ₪",
+    "validation_teacher_service_type_required": "نوع الخدمة مطلوب",
+    "validation_teacher_min_price": "الحد الأدنى للسعر هو 5 ₪",
+    "validation_teacher_min_duration": "المدة يجب أن لا تقل عن 5 دقائق",
+    "validation_teacher_time_format_invalid": "تنسيق الوقت غير صالح (HH:MM)",
+    "validation_teacher_slug_min_length": "الرابط يجب أن يحتوي على 3 أحرف على الأقل",
+    "validation_teacher_slug_max_length": "الرابط طويل جداً (الحد الأقصى 50 حرف)",
+    "validation_teacher_slug_format_invalid": "الرابط يجب أن يحتوي فقط على أحرف إنجليزية، أرقام، أو شرطات (-) بدون مسافات",
+    "validation_review_rating_range": "التقييم يجب أن يكون بين 1 و 5",
+    "validation_dispute_booking_id_required": "معرف الحجز مطلوب",
+    "validation_dispute_reason_min_length": "سبب الاعتراض يجب أن يكون 10 أحرف على الأقل",
+    "validation_dispute_reason_max_length": "السبب طويل جداً",
+    "validation_dispute_id_required": "معرف النزاع مطلوب",
+    "validation_dispute_message_required": "الرسالة لا يمكن أن تكون فارغة",
+    "validation_dispute_message_max_length": "الرسالة طويلة جداً"
   }
 }

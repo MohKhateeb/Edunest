@@ -41,6 +41,7 @@ export default function TeacherServicesForm({
 	configuredServices,
 }: TeacherServicesFormProps) {
     const t = useTranslations('teachers')
+	const tValidation = useTranslations('validation');
 	const router = useRouter();
 	const [formData, setFormData] = useState({
 		selectedServiceTypeId: "",
@@ -87,7 +88,7 @@ export default function TeacherServicesForm({
 		try {
 			const validated = teacherServiceSchema.safeParse(data);
 			if (!validated.success) {
-				setErrorMsg(validated.error.issues[0].message);
+				setErrorMsg(tValidation(validated.error.issues[0].message as any));
 				return;
 			}
 

@@ -2251,6 +2251,25 @@
     "validation_request_id_required": "Request ID is required",
     "validation_offer_price_min": "Offer price must be at least 5 Shekels",
     "validation_offer_duration_min": "Duration must be at least 5 minutes",
-    "validation_offer_duration_max": "Duration exceeds the maximum limit"
+    "validation_offer_duration_max": "Duration exceeds the maximum limit",
+    "validation_teacher_subject_required": "At least one subject must be selected",
+    "validation_teacher_grade_required": "Please select at least one grade level",
+    "validation_teacher_city_required": "City is required",
+    "validation_teacher_years_of_experience_invalid": "Years of experience is invalid",
+    "validation_teacher_min_hourly_rate": "Minimum hourly rate is 5 ₪",
+    "validation_teacher_service_type_required": "Service type is required",
+    "validation_teacher_min_price": "Minimum price is 5 ₪",
+    "validation_teacher_min_duration": "Duration must be at least 5 minutes",
+    "validation_teacher_time_format_invalid": "Invalid time format (HH:MM)",
+    "validation_teacher_slug_min_length": "Slug must be at least 3 characters",
+    "validation_teacher_slug_max_length": "Slug is too long (maximum 50 characters)",
+    "validation_teacher_slug_format_invalid": "Slug must contain only English letters, numbers, or dashes (-) without spaces",
+    "validation_review_rating_range": "Rating must be between 1 and 5",
+    "validation_dispute_booking_id_required": "Booking ID is required",
+    "validation_dispute_reason_min_length": "Dispute reason must be at least 10 characters",
+    "validation_dispute_reason_max_length": "Dispute reason is too long (maximum 1000 characters)",
+    "validation_dispute_id_required": "Dispute ID is required",
+    "validation_dispute_message_required": "Message cannot be empty",
+    "validation_dispute_message_max_length": "Message is too long (maximum 2000 characters)"
   }
 }

@@ -23,6 +23,7 @@ export default function TeacherSlugForm({
 	slugUpdated,
 }: TeacherSlugFormProps) {
     const t = useTranslations('teachers')
+	const tValidation = useTranslations('validation');
 	const [slug, setSlug] = useState(currentSlug);
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
@@ -39,7 +40,7 @@ export default function TeacherSlugForm({
 		try {
 			const validated = teacherSlugSchema.safeParse({ slug });
 			if (!validated.success) {
-				setError(validated.error.issues[0].message);
+				setError(tValidation(validated.error.issues[0].message as any));
 				setLoading(false);
 				return;
 			}

@@ -1,5 +1,5 @@
 "use server";
-import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
+import { getErrorT, getNotificationT, getValidationT } from "@/lib/i18n/get-server-translations";
 import { UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import type { z } from "zod";
@@ -23,7 +23,8 @@ export async function updateTeacherProfile(
 
 		const validated = teacherProfileSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const tVal = await getValidationT();
+			return { success: false, error: tVal(validated.error.issues[0].message) };
 		}
 
 		const user = await prisma.user.findUnique({
@@ -97,7 +98,8 @@ export async function addOrUpdateTeacherService(
 
 		const validated = teacherServiceSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const tVal = await getValidationT();
+			return { success: false, error: tVal(validated.error.issues[0].message) };
 		}
 
 		const teacher = await requireTeacherProfile(userId);
@@ -197,7 +199,8 @@ export async function updateTeacherSlug(
 
 		const validated = teacherSlugSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const tVal = await getValidationT();
+			return { success: false, error: tVal(validated.error.issues[0].message) };
 		}
 
 		const { slug: newSlug } = validated.data;
