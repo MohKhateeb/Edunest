@@ -1,6 +1,6 @@
 "use server";
 
-import { getErrorT } from "@/lib/i18n/get-server-translations";
+import { getErrorT, getValidationT } from "@/lib/i18n/get-server-translations";
 import { UserType } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
@@ -10,12 +10,12 @@ import { authorizeBookingReview } from "@/lib/auth/authorization";
 import type { ActionResponse } from "@/lib/types";
 
 const reviewSchema = z.object({
-	bookingId: z.string().min(1),
+	bookingId: z.string().min(1, "validation_booking_id_required"),
 	rating: z.coerce
 		.number()
 		.int()
-		.min(1)
-		.max(5, "Rating must be between 1 and 5"),
+		.min(1, "validation_review_rating_range")
+		.max(5, "validation_review_rating_range"),
 	comment: z.string().optional().nullable(),
 });
 
@@ -31,7 +31,8 @@ export async function submitReview(
 
 		const validated = reviewSchema.safeParse(data);
 		if (!validated.success) {
-			return { success: false, error: validated.error.issues[0].message };
+			const tVal = await getValidationT();
+			return { success: false, error: tVal(validated.error.issues[0].message) };
 		}
 
 		const { bookingId, rating, comment } = validated.data;
