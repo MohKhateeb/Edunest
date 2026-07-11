@@ -2080,7 +2080,17 @@
     "upload_invalid_file_type": "نوع الملف غير مسموح به. مسموح بالصور، ملفات PDF، ومقاطع الفيديو الشائعة",
     "instant_service_desc": "خدمة فوري (Live Radar)",
     "search_unspecified": "غير محدد",
-    "teacher_profile_not_found": "الملف الشخصي للمعلم غير موجود."
+    "teacher_profile_not_found": "الملف الشخصي للمعلم غير موجود.",
+    "upload_unauthorized": "يجب تسجيل الدخول لرفع الملفات.",
+    "upload_no_file_provided": "لم يتم إرسال أي ملف للرفع.",
+    "upload_file_too_large": "حجم الملف يتجاوز الحد الأقصى المسموح به وهو 50 ميجابايت.",
+    "upload_invalid_bucket": "وجهة أو مجلد الرفع غير صالح.",
+    "upload_verification_not_authorized": "غير مصرح لك برفع ملفات توثيق.",
+    "upload_invalid_extension": "امتداد الملف غير مسموح به.",
+    "upload_invalid_file_path": "مسار رفع الملف غير صالح البنية.",
+    "upload_invalid_user_id": "معرف المستخدم غير صالح.",
+    "upload_invalid_upload_directory": "مجلد الرفع غير صالح أو يقع خارج النطاق المسموح به.",
+    "upload_unexpected_error": "حدث خطأ غير متوقع أثناء عملية رفع الملف."
   },
   "notifications": {
     "new_booking_title": "حجز جديد بانتظارك",

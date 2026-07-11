@@ -20,7 +20,7 @@ async function validateUploadRequest(
 	if (!session?.user?.id) {
 		return {
 			error: NextResponse.json(
-				{ error: "Translation needed" },
+				{ error: tError("upload_unauthorized") },
 				{ status: 401 },
 			),
 		};
@@ -32,7 +32,7 @@ async function validateUploadRequest(
 
 	if (!file) {
 		return {
-			error: NextResponse.json({ error: "Translation needed" }, { status: 400 }),
+			error: NextResponse.json({ error: tError("upload_no_file_provided") }, { status: 400 }),
 		};
 	}
 
@@ -40,7 +40,7 @@ async function validateUploadRequest(
 	if (file.size > MAX_FILE_SIZE) {
 		return {
 			error: NextResponse.json(
-				{ error: "Translation needed" },
+				{ error: tError("upload_file_too_large") },
 				{ status: 400 },
 			),
 		};
@@ -69,7 +69,7 @@ async function validateUploadRequest(
 	const ALLOWED_BUCKETS = ["verifications", "payment-proofs", "profiles", "uploads"];
 	if (bucketParam && !ALLOWED_BUCKETS.includes(bucketParam)) {
 		return {
-			error: NextResponse.json({ error: "Translation needed" }, { status: 400 }),
+			error: NextResponse.json({ error: tError("upload_invalid_bucket") }, { status: 400 }),
 		};
 	}
 
@@ -79,7 +79,7 @@ async function validateUploadRequest(
 	if (bucket === "verifications" && userType === "PARENT") {
 		return {
 			error: NextResponse.json(
-				{ error: "Translation needed" },
+				{ error: tError("upload_verification_not_authorized") },
 				{ status: 403 },
 			),
 		};
@@ -91,7 +91,7 @@ async function validateUploadRequest(
 
 	if (!ALLOWED_EXTENSIONS.includes(safeExt)) {
 		return {
-			error: NextResponse.json({ error: "Translation needed" }, { status: 400 }),
+			error: NextResponse.json({ error: tError("upload_invalid_extension") }, { status: 400 }),
 		};
 	}
 
@@ -143,17 +143,18 @@ async function uploadToLocalStorage(
 	fileName: string,
 	bucket: string,
 ): Promise<{ url?: string; error?: NextResponse }> {
+	const tError = await getErrorT();
 	const parts = fileName.split("/");
 	if (parts.length !== 2) {
 		return {
-			error: NextResponse.json({ error: "Translation needed" }, { status: 400 }),
+			error: NextResponse.json({ error: tError("upload_invalid_file_path") }, { status: 400 }),
 		};
 	}
 	const [userId, localFileName] = parts;
 
 	if (!/^[a-zA-Z0-9-]+$/.test(userId)) {
 		return {
-			error: NextResponse.json({ error: "Translation needed" }, { status: 400 }),
+			error: NextResponse.json({ error: tError("upload_invalid_user_id") }, { status: 400 }),
 		};
 	}
 
@@ -162,7 +163,7 @@ async function uploadToLocalStorage(
 
 	if (!uploadDir.startsWith(baseUploadsDir)) {
 		return {
-			error: NextResponse.json({ error: "Translation needed" }, { status: 400 }),
+			error: NextResponse.json({ error: tError("upload_invalid_upload_directory") }, { status: 400 }),
 		};
 	}
 
@@ -195,8 +196,9 @@ export async function POST(req: NextRequest) {
 		return NextResponse.json({ success: true, url: localResult.url });
 	} catch (err: unknown) {
 		console.error("Upload API error:", err);
+		const tError = await getErrorT();
 		return NextResponse.json(
-			{ error: "Translation needed" },
+			{ error: tError("upload_unexpected_error") },
 			{ status: 500 },
 		);
 	}

@@ -2080,7 +2080,17 @@
     "upload_invalid_file_type": "Invalid file type. Allowed: Images, PDF, and common video formats.",
     "instant_service_desc": "Instant Service (Live Radar)",
     "search_unspecified": "Unspecified",
-    "teacher_profile_not_found": "Teacher profile not found."
+    "teacher_profile_not_found": "Teacher profile not found.",
+    "upload_unauthorized": "You must be logged in to upload files.",
+    "upload_no_file_provided": "No file was provided for upload.",
+    "upload_file_too_large": "The file size exceeds the maximum allowed limit of 50MB.",
+    "upload_invalid_bucket": "Invalid upload destination or bucket.",
+    "upload_verification_not_authorized": "You are not authorized to upload verification documents.",
+    "upload_invalid_extension": "The file extension is not allowed.",
+    "upload_invalid_file_path": "The upload file path is structurally invalid.",
+    "upload_invalid_user_id": "Invalid user ID.",
+    "upload_invalid_upload_directory": "The upload directory is invalid or outside the allowed scope.",
+    "upload_unexpected_error": "An unexpected error occurred during the file upload."
   },
   "notifications": {
     "new_booking_title": "New Booking Awaiting You",
