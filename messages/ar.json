@@ -1346,7 +1346,15 @@
     "payouts_invoice_thank_you": "نشكركم لثقتكم بنا وبشراكتكم مع EduNest!",
     "users_block_success": "تم حظر الحساب بنجاح",
     "users_activate_success": "تم تفعيل الحساب بنجاح",
-    "users_toggle_error": "فشل تغيير حالة الحساب"
+    "users_toggle_error": "فشل تغيير حالة الحساب",
+    "admin_chart_status_pending": "معلق",
+    "admin_chart_status_pending_approval": "بانتظار الموافقة",
+    "admin_chart_status_awaiting_payment": "بانتظار الدفع",
+    "admin_chart_status_confirmed": "مؤكد",
+    "admin_chart_status_completed": "مكتمل",
+    "admin_chart_status_rejected": "مرفوض",
+    "admin_chart_status_cancelled": "ملغى",
+    "admin_chart_status_expired": "منتهي"
   },
   "parent": {
     "key_1783109428847_62xo": "أهلاً بك،",

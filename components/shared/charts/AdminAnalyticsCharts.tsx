@@ -45,11 +45,14 @@ interface AdminAnalyticsChartsProps {
 
 // Colors
 const STATUS_COLORS: Record<string, string> = {
-	مكتمل: "#0d9488", // Teal-600
-	مؤكد: "#0284c7", // Sky-600
-	معلق: "#eab308", // Yellow-500
-	مرفوض: "#f43f5e", // Rose-500
-	ملغي: "#64748b", // Slate-500
+	PENDING: "#eab308",          // Yellow-500
+	PENDING_APPROVAL: "#f59e0b", // Amber-500
+	AWAITING_PAYMENT: "#f97316", // Orange-500
+	CONFIRMED: "#0284c7",        // Sky-600
+	COMPLETED: "#0d9488",        // Teal-600
+	REJECTED: "#f43f5e",         // Rose-500
+	CANCELLED: "#64748b",        // Slate-500
+	EXPIRED: "#94a3b8",          // Slate-400
 };
 
 const PIE_COLORS = ["#0d9488", "#0284c7", "#8b5cf6", "#f59e0b", "#ec4899"];
@@ -95,7 +98,37 @@ export default function AdminAnalyticsCharts({
 	registeredGrades,
 	revenue,
 }: AdminAnalyticsChartsProps) {
-    const t = useTranslations('common');
+	const t = useTranslations('common');
+	const tAdmin = useTranslations('admin');
+
+	const getStatusTranslation = (name: string) => {
+		switch (name) {
+			case "PENDING":
+				return tAdmin("admin_chart_status_pending");
+			case "PENDING_APPROVAL":
+				return tAdmin("admin_chart_status_pending_approval");
+			case "AWAITING_PAYMENT":
+				return tAdmin("admin_chart_status_awaiting_payment");
+			case "CONFIRMED":
+				return tAdmin("admin_chart_status_confirmed");
+			case "COMPLETED":
+				return tAdmin("admin_chart_status_completed");
+			case "REJECTED":
+				return tAdmin("admin_chart_status_rejected");
+			case "CANCELLED":
+				return tAdmin("admin_chart_status_cancelled");
+			case "EXPIRED":
+				return tAdmin("admin_chart_status_expired");
+			default:
+				return name;
+		}
+	};
+
+	const translatedBookingStatuses = bookingStatuses.map((item) => ({
+		...item,
+		rawName: item.name,
+		name: getStatusTranslation(item.name),
+	}));
 	return (
 		<div className="space-y-6 mt-8">
 			{/* Row 1: Revenue & Booking Statuses */}
@@ -177,7 +210,7 @@ export default function AdminAnalyticsCharts({
 						<ResponsiveContainer width="100%" height="100%">
 							<PieChart>
 								<Pie
-									data={bookingStatuses}
+									data={translatedBookingStatuses}
 									cx="50%"
 									cy="50%"
 									innerRadius={60}
@@ -186,10 +219,10 @@ export default function AdminAnalyticsCharts({
 									dataKey="value"
 									stroke="none"
 								>
-									{bookingStatuses.map((entry, index) => (
+									{translatedBookingStatuses.map((entry, index) => (
 										<Cell
 											key={`cell-${index}`}
-											fill={STATUS_COLORS[entry.name] || "#94a3b8"}
+											fill={STATUS_COLORS[entry.rawName] || "#94a3b8"}
 										/>
 									))}
 								</Pie>

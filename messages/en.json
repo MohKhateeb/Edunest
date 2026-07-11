@@ -1346,7 +1346,15 @@
     "payouts_invoice_thank_you": "Thank you for your trust and partnership with EduNest!",
     "users_block_success": "Account blocked successfully",
     "users_activate_success": "Account activated successfully",
-    "users_toggle_error": "Failed to change account status"
+    "users_toggle_error": "Failed to change account status",
+    "admin_chart_status_pending": "Pending",
+    "admin_chart_status_pending_approval": "Pending Approval",
+    "admin_chart_status_awaiting_payment": "Awaiting Payment",
+    "admin_chart_status_confirmed": "Confirmed",
+    "admin_chart_status_completed": "Completed",
+    "admin_chart_status_rejected": "Rejected",
+    "admin_chart_status_cancelled": "Cancelled",
+    "admin_chart_status_expired": "Expired"
   },
   "parent": {
     "key_1783109428847_62xo": "Hey, you,",

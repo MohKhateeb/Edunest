@@ -1,4 +1,4 @@
-import { BOOKING_STATUS_AR } from "@/lib/translations";
+
 import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { getTranslations } from "next-intl/server";
 import { Prisma, UserType, BookingStatus, VerificationLevel } from "@prisma/client";
@@ -194,9 +194,8 @@ export class AnalyticsRepository {
 			_count: { status: true },
 			where: { createdAt: { gte: startDate, lte: endDate } }
 		});
-		const statusMap: Record<string, string> = BOOKING_STATUS_AR;
 		const bookingStatuses = statusGroups.map(g => ({
-			name: statusMap[g.status] || g.status,
+			name: g.status,
 			value: g._count.status,
 		}));
 
