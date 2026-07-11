@@ -160,7 +160,7 @@ export default function AdminBookingsList({
 						</select>
 					</div>
 				}
-				emptyMessage={t('str_mr6bilqp_2YTYpy')}
+				emptyMessage={t('admin_bookings_no_results_message')}
 				renderRow={(booking) => (
 					<tr key={booking.id} className="hover:bg-muted/30 transition-colors">
 						{/* Date & Time */}
@@ -388,7 +388,7 @@ export default function AdminBookingsList({
 									disabled={loading}
 									className="text-xs font-semibold bg-destructive text-destructive-foreground hover:bg-destructive/90 px-4 py-2 rounded-lg shadow-sm cursor-pointer flex items-center gap-2"
 								>
-									{loading ? t('str_mr6biltq_2KzYp9') : t('str_2KrZhtmB')}
+									{loading ? t('admin_bookings_cancelling_label') : t('str_2KrZhtmB')}
 								</button>
 							</div>
 						</form>

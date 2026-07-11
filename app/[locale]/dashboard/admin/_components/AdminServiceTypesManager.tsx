@@ -316,7 +316,7 @@ export default function AdminServiceTypesManager({
 												? "text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30"
 												: "text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/30",
 										)}
-										title={service.isActive ? t('str_2KXZitmC') : t('str_mr6bimaw_2KrZgd')}
+										title={service.isActive ? t('str_2KXZitmC') : t('admin_service_activate_tooltip')}
 									>
 										{isToggling === service.id ? (
 											<Loader2 className="w-5 h-5 animate-spin" />
