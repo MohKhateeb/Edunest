@@ -14,3 +14,8 @@ export async function getValidationT() {
   const locale = await getLocale();
   return getTranslations({ locale, namespace: 'validation' });
 }
+
+export async function getCommonT() {
+  const locale = await getLocale();
+  return getTranslations({ locale, namespace: 'common' });
+}

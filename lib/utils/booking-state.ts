@@ -1,6 +1,6 @@
-import { getErrorT } from "@/lib/i18n/get-server-translations";
+import { getErrorT, getCommonT } from "@/lib/i18n/get-server-translations";
 import { BookingStatus } from "@prisma/client";
-import { BOOKING_STATUS_AR } from "@/lib/translations";
+import { getBookingStatusLabel } from "@/lib/utils/booking-status-label";
 
 const ALLOWED_TRANSITIONS: Record<BookingStatus, BookingStatus[]> = {
 	PENDING_APPROVAL: [
@@ -37,7 +37,11 @@ export async function getTransitionError(
 	to: BookingStatus,
 ): Promise<string> {
 	const tError = await getErrorT();
-	return tError('booking_invalid_transition', { from: BOOKING_STATUS_AR[from], to: BOOKING_STATUS_AR[to] });
+	const tCommon = await getCommonT();
+	return tError('booking_invalid_transition', {
+		from: getBookingStatusLabel(from, tCommon),
+		to: getBookingStatusLabel(to, tCommon),
+	});
 }
 
 export type SessionTimeState = {
