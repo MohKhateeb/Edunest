@@ -11,7 +11,8 @@ import {
 	User,
 } from "lucide-react";
 import React from "react";
-import { BOOKING_STATUS_AR, BOOKING_STATUS_STYLES } from "@/lib/translations";
+import { BOOKING_STATUS_STYLES } from "@/lib/translations";
+import { getBookingStatusLabel } from "@/lib/utils/booking-status-label";
 import type { commonStudentInclude } from "@/lib/types";
 import { cn, formatLocalTime } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils/currency";
@@ -191,7 +192,7 @@ export default function StudentDetails({
 													BOOKING_STATUS_STYLES[booking.status as keyof typeof BOOKING_STATUS_STYLES] ?? BOOKING_STATUS_STYLES.PENDING
 												)}
 											>
-												{BOOKING_STATUS_AR[booking.status as keyof typeof BOOKING_STATUS_AR] || booking.status}
+												{getBookingStatusLabel(booking.status, t)}
 											</span>
 										</div>
 										<p className="text-muted-foreground">

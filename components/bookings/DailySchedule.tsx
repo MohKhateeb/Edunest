@@ -8,7 +8,9 @@ import {
 } from "lucide-react";
 import JoinMeetingButton from "@/components/shared/JoinMeetingButton";
 import { PaymentCountdownReadOnly } from "@/components/shared/PaymentCountdownReadOnly";
-import { BOOKING_STATUS_AR, BOOKING_STATUS_STYLES } from "@/lib/translations";
+import { BOOKING_STATUS_STYLES } from "@/lib/translations";
+import { getBookingStatusLabel } from "@/lib/utils/booking-status-label";
+import type { BookingStatus } from "@prisma/client";
 import type { DetailedBooking } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import {
@@ -40,6 +42,7 @@ export function DailySchedule({
 	handleCancelShortcut,
 }: DailyScheduleProps) {
     const t = useTranslations('bookings');
+	const tCommon = useTranslations('common');
 	const now = Date.now();
 
 	const getBookingTimeState = (booking: DetailedBooking) => {
@@ -127,7 +130,7 @@ export function DailySchedule({
 												BOOKING_STATUS_STYLES[b.status as keyof typeof BOOKING_STATUS_STYLES] ?? BOOKING_STATUS_STYLES.PENDING
 											)}
 										>
-											{BOOKING_STATUS_AR[b.status as keyof typeof BOOKING_STATUS_AR] || b.status}
+											{getBookingStatusLabel(b.status as BookingStatus, tCommon)}
 										</span>
 										{b.isTrial && (
 											<span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 border border-purple-200 dark:bg-purple-950/50 dark:text-purple-400">

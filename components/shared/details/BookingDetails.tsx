@@ -13,11 +13,11 @@ import Image from "next/image";
 import React from "react";
 import JoinMeetingButton from "@/components/shared/JoinMeetingButton";
 import {
-	BOOKING_STATUS_AR,
 	BOOKING_STATUS_STYLES,
 	PAYMENT_METHOD_AR,
 	PAYMENT_STATUS_AR,
 } from "@/lib/translations";
+import { getBookingStatusLabel } from "@/lib/utils/booking-status-label";
 import type { DetailedBooking } from "@/lib/types";
 import { cn, formatLocalTime } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils/currency";
@@ -72,7 +72,7 @@ export default function BookingDetails({
 							BOOKING_STATUS_STYLES[booking.status as keyof typeof BOOKING_STATUS_STYLES] ?? BOOKING_STATUS_STYLES.PENDING
 						)}
 					>
-						{BOOKING_STATUS_AR[booking.status as keyof typeof BOOKING_STATUS_AR] || booking.status}
+						{getBookingStatusLabel(booking.status, t)}
 					</span>
 				</div>
 			</div>

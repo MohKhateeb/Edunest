@@ -693,7 +693,15 @@
     "najeeb_alt": "Advice from Najeeb - mode {mode}",
     "auth_account_banned": "Sorry, this account has been suspended. Please contact the platform administration for inquiry and support.",
     "unauthorized_page_desc": "You do not have permission to access this section of the application. Please check the account you are logged in with.",
-    "key_1783109435478_s3ww": "Time remaining for payment:"
+    "key_1783109435478_s3ww": "Time remaining for payment:",
+    "booking_status_pending": "Pending",
+    "booking_status_pending_approval": "Pending Approval",
+    "booking_status_awaiting_payment": "Awaiting Payment",
+    "booking_status_confirmed": "Confirmed",
+    "booking_status_completed": "Completed",
+    "booking_status_rejected": "Rejected",
+    "booking_status_cancelled": "Cancelled",
+    "booking_status_expired": "Expired"
   },
   "nav": {
     "dashboard": "Dashboard",

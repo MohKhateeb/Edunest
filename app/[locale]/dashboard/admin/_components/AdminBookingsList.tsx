@@ -22,11 +22,11 @@ import DetailsModal from "@/components/shared/DetailsModal";
 import Portal from "@/components/shared/Portal";
 import { cancelBooking } from "@/lib/actions/booking";
 import {
-	BOOKING_STATUS_AR,
 	BOOKING_STATUS_STYLES,
 	PAYMENT_METHOD_AR,
 	PAYMENT_STATUS_AR,
 } from "@/lib/translations";
+import { getBookingStatusLabel } from "@/lib/utils/booking-status-label";
 import type { DetailedBooking } from "@/lib/types";
 import { BookingStatus } from "@prisma/client";
 import { loadMoreAdminBookings } from "@/lib/actions/admin";
@@ -242,7 +242,7 @@ export default function AdminBookingsList({
 									BOOKING_STATUS_STYLES[booking.status],
 								)}
 							>
-								{BOOKING_STATUS_AR[booking.status]}
+								{getBookingStatusLabel(booking.status, tCommon)}
 							</span>
 						</td>
 

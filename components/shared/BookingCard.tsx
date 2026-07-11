@@ -39,12 +39,12 @@ import {
 } from "@/lib/actions/booking";
 import { submitReview } from "@/lib/actions/review";
 import {
-	BOOKING_STATUS_AR,
 	BOOKING_STATUS_STYLES,
 	PAYMENT_METHOD_AR,
 	PAYMENT_STATUS_AR,
 	PAYMENT_STATUS_STYLES,
 } from "@/lib/translations";
+import { getBookingStatusLabel } from "@/lib/utils/booking-status-label";
 import { cn, formatLocalTime } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils/currency";
 import {
@@ -196,7 +196,7 @@ export default function BookingCard({ booking, role }: BookingCardProps) {
 								BOOKING_STATUS_STYLES[booking.status],
 							)}
 						>
-							{BOOKING_STATUS_AR[booking.status]}
+							{getBookingStatusLabel(booking.status, t)}
 						</span>
 						{booking.status === "CONFIRMED" &&
 							(sessionTimeState.status === "warning_2_frozen" ||

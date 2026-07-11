@@ -16,7 +16,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/require-auth";
 import { BookingService } from "@/lib/services/domain/booking-service";
-import { BOOKING_STATUS_AR, BOOKING_STATUS_STYLES } from "@/lib/translations";
+import { BOOKING_STATUS_STYLES } from "@/lib/translations";
+import { getBookingStatusLabel } from "@/lib/utils/booking-status-label";
 import { formatCurrency } from "@/lib/utils/currency";
 import { calculateEarnings } from "@/lib/utils/financial";
 
@@ -39,6 +40,7 @@ export default async function TeacherBookingDetailsPage({
 }) {
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: 'teachers' });
+	const tCommon = await getTranslations({ locale, namespace: 'common' });
 	const { userId } = await requireAuth([UserType.TEACHER]);
 	const resolvedParams = await params;
 
@@ -92,7 +94,7 @@ export default async function TeacherBookingDetailsPage({
 						{booking.status === "COMPLETED" && (
 							<CheckCircle2 className="w-4 h-4" />
 						)}
-						{BOOKING_STATUS_AR[booking.status] || booking.status}
+						{getBookingStatusLabel(booking.status, tCommon)}
 					</span>
 				</div>
 			</div>

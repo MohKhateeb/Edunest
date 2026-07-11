@@ -693,7 +693,15 @@
     "najeeb_alt": "نصيحة من نجيب - وضع {mode}",
     "auth_account_banned": "عذراً، تم إيقاف نشاط هذا الحساب. يرجى التواصل مع إدارة المنصة للاستفسار والدعم.",
     "unauthorized_page_desc": "ليست لديك صلاحية للوصول إلى هذا القسم من التطبيق. يرجى التأكد من الحساب المسجل به.",
-    "key_1783109435478_s3ww": "الوقت المتبقي للدفع:"
+    "key_1783109435478_s3ww": "الوقت المتبقي للدفع:",
+    "booking_status_pending": "معلق",
+    "booking_status_pending_approval": "بانتظار الموافقة",
+    "booking_status_awaiting_payment": "بانتظار الدفع",
+    "booking_status_confirmed": "مؤكد",
+    "booking_status_completed": "مكتمل",
+    "booking_status_rejected": "مرفوض",
+    "booking_status_cancelled": "ملغى",
+    "booking_status_expired": "منتهي"
   },
   "nav": {
     "dashboard": "لوحة التحكم",
