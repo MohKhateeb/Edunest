@@ -15,13 +15,11 @@ export async function generateMetadata({params}: {params: Promise<{locale: strin
 const getSections = (t: Awaited<ReturnType<typeof getTranslations>>) => [
 	{
 		title: t('legal_terms_section_1_heading') ,
-		content:
-			"باستخدامك لمنصة إديونست، فإنك توافق على الالتزام بهذه الشروط والأحكام كاملةً. إذا لم توافق على أي جزء منها، يُرجى عدم استخدام المنصة. تحتفظ إديونست بحق تعديل هذه الشروط في أي وقت مع إخطار المستخدمين بالتعديلات الجوهرية.",
+		content: t('legal_terms_agreement_intro'),
 	},
 	{
 		title: t('legal_terms_section_2_heading') ,
-		content:
-			"إديونست منصة إلكترونية تربط بين أولياء الأمور والمعلمين الخصوصيين في الضفة الغربية. تتيح المنصة حجز الجلسات التعليمية، وإدارة المدفوعات، ومتابعة تقدم الطلاب. إديونست وسيط تقني بحت ولا تُعتبر طرفاً مباشراً في العلاقة التعليمية بين المعلم وولي الأمر.",
+		content: t('legal_terms_platform_description'),
 	},
 	{
 		title: t('legal_terms_section_3_heading') ,
@@ -51,8 +49,7 @@ const getSections = (t: Awaited<ReturnType<typeof getTranslations>>) => [
 	},
 	{
 		title: t('legal_terms_section_6_heading') ,
-		content:
-			"يحق لكل ولي أمر الحصول على جلسة تجريبية مجانية واحدة مع كل معلم جديد. تكلفة الجلسة التجريبية يتحملها النظام ولا تُخصم من المعلم. لا يحق الاستفادة من أكثر من جلسة تجريبية مع نفس المعلم، وإساءة استخدام هذه الميزة تؤدي إلى تعليق الحساب.",
+		content: t('legal_terms_free_trial_policy'),
 	},
 	{
 		title: t('legal_terms_section_7_heading') ,
@@ -77,8 +74,7 @@ const getSections = (t: Awaited<ReturnType<typeof getTranslations>>) => [
 	},
 	{
 		title: t('legal_terms_section_10_heading') ,
-		content:
-			"تحتفظ إديونست بالحق في تعليق أو إنهاء أي حساب يُخالف هذه الشروط دون إشعار مسبق في حالات المخالفات الجسيمة. يمكن لأي مستخدم إغلاق حسابه في أي وقت من إعدادات الحساب أو بالتواصل مع الدعم.",
+		content: t('legal_terms_account_suspension_policy'),
 	},
 	{
 		title: t('legal_terms_section_11_heading') ,
@@ -104,8 +100,7 @@ export default async function TermsPage() {
 				<div className="max-w-4xl mx-auto px-6 space-y-6">
 					<div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700/40 rounded-2xl p-5">
 						<p className="text-sm text-amber-800 dark:text-amber-300 leading-relaxed">
-							⚠️ يُرجى قراءة هذه الشروط بعناية قبل استخدام المنصة. استخدامك للخدمة
-							يعني موافقتك الكاملة على جميع البنود الواردة.
+							{t('legal_terms_reading_notice')}
 						</p>
 					</div>
 
