@@ -139,7 +139,7 @@ async function _updateUserProfileInDb(
 		name,
 		email: cleanEmail,
 		phone: phone || null,
-		preferredCurrency: (preferredCurrency as any) || null,
+		preferredCurrency: preferredCurrency || null,
 	});
 
 	return { success: true };

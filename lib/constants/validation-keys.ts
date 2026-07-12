@@ -55,6 +55,7 @@ export const KNOWN_VALIDATION_KEYS = [
 	"validation_dispute_id_required",
 	"validation_dispute_message_required",
 	"validation_dispute_message_max_length",
+	"validation_preferred_currency_invalid",
 	"validation_generic_error",
 ] as const;
 

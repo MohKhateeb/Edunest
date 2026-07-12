@@ -1,4 +1,4 @@
-import { UserType } from "@prisma/client";
+import { Currency, UserType } from "@prisma/client";
 import { z } from "zod";
 
 export const loginSchema = z.object({
@@ -28,7 +28,7 @@ export const updateProfileSchema = z.object({
 	name: z.string().min(2, "validation_name_min_length"),
 	email: z.string().email("validation_email_invalid"),
 	phone: z.string().optional().or(z.literal("")),
-	preferredCurrency: z.string().optional(),
+	preferredCurrency: z.nativeEnum(Currency, { message: "validation_preferred_currency_invalid" }).optional(),
 });
 
 export const changePasswordSchema = z

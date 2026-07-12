@@ -8,6 +8,7 @@ import {
 	Save,
 	User,
 } from "lucide-react";
+import type { Currency } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
 import { getAllCurrencies } from "@/lib/utils/currency";
@@ -41,7 +42,7 @@ export default function PersonalProfileForm({
 		name: initialUser.name,
 		email: initialUser.email,
 		phone: initialUser.phone || "",
-		preferredCurrency: initialUser.preferredCurrency || "ILS",
+		preferredCurrency: (initialUser.preferredCurrency || "ILS") as Currency,
 	});
 
 	// Password fields state
@@ -203,7 +204,7 @@ export default function PersonalProfileForm({
 								<select
 									value={profileForm.preferredCurrency}
 									onChange={(e) =>
-										setProfileForm({ ...profileForm, preferredCurrency: e.target.value })
+										setProfileForm({ ...profileForm, preferredCurrency: e.target.value as Currency })
 									}
 									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl"
 								>

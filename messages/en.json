@@ -2244,6 +2244,7 @@
     "validation_dispute_id_required": "Dispute ID is required",
     "validation_dispute_message_required": "Message cannot be empty",
     "validation_dispute_message_max_length": "Message is too long (maximum 2000 characters)",
+    "validation_preferred_currency_invalid": "Invalid currency selection",
     "validation_generic_error": "Validation error occurred"
   }
 }
