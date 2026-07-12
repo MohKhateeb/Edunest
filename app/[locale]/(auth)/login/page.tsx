@@ -54,6 +54,8 @@ export default function LoginPage() {
 					setErrorMsg(
 						t('auth_account_banned'),
 					);
+				} else if (res.error === "RATE_LIMITED" || res.error.includes("RATE_LIMITED")) {
+					setErrorMsg(t('auth_rate_limited'));
 				} else {
 					setErrorMsg(t('key_1783109428350_uyay'));
 				}

@@ -3,6 +3,7 @@
 import { UserType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import type { z } from "zod";
 import { requireAuth } from "@/lib/require-auth";
 import type { ActionResponse } from "@/lib/types";
@@ -18,6 +19,7 @@ import {
 	updateProfileSchema,
 } from "@/lib/validations/user";
 import { getErrorT, getValidationT } from "@/lib/i18n/get-server-translations";
+import { checkRateLimit } from "@/lib/utils/rate-limit";
 
 const userRepository = new PrismaUserRepository();
 const teacherRepository = new PrismaTeacherRepository();
@@ -177,6 +179,14 @@ export async function registerUser(
 		if (!validated.success) {
 			const t = await getValidationT();
 			return { success: false, error: t(validated.error.issues[0].message) };
+		}
+
+		const headersList = await headers();
+		const ip = headersList.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+		const rl = checkRateLimit(`register:${ip}`, 5, 60 * 60_000);
+		if (!rl.allowed) {
+			const tError = await getErrorT();
+			return { success: false, error: tError("rate_limit_exceeded") };
 		}
 
 		const result = await _registerUserInDb(validated.data);

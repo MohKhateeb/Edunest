@@ -678,6 +678,7 @@
     "preferred_currency": "Preferred Currency",
     "najeeb_alt": "Advice from Najeeb - mode {mode}",
     "auth_account_banned": "Sorry, this account has been suspended. Please contact the platform administration for inquiry and support.",
+    "auth_rate_limited": "Too many login attempts. Please try again later.",
     "unauthorized_page_desc": "You do not have permission to access this section of the application. Please check the account you are logged in with.",
     "key_1783109435478_s3ww": "Time remaining for payment:",
     "booking_status_pending": "Pending",
@@ -2090,7 +2091,8 @@
     "upload_invalid_file_path": "The upload file path is structurally invalid.",
     "upload_invalid_user_id": "Invalid user ID.",
     "upload_invalid_upload_directory": "The upload directory is invalid or outside the allowed scope.",
-    "upload_unexpected_error": "An unexpected error occurred during the file upload."
+    "upload_unexpected_error": "An unexpected error occurred during the file upload.",
+    "rate_limit_exceeded": "Too many requests. Please try again later."
   },
   "notifications": {
     "new_booking_title": "New Booking Awaiting You",

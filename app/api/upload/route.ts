@@ -1,4 +1,5 @@
 import { getErrorT } from "@/lib/i18n/get-server-translations";
+import { checkRateLimit } from "@/lib/utils/rate-limit";
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import { type NextRequest, NextResponse } from "next/server";
@@ -23,6 +24,13 @@ async function validateUploadRequest(
 				{ error: tError("upload_unauthorized") },
 				{ status: 401 },
 			),
+		};
+	}
+
+	const rl = checkRateLimit(`upload:${session.user.id}`, 20, 10 * 60_000);
+	if (!rl.allowed) {
+		return {
+			error: NextResponse.json({ error: tError("rate_limit_exceeded") }, { status: 429 }),
 		};
 	}
 
