@@ -43,7 +43,7 @@ for (const file of allFiles) {
           break;
         }
       }
-      if (!found && key !== 'key_1783109427909_x0z5') {
+      if (!found && key !== 'legal_terms_page_title') {
         missing.push({ file, key, match: match[0] });
       }
     }
