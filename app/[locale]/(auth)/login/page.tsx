@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { useState } from "react";
+import { isKnownValidationKey } from "@/lib/constants/validation-keys";
 import { loginSchema } from "@/lib/validations/user";
 
 export default function LoginPage() {
@@ -34,7 +35,10 @@ export default function LoginPage() {
 			// Validate inputs client-side
 			const validated = loginSchema.safeParse(formData);
 			if (!validated.success) {
-				setErrorMsg(tValidation(validated.error.issues[0].message as any));
+				const rawMessage = validated.error.issues[0].message;
+				setErrorMsg(tValidation(
+					isKnownValidationKey(rawMessage) ? rawMessage : "validation_generic_error"
+				));
 				setLoading(false);
 				return;
 			}

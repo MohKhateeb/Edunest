@@ -19,6 +19,7 @@ import { useEffect, useState } from "react";
 import { getActiveSubjects } from "@/lib/actions/subject";
 import { registerUser } from "@/lib/actions/user";
 import { cn } from "@/lib/utils";
+import { isKnownValidationKey } from "@/lib/constants/validation-keys";
 import { registerSchema } from "@/lib/validations/user";
 
 export default function RegisterPage() {
@@ -73,7 +74,10 @@ export default function RegisterPage() {
 			});
 
 			if (!validated.success) {
-				setErrorMsg(tValidation(validated.error.issues[0].message as any));
+				const rawMessage = validated.error.issues[0].message;
+				setErrorMsg(tValidation(
+					isKnownValidationKey(rawMessage) ? rawMessage : "validation_generic_error"
+				));
 				return;
 			}
 

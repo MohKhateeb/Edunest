@@ -13,6 +13,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { addOrUpdateTeacherService } from "@/lib/actions/teacher";
+import { isKnownValidationKey } from "@/lib/constants/validation-keys";
 import { teacherServiceSchema } from "@/lib/validations/teacher";
 
 type ServiceType = {
@@ -88,7 +89,10 @@ export default function TeacherServicesForm({
 		try {
 			const validated = teacherServiceSchema.safeParse(data);
 			if (!validated.success) {
-				setErrorMsg(tValidation(validated.error.issues[0].message as any));
+				const rawMessage = validated.error.issues[0].message;
+				setErrorMsg(tValidation(
+					isKnownValidationKey(rawMessage) ? rawMessage : "validation_generic_error"
+				));
 				return;
 			}
 

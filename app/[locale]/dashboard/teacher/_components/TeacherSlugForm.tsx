@@ -11,6 +11,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { updateTeacherSlug } from "@/lib/actions/teacher";
+import { isKnownValidationKey } from "@/lib/constants/validation-keys";
 import { teacherSlugSchema } from "@/lib/validations/teacher";
 
 interface TeacherSlugFormProps {
@@ -40,7 +41,10 @@ export default function TeacherSlugForm({
 		try {
 			const validated = teacherSlugSchema.safeParse({ slug });
 			if (!validated.success) {
-				setError(tValidation(validated.error.issues[0].message as any));
+				const rawMessage = validated.error.issues[0].message;
+				setError(tValidation(
+					isKnownValidationKey(rawMessage) ? rawMessage : "validation_generic_error"
+				));
 				setLoading(false);
 				return;
 			}

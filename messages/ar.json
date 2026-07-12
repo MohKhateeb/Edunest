@@ -2241,6 +2241,7 @@
     "validation_dispute_reason_max_length": "السبب طويل جداً",
     "validation_dispute_id_required": "معرف النزاع مطلوب",
     "validation_dispute_message_required": "الرسالة لا يمكن أن تكون فارغة",
-    "validation_dispute_message_max_length": "الرسالة طويلة جداً"
+    "validation_dispute_message_max_length": "الرسالة طويلة جداً",
+    "validation_generic_error": "حدث خطأ في التحقق من البيانات"
   }
 }

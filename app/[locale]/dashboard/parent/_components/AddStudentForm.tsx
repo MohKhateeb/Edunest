@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { AlertCircle, Loader2, Plus } from "lucide-react";
 import { useState } from "react";
 import { addStudent } from "@/lib/actions/user";
+import { isKnownValidationKey } from "@/lib/constants/validation-keys";
 import { studentSchema } from "@/lib/validations/user";
 
 export default function AddStudentForm() {
@@ -39,7 +40,10 @@ export default function AddStudentForm() {
 			// Client side check
 			const validated = studentSchema.safeParse(data);
 			if (!validated.success) {
-				setErrorMsg(tValidation(validated.error.issues[0].message as any));
+				const rawMessage = validated.error.issues[0].message;
+				setErrorMsg(tValidation(
+					isKnownValidationKey(rawMessage) ? rawMessage : "validation_generic_error"
+				));
 				return;
 			}
 
