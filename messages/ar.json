@@ -1336,7 +1336,9 @@
     "admin_chart_status_expired": "منتهي",
     "admin_bookings_no_results_message": "لا توجد حجوزات مطابقة لمعايير البحث الحالية.",
     "admin_bookings_cancelling_label": "جاري الإلغاء...",
-    "admin_service_activate_tooltip": "تفعيل الخدمة"
+    "admin_service_activate_tooltip": "تفعيل الخدمة",
+    "admin_pagination_next_page": "التالي ←",
+    "admin_pagination_first_page": "→ العودة للصفحة الأولى"
   },
   "parent": {
     "key_1783109428847_62xo": "أهلاً بك،",

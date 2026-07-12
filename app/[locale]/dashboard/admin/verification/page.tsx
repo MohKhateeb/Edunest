@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import type { Prisma } from "@prisma/client";
 import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
+import AdminPaginationControls from "@/components/shared/AdminPaginationControls";
 import AdminVerificationQueue from "../_components/AdminVerificationQueue";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
@@ -39,7 +40,6 @@ export default async function AdminVerificationPage({
 
 	const cursor = resolvedParams.cursor as string | undefined;
 	const { items: pendingRequests, nextCursor } = await SystemAdminService.getAdminVerifications({ cursor });
-	// TODO: wire up pagination UI
 
 	return (
 		<div className="space-y-6">
@@ -52,6 +52,7 @@ export default async function AdminVerificationPage({
 			</div>
 
 			<AdminVerificationQueue requests={pendingRequests} />
+			<AdminPaginationControls nextCursor={nextCursor} hasCursor={!!cursor} />
 		</div>
 	);
 }

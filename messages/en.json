@@ -1336,7 +1336,9 @@
     "admin_chart_status_expired": "Expired",
     "admin_bookings_no_results_message": "No bookings match the current search criteria.",
     "admin_bookings_cancelling_label": "Cancelling...",
-    "admin_service_activate_tooltip": "Activate Service"
+    "admin_service_activate_tooltip": "Activate Service",
+    "admin_pagination_next_page": "Next →",
+    "admin_pagination_first_page": "← Back to First Page"
   },
   "parent": {
     "key_1783109428847_62xo": "Hey, you,",

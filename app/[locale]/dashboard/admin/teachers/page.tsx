@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { UserType } from "@prisma/client";
 import { redirect } from "next/navigation";
+import AdminPaginationControls from "@/components/shared/AdminPaginationControls";
 import AdminTeachersList from "../_components/AdminTeachersList";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
@@ -19,7 +20,6 @@ export default async function AdminTeachersPage({
 
 	const cursor = resolvedParams.cursor as string | undefined;
 	const { items: teachers, nextCursor } = await SystemAdminService.getAdminTeachers({ cursor });
-	// TODO: wire up pagination UI
 
 	return (
 		<div className="space-y-6">
@@ -29,6 +29,7 @@ export default async function AdminTeachersPage({
 			</div>
 
 			<AdminTeachersList teachers={teachers} />
+			<AdminPaginationControls nextCursor={nextCursor} hasCursor={!!cursor} />
 		</div>
 	);
 }
