@@ -16,6 +16,7 @@ import FinancialTabs from "./_components/FinancialTabs";
 import AdminPayoutsEngine from "../payouts/_components/AdminPayoutsEngine";
 import { EscrowActions } from "../escrow/escrow-actions";
 import { formatCurrency, formatPrice } from "@/lib/utils";
+import AdminPaginationControls from "@/components/shared/AdminPaginationControls";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
 	const { locale } = await params;
@@ -162,7 +163,6 @@ export default async function AdminFinancialsPage({
 	} else if (currentTab === "escrow") {
 		const cursor = resolvedSearchParams.cursor;
 		const { items: escrows, nextCursor } = await getAllEscrows(from, to, { cursor });
-		// TODO: wire up pagination UI
 		const pendingEscrows = escrows.filter((e) => e.status === "PENDING");
 		const resolvedEscrows = escrows.filter((e) => e.status !== "PENDING");
 
@@ -240,6 +240,7 @@ export default async function AdminFinancialsPage({
 								</div>
 							</div>
 						)}
+						<AdminPaginationControls nextCursor={nextCursor} hasCursor={!!cursor} />
 					</div>
 				)}
 			</div>
