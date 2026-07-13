@@ -69,8 +69,7 @@ const getSections = (t: Awaited<ReturnType<typeof getTranslations>>) => [
 	},
 	{
 		title: t('legal_terms_section_9_heading') ,
-		content:
-			"إديونست منصة تقنية وسيطة وليست مسؤولة بشكل مباشر عن جودة التعليم المقدَّم أو أي خلافات تنشأ بين المعلمين وأولياء الأمور. نسعى إلى توفير معلمين موثّقين ذوي كفاءة ونلتزم بدعم المستخدمين في حل النزاعات عبر فريق الدعم.",
+		content: t('legal_terms_liability_disclaimer_text'),
 	},
 	{
 		title: t('legal_terms_section_10_heading') ,
