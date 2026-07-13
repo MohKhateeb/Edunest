@@ -64,7 +64,7 @@ export function formatCurrency(
 		num = Number(amount);
 	}
 	
-	if (isNaN(num)) return `0 ${getCurrencySymbol(currency)}`;
+	if (typeof num !== "number" || !isFinite(num)) return `0 ${getCurrencySymbol(currency)}`;
 	const decimalPlaces = CURRENCY_DECIMAL_PLACES[currency];
 	const formatted = Number.isInteger(num)
 		? num.toString()
@@ -119,6 +119,7 @@ export function parseCurrencyInput(value: string | number): number | null {
 
 	// Convert Arabic-Indic digits to Western digits
 	str = str.replace(/[٠-٩]/g, (d) => String.fromCharCode(d.charCodeAt(0) - 0x0660 + 48));
+	str = str.replace(/٫/g, ".");
 
 	// Remove all known currency symbols
 	const symbols = Object.values(CURRENCY_SYMBOLS);
