@@ -82,3 +82,20 @@ Desktop.ini
 # =========================
 *.tmp
 *.temp
+
+# Scratch scripts and generated audit reports (should never be committed)
+/fix-*.js
+/hoist-*.js
+/refactor-*.js
+/update-*.js
+*_report.json
+*_report.txt
+*_report_utf8.txt
+deep-audit.json
+semantic-audit.json
+any_report*.json
+wire-report.json
+wire-errors.txt
+tsc_errors.txt
+old_ar.json
+old_en.json
