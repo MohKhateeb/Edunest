@@ -1,6 +1,7 @@
 import { UserType, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
+import { getActiveCurrency } from "./currency-service";
 
 export class UserService {
 	static async getUserProfile(userId: string) {
@@ -95,7 +96,9 @@ export class UserService {
 			currency: cs.currency,
 		}));
 
-		return { teacher, configuredServices, serviceTypes, mappedServices, defaultCurrency: teacher.user.preferredCurrency || "ILS" };
+		const activeCurrency = await getActiveCurrency();
+
+		return { teacher, configuredServices, serviceTypes, mappedServices, defaultCurrency: activeCurrency.code };
 	}
 
 	static async getTeacherVerificationData(userId: string) {

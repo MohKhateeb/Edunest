@@ -193,19 +193,9 @@ export default function TeacherServicesForm({
 					<div className="space-y-1">
 						<label className="text-xs font-semibold text-muted-foreground block">
 							{t('services_currency_label')}</label>
-						<select
-							name="currency"
-							value={formData.currency}
-							onChange={handleChange}
-							className="w-full premium-input text-xs"
-							required
-						>
-							{getAllCurrencies().map((c) => (
-								<option key={c.code} value={c.code}>
-									{c.nameAr} ({c.symbol})
-								</option>
-							))}
-						</select>
+						<div className="w-full premium-input text-xs bg-slate-100 dark:bg-slate-800 text-muted-foreground flex items-center h-[38px] cursor-not-allowed border-dashed">
+							{getCurrencySymbol(defaultCurrency)} ({defaultCurrency})
+						</div>
 					</div>
 
 					<div className="space-y-1">

@@ -5,7 +5,9 @@ import {
 	PaymentStatus,
 	UserType,
 	VerificationLevel,
+	Currency,
 } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 import { revalidatePath, updateTag } from "next/cache";
 import { createNotification } from "@/lib/notifications";
@@ -144,6 +146,27 @@ export async function updateSystemSettings(
 
 		const { userId: adminUserId } = await requireAuth([UserType.ADMIN]);
 
+		const currencyChange = settings.find(s => s.settingKey === "DefaultCurrency");
+		if (currencyChange) {
+			const current = await systemSettingRepository.findByKey("DefaultCurrency");
+			const currentCurrency = current?.settingValue;
+			if (currentCurrency && currentCurrency !== currencyChange.settingValue) {
+				const [bookingCount, serviceCount, paymentCount, payoutCount, refundCount, requestCount, escrowCount] = await Promise.all([
+					prisma.booking.count({ where: { currency: currentCurrency as Currency } }),
+					prisma.teacherService.count({ where: { currency: currentCurrency as Currency } }),
+					prisma.payment.count({ where: { currency: currentCurrency as Currency } }),
+					prisma.teacherPayout.count({ where: { currency: currentCurrency as Currency } }),
+					prisma.parentRefund.count({ where: { currency: currentCurrency as Currency } }),
+					prisma.tutoringRequest.count({ where: { currency: currentCurrency as Currency } }),
+					prisma.adminEscrow.count({ where: { currency: currentCurrency as Currency } }),
+				]);
+				const hasAnyTransaction = [bookingCount, serviceCount, paymentCount, payoutCount, refundCount, requestCount, escrowCount].some(c => c > 0);
+				if (hasAnyTransaction) {
+					return { success: false, error: t("system_currency_change_blocked") };
+				}
+			}
+		}
+
 		await unitOfWork.runTransaction(async (tx) => {
 			await Promise.all(
 				settings.map((s) =>
@@ -157,6 +180,15 @@ export async function updateSystemSettings(
 					),
 				),
 			);
+
+			if (currencyChange) {
+				await tx.currencyConfig.updateMany({ data: { isActiveForUser: false } });
+				await tx.currencyConfig.upsert({
+					where: { currency: currencyChange.settingValue as Currency },
+					update: { isActiveForUser: true },
+					create: { currency: currencyChange.settingValue as Currency, isActiveForUser: true, displaySymbol: currencyChange.settingValue, decimalPlaces: 2, sortOrder: 99 }
+				});
+			}
 		});
 
 		revalidatePath("/dashboard/admin/settings");

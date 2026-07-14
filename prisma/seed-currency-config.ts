@@ -12,6 +12,7 @@ async function main() {
     { currency: Currency.AED, isActiveForUser: false, displaySymbol: "د.إ", sortOrder: 6 },
     { currency: Currency.QAR, isActiveForUser: false, displaySymbol: "ر.ق", sortOrder: 7 },
     { currency: Currency.KWD, isActiveForUser: false, displaySymbol: "د.ك", sortOrder: 8 },
+    { currency: Currency.TRY, isActiveForUser: false, displaySymbol: "₺", sortOrder: 9 },
   ];
 
   console.log('Seeding CurrencyConfig...');

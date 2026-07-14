@@ -15,6 +15,7 @@ const CURRENCY_SYMBOLS: Record<Currency, string> = {
 	AED: "د.إ",
 	QAR: "ر.ق",
 	KWD: "د.ك",
+	TRY: "₺",
 };
 
 const CURRENCY_DECIMAL_PLACES: Record<Currency, number> = {
@@ -27,6 +28,7 @@ const CURRENCY_DECIMAL_PLACES: Record<Currency, number> = {
 	AED: 2,
 	QAR: 2,
 	KWD: 3,
+	TRY: 2,
 };
 
 /**
@@ -82,6 +84,7 @@ const CURRENCY_NAMES: Record<Currency, { ar: string; en: string }> = {
 	AED: { ar: "درهم إماراتي", en: "UAE Dirham" },
 	QAR: { ar: "ريال قطري", en: "Qatari Riyal" },
 	KWD: { ar: "دينار كويتي", en: "Kuwaiti Dinar" },
+	TRY: { ar: "ليرة تركية", en: "Turkish Lira" },
 };
 
 export function getCurrencyName(

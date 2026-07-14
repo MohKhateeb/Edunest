@@ -21,6 +21,7 @@ enum Currency {
   AED
   QAR
   KWD
+  TRY
 }
 
 model CurrencyConfig {

@@ -1930,6 +1930,7 @@
     "najeeb_sidebar_teacher_1": "Your passion inspires the energies of the future! At EduNest, we enjoy every moment we spend with you!"
   },
   "errors": {
+    "system_currency_change_blocked": "System currency cannot be changed because there are recorded transactions in the current currency",
     "booking_min_lead_time": "Booking time must be at least {minLeadHours} hours from now",
     "booking_student_not_found": "The selected student was not found or does not belong to you",
     "booking_service_not_found": "The requested service is not available",

@@ -1930,6 +1930,7 @@
     "najeeb_sidebar_teacher_1": "حسك يلهم طاقات المستقبل! نستمتع في إديونست بكل لحظة نقضيها معك!"
   },
   "errors": {
+    "system_currency_change_blocked": "لا يمكن تغيير عملة النظام لوجود معاملات مسجلة بالعملة الحالية",
     "booking_min_lead_time": "يجب أن يكون موعد الحجز بعد {minLeadHours} ساعات على الأقل من الآن",
     "booking_student_not_found": "الطالب المحدد غير موجود أو غير تابع لك",
     "booking_service_not_found": "الخدمة المطلوبة غير متوفرة",
