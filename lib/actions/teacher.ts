@@ -125,6 +125,7 @@ export async function addOrUpdateTeacherService(
 					price: validated.data.price,
 					duration: validated.data.duration,
 					customDescription: validated.data.customDescription,
+					currency: validated.data.currency,
 					isActive: true,
 				},
 			});
@@ -136,6 +137,7 @@ export async function addOrUpdateTeacherService(
 					price: validated.data.price,
 					duration: validated.data.duration,
 					customDescription: validated.data.customDescription,
+					currency: validated.data.currency,
 				},
 			});
 		}

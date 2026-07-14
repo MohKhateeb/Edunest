@@ -71,6 +71,7 @@ export class UserService {
 		await requireAuth([UserType.TEACHER]);
 		const teacher = await prisma.teacher.findUnique({
 			where: { userId },
+			include: { user: { select: { preferredCurrency: true } } },
 		});
 		if (!teacher) return null;
 
@@ -91,9 +92,10 @@ export class UserService {
 			duration: cs.duration,
 			customDescription: cs.customDescription,
 			serviceType: cs.serviceType,
+			currency: cs.currency,
 		}));
 
-		return { teacher, configuredServices, serviceTypes, mappedServices };
+		return { teacher, configuredServices, serviceTypes, mappedServices, defaultCurrency: teacher.user.preferredCurrency || "ILS" };
 	}
 
 	static async getTeacherVerificationData(userId: string) {

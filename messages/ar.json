@@ -1908,7 +1908,8 @@
     "completed_sessions_count": "{count, plural, =1 {جلسة مكتملة واحدة} =2 {جلستان مكتملتان} other {{count} جلسة مكتملة}}",
     "tutors_waiting_count": "{count, plural, =1 {معلم موثّق واحد في انتظارك} =2 {معلمان موثقان في انتظارك} other {{count} معلم موثّق في انتظارك}}",
     "price_from": "من {price}",
-    "login_to_book": "سجّل دخولك للحجز"
+    "login_to_book": "سجّل دخولك للحجز",
+    "services_currency_label": "العملة"
   },
   "advisors": {
     "hakeem_sidebar_parent_1": "التعليم ليس ملء دلو، بل إيقاد شعلة. تفقد أداء طفلك بانتظام للوقوف على نقاط قوته!",
@@ -2247,6 +2248,7 @@
     "validation_dispute_message_required": "الرسالة لا يمكن أن تكون فارغة",
     "validation_dispute_message_max_length": "الرسالة طويلة جداً",
     "validation_preferred_currency_invalid": "العملة المختارة غير صالحة",
-    "validation_generic_error": "حدث خطأ في التحقق من البيانات"
+    "validation_generic_error": "حدث خطأ في التحقق من البيانات",
+    "validation_teacher_currency_invalid": "يرجى اختيار عملة صالحة"
   }
 }

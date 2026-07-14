@@ -1908,7 +1908,8 @@
     "completed_sessions_count": "{count, plural, =1 {1 completed session} other {{count} completed sessions}}",
     "tutors_waiting_count": "{count, plural, =1 {1 verified tutor is waiting for you} other {{count} verified tutors are waiting for you}}",
     "price_from": "from {price}",
-    "login_to_book": "Log in to book"
+    "login_to_book": "Log in to book",
+    "services_currency_label": "Currency"
   },
   "advisors": {
     "hakeem_sidebar_parent_1": "Education is not the filling of a pail, but the lighting of a fire. Check your child's performance regularly!",
@@ -2247,6 +2248,7 @@
     "validation_dispute_message_required": "Message cannot be empty",
     "validation_dispute_message_max_length": "Message is too long (maximum 2000 characters)",
     "validation_preferred_currency_invalid": "Invalid currency selection",
-    "validation_generic_error": "Validation error occurred"
+    "validation_generic_error": "Validation error occurred",
+    "validation_teacher_currency_invalid": "Please select a valid currency"
   }
 }

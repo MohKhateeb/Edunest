@@ -12,12 +12,13 @@ export default async function TeacherServicesPage() {
 
 	const data = await UserService.getTeacherServicesData(session.user.id);
 	if (!data) redirect("/dashboard/profile");
-	const { teacher, mappedServices, serviceTypes } = data;
+	const { teacher, mappedServices, serviceTypes, defaultCurrency } = data;
 
 	return (
 		<TeacherServicesForm
 			serviceTypes={serviceTypes}
 			configuredServices={mappedServices}
+			defaultCurrency={defaultCurrency}
 		/>
 	);
 }

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Currency } from "@prisma/client";
 
 export const teacherProfileSchema = z.object({
 	subjectIds: z.array(z.string()).min(1, "validation_teacher_subject_required"),
@@ -22,6 +23,7 @@ export const teacherServiceSchema = z.object({
 	price: z.coerce.number().min(5, "validation_teacher_min_price"),
 	duration: z.coerce.number().int().min(5, "validation_teacher_min_duration"),
 	customDescription: z.string().optional().nullable(),
+	currency: z.nativeEnum(Currency, { message: "validation_teacher_currency_invalid" }),
 });
 
 export const availabilityItemSchema = z.object({

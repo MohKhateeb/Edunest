@@ -15,6 +15,8 @@ import { useState } from "react";
 import { addOrUpdateTeacherService } from "@/lib/actions/teacher";
 import { isKnownValidationKey } from "@/lib/constants/validation-keys";
 import { teacherServiceSchema } from "@/lib/validations/teacher";
+import { Currency } from "@prisma/client";
+import { getAllCurrencies, getCurrencySymbol } from "@/lib/utils/currency";
 
 type ServiceType = {
 	id: string;
@@ -30,16 +32,19 @@ type ConfiguredService = {
 	serviceType: {
 		name: string;
 	};
+	currency: Currency;
 };
 
 type TeacherServicesFormProps = {
 	serviceTypes: ServiceType[];
 	configuredServices: ConfiguredService[];
+	defaultCurrency: Currency;
 };
 
 export default function TeacherServicesForm({
 	serviceTypes,
 	configuredServices,
+	defaultCurrency,
 }: TeacherServicesFormProps) {
     const t = useTranslations('teachers')
 	const tValidation = useTranslations('validation');
@@ -49,6 +54,7 @@ export default function TeacherServicesForm({
 		price: "50",
 		duration: "60",
 		customDescription: "",
+		currency: defaultCurrency,
 	});
 	const [loading, setLoading] = useState(false);
 	const [successMsg, setSuccessMsg] = useState<string | null>(null);
@@ -84,6 +90,7 @@ export default function TeacherServicesForm({
 			price: Number(formData.price),
 			duration: Number(formData.duration),
 			customDescription: formData.customDescription || undefined,
+			currency: formData.currency,
 		};
 
 		try {
@@ -104,6 +111,7 @@ export default function TeacherServicesForm({
 					price: "50",
 					duration: "60",
 					customDescription: "",
+					currency: defaultCurrency,
 				});
 				router.refresh();
 			} else {
@@ -184,6 +192,24 @@ export default function TeacherServicesForm({
 
 					<div className="space-y-1">
 						<label className="text-xs font-semibold text-muted-foreground block">
+							{t('services_currency_label')}</label>
+						<select
+							name="currency"
+							value={formData.currency}
+							onChange={handleChange}
+							className="w-full premium-input text-xs"
+							required
+						>
+							{getAllCurrencies().map((c) => (
+								<option key={c.code} value={c.code}>
+									{c.nameAr} ({c.symbol})
+								</option>
+							))}
+						</select>
+					</div>
+
+					<div className="space-y-1">
+						<label className="text-xs font-semibold text-muted-foreground block">
 							{t('services_duration_label')}</label>
 						<input
 							type="number"
@@ -254,7 +280,7 @@ export default function TeacherServicesForm({
 											{cs.duration} {t('services_duration_unit')}</span>
 										<span className="flex items-center gap-1 text-primary font-semibold">
 											<DollarSign className="h-3.5 w-3.5" />
-											{cs.price} {t('services_currency_unit')}</span>
+											{cs.price} {getCurrencySymbol(cs.currency)}</span>
 									</div>
 
 									{cs.customDescription && (
