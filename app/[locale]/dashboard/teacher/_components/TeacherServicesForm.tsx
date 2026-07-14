@@ -16,7 +16,7 @@ import { addOrUpdateTeacherService } from "@/lib/actions/teacher";
 import { isKnownValidationKey } from "@/lib/constants/validation-keys";
 import { teacherServiceSchema } from "@/lib/validations/teacher";
 import { Currency } from "@prisma/client";
-import { getAllCurrencies, getCurrencySymbol } from "@/lib/utils/currency";
+import { getCurrencySymbol } from "@/lib/utils/currency";
 
 type ServiceType = {
 	id: string;

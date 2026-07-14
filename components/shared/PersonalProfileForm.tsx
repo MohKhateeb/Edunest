@@ -8,10 +8,8 @@ import {
 	Save,
 	User,
 } from "lucide-react";
-import type { Currency } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import { useLocale } from "next-intl";
-import { getAllCurrencies } from "@/lib/utils/currency";
 import { changeUserPassword, updateUserProfile } from "@/lib/actions/user";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -42,7 +40,6 @@ export default function PersonalProfileForm({
 		name: initialUser.name,
 		email: initialUser.email,
 		phone: initialUser.phone || "",
-		preferredCurrency: (initialUser.preferredCurrency || "ILS") as Currency,
 	});
 
 	// Password fields state
@@ -198,23 +195,7 @@ export default function PersonalProfileForm({
 								/>
 							</div>
 
-							<div className="space-y-1.5">
-								<label className="text-xs font-bold text-foreground/80 block">
-									{t('preferred_currency')}</label>
-								<select
-									value={profileForm.preferredCurrency}
-									onChange={(e) =>
-										setProfileForm({ ...profileForm, preferredCurrency: e.target.value as Currency })
-									}
-									className="w-full premium-input text-xs px-4 py-3 bg-slate-50/50 dark:bg-slate-800/10 border border-border/80 rounded-xl"
-								>
-									{getAllCurrencies().map(c => (
-										<option key={c.code} value={c.code}>
-											{locale === "ar" ? c.nameAr : c.nameEn} ({c.code})
-										</option>
-									))}
-								</select>
-							</div>
+
 
 							<div className="space-y-1.5 md:col-span-2">
 								<label className="text-xs font-bold text-foreground/80 block">
