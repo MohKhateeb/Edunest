@@ -1,3 +1,4 @@
+"use client";
 import { AlertTriangle, CalendarCheck, Clock, TrendingUp, Lock } from "lucide-react";
 import { useMemo } from "react";
 import type { DetailedBooking } from "@/lib/types";

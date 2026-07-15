@@ -1,3 +1,4 @@
+"use client";
 interface LiveSessionBannerProps {
 	liveSession: any | null;
 }

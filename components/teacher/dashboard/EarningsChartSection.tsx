@@ -1,3 +1,4 @@
+"use client";
 import { DollarSign } from "lucide-react";
 import TeacherEarningsChart from "@/components/shared/charts/TeacherEarningsChart";
 import { useTranslations } from "next-intl";

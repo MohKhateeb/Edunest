@@ -1,3 +1,4 @@
+"use client";
 import { BadgeCheck } from "lucide-react";
 import { useTranslations } from "next-intl";
 

@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import TeacherOnlineToggle from "@/components/shared/TeacherOnlineToggle";

@@ -1,3 +1,4 @@
+"use client";
 import { DAYS_OF_WEEK_AR } from "@/lib/translations";
 import { useTranslations } from "next-intl";
 

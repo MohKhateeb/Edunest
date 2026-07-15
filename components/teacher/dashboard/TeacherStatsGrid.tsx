@@ -1,3 +1,4 @@
+"use client";
 import { Calendar, Clock, DollarSign, Star } from "lucide-react";
 import InteractiveMessage from "@/components/shared/InteractiveMessage";
 import { formatPrice } from "@/lib/utils";

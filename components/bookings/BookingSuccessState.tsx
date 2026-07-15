@@ -1,3 +1,4 @@
+"use client";
 import { CheckCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 

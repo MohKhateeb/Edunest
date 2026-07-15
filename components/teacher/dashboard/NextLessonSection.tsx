@@ -1,3 +1,4 @@
+"use client";
 import { Calendar } from "lucide-react";
 import BookingCard from "@/components/shared/BookingCard";
 import { useTranslations } from "next-intl";
