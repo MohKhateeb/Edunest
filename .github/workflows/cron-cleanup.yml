@@ -1,0 +1,15 @@
+name: Booking Cleanup Cron
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # كل ساعة
+  workflow_dispatch: {}   # يسمح بالتشغيل اليدوي من تبويب Actions بـ GitHub
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call cleanup endpoint
+        run: |
+          curl -sf -X GET "${{ secrets.APP_URL }}/api/cron/cleanup" \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}"

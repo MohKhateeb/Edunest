@@ -7,7 +7,6 @@ const ONE_MINUTE_MS = 60_000;
 const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60_000;
 const FORTY_EIGHT_HOURS_MS = 48 * 60 * 60_000;
 const NINETY_SIX_HOURS_MS = 96 * 60 * 60_000;
-const TEN_DAYS_MS = 10 * 24 * 60 * 60_000;
 
 export type BookingWithDetails = {
 	id: string;
@@ -248,13 +247,9 @@ export async function processGhostBookingsPenalties(): Promise<{
 	warningsSent: number;
 	escrowedCount: number;
 }> {
-	const now = new Date();
-	const tenDaysAgo = new Date(now.getTime() - TEN_DAYS_MS);
-
 	const confirmedGhostBookings = await prisma.booking.findMany({
 		where: {
 			status: BookingStatus.CONFIRMED,
-			startTime: { gte: tenDaysAgo },
 		},
 		select: {
 			id: true,
