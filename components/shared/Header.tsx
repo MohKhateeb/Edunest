@@ -28,6 +28,7 @@ import { usePathname } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import NotificationBell from "@/components/shared/NotificationBell";
+import LanguageSwitcher from "@/components/shared/LanguageSwitcher";
 import { adminLinks, parentLinks, teacherLinks } from "@/lib/config/navigation";
 import { useTranslations, useLocale } from "next-intl";
 
@@ -98,6 +99,8 @@ export default function Header() {
 
 					{/* User Actions */}
 					<div className="hidden md:flex items-center gap-4">
+						<LanguageSwitcher />
+						<div className="h-4 w-px bg-border/50" />
 						{session ? (
 							<div className="flex items-center gap-4 relative">
 								<NotificationBell />
@@ -250,6 +253,10 @@ export default function Header() {
 							className="block px-3 py-2 rounded-md text-base font-medium hover:bg-accent hover:text-primary transition-colors"
 						>
 							{t('syash_alkhswsyh')}</Link>
+
+						<div className="px-3 py-2">
+							<LanguageSwitcher />
+						</div>
 
 						<div className="border-t border-border my-2 pt-2">
 							{session ? (
