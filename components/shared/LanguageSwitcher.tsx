@@ -8,7 +8,7 @@ export default function LanguageSwitcher() {
 	const pathname = usePathname();
 
 	// أزل أي بادئة لغة موجودة حالياً بالمسار للحصول على مسار محايد
-	const pathWithoutLocale = pathname.replace(/^\/(ar|en)(?=\/|$)/, "") || "/";
+	const pathWithoutLocale = (pathname || "/").replace(/^\/(ar|en)(?=\/|$)/, "") || "/";
 	const arHref = pathWithoutLocale;
 	const enHref = pathWithoutLocale === "/" ? "/en" : `/en${pathWithoutLocale}`;
 
