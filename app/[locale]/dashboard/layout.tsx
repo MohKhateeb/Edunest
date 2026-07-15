@@ -7,11 +7,17 @@ import { requireAuth } from "@/lib/require-auth";
 
 	import { AuthError } from "@/lib/errors";
 
+	import { setRequestLocale } from "next-intl/server";
+
 	export default async function DashboardLayout({
 		children,
+		params,
 	}: {
 		children: React.ReactNode;
+		params: Promise<{ locale: string }>;
 	}) {
+		const { locale } = await params;
+		setRequestLocale(locale);
 		try {
 			await requireAuth([UserType.ADMIN, UserType.TEACHER, UserType.PARENT]);
 		} catch (error) {

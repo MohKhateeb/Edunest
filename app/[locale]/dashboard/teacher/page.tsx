@@ -15,9 +15,12 @@ import PendingRequestsSection from "@/components/teacher/dashboard/PendingReques
 import NextLessonSection from "@/components/teacher/dashboard/NextLessonSection";
 import VerificationStatusSection from "@/components/teacher/dashboard/VerificationStatusSection";
 
+import { setRequestLocale } from "next-intl/server";
+
 export default async function TeacherDashboard(props: { params: Promise<{ locale: string }> }) {
     const params = await props.params;
     const locale = params?.locale || "ar";
+	setRequestLocale(locale);
 	await requireAuth([UserType.TEACHER]);
 	const session = await auth();
 	if (!session) return null;
