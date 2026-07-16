@@ -224,18 +224,16 @@ export async function processStaleBookingsCancellation(
 
 	let cancelledCount = 0;
 
-	await prisma.$transaction(async (tx) => {
-		await Promise.all(
-			staleBookings.map(async (booking) => {
-				try {
-					await CLEANUP_HANDLERS[booking.status as BookingStatus]?.(booking as any, tx);
-					cancelledCount++;
-				} catch (err) {
-					console.error(`Failed to cancel stale booking ${booking.id}:`, err);
-				}
-			})
-		);
-	});
+	for (const booking of staleBookings) {
+		try {
+			await prisma.$transaction(async (tx) => {
+				await CLEANUP_HANDLERS[booking.status as BookingStatus]?.(booking as any, tx);
+			});
+			cancelledCount++;
+		} catch (err) {
+			console.error(`Failed to cancel stale booking ${booking.id}:`, err);
+		}
+	}
 
 	return cancelledCount;
 }
@@ -271,21 +269,18 @@ export async function processGhostBookingsPenalties(): Promise<{
 	let warningsSent = 0;
 	let escrowedCount = 0;
 
-	await prisma.$transaction(async (tx) => {
-		await Promise.all(
-			confirmedGhostBookings.map(async (booking) => {
-				try {
-					const b = booking as any;
-					await CLEANUP_HANDLERS[b.status as BookingStatus]?.(b, tx);
-					
-					if (b._escrowed) escrowedCount++;
-					if (b._warning) warningsSent++;
-				} catch (err) {
-					console.error(`Failed to process penalty for booking ${booking.id}:`, err);
-				}
-			})
-		);
-	});
+	for (const booking of confirmedGhostBookings) {
+		try {
+			const b = booking as any;
+			await prisma.$transaction(async (tx) => {
+				await CLEANUP_HANDLERS[b.status as BookingStatus]?.(b, tx);
+			});
+			if (b._escrowed) escrowedCount++;
+			if (b._warning) warningsSent++;
+		} catch (err) {
+			console.error(`Failed to process penalty for booking ${booking.id}:`, err);
+		}
+	}
 
 	return { warningsSent, escrowedCount };
 }
