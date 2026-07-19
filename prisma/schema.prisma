@@ -103,6 +103,8 @@ model Teacher {
   bio               String?
   gradeLevels       Int[]
   city              String?
+  cityId            String?
+  cityRef           City?                 @relation(fields: [cityId], references: [id])
   area              String?
   profileImageUrl   String?
   slug              String                @unique
@@ -602,9 +604,10 @@ model City {
   nameAr    String
   nameEn    String
   slug      String   @unique
-  isActive  Boolean  @default(true)
-  sortOrder Int      @default(0)
-  createdAt DateTime @default(now())
+  isActive  Boolean   @default(true)
+  sortOrder Int       @default(0)
+  createdAt DateTime  @default(now())
+  teachers  Teacher[]
 
   @@index([countryId])
   @@unique([countryId, nameEn])
