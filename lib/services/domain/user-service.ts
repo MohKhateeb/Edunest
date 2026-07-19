@@ -146,7 +146,7 @@ export class UserService {
 
 	static async searchTeachers(params: {
 		subject?: string;
-		city?: string;
+		cityId?: string;
 		page?: string;
 	}) {
 		const page = Math.max(1, parseInt(params.page ?? "1", 10));
@@ -162,8 +162,8 @@ export class UserService {
 					subject: { name: { contains: params.subject, mode: "insensitive" } },
 				},
 			};
-		if (params.city)
-			where.city = { contains: params.city, mode: "insensitive" };
+		if (params.cityId)
+			where.cityId = params.cityId;
 
 		const [teachers, total] = await Promise.all([
 			prisma.teacher.findMany({

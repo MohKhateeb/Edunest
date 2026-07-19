@@ -24,7 +24,7 @@ export async function generateMetadata({
 
 interface SearchParams {
 	subject?: string;
-	city?: string;
+	cityId?: string;
 	page?: string;
 }
 
@@ -67,7 +67,7 @@ export default async function TeachersPage({
 		const qp = new URLSearchParams();
 		const merged = {
 			subject: resolvedSearchParams.subject,
-			city: resolvedSearchParams.city,
+			cityId: resolvedSearchParams.cityId,
 			page: String(page),
 			...overrides,
 		};
@@ -109,14 +109,14 @@ export default async function TeachersPage({
 							className="flex-1 rounded-xl px-4 py-3 text-foreground bg-white/95 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
 						/>
 						<select
-							name="city"
+							name="cityId"
 							id="search-city"
-							defaultValue={resolvedSearchParams.city}
+							defaultValue={resolvedSearchParams.cityId}
 							className="rounded-xl px-4 py-3 text-foreground bg-white/95 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
 						>
 							<option value="">{tCommon('key_1783109427694_xbk8')}</option>
 							{cities.map((c) => (
-								<option key={c.slug} value={c.slug}>
+								<option key={c.id} value={c.id}>
 									{locale === 'en' ? c.nameEn : c.nameAr}
 								</option>
 							))}
@@ -131,7 +131,7 @@ export default async function TeachersPage({
 					</form>
 
 					{/* Active filters */}
-					{(resolvedSearchParams.subject || resolvedSearchParams.city) && (
+					{(resolvedSearchParams.subject || resolvedSearchParams.cityId) && (
 						<div className="flex flex-wrap justify-center gap-2 mt-4">
 							{resolvedSearchParams.subject && (
 								<span className="bg-white/15 border border-white/25 rounded-full px-3 py-1 text-xs flex items-center gap-2">
@@ -144,11 +144,11 @@ export default async function TeachersPage({
 									</Link>
 								</span>
 							)}
-							{resolvedSearchParams.city && (
+							{resolvedSearchParams.cityId && (
 								<span className="bg-white/15 border border-white/25 rounded-full px-3 py-1 text-xs flex items-center gap-2">
-									{resolvedSearchParams.city}
+									{cities.find(c => c.id === resolvedSearchParams.cityId)?.nameAr || resolvedSearchParams.cityId}
 									<Link
-										href={buildUrl({ city: undefined, page: "1" })}
+										href={buildUrl({ cityId: undefined, page: "1" })}
 										className="hover:text-red-300"
 									>
 										✕
