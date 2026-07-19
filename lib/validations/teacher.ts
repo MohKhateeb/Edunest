@@ -8,7 +8,7 @@ export const teacherProfileSchema = z.object({
 	gradeLevels: z
 		.array(z.coerce.number().int().min(1).max(12))
 		.min(1, "validation_teacher_grade_required"),
-	city: z.string().min(2, "validation_teacher_city_required"),
+	cityId: z.string().min(1, "validation_teacher_city_required"),
 	area: z.string().optional().nullable(),
 	education: z.string().optional().nullable(),
 	yearsOfExperience: z.coerce.number().int().min(0, "validation_teacher_years_of_experience_invalid"),

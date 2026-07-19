@@ -53,7 +53,7 @@ export class UserService {
 					subSpecialization: teacher.subSpecialization || null,
 					bio: teacher.bio || null,
 					gradeLevels: teacher.gradeLevels || [],
-					city: teacher.city || null,
+					cityId: teacher.cityId || null,
 					area: teacher.area || null,
 					education: teacher.education || null,
 					yearsOfExperience: teacher.yearsOfExperience ?? 0,

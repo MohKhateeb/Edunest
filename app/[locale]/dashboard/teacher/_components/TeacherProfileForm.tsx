@@ -23,7 +23,7 @@ type ProfileData = {
 	subSpecialization: string | null;
 	bio: string | null;
 	gradeLevels: number[];
-	city: string | null;
+	cityId: string | null;
 	area: string | null;
 	education: string | null;
 	yearsOfExperience: number;
@@ -35,11 +35,13 @@ type ProfileData = {
 type TeacherProfileFormProps = {
 	initialData: ProfileData;
 	subjects: { id: string; name: string }[];
+	cities: { id: string; nameAr: string }[];
 };
 
 export default function TeacherProfileForm({
 	initialData,
 	subjects,
+	cities,
 }: TeacherProfileFormProps) {
     const t = useTranslations('teachers')
 	const router = useRouter();
@@ -112,7 +114,7 @@ export default function TeacherProfileForm({
 			subSpecialization: formData.subSpecialization || undefined,
 			bio: formData.bio || undefined,
 			gradeLevels: formData.gradeLevels,
-			city: formData.city || "",
+			cityId: formData.cityId || "",
 			area: formData.area || undefined,
 			education: formData.education || undefined,
 			yearsOfExperience: Number(formData.yearsOfExperience),
@@ -238,16 +240,19 @@ export default function TeacherProfileForm({
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">
 										{t('profile_city')}</label>
-									<input
-										type="text"
+									<select
 										required
-										value={formData.city || ""}
+										value={formData.cityId || ""}
 										onChange={(e) =>
-											setFormData({ ...formData, city: e.target.value || null })
+											setFormData({ ...formData, cityId: e.target.value || null })
 										}
-										placeholder={t('profile_city_placeholder')}
-										className="w-full premium-input text-sm"
-									/>
+										className="w-full premium-input text-sm appearance-none bg-white dark:bg-slate-900"
+									>
+										<option value="" disabled>{t('profile_city_placeholder')}</option>
+										{cities.map(c => (
+											<option key={c.id} value={c.id}>{c.nameAr}</option>
+										))}
+									</select>
 								</div>
 								<div className="space-y-1.5">
 									<label className="text-xs font-semibold text-muted-foreground block">

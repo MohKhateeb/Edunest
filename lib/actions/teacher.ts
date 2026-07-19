@@ -27,6 +27,14 @@ export async function updateTeacherProfile(
 			return { success: false, error: tVal(validated.error.issues[0].message) };
 		}
 
+		const matchedCity = await prisma.city.findUnique({
+			where: { id: validated.data.cityId }
+		});
+
+		if (!matchedCity) {
+			return { success: false, error: t("validation_teacher_city_required") };
+		}
+
 		const user = await prisma.user.findUnique({
 			where: { id: userId },
 			include: { teacher: true },
@@ -51,7 +59,8 @@ export async function updateTeacherProfile(
 				subSpecialization: validated.data.subSpecialization,
 				bio: validated.data.bio,
 				gradeLevels: validated.data.gradeLevels,
-				city: validated.data.city,
+				cityId: validated.data.cityId,
+				city: matchedCity.nameAr,
 				area: validated.data.area,
 				education: validated.data.education,
 				yearsOfExperience: validated.data.yearsOfExperience,
@@ -67,7 +76,8 @@ export async function updateTeacherProfile(
 				subSpecialization: validated.data.subSpecialization,
 				bio: validated.data.bio,
 				gradeLevels: validated.data.gradeLevels,
-				city: validated.data.city,
+				cityId: validated.data.cityId,
+				city: matchedCity.nameAr,
 				area: validated.data.area,
 				education: validated.data.education,
 				yearsOfExperience: validated.data.yearsOfExperience,
