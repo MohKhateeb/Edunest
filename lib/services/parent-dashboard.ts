@@ -124,7 +124,7 @@ export async function getParentDashboardInsights(
 	});
 	const studentIds = students.map((s) => s.id);
 
-	const completedBookings = await prisma.booking.findMany({
+	const latestCompletedBooking = await prisma.booking.findFirst({
 		where: {
 			studentId: { in: studentIds },
 			status: "COMPLETED",
@@ -144,11 +144,9 @@ export async function getParentDashboardInsights(
 		orderBy: { startTime: "desc" },
 	});
 
-	// Removed stats calculation logic as requested
-
 	// --- صياغة نصيحة الحكيم المبنية على بيانات دقيقة (Hakeem's Data-Driven Advice) ---
 	let hakeemMessage = "";
-	const latestBooking = completedBookings[0];
+	const latestBooking = latestCompletedBooking;
 
 	if (latestBooking && latestBooking.report) {
 		const report = latestBooking.report;

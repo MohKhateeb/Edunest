@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
 import { bookingDetailsInclude, type DetailedBooking } from "@/lib/types";
 import { getDetailedSessionState } from "@/lib/utils/booking-state";
+import { getTimeRangeDates, type TimeRangeOption } from "@/lib/utils/date-range";
 
 export interface BookingListParams {
 	cursor?: string;
@@ -18,14 +19,24 @@ export interface BookingListResult {
 }
 
 export class BookingService {
-	static async getParentBookings(parentId: string, locale: string = 'ar') {
+	static async getParentBookings(
+		parentId: string,
+		locale: string = "ar",
+		range: TimeRangeOption = "this_month",
+	) {
 		await requireAuth([UserType.PARENT]);
 		const { getTranslations } = await import("next-intl/server");
-		const t = await getTranslations({ locale, namespace: 'parent' });
-		const bookings = await prisma.booking.findMany({
+		const t = await getTranslations({ locale, namespace: "parent" });
+
+		// Lightweight query for insights — no time filter, minimal select
+		const allBookings = await prisma.booking.findMany({
 			where: { parentUserId: parentId },
-			include: bookingDetailsInclude,
-			orderBy: { startTime: "asc" },
+			select: {
+				status: true,
+				startTime: true,
+				duration: true,
+				report: { select: { id: true } },
+			},
 		});
 
 		let upcomingCount = 0;
@@ -33,7 +44,7 @@ export class BookingService {
 		let reportsCount = 0;
 		let ghostCount = 0;
 
-		for (const b of bookings) {
+		for (const b of allBookings) {
 			if (b.status === "CONFIRMED") upcomingCount++;
 			if (b.status === "PENDING" || b.status === "PENDING_APPROVAL" || b.status === "AWAITING_PAYMENT") pendingCount++;
 			if (b.status === "COMPLETED" && b.report) reportsCount++;
@@ -45,8 +56,19 @@ export class BookingService {
 
 		const hakeemMsg =
 			upcomingCount > 0
-				? t('hakeem_bookings_upcoming', { count: upcomingCount })
-				: t('hakeem_bookings_none');
+				? t("hakeem_bookings_upcoming", { count: upcomingCount })
+				: t("hakeem_bookings_none");
+
+		// Time-filtered query for the display list — full include
+		const dateRange = getTimeRangeDates(range);
+		const bookings = await prisma.booking.findMany({
+			where: {
+				parentUserId: parentId,
+				...(dateRange && { startTime: dateRange }),
+			},
+			include: bookingDetailsInclude,
+			orderBy: { startTime: "asc" },
+		});
 
 		return {
 			bookings,
@@ -60,15 +82,22 @@ export class BookingService {
 		};
 	}
 
-	static async getTeacherBookings(userId: string): Promise<DetailedBooking[]> {
+	static async getTeacherBookings(
+		userId: string,
+		range: TimeRangeOption = "this_month",
+	): Promise<DetailedBooking[]> {
 		await requireAuth([UserType.TEACHER]);
 		const teacher = await prisma.teacher.findUnique({
 			where: { userId },
 		});
 		if (!teacher) throw new Error("Teacher not found");
 
+		const dateRange = getTimeRangeDates(range);
 		return prisma.booking.findMany({
-			where: { teacherService: { teacherId: teacher.id } },
+			where: {
+				teacherService: { teacherId: teacher.id },
+				...(dateRange && { startTime: dateRange }),
+			},
 			include: bookingDetailsInclude,
 			orderBy: { startTime: "desc" },
 		});

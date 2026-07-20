@@ -3,27 +3,30 @@ import { UserType } from "@prisma/client";
 import { AlertCircle, Calendar } from "lucide-react";
 import { redirect } from "next/navigation";
 import TeacherBookingsList from "../_components/TeacherBookingsList";
+import TimeRangeTabs from "@/components/shared/TimeRangeTabs";
 import { auth } from "@/lib/auth";
 import { requireAuth } from "@/lib/require-auth";
-import { processStaleBookingsCancellation } from "@/lib/services/booking-cleanup";
 import { BookingService } from "@/lib/services/domain/booking-service";
 import { sanitizePrismaData } from "@/lib/utils";
+import type { TimeRangeOption } from "@/lib/utils/date-range";
 
-export default async function TeacherBookingsPage() {
-    const t = await getTranslations('teachers')
+export default async function TeacherBookingsPage({
+	searchParams,
+}: {
+	searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+	const resolvedSearchParams = await searchParams;
+	const t = await getTranslations("teachers");
 	const session = await auth();
 	await requireAuth([UserType.TEACHER]);
 	if (!session) redirect("/login");
 
-	// To clean up stale bookings, we need the teacher ID.
-	// Since we are cleaning up, we can fetch it via BookingService or a helper.
-	const bookings = await BookingService.getTeacherBookings(session.user.id);
+	const range = (resolvedSearchParams.range as TimeRangeOption) || "this_month";
 
-	// For stale bookings cancellation, we can just run it using the teacher id derived from the first booking
-	// or we can just fetch the teacher ID quickly. Since we already removed the raw prisma call,
-	// let's assume we don't need `cancelledCount` displayed if we abstract it inside the service.
-	// For now, let's keep it simple:
-	const cancelledCount = 0; // Or move processStaleBookingsCancellation to BookingService
+	const bookings = await BookingService.getTeacherBookings(session.user.id, range);
+
+	// For stale bookings cancellation — hardcoded to 0, outside scope of this batch
+	const cancelledCount = 0;
 
 	const sanitizedBookings = sanitizePrismaData(bookings);
 
@@ -31,9 +34,9 @@ export default async function TeacherBookingsPage() {
 		<div className="space-y-6">
 			<div>
 				<h1 className="text-2xl font-extrabold mb-1">
-					{t('bookings_page_title')}</h1>
+					{t("bookings_page_title")}</h1>
 				<p className="text-xs text-muted-foreground">
-					{t('bookings_page_subtitle')}
+					{t("bookings_page_subtitle")}
 				</p>
 			</div>
 
@@ -42,9 +45,9 @@ export default async function TeacherBookingsPage() {
 					<AlertCircle className="h-5 w-5 mt-0.5 shrink-0" />
 					<div>
 						<h3 className="font-bold text-sm">
-							{t('bookings_page_stale_alert_title')}</h3>
+							{t("bookings_page_stale_alert_title")}</h3>
 						<p className="text-sm mt-1">
-							{t('bookings_page_stale_alert_prefix')}<strong>{cancelledCount}</strong>{t('bookings_page_stale_alert_suffix')}
+							{t("bookings_page_stale_alert_prefix")}<strong>{cancelledCount}</strong>{t("bookings_page_stale_alert_suffix")}
 						</p>
 					</div>
 				</div>
@@ -53,8 +56,9 @@ export default async function TeacherBookingsPage() {
 			<div className="bg-white dark:bg-slate-900 border border-border/80 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all space-y-4">
 				<h2 className="font-black text-lg border-b border-border pb-3 flex items-center gap-2">
 					<Calendar className="h-6 w-6 text-primary" />
-					{t('bookings_page_calendar_title')}</h2>
+					{t("bookings_page_calendar_title")}</h2>
 
+				<TimeRangeTabs />
 				<TeacherBookingsList bookings={sanitizedBookings} />
 			</div>
 		</div>

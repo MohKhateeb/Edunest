@@ -688,7 +688,10 @@
     "booking_status_completed": "Completed",
     "booking_status_rejected": "Rejected",
     "booking_status_cancelled": "Cancelled",
-    "booking_status_expired": "Expired"
+    "booking_status_expired": "Expired",
+    "time_range_this_month": "This Month",
+    "time_range_last_month": "Last Month",
+    "time_range_all": "All"
   },
   "nav": {
     "dashboard": "Dashboard",
