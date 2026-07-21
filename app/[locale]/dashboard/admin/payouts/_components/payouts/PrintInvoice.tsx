@@ -1,4 +1,5 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+import { useTranslations } from "next-intl";
 import { formatCurrency } from "@/lib/utils/currency";
 import type { PayoutRecord } from "@/types/payout";
 
@@ -6,8 +7,8 @@ type PrintInvoiceProps = {
 	payoutToPrint: PayoutRecord;
 };
 
-export async function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
-    const t = await getTranslations('admin')
+export function PrintInvoice({ payoutToPrint }: PrintInvoiceProps) {
+    const t = useTranslations('admin');
 	return (
 		<div className="hidden print:block absolute inset-0 bg-white z-[9999] p-10 text-black min-h-screen">
 			<div className="flex justify-between items-center border-b-2 border-gray-300 pb-6 mb-8">

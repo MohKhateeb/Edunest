@@ -1,4 +1,5 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+import { useTranslations } from "next-intl";
 import { CheckCircle2, RefreshCcw } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
 import type { ParentRefundRecord } from "@/types/payout";
@@ -12,14 +13,14 @@ type ParentRefundsListProps = {
 	hasRefundsCursor: boolean;
 };
 
-export async function ParentRefundsList({
+export function ParentRefundsList({
 	parentRefunds,
 	handleMarkRefundAsPaid,
 	loading,
 	refundsNextCursor,
 	hasRefundsCursor,
 }: ParentRefundsListProps) {
-    const t = await getTranslations('admin')
+    const t = useTranslations('admin');
 	return (
 		<div>
 			<div className="flex items-center gap-3 mb-6 mt-12">

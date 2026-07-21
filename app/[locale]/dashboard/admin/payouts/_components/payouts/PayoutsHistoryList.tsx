@@ -1,4 +1,5 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+import { useTranslations } from "next-intl";
 import { BadgeDollarSign, CheckCircle2, Printer, Receipt } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
 import type { PayoutRecord } from "@/types/payout";
@@ -14,7 +15,7 @@ type PayoutsHistoryListProps = {
 	hasPayoutsCursor: boolean;
 };
 
-export async function PayoutsHistoryList({
+export function PayoutsHistoryList({
 	existingPayouts,
 	handlePrint,
 	setSelectedPayoutId,
@@ -23,7 +24,7 @@ export async function PayoutsHistoryList({
 	payoutsNextCursor,
 	hasPayoutsCursor,
 }: PayoutsHistoryListProps) {
-    const t = await getTranslations('admin')
+    const t = useTranslations('admin');
 	return (
 		<div>
 			<div className="flex items-center gap-3 mb-6 mt-12">

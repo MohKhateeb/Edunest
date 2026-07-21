@@ -1,4 +1,5 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+import { useTranslations } from "next-intl";
 import { Check, CheckCircle2, Receipt, Users } from "lucide-react";
 import { cn, formatCurrency } from "@/lib/utils";
 import type { UnpaidBooking } from "@/types/payout";
@@ -19,12 +20,12 @@ type PendingTeachersListProps = {
 	handleSelectGroup: (groupKey: string) => void;
 };
 
-export async function PendingTeachersList({
+export function PendingTeachersList({
 	groupedByTeacher,
 	selectedGroupKey,
 	handleSelectGroup,
 }: PendingTeachersListProps) {
-    const t = await getTranslations('admin')
+    const t = useTranslations('admin');
 	return (
 		<div>
 			<div className="flex items-center gap-3 mb-6">

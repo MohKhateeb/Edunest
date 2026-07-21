@@ -1,4 +1,5 @@
-import { getTranslations } from "next-intl/server";
+"use client";
+import { useTranslations } from "next-intl";
 import {
 	AlertCircle,
 	BadgeDollarSign,
@@ -30,7 +31,7 @@ type DraftPayoutSectionProps = {
 	successMsg: string | null;
 };
 
-export async function DraftPayoutSection({
+export function DraftPayoutSection({
 	selectedTeacherGroup,
 	selectedBookingIds,
 	setSelectedBookingIds,
@@ -41,7 +42,7 @@ export async function DraftPayoutSection({
 	errorMsg,
 	successMsg,
 }: DraftPayoutSectionProps) {
-    const t = await getTranslations('admin')
+    const t = useTranslations('admin');
 	return (
 		<div className="animate-in fade-in slide-in-from-top-4 duration-500">
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
