@@ -506,7 +506,12 @@ export type AdminPayoutsData = {
 	}[];
 };
 
-export async function getAdminPayoutsData(from?: string, to?: string): Promise<AdminPayoutsData> {
+export async function getAdminPayoutsData(
+	from?: string,
+	to?: string,
+	payoutsCursor?: string,
+	refundsCursor?: string,
+): Promise<AdminPayoutsData & { payoutsNextCursor?: string; refundsNextCursor?: string }> {
 	await requireAuth([UserType.ADMIN]);
 
 	const twentyFourHoursAgo = new Date();
@@ -620,9 +625,12 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 		payoutsWhere.createdAt = { ...payoutsWhere.createdAt as any, lte: end };
 	}
 
-	const payouts = await prisma.teacherPayout.findMany({
+	const PAGE_SIZE = 50;
+
+	const payoutsRaw = await prisma.teacherPayout.findMany({
 		where: payoutsWhere,
-		take: 50,
+		take: PAGE_SIZE + 1,
+		...(payoutsCursor && { cursor: { id: payoutsCursor }, skip: 1 }),
 		include: {
 			teacher: {
 				select: {
@@ -632,6 +640,10 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 		},
 		orderBy: { createdAt: "desc" },
 	});
+
+	const hasMorePayouts = payoutsRaw.length > PAGE_SIZE;
+	const payouts = hasMorePayouts ? payoutsRaw.slice(0, PAGE_SIZE) : payoutsRaw;
+	const payoutsNextCursor = hasMorePayouts ? payouts[payouts.length - 1].id : undefined;
 
 	const mappedPayouts = payouts.map((p) => ({
 		id: p.id,
@@ -656,9 +668,10 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 		refundsWhere.createdAt = { ...refundsWhere.createdAt as any, lte: end };
 	}
 
-	const refunds = await prisma.parentRefund.findMany({
+	const refundsRaw = await prisma.parentRefund.findMany({
 		where: refundsWhere,
-		take: 50,
+		take: PAGE_SIZE + 1,
+		...(refundsCursor && { cursor: { id: refundsCursor }, skip: 1 }),
 		include: {
 			booking: {
 				include: { parent: { select: { name: true } } },
@@ -666,6 +679,10 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 		},
 		orderBy: { createdAt: "desc" },
 	});
+
+	const hasMoreRefunds = refundsRaw.length > PAGE_SIZE;
+	const refunds = hasMoreRefunds ? refundsRaw.slice(0, PAGE_SIZE) : refundsRaw;
+	const refundsNextCursor = hasMoreRefunds ? refunds[refunds.length - 1].id : undefined;
 
 	const mappedRefunds = refunds.map((r) => ({
 		id: r.id,
@@ -682,5 +699,7 @@ export async function getAdminPayoutsData(from?: string, to?: string): Promise<A
 		teacherGroups,
 		mappedPayouts,
 		mappedRefunds,
+		payoutsNextCursor,
+		refundsNextCursor,
 	};
 }

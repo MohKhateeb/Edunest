@@ -5,9 +5,9 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-type Props = { nextCursor?: string | null; hasCursor: boolean };
+type Props = { nextCursor?: string | null; hasCursor: boolean; paramName?: string };
 
-export default function AdminPaginationControls({ nextCursor, hasCursor }: Props) {
+export default function AdminPaginationControls({ nextCursor, hasCursor, paramName = 'cursor' }: Props) {
 	const t = useTranslations('admin');
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
@@ -16,8 +16,8 @@ export default function AdminPaginationControls({ nextCursor, hasCursor }: Props
 
 	const buildUrl = (cursor?: string) => {
 		const params = new URLSearchParams(searchParams.toString());
-		if (cursor) params.set('cursor', cursor);
-		else params.delete('cursor');
+		if (cursor) params.set(paramName, cursor);
+		else params.delete(paramName);
 		const qs = params.toString();
 		return qs ? `${pathname}?${qs}` : pathname;
 	};

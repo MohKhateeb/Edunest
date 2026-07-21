@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { BadgeDollarSign, CheckCircle2, Printer, Receipt } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
 import type { PayoutRecord } from "@/types/payout";
+import AdminPaginationControls from "@/components/shared/AdminPaginationControls";
 
 type PayoutsHistoryListProps = {
 	existingPayouts: PayoutRecord[];
@@ -9,6 +10,8 @@ type PayoutsHistoryListProps = {
 	setSelectedPayoutId: (id: string) => void;
 	handleMarkAsPaid: (id: string) => void;
 	loading: boolean;
+	payoutsNextCursor?: string;
+	hasPayoutsCursor: boolean;
 };
 
 export async function PayoutsHistoryList({
@@ -17,6 +20,8 @@ export async function PayoutsHistoryList({
 	setSelectedPayoutId,
 	handleMarkAsPaid,
 	loading,
+	payoutsNextCursor,
+	hasPayoutsCursor,
 }: PayoutsHistoryListProps) {
     const t = await getTranslations('admin')
 	return (
@@ -109,6 +114,7 @@ export async function PayoutsHistoryList({
 					</div>
 				)}
 			</div>
+			<AdminPaginationControls nextCursor={payoutsNextCursor} hasCursor={hasPayoutsCursor} paramName="payoutsCursor" />
 		</div>
 	);
 }

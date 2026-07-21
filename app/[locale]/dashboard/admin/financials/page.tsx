@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 export default async function AdminFinancialsPage({
 	searchParams,
 }: {
-	searchParams: Promise<{ tab?: string; from?: string; to?: string; cursor?: string }>;
+	searchParams: Promise<{ tab?: string; from?: string; to?: string; cursor?: string; payoutsCursor?: string; refundsCursor?: string }>;
 }) {
     const t = await getTranslations('admin');
 	const tReasons = await getTranslations('recordReasons');
@@ -149,7 +149,9 @@ export default async function AdminFinancialsPage({
 			</div>
 		);
 	} else if (currentTab === "payouts") {
-		const { teacherGroups, mappedPayouts, mappedRefunds } = await getAdminPayoutsData(from, to);
+		const payoutsCursor = resolvedSearchParams.payoutsCursor;
+		const refundsCursor = resolvedSearchParams.refundsCursor;
+		const { teacherGroups, mappedPayouts, mappedRefunds, payoutsNextCursor, refundsNextCursor } = await getAdminPayoutsData(from, to, payoutsCursor, refundsCursor);
 		
 		content = (
 			<div className="animate-in fade-in duration-500">
@@ -157,6 +159,10 @@ export default async function AdminFinancialsPage({
 					teacherGroups={teacherGroups}
 					existingPayouts={mappedPayouts}
 					parentRefunds={mappedRefunds}
+					payoutsNextCursor={payoutsNextCursor}
+					refundsNextCursor={refundsNextCursor}
+					hasPayoutsCursor={!!payoutsCursor}
+					hasRefundsCursor={!!refundsCursor}
 				/>
 			</div>
 		);

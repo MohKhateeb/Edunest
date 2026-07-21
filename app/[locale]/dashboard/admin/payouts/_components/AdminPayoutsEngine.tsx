@@ -21,12 +21,20 @@ type AdminPayoutsEngineProps = {
 	teacherGroups: AdminPayoutsData["teacherGroups"];
 	existingPayouts: PayoutRecord[];
 	parentRefunds: ParentRefundRecord[];
+	payoutsNextCursor?: string;
+	refundsNextCursor?: string;
+	hasPayoutsCursor: boolean;
+	hasRefundsCursor: boolean;
 };
 
 export default function AdminPayoutsEngine({
 	teacherGroups,
 	existingPayouts,
 	parentRefunds,
+	payoutsNextCursor,
+	refundsNextCursor,
+	hasPayoutsCursor,
+	hasRefundsCursor,
 }: AdminPayoutsEngineProps) {
     const t = useTranslations('admin')
 	const router = useRouter();
@@ -197,6 +205,8 @@ export default function AdminPayoutsEngine({
 					setSelectedPayoutId={setSelectedPayoutId}
 					handleMarkAsPaid={handleMarkAsPaid}
 					loading={loading}
+					payoutsNextCursor={payoutsNextCursor}
+					hasPayoutsCursor={hasPayoutsCursor}
 				/>
 
 				{/* Section 4: Parent Refunds List */}
@@ -204,6 +214,8 @@ export default function AdminPayoutsEngine({
 					parentRefunds={parentRefunds}
 					handleMarkRefundAsPaid={handleMarkRefundAsPaid}
 					loading={loading}
+					refundsNextCursor={refundsNextCursor}
+					hasRefundsCursor={hasRefundsCursor}
 				/>
 			</div>
 

@@ -2,17 +2,22 @@ import { getTranslations } from "next-intl/server";
 import { CheckCircle2, RefreshCcw } from "lucide-react";
 import { formatCurrency } from "@/lib/utils/currency";
 import type { ParentRefundRecord } from "@/types/payout";
+import AdminPaginationControls from "@/components/shared/AdminPaginationControls";
 
 type ParentRefundsListProps = {
 	parentRefunds: ParentRefundRecord[];
 	handleMarkRefundAsPaid: (id: string) => void;
 	loading: boolean;
+	refundsNextCursor?: string;
+	hasRefundsCursor: boolean;
 };
 
 export async function ParentRefundsList({
 	parentRefunds,
 	handleMarkRefundAsPaid,
 	loading,
+	refundsNextCursor,
+	hasRefundsCursor,
 }: ParentRefundsListProps) {
     const t = await getTranslations('admin')
 	return (
@@ -85,6 +90,7 @@ export async function ParentRefundsList({
 					</div>
 				)}
 			</div>
+			<AdminPaginationControls nextCursor={refundsNextCursor} hasCursor={hasRefundsCursor} paramName="refundsCursor" />
 		</div>
 	);
 }
