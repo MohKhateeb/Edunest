@@ -691,7 +691,8 @@
     "booking_status_expired": "Expired",
     "time_range_this_month": "This Month",
     "time_range_last_month": "Last Month",
-    "time_range_all": "All"
+    "time_range_all": "All",
+    "teacher_selection_show_more": "Show {count} more results"
   },
   "nav": {
     "dashboard": "Dashboard",

@@ -691,7 +691,8 @@
     "booking_status_expired": "منتهي",
     "time_range_this_month": "هذا الشهر",
     "time_range_last_month": "الشهر الماضي",
-    "time_range_all": "الكل"
+    "time_range_all": "الكل",
+    "teacher_selection_show_more": "عرض {count} نتائج إضافية"
   },
   "nav": {
     "dashboard": "لوحة التحكم",

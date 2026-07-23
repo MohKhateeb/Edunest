@@ -215,6 +215,27 @@ export async function searchAvailableTeachers(input: {
 			}
 		}
 
+		// الترتيب حسب الأفضلية
+		const verificationLevelValue: Record<string, number> = {
+			GOLD: 3,
+			SILVER: 2,
+			BRONZE: 1,
+			NONE: 0,
+		};
+
+		availableTeachers.sort((a, b) => {
+			// 1. مستوى التوثيق تنازلياً
+			const levelA = verificationLevelValue[a.verificationLevel] ?? 0;
+			const levelB = verificationLevelValue[b.verificationLevel] ?? 0;
+			if (levelA !== levelB) return levelB - levelA;
+
+			// 2. متوسط التقييم تنازلياً
+			if (a.averageRating !== b.averageRating) return b.averageRating - a.averageRating;
+
+			// 3. عدد الجلسات تنازلياً
+			return b.totalSessions - a.totalSessions;
+		});
+
 		return { success: true, data: { teachers: availableTeachers } };
 	} catch (err: unknown) {
 		console.error(err);

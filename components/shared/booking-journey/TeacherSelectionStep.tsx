@@ -2,6 +2,7 @@
 import {
 	AlertCircle,
 	ChevronLeft,
+
 	GraduationCap,
 	MapPin,
 	Sparkles,
@@ -11,6 +12,7 @@ import { VERIFICATION_BADGES_CONFIG } from "@/lib/translations";
 import { cn, formatCurrency } from "@/lib/utils";
 import type { AvailableTeacher } from "@/types/booking";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 
 type TeacherSelectionStepProps = {
 	searchQuery: {
@@ -36,6 +38,7 @@ export function TeacherSelectionStep({
 	handleSelectTeacher,
 }: TeacherSelectionStepProps) {
     const t = useTranslations('common');
+	const [visibleCount, setVisibleCount] = useState(8);
 	return (
 		<div className="space-y-4 animate-fadeIn">
 			{/* ملخص البحث */}
@@ -89,7 +92,7 @@ export function TeacherSelectionStep({
 						{t('malm_mtah_akhtr')}</p>
 
 					<div className="space-y-3">
-						{availableTeachers.map((teacher) => {
+						{availableTeachers.slice(0, visibleCount).map((teacher) => {
 							const badge =
 								VERIFICATION_BADGES_CONFIG[
 									teacher.verificationLevel as keyof typeof VERIFICATION_BADGES_CONFIG
@@ -183,6 +186,16 @@ export function TeacherSelectionStep({
 							);
 						})}
 					</div>
+
+					{availableTeachers.length > visibleCount && (
+						<button
+							type="button"
+							onClick={() => setVisibleCount((prev) => prev + 8)}
+							className="w-full bg-card border border-border rounded-xl py-3 text-xs font-bold text-primary hover:bg-primary/5 transition-colors cursor-pointer"
+						>
+							{t('teacher_selection_show_more', { count: Math.min(8, availableTeachers.length - visibleCount) })}
+						</button>
+					)}
 				</>
 			)}
 		</div>
