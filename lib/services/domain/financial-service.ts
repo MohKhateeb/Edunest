@@ -1,6 +1,6 @@
 import { getErrorT, getNotificationT } from "@/lib/i18n/get-server-translations";
 import { getTranslations } from "next-intl/server";
-import { type Prisma, UserType, Currency } from "@prisma/client";
+import { Prisma, UserType, Currency } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/require-auth";
 import { calculateEarnings } from "@/lib/utils/financial";
@@ -42,34 +42,38 @@ export async function getAdminFinancialStats(startDate?: string, endDate?: strin
 	const bookingsWhere: Prisma.BookingWhereInput = { status: "COMPLETED" };
 	if (hasDateFilter) bookingsWhere.completedAt = dateFilter;
 
-	const completedBookings = await prisma.booking.findMany({
-		where: bookingsWhere,
-		select: { price: true, appliedCommissionRate: true },
-	});
-
-	let totalRevenue = 0;
-	let totalCommission = 0;
-
-	for (const booking of completedBookings) {
-		const price = Number(booking.price);
-		const rate = Number(booking.appliedCommissionRate);
-		totalRevenue += price;
-		totalCommission += (price * rate) / 100;
-	}
-
-	// Also add confiscated escrow funds to totalCommission
 	const escrowWhere: Prisma.AdminEscrowWhereInput = { status: "PLATFORM_PROFIT" };
 	if (hasDateFilter) escrowWhere.resolvedAt = dateFilter;
+
+	const bookingRevenueSum = await prisma.booking.aggregate({
+		where: bookingsWhere,
+		_sum: { price: true },
+	});
 	
-	const confiscatedEscrows = await prisma.adminEscrow.findMany({
+	const escrowRevenueSum = await prisma.adminEscrow.aggregate({
 		where: escrowWhere,
-		select: { amount: true },
+		_sum: { amount: true },
 	});
 
-	for (const escrow of confiscatedEscrows) {
-		totalCommission += Number(escrow.amount);
-		totalRevenue += Number(escrow.amount);
+	const totalRevenue = Number(bookingRevenueSum._sum.price || 0) + Number(escrowRevenueSum._sum.amount || 0);
+
+	const dateConditions: Prisma.Sql[] = [Prisma.sql`status = 'COMPLETED'`];
+	if (startDate) dateConditions.push(Prisma.sql`"completedAt" >= ${new Date(startDate)}`);
+	if (endDate) {
+		const end = new Date(endDate);
+		end.setHours(23, 59, 59, 999);
+		dateConditions.push(Prisma.sql`"completedAt" <= ${end}`);
 	}
+	const whereClause = Prisma.join(dateConditions, " AND ");
+
+	const commissionResult = await prisma.$queryRaw<{ total: number | null }[]>`
+		SELECT SUM(price * "appliedCommissionRate" / 100) as total
+		FROM "bookings"
+		WHERE ${whereClause}
+	`;
+	
+	const bookingCommission = Number(commissionResult[0]?.total || 0);
+	const totalCommission = bookingCommission + Number(escrowRevenueSum._sum.amount || 0);
 
 	return {
 		openDisputesCount,
@@ -108,6 +112,7 @@ export async function getPlatformRevenueDetails(startDate?: string, endDate?: st
 
 	const completedBookings = await prisma.booking.findMany({
 		where: bookingsWhere,
+		take: 150,
 		select: {
 			id: true,
 			completedAt: true,
@@ -123,6 +128,7 @@ export async function getPlatformRevenueDetails(startDate?: string, endDate?: st
 
 	const confiscatedEscrows = await prisma.adminEscrow.findMany({
 		where: escrowWhere,
+		take: 150,
 		select: {
 			id: true,
 			resolvedAt: true,
