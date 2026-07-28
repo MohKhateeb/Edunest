@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createBooking } from "@/lib/actions/booking";
@@ -10,7 +10,9 @@ interface BookingSubmissionOptions {
 
 export function useBookingSubmission(options?: BookingSubmissionOptions) {
 	const t = useTranslations("errors");
+	const locale = useLocale();
 	const router = useRouter();
+	const bookingsPath = locale === "ar" ? "/dashboard/parent/bookings" : `/en/dashboard/parent/bookings`;
 	const [createdBooking, setCreatedBooking] = useState<{
 		id: string;
 		price: number;
@@ -49,7 +51,7 @@ export function useBookingSubmission(options?: BookingSubmissionOptions) {
 			if (res.success) {
 				setSuccess(true);
 				setTimeout(() => {
-					router.push("/dashboard/parent/bookings");
+					router.push(bookingsPath);
 				}, 2000);
 				options?.onSuccess?.();
 			} else {
@@ -69,7 +71,7 @@ export function useBookingSubmission(options?: BookingSubmissionOptions) {
 		setCreatedBooking(null);
 		setSuccess(true);
 		setTimeout(() => {
-			router.push("/dashboard/parent/bookings");
+			router.push(bookingsPath);
 		}, 1500);
 	};
 
